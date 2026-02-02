@@ -20,8 +20,7 @@ def read_readme():
 setup(
     name="leetcode-solutions",
     version=__version__,
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="MindLullaby",
     description="LeetCode题解包，支持按题号/难度/题型/周赛导入最优Python解法",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
