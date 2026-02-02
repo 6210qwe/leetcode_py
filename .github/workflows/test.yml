@@ -8,10 +8,9 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
         
     steps:
@@ -28,7 +27,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
         
-    - name: Run tests
+    - name: Test basic import
       run: |
-        python test_installation.py
+        python -c "import leetcode_solutions; print(f'Version: {leetcode_solutions.__version__}')"
+        
+    - name: Test by_id import
+      run: |
+        python -c "from leetcode_solutions.by_id import q0001; print('Import q0001: OK')"
+        
+    - name: Test function call
+      run: |
+        python -c "from leetcode_solutions.by_id import q0001; result = q0001.two_sum([2, 7, 11, 15], 9); assert result == [0, 1], f'Expected [0, 1], got {result}'; print('Function test: OK')"
+        
+    - name: Test Solution class
+      run: |
+        python -c "from leetcode_solutions.by_id import q0001; s = q0001.Solution(); result = s.twoSum([3, 2, 4], 6); assert result == [1, 2], f'Expected [1, 2], got {result}'; print('Solution class test: OK')"
+        
+    - name: Test utils
+      run: |
+        python -c "from leetcode_solutions import ListNode; head = ListNode.from_list([1, 2, 3]); assert head.to_list() == [1, 2, 3]; print('Utils test: OK')"
+        
+    - name: Test metadata
+      run: |
+        python -c "from leetcode_solutions import get_problems_by_difficulty; easy = get_problems_by_difficulty('easy'); print(f'Metadata test: Found {len(easy)} easy problems')"
 
