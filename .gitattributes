@@ -1,0 +1,22 @@
+# 确保文本文件使用正确的行尾符
+* text=auto
+
+# Python 文件
+*.py text eol=lf
+
+# 配置文件
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+
+# Markdown 文件
+*.md text eol=lf
+
+# Git 相关
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# 工作流文件
+.github/**/*.yml text eol=lf
+.github/**/*.yaml text eol=lf
+
