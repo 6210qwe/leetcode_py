@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""双指针题：1468. Check If N and Its Double Exist（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1468 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

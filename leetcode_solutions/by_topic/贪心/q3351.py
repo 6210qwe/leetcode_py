@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""贪心题：3351. Maximize Happiness of Selected Children（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3351 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""设计题：1000249. 二维区域和检索 - 矩阵不可变（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1000249 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

@@ -43,7 +43,7 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=[
-        # 基础依赖，根据实际需要添加
+        "requests>=2.28.0",  # 用于获取LeetCode题目
     ],
     include_package_data=True,
     zip_safe=False,

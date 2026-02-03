@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""medium题：2262. Solving Questions With Brainpower（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q2262 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

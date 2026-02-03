@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""状态压缩题：3560. Maximum Number of Moves to Kill All Pawns（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3560 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

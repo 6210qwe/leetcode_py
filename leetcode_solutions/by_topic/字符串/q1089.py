@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""字符串题：1089. Remove Vowels from a String（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1089 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

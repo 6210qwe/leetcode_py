@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""hard题：3369. Calculate Trapping Rain Water（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3369 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

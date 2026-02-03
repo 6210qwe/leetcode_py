@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""medium题：1762. Furthest Building You Can Reach（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1762 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

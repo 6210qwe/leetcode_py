@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""字符串题：3617. Find the Original Typed String I（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3617 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

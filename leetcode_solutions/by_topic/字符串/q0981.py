@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""字符串题：981. Delete Columns to Make Sorted（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0981 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

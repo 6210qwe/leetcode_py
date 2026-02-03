@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""hard题：1000304. 二叉树的序列化与反序列化（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1000304 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

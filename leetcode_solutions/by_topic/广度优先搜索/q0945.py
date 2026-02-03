@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""广度优先搜索题：945. Snakes and Ladders（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0945 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""矩阵题：329. Longest Increasing Path in a Matrix（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0329 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

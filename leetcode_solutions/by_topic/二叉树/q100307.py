@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""二叉树题：100307. 序列化与反序列化二叉树（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q100307 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

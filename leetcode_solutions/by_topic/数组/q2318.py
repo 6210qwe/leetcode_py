@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""数组题：2318. Maximum Points in an Archery Competition（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q2318 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

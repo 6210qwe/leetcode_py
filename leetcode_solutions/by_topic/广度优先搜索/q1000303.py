@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""广度优先搜索题：1000303. 所有可能的路径（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1000303 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

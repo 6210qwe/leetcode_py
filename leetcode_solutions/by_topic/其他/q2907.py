@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""其他题：2907. Array Prototype ForEach（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q2907 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

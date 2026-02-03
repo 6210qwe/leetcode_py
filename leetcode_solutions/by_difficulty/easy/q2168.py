@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""easy题：2168. Check if Numbers Are Ascending in a Sentence（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q2168 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

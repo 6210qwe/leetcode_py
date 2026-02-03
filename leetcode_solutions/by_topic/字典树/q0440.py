@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""字典树题：440. K-th Smallest in Lexicographical Order（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0440 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

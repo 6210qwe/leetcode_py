@@ -1,0 +1,71 @@
+# -*- coding:utf-8 -*-
+# ============================================================================
+# 题目信息
+# ============================================================================
+"""
+题号: 1000259
+标题: 相交链表
+难度: easy
+链接: https://leetcode.cn/problems/3u1WK4/
+题目类型: 哈希表、链表、双指针
+"""
+
+# ============================================================================
+# 问题描述
+# ============================================================================
+"""
+LCR 023. 相交链表 - 给定两个单链表的头节点 headA 和 headB ，请找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。 图示两个链表在节点 c1 开始相交： [https://assets.leetcode.cn/aliyun-lc-upload/uploads/2018/12/14/160_statement.png] [https://assets.leetcode.cn/aliyun-lc-upload/uploads/2018/12/14/160_statement.png] 题目数据 保证 整个链式结构中不存在环。 注意，函数返回结果后，链表必须 保持其原始结构 。 示例 1： [https://assets.leetcode.cn/aliyun-lc-upload/uploads/2018/12/14/160_example_1.png] [https://assets.leetcode.com/uploads/2018/12/13/160_example_1.png] 输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,0,1,8,4,5], skipA = 2, skipB = 3 输出：Intersected at '8' 解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。 从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,0,1,8,4,5]。 在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。 示例 2： [https://assets.leetcode.cn/aliyun-lc-upload/uploads/2018/12/14/160_example_2.png] [https://assets.leetcode.com/uploads/2018/12/13/160_example_2.png] 输入：intersectVal = 2, listA = [0,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1 输出：Intersected at '2' 解释：相交节点的值为 2 （注意，如果两个链表相交则不能为 0）。 从各自的表头开始算起，链表 A 为 [0,9,1,2,4]，链表 B 为 [3,2,4]。 在 A 中，相交节点前有 3 个节点；在 B 中，相交节点前有 1 个节点。 示例 3： [https://assets.leetcode.cn/aliyun-lc-upload/uploads/2018/12/14/160_example_3.png] [https://assets.leetcode.com/uploads/2018/12/13/160_example_3.png] 输入：intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2 输出：null 解释：从各自的表头开始算起，链表 A 为 [2,6,4]，链表 B 为 [1,5]。 由于这两个链表不相交，所以 intersectVal 必须为 0，而 skipA 和 skipB 可以是任意值。 这两个链表不相交，因此返回 null 。 提示： * listA 中节点数目为 m * listB 中节点数目为 n * 0 <= m, n <= 3 * 104 * 1 <= Node.val <= 105 * 0 <= skipA <= m * 0 <= skipB <= n * 如果 listA 和 listB 没有交点，intersectVal 为 0 * 如果 listA 和 listB 有交点，intersectVal == listA[skipA + 1] == listB[skipB + 1] 进阶：能否设计一个时间复杂度 O(n) 、仅用 O(1) 内存的解决方案？ 注意：本题与主站 160 题相同：https://leetcode.cn/problems/intersection-of-two-linked-lists/ [https://leetcode.cn/problems/intersection-of-two-linked-lists/]
+"""
+
+# ============================================================================
+# 实现思路
+# ============================================================================
+"""
+核心思想: 双指针走 A+B 与 B+A，最终相遇在交点或 None
+
+算法步骤:
+1. 使用两个指针 pA 指向 headA，pB 指向 headB
+2. 同时移动指针：
+   - 若 pA 到达末尾，则跳到 headB
+   - 若 pB 到达末尾，则跳到 headA
+3. 两指针会在交点相遇；若无交点，则会同时在 None 相遇
+4. 返回相遇节点
+
+关键点:
+- 通过“走完自己链表再走对方链表”，两指针总步数相同，从而对齐长度差
+- 不修改链表，额外空间 O(1)
+"""
+
+# ============================================================================
+# 复杂度分析
+# ============================================================================
+"""
+时间复杂度: O(m+n)
+空间复杂度: O(1)
+"""
+
+# ============================================================================
+# 代码实现
+# ============================================================================
+
+from typing import List, Optional
+from leetcode_solutions.utils.linked_list import ListNode
+from leetcode_solutions.utils.tree import TreeNode
+from leetcode_solutions.utils.solution import create_solution
+
+
+def get_intersection_node(headA: Optional[ListNode], headB: Optional[ListNode]) -> Optional[ListNode]:
+    """
+    函数式接口 - 相交链表
+    """
+    if headA is None or headB is None:
+        return None
+
+    pA, pB = headA, headB
+    while pA != pB:
+        pA = pA.next if pA else headB
+        pB = pB.next if pB else headA
+    return pA
+
+
+Solution = create_solution(get_intersection_node)

@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""数论题：1836. Count Ways to Make Array With Product（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1836 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

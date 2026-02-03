@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""几何题：3278. Find the Number of Ways to Place People I（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3278 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

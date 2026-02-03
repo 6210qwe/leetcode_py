@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""双指针题：522. Longest Uncommon Subsequence II（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0522 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

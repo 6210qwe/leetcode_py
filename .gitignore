@@ -74,7 +74,7 @@ examples/
 *.swp
 
 # ============================================================================
-# 文档文件（只保留核心文档，其他详细文档暂时不上传）
+# 文档文件（只保留核心文档，其他详细文档不上传）
 # ============================================================================
 # 保留的核心文档：
 # - README.md
@@ -82,20 +82,11 @@ examples/
 # - CONTRIBUTING.md
 # - .github/workflows/ 下的工作流文件
 
-# 暂时不上传的详细文档：
-build_and_upload.md
-GITHUB_PYPI_GUIDE.md
-GITHUB_SETUP.md
-QUICK_START_GITHUB.md
-QUICKSTART.md
-PROBLEM_FORMAT.md
-PROJECT_OVERVIEW.md
-PROJECT_STRUCTURE.md
-RELEASE.md
-SETUP_CHECKLIST.md
-STRUCTURE_ANALYSIS.md
-SUMMARY.md
-.github/workflows/README.md
+# 忽略所有其他md文档文件（使用通配符）
+*.md
+!README.md
+!CONTRIBUTING.md
+!.github/workflows/*.md
 
 # ============================================================================
 # 操作系统相关

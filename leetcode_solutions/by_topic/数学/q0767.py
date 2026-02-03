@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""数学题：767. Prime Number of Set Bits in Binary Representation（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q0767 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

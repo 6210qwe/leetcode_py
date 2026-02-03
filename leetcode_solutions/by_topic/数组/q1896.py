@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""数组题：1896. Maximum Score from Performing Multiplication Operations（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1896 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

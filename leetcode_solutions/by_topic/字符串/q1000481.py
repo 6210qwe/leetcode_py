@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""字符串题：1000481. 最小展台数量（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q1000481 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']

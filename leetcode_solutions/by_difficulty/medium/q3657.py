@@ -1,0 +1,6 @@
+# -*- coding:utf-8 -*-
+"""medium题：3657. Check if Grid can be Cut into Sections（复用by_id中的实现）"""
+
+from leetcode_solutions.by_id.q3657 import solution_function_name, Solution
+
+__all__ = ['solution_function_name', 'Solution']
