@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用定时器来实现防抖功能。每次调用防抖函数时，清除之前的定时器并设置新的定时器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个闭包函数 `debounced`，用于存储当前的定时器。
+2. 在 `debounced` 函数中，清除之前的定时器（如果有）。
+3. 设置一个新的定时器，在 t 毫秒后执行原函数，并传递当前的参数。
+4. 返回 `debounced` 函数。
 
 关键点:
-- [TODO]
+- 使用 `setTimeout` 和 `clearTimeout` 来管理定时器。
+- 确保在新的调用发生时，之前的定时器被清除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用防抖函数的时间复杂度是常数级的。
+空间复杂度: O(1) - 只需要常数级的额外空间来存储定时器。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Callable, Any, List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def debounce(fn: Callable, t: int) -> Callable:
     """
-    函数式接口 - [TODO] 实现
+    返回一个防抖后的函数，该函数会在 t 毫秒后执行 fn 函数。
+    如果在这段时间内再次调用防抖函数，则会取消之前的定时器并重新设置。
     """
-    # TODO: 实现最优解法
-    pass
+    timer_id = None
 
+    def debounced(*args: Any, **kwargs: Any) -> None:
+        nonlocal timer_id
+        if timer_id is not None:
+            clearTimeout(timer_id)
+        timer_id = setTimeout(lambda: fn(*args, **kwargs), t)
 
-Solution = create_solution(solution_function_name)
+    return debounced
+
+# 辅助函数，模拟浏览器环境中的 setTimeout 和 clearTimeout
+def setTimeout(func: Callable, delay: int) -> int:
+    import time
+    import threading
+    timer_id = threading.Timer(delay / 1000.0, func)
+    timer_id.start()
+    return id(timer_id)
+
+def clearTimeout(timer_id: int) -> None:
+    import threading
+    for timer in threading.enumerate():
+        if id(timer) == timer_id:
+            timer.cancel()
+
+Solution = create_solution(debounce)

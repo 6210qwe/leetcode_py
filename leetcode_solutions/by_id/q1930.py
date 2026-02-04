@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过排序和累加的方式确定可以构造的最大连续整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对硬币数组进行排序。
+2. 初始化一个变量 `max_reachable` 为 0，表示当前可以构造的最大连续整数。
+3. 遍历排序后的硬币数组：
+   - 如果当前硬币的值大于 `max_reachable + 1`，则无法构造 `max_reachable + 1`，返回 `max_reachable + 1`。
+   - 否则，将当前硬币的值加到 `max_reachable` 上。
+4. 遍历结束后，返回 `max_reachable + 1`。
 
 关键点:
-- [TODO]
+- 通过排序和累加的方式，确保每次都能尽可能多地扩展可以构造的连续整数范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是硬币数组的长度，主要由排序操作决定。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_consecutive_values(coins: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回从 0 开始（包括 0 ），最多能构造出多少个连续整数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对硬币数组进行排序
+    coins.sort()
+    
+    # 初始化可以构造的最大连续整数
+    max_reachable = 0
+    
+    for coin in coins:
+        if coin > max_reachable + 1:
+            break
+        max_reachable += coin
+    
+    return max_reachable + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_consecutive_values)

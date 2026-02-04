@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法逐位计算2出现的次数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字n转换为字符串，方便逐位处理。
+2. 对于每一位，计算当前位为2时的贡献。
+3. 计算高位和低位对当前位的影响。
 
 关键点:
-- [TODO]
+- 通过分解每一位来避免直接遍历所有数字。
+- 使用数学公式计算每一位上2出现的次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_digit_two(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算从 0 到 n (含 n) 中数字 2 出现的次数
     """
-    # TODO: 实现最优解法
-    pass
+    def count_2s_at_position(n: int, position: int) -> int:
+        power_of_10 = 10 ** position
+        next_power_of_10 = power_of_10 * 10
+        right = n % power_of_10
+
+        round_down = n - n % next_power_of_10
+        round_up = round_down + next_power_of_10
+
+        digit = (n // power_of_10) % 10
+
+        if digit < 2:
+            return round_down // 10
+        elif digit == 2:
+            return round_down // 10 + right + 1
+        else:
+            return round_up // 10
+
+    total_count = 0
+    num_digits = len(str(n))
+
+    for i in range(num_digits):
+        total_count += count_2s_at_position(n, i)
+
+    return total_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_digit_two)

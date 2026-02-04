@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断 num 是否能被 3 整除，如果可以，则返回三个连续整数，否则返回空数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 num 是否能被 3 整除。
+2. 如果可以，计算中间的整数 mid = num // 3。
+3. 返回 [mid - 1, mid, mid + 1]。
+4. 如果不能，返回空数组。
 
 关键点:
-- [TODO]
+- 三个连续整数的和一定是 3 的倍数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只需要常数时间进行判断和计算。
+空间复杂度: O(1) - 只需要常数空间存储结果。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到和为给定整数的三个连续整数
     """
-    # TODO: 实现最优解法
-    pass
+    if num % 3 != 0:
+        return []
+    
+    mid = num // 3
+    return [mid - 1, mid, mid + 1]
 
 
 Solution = create_solution(solution_function_name)

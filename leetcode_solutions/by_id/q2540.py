@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示从 (i, j) 到底边的最小代价。通过自底向上计算每个位置的最小代价，最终得到从顶点到底边的最小代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，大小为 n x n，其中 n 是三角形的高度。
+2. 从最后一行开始，逐行向上计算每个位置的最小代价。
+3. 对于每个位置 (i, j)，更新 dp[i][j] 为其左下角和右下角的最小值加上当前格子的代价。
+4. 最终 dp[0][0] 即为从顶点到底边的最小代价。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j]
+- 自底向上计算可以避免重复计算
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(triangle: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划求解从顶点到底边的最小代价
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(triangle)
+    if n == 0:
+        return 0
 
+    # 初始化 dp 数组
+    dp = [[0] * n for _ in range(n)]
+    
+    # 设置最后一行的初始值
+    for j in range(n):
+        dp[n-1][j] = triangle[n-1][j]
+
+    # 自底向上计算每个位置的最小代价
+    for i in range(n-2, -1, -1):
+        for j in range(i+1):
+            dp[i][j] = min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j]
+
+    return dp[0][0]
 
 Solution = create_solution(solution_function_name)

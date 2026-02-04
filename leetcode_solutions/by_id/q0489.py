@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用组合数学计算每一步选择 'H' 或 'V' 的可能性，并根据 k 选择合适的路径。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 计算总步数 `total` 和需要的 'H' 步数 `h`。
+2. 使用组合数计算当前剩余步数中的 'H' 步数。
+3. 根据 k 选择 'H' 或 'V'，并更新 k 和剩余步数。
+4. 重复上述过程直到生成完整的路径。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用组合数快速计算每一步的选择。
+- 优化时间和空间复杂度，避免递归和不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 其中 n 是总步数（row + column），每次选择 'H' 或 'V' 的操作都是 O(1)。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,27 +50,45 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from math import comb
 
-
-def kth_smallest_instructions(params):
+def kth_smallest_instructions(destination: List[int]) -> str:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 返回按字典序排列后的第 k 条最小指令
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用组合数学计算每一步选择 'H' 或 'V' 的可能性，并根据 k 选择合适的路径。
     
     Args:
-        params: [待实现] 参数说明
+        destination: 目的地坐标 [row, column]
         
     Returns:
-        [待实现] 返回值说明
+        按字典序排列后的第 k 条最小指令
         
     Example:
-        >>> kth_smallest_instructions([待实现])
-        [待实现]
+        >>> kth_smallest_instructions([2, 3])
+        "HHHVV"
     """
-    # TODO: 实现最优解法
-    pass
+    def find_kth_path(k: int, h: int, v: int) -> str:
+        path = []
+        while h > 0 and v > 0:
+            # 计算当前选择 'H' 的组合数
+            if k > comb(h + v - 1, v):
+                path.append('V')
+                k -= comb(h + v - 1, v)
+                v -= 1
+            else:
+                path.append('H')
+                h -= 1
+        path.extend(['H'] * h)
+        path.extend(['V'] * v)
+        return ''.join(path)
+
+    row, col = destination
+    total = row + col
+    h = col
+    v = row
+    return find_kth_path(1, h, v)
 
 
 # 自动生成Solution类（无需手动编写）

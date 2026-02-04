@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到最长的回文子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示 s[i:] 和 t[:j] 拼接后的最长回文子串长度。
+2. 填充 dp 数组，考虑两种情况：
+   - s[i] == t[j-1] 时，dp[i][j] = dp[i+1][j-1] + 2
+   - 否则，dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+3. 最后返回 dp[0][len(t)] 即为结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 边界条件的处理
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 和 m 分别是 s 和 t 的长度。
+空间复杂度: O(n * m)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_palindrome_after_substring_concatenation(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(s), len(t)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+
+    # 初始化边界条件
+    for i in range(n):
+        dp[i][m] = 1
+    for j in range(m):
+        dp[n][j] = 1
+
+    # 填充 dp 数组
+    for i in range(n - 1, -1, -1):
+        for j in range(m - 1, -1, -1):
+            if s[i] == t[j]:
+                dp[i][j] = dp[i + 1][j + 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])
+
+    return dp[0][0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindrome_after_substring_concatenation)

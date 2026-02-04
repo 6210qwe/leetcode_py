@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来遍历所有可以打开的盒子，并收集糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列，将初始盒子加入队列。
+2. 使用集合记录已经访问过的盒子和已经拥有的钥匙。
+3. 当队列不为空时，取出队首盒子：
+   - 如果盒子是打开的或我们有该盒子的钥匙，打开盒子并收集糖果。
+   - 将盒子中的钥匙加入我们的钥匙集合。
+   - 将盒子中的内含盒子加入队列。
+4. 返回收集到的糖果总数。
 
 关键点:
-- [TODO]
+- 使用队列进行广度优先搜索。
+- 使用集合记录已访问的盒子和已拥有的钥匙，避免重复处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是盒子的数量。每个盒子最多只会被处理一次。
+空间复杂度: O(n)，队列和集合的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +55,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_candies(status: List[int], candies: List[int], keys: List[List[int]], contained_boxes: List[List[int]], initial_boxes: List[int]) -> int:
+    from collections import deque
+
+    # 初始化队列和集合
+    queue = deque(initial_boxes)
+    visited = set()
+    key_set = set()
+    total_candies = 0
+
+    while queue:
+        box = queue.popleft()
+        if box in visited:
+            continue
+        visited.add(box)
+
+        # 检查盒子是否可以打开
+        if status[box] == 1 or box in key_set:
+            total_candies += candies[box]
+            for key in keys[box]:
+                key_set.add(key)
+            for contained_box in contained_boxes[box]:
+                queue.append(contained_box)
+
+    return total_candies
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_candies)

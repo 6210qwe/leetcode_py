@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）结合传送门的特性来找到最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建传送门的位置映射，记录每个传送门字母的所有位置。
+2. 使用队列进行BFS，队列中的每个元素包含当前坐标、已使用的传送门集合和当前步数。
+3. 对于每个节点，检查其四个方向的邻居，如果邻居是空单元格或未使用过的传送门，则将其加入队列。
+4. 如果遇到传送门且未使用过，则通过传送门传送到所有其他相同字母的传送门位置。
+5. 如果到达右下角单元格，返回当前步数；如果队列为空且未到达目标，则返回-1。
 
 关键点:
-- [TODO]
+- 使用集合记录已使用的传送门，避免重复使用。
+- 通过传送门时，将所有相同字母的传送门位置都加入队列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中m和n分别是网格的行数和列数。每个单元格最多被访问一次。
+空间复杂度: O(m * n)，队列和已访问集合的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Set, Tuple
+from collections import deque, defaultdict
 
+def solution_function_name(matrix: List[str]) -> int:
+    if not matrix or not matrix[0]:
+        return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(matrix), len(matrix[0])
+    portals = defaultdict(list)
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j].isalpha():
+                portals[matrix[i][j]].append((i, j))
 
+    def bfs() -> int:
+        queue = deque([((0, 0), set(), 0)])
+        visited = set([(0, 0, frozenset())])
+
+        while queue:
+            (x, y), used_portals, steps = queue.popleft()
+            if (x, y) == (m - 1, n - 1):
+                return steps
+
+            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n and matrix[nx][ny] != '#':
+                    if matrix[nx][ny] == '.':
+                        if (nx, ny, frozenset(used_portals)) not in visited:
+                            visited.add((nx, ny, frozenset(used_portals)))
+                            queue.append(((nx, ny), used_portals, steps + 1))
+                    elif matrix[nx][ny].isalpha():
+                        if matrix[nx][ny] not in used_portals:
+                            new_used_portals = used_portals | {matrix[nx][ny]}
+                            for px, py in portals[matrix[nx][ny]]:
+                                if (px, py, frozenset(new_used_portals)) not in visited:
+                                    visited.add((px, py, frozenset(new_used_portals)))
+                                    queue.append(((px, py), new_used_portals, steps + 1))
+        return -1
+
+    return bfs()
 
 Solution = create_solution(solution_function_name)

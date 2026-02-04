@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来检查是否可以从起始位置跳到值为 0 的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 dfs，用于从当前索引开始进行深度优先搜索。
+2. 在 dfs 函数中，首先检查当前索引是否越界或已经访问过，如果是则返回 False。
+3. 如果当前索引对应的值为 0，则返回 True。
+4. 将当前索引标记为已访问。
+5. 递归调用 dfs 函数，分别尝试跳到 i + arr[i] 和 i - arr[i]。
+6. 返回两个递归调用的结果的逻辑或。
 
 关键点:
-- [TODO]
+- 使用一个布尔数组 visited 来记录已经访问过的索引，避免重复访问和死循环。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 arr 的长度。每个索引最多访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，并且需要一个大小为 n 的 visited 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_reach(arr: List[int], start: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以从起始位置跳到值为 0 的位置。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    visited = [False] * n
 
+    def dfs(i: int) -> bool:
+        if i < 0 or i >= n or visited[i]:
+            return False
+        if arr[i] == 0:
+            return True
+        visited[i] = True
+        return dfs(i + arr[i]) or dfs(i - arr[i])
 
-Solution = create_solution(solution_function_name)
+    return dfs(start)
+
+Solution = create_solution(can_reach)

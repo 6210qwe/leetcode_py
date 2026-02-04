@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过找到数组中的最大值和最小值，我们可以确定替换一个元素后能得到的最大乘积。我们需要考虑两种情况：
+1. 用 10^5 替换数组中的最小值。
+2. 用 -10^5 替换数组中的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的前三大值和前三小值。
+2. 计算两种情况下的最大乘积，并返回较大者。
 
 关键点:
-- [TODO]
+- 使用堆来高效地找到前三大值和前三小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_product_after_replacement(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算一次替换后的三元素最大乘积
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到前三大值
+    top_three = sorted(nums, reverse=True)[:3]
+    # 找到前三小值
+    bottom_three = sorted(nums)[:3]
+
+    # 计算两种情况下的最大乘积
+    max_product_with_105 = top_three[0] * top_three[1] * 100000
+    max_product_with_neg_105 = bottom_three[0] * bottom_three[1] * -100000
+
+    # 返回较大者
+    return max(max_product_with_105, max_product_with_neg_105)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product_after_replacement)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来查找从起始节点到目标节点的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用队列进行BFS遍历。
+3. 如果在遍历过程中找到了目标节点，则返回True。
+4. 如果遍历完所有可达节点仍未找到目标节点，则返回False。
 
 关键点:
-- [TODO]
+- 使用队列进行BFS遍历。
+- 使用集合记录已访问的节点以避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中V是节点数，E是边数。
+空间复杂度: O(V)，用于存储访问过的节点和队列。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, graph: List[List[int]], start: int, target: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用BFS查找从起始节点到目标节点的路径
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建图的邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in graph:
+        adj_list[u].append(v)
+    
+    # 使用队列进行BFS遍历
+    from collections import deque
+    queue = deque([start])
+    visited = set([start])
+    
+    while queue:
+        node = queue.popleft()
+        if node == target:
+            return True
+        for neighbor in adj_list[node]:
+            if neighbor not in visited:
+                queue.append(neighbor)
+                visited.add(neighbor)
+    
+    return False
 
 
 Solution = create_solution(solution_function_name)

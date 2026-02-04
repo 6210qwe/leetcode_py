@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来计算每个节点作为根时的正确猜测数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 将猜测转换为集合，以便快速查找。
+3. 使用DFS从任意节点开始计算初始的正确猜测数。
+4. 通过重新计算每个子树的正确猜测数来更新结果。
 
 关键点:
-- [TODO]
+- 使用DFS遍历树，并在遍历时维护当前路径上的正确猜测数。
+- 通过重根法（Rerooting）来高效地计算每个节点作为根时的正确猜测数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是猜测数。
+空间复杂度: O(n + m)，用于存储邻接表和猜测集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_possible_roots(edges: List[List[int]], guesses: List[List[int]], k: int) -> int:
+    def dfs(node: int, parent: int) -> int:
+        correct_guesses = 0
+        for neighbor in tree[node]:
+            if neighbor == parent:
+                continue
+            if (node, neighbor) in guess_set:
+                correct_guesses += 1
+            correct_guesses += dfs(neighbor, node)
+        return correct_guesses
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def reroot(node: int, parent: int, correct_guesses: int) -> None:
+        nonlocal result
+        if correct_guesses >= k:
+            result += 1
+        for neighbor in tree[node]:
+            if neighbor == parent:
+                continue
+            new_correct_guesses = correct_guesses
+            if (node, neighbor) in guess_set:
+                new_correct_guesses -= 1
+            if (neighbor, node) in guess_set:
+                new_correct_guesses += 1
+            reroot(neighbor, node, new_correct_guesses)
 
+    n = len(edges) + 1
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
+    
+    guess_set = set(tuple(guess) for guess in guesses)
+    
+    initial_correct_guesses = dfs(0, -1)
+    result = 0
+    reroot(0, -1, initial_correct_guesses)
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_possible_roots)

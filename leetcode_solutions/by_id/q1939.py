@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个查询，遍历所有点并检查它们是否在圆内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `answer`。
+2. 对于每个查询，遍历所有点，计算点到圆心的距离。
+3. 如果距离小于等于半径，则该点在圆内，计数器加一。
+4. 将计数器的值添加到结果数组 `answer` 中。
 
 关键点:
-- [TODO]
+- 使用欧几里得距离公式计算点到圆心的距离。
+- 遍历所有点以确保不遗漏任何点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 points 的长度，m 是 queries 的长度。
+空间复杂度: O(m)，结果数组 `answer` 的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_points(points: List[List[int]], queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算每个查询圆内的点数。
+    
+    :param points: 二维平面上的点列表。
+    :param queries: 查询列表，每个查询包含圆心坐标和半径。
+    :return: 每个查询圆内的点数。
     """
-    # TODO: 实现最优解法
-    pass
+    def is_inside_circle(point, query):
+        x, y = point
+        xq, yq, r = query
+        return (x - xq) ** 2 + (y - yq) ** 2 <= r ** 2
+    
+    answer = []
+    for query in queries:
+        count = sum(is_inside_circle(point, query) for point in points)
+        answer.append(count)
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_points)

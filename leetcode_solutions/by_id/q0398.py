@@ -21,24 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 预处理每个值的所有下标列表，随机返回其中一个；由于每个下标都有同等概率被选中，满足题意。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 在构造函数中遍历数组 `nums`，用哈希表 `pos` 将值映射到所有出现下标的列表。
+2. 对于 pick(target)，从 `pos[target]` 中使用 `random.choice` 随机返回一个下标。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 预处理一次，后续每次查询只做 O(1) 的随机访问。
+- 题目保证 target 一定在数组中，因此无需处理不存在的情况（如需更安全可加判断）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: 构造函数 O(n)，n 为数组长度；每次 pick 为 O(1)。
+空间复杂度: O(n)，存储所有下标。
 """
 
 # ============================================================================
@@ -51,25 +50,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def random_pick_index(params):
+import random
+
+
+class RandomPickIndex:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> random_pick_index([待实现])
-        [待实现]
+    随机返回目标值在数组中的索引，若有多个索引则等概率返回。
+
+    预处理 value -> indices 列表，pick 时在对应列表中随机选一个。
     """
-    # TODO: 实现最优解法
-    pass
+
+    def __init__(self, nums: List[int]):
+        from collections import defaultdict
+
+        self.pos = defaultdict(list)
+        for i, v in enumerate(nums):
+            self.pos[v].append(i)
+
+    def pick(self, target: int) -> int:
+        arr = self.pos[target]
+        return random.choice(arr)
+
+
+def random_pick_index(nums: List[int]) -> RandomPickIndex:
+    """
+    函数式接口 - 返回 RandomPickIndex 实例。
+    """
+    return RandomPickIndex(nums)
 
 
 # 自动生成Solution类（无需手动编写）

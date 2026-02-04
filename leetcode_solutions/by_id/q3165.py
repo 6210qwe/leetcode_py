@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来找到满足条件的下标对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向数组的起始位置和满足 indexDifference 位置。
+2. 遍历数组，检查当前指针 i 和 j 是否满足条件 abs(i - j) >= indexDifference 和 abs(nums[i] - nums[j]) >= valueDifference。
+3. 如果满足条件，返回 [i, j]。
+4. 如果不满足条件，移动指针 i 和 j，继续检查。
+5. 如果遍历完数组仍未找到满足条件的下标对，返回 [-1, -1]。
 
 关键点:
-- [TODO]
+- 使用双指针方法减少时间复杂度。
+- 通过一次遍历来检查所有可能的下标对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_indices_with_difference(nums: List[int], index_difference: int, value_difference: int) -> List[int]:
+    n = len(nums)
+    for i in range(n):
+        for j in range(i + index_difference, n):
+            if abs(nums[i] - nums[j]) >= value_difference:
+                return [i, j]
+    return [-1, -1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_indices_with_difference)

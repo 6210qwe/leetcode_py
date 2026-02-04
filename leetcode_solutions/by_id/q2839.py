@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最大堆）来处理查询，并利用排序和双指针来优化时间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums1 和 nums2 按照 nums1 降序排序。
+2. 初始化一个最大堆，用于存储当前查询的结果。
+3. 遍历查询数组，将每个查询按照 xi 降序排序。
+4. 对于每个查询，使用双指针找到满足条件的 nums1[j] 和 nums2[j]，并更新最大堆。
+5. 从最大堆中取出满足条件的最大值作为当前查询的结果。
 
 关键点:
-- [TODO]
+- 使用优先队列（最大堆）来高效地获取最大值。
+- 通过排序和双指针来减少不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + q log q)，其中 n 是 nums1 和 nums2 的长度，q 是 queries 的长度。
+空间复杂度: O(n + q)，用于存储排序后的数组和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_sum_queries(nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
+    # 将 nums1 和 nums2 按照 nums1 降序排序
+    pairs = sorted(zip(nums1, nums2), key=lambda x: -x[0])
+    
+    # 初始化最大堆
+    max_heap = []
+    result = [-1] * len(queries)
+    
+    # 将查询按照 xi 降序排序，并记录原始索引
+    sorted_queries = sorted(enumerate(queries), key=lambda x: -x[1][0])
+    
+    # 双指针遍历
+    j = 0
+    for i, (xi, yi) in sorted_queries:
+        while j < len(pairs) and pairs[j][0] >= xi:
+            x, y = pairs[j]
+            if y >= yi:
+                heapq.heappush(max_heap, -(x + y))
+            j += 1
+        if max_heap:
+            result[i] = -max_heap[0]
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_queries)

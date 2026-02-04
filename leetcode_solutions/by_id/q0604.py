@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,22 +22,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储字符及其对应的重复次数，并使用两个指针来跟踪当前字符和剩余的重复次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时解析压缩字符串，将每个字符及其重复次数存储在列表中。
+2. 提供 next() 方法返回下一个字符，并更新指针。
+3. 提供 hasNext() 方法检查是否还有剩余字符。
 
 关键点:
-- [TODO]
+- 解析压缩字符串时，使用正则表达式来提取字符及其重复次数。
+- 使用两个指针分别跟踪当前字符的位置和剩余的重复次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是压缩字符串的长度，初始化时需要遍历整个字符串。
+空间复杂度: O(m) - 其中 m 是压缩字符串中不同字符的数量，存储每个字符及其重复次数。
 """
 
 # ============================================================================
@@ -44,17 +47,36 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
+
+class StringIterator:
+
+    def __init__(self, compressedString: str):
+        self.tokens = []
+        self.index = 0
+        self.current_count = 0
+        for token in re.findall(r'(\D+)(\d+)', compressedString):
+            char, count = token
+            self.tokens.append((char, int(count)))
+
+    def next(self) -> str:
+        if not self.hasNext():
+            return ' '
+        if self.current_count == 0:
+            self.current_char, self.current_count = self.tokens[self.index]
+            self.index += 1
+        self.current_count -= 1
+        return self.current_char
+
+    def hasNext(self) -> bool:
+        return self.index < len(self.tokens) or self.current_count > 0
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+# 示例用法
+if __name__ == "__main__":
+    iterator = StringIterator("L1e2t1C1o1d1e1")
+    while iterator.hasNext():
+        print(iterator.next())
+```
 
-
-Solution = create_solution(solution_function_name)
+这个实现中，`StringIterator` 类解析了压缩字符串，并提供了 `next()` 和 `hasNext()` 方法来迭代字符。时间复杂度为 O(n)，空间复杂度为 O(m)，其中 n 是压缩字符串的长度，m 是压缩字符串中不同字符的数量。

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算给定整数 N 的二进制表示的反码。可以通过以下步骤实现：
+1. 找到 N 的最高有效位（即最左边的 1）。
+2. 构造一个与 N 位数相同的全 1 的掩码。
+3. 使用按位异或操作计算 N 和掩码的反码。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到 N 的最高有效位的位置。
+2. 构造一个与 N 位数相同的全 1 的掩码。
+3. 使用按位异或操作计算 N 和掩码的反码。
 
 关键点:
-- [TODO]
+- 使用位运算高效地找到最高有效位和构造掩码。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log N) - 因为需要找到 N 的最高有效位。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def bitwise_complement(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定整数 N 的二进制表示的反码。
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 1  # 特殊情况处理，0 的反码是 1
+    
+    # 找到 N 的最高有效位的位置
+    highest_bit = 1
+    while highest_bit <= n:
+        highest_bit <<= 1
+    
+    # 构造一个与 N 位数相同的全 1 的掩码
+    mask = highest_bit - 1
+    
+    # 使用按位异或操作计算 N 和掩码的反码
+    return n ^ mask
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bitwise_complement)

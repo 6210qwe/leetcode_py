@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法比较两个句子的单词，确保在插入一个句子后能够匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将两个句子分别按空格分割成单词列表。
+2. 使用双指针遍历两个单词列表，确保在插入一个句子后能够匹配。
+3. 如果两个指针都能到达各自列表的末尾，则说明两个句子是相似的。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以有效地比较两个句子的单词，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是较长句子的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def are_sentences_similar(sentence1: str, sentence2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两个句子是否相似
     """
-    # TODO: 实现最优解法
-    pass
+    words1 = sentence1.split()
+    words2 = sentence2.split()
+
+    i, j = 0, 0
+    while i < len(words1) and j < len(words2) and words1[i] == words2[j]:
+        i += 1
+        j += 1
+
+    # 如果两个指针都到达了各自列表的末尾，说明完全匹配
+    if i == len(words1) and j == len(words2):
+        return True
+
+    # 从末尾开始比较
+    while i < len(words1) and j < len(words2) and words1[-i-1] == words2[-j-1]:
+        i += 1
+        j += 1
+
+    return i == len(words1) or j == len(words2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(are_sentences_similar)

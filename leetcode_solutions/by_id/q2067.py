@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护一个二维数组 dp，其中 dp[i][j] 表示到第 i 行选择第 j 列的最大得分。通过前一行的状态更新当前行的状态。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] 为 points 的第一行。
+2. 对于每一行，从左到右和从右到左分别计算最大得分。
+3. 更新 dp 数组，使其包含当前行的最大得分。
+4. 返回 dp 数组最后一行的最大值。
 
 关键点:
-- [TODO]
+- 通过两次遍历（从左到右和从右到左）来更新 dp 数组，确保每一步都考虑了相邻列的代价。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_points_with_cost(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    动态规划解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not points or not points[0]:
+        return 0
+
+    m, n = len(points), len(points[0])
+    dp = points[0][:]
+
+    for i in range(1, m):
+        left_max = [0] * n
+        right_max = [0] * n
+
+        # 从左到右更新 left_max
+        left_max[0] = dp[0]
+        for j in range(1, n):
+            left_max[j] = max(left_max[j - 1] - 1, dp[j])
+
+        # 从右到左更新 right_max
+        right_max[-1] = dp[-1]
+        for j in range(n - 2, -1, -1):
+            right_max[j] = max(right_max[j + 1] - 1, dp[j])
+
+        # 更新 dp 数组
+        for j in range(n):
+            dp[j] = points[i][j] + max(left_max[j], right_max[j])
+
+    return max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_points_with_cost)

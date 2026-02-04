@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到最长的交替子数组，并考虑移除一个元素的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `dp` 和 `dp_with_remove`，分别表示不移除元素和移除一个元素时的最长交替子数组长度。
+2. 遍历数组，更新 `dp` 和 `dp_with_remove` 数组。
+3. 最后返回 `dp` 和 `dp_with_remove` 中的最大值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑当前元素与前一个元素的关系。
+- 移除一个元素的情况需要额外处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def longest_alternating_subarray(nums: List[int]) -> int:
+    n = len(nums)
+    if n == 1:
+        return 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    dp = [1] * n  # 不移除元素时的最长交替子数组长度
+    dp_with_remove = [1] * n  # 移除一个元素时的最长交替子数组长度
 
+    for i in range(1, n):
+        if (i == 1 or nums[i-2] < nums[i-1] > nums[i]) and nums[i-1] > nums[i]:
+            dp[i] = dp[i-1] + 1
+            dp_with_remove[i] = max(dp_with_remove[i-1] + 1, 2)
+        elif (i == 1 or nums[i-2] > nums[i-1] < nums[i]) and nums[i-1] < nums[i]:
+            dp[i] = dp[i-1] + 1
+            dp_with_remove[i] = max(dp_with_remove[i-1] + 1, 2)
+        else:
+            dp_with_remove[i] = max(dp[i-1] + 1, 2)
 
-Solution = create_solution(solution_function_name)
+    return max(max(dp), max(dp_with_remove))
+
+Solution = create_solution(longest_alternating_subarray)

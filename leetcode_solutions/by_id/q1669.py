@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为在区间 [i, j] 内切割木棍的最小成本。通过递归和记忆化搜索来计算每个区间的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 cuts 数组和边界 0 和 n 加入一个新的数组，并对其进行排序。
+2. 定义一个递归函数 dp(i, j)，表示在区间 [cuts[i], cuts[j]] 内切割木棍的最小成本。
+3. 对于每个区间 [i, j]，尝试在每个可能的切割点 k (i < k < j) 进行切割，并计算切割成本。
+4. 递归地计算左区间 [i, k] 和右区间 [k, j] 的最小成本，并更新 dp(i, j)。
+5. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用动态规划和记忆化搜索来优化计算。
+- 通过递归和记忆化搜索来处理重叠子问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m^3)，其中 m 是 cuts 数组的长度。每次递归调用最多需要 m^2 次，每次调用需要 O(m) 时间。
+空间复杂度: O(m^2)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -48,13 +52,19 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def min_cost(n: int, cuts: List[int]) -> int:
+    # 在 cuts 数组中加入边界 0 和 n，并对其进行排序
+    cuts = [0] + sorted(cuts) + [n]
+    m = len(cuts)
+    
+    # 记忆化搜索
+    from functools import lru_cache
+    @lru_cache(None)
+    def dp(i, j):
+        if i + 1 == j:
+            return 0
+        return min(dp(i, k) + dp(k, j) + (cuts[j] - cuts[i]) for k in range(i + 1, j))
+    
+    return dp(0, m - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

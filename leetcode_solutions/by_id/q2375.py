@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 0-1 BFS 来找到从起点到终点的最短路径，其中 0 表示不需要移除障碍物，1 表示需要移除障碍物。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个双端队列，将起点 (0, 0) 加入队列，并设置距离为 0。
+2. 使用一个二维数组 `dist` 来记录从起点到每个点的最短距离，初始时所有点的距离设为无穷大，起点的距离设为 0。
+3. 从队列中取出一个点 (x, y)，检查其四个方向的邻居 (nx, ny)：
+   - 如果 (nx, ny) 是空单元格且当前距离 + 0 < dist[nx][ny]，则将 (nx, ny) 从队列前端加入，并更新距离。
+   - 如果 (nx, ny) 是障碍物且当前距离 + 1 < dist[nx][ny]，则将 (nx, ny) 从队列后端加入，并更新距离。
+4. 当队列为空时，返回终点 (m-1, n-1) 的距离。
 
 关键点:
-- [TODO]
+- 使用 0-1 BFS 可以在 O(m * n) 时间复杂度内找到最短路径。
+- 双端队列用于区分 0 和 1 的操作，从而实现高效搜索。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def minimumObstacleRemoval(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    dist = [[float('inf')] * n for _ in range(m)]
+    dist[0][0] = 0
+    queue = deque([(0, 0, 0)])  # (x, y, distance)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    while queue:
+        x, y, d = queue.popleft()
+        if d > dist[x][y]:
+            continue
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n:
+                new_d = d + grid[nx][ny]
+                if new_d < dist[nx][ny]:
+                    dist[nx][ny] = new_d
+                    if grid[nx][ny] == 0:
+                        queue.appendleft((nx, ny, new_d))
+                    else:
+                        queue.append((nx, ny, new_d))
 
+    return dist[m - 1][n - 1]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimumObstacleRemoval)

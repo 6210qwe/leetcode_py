@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断三条边是否能构成三角形，需要满足任意两边之和大于第三边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的三角形表。
+2. 对于每一行，检查 x, y, z 是否满足三角形不等式。
+3. 根据判断结果，添加 'Yes' 或 'No' 到结果表中。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来实现高效的判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。
+空间复杂度: O(1)，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(triangle: List[List[int]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断三角形
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for row in triangle:
+        x, y, z = row
+        if x + y > z and x + z > y and y + z > x:
+            result.append([x, y, z, "Yes"])
+        else:
+            result.append([x, y, z, "No"])
+    return result
 
 
 Solution = create_solution(solution_function_name)

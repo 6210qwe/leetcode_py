@@ -21,24 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用广度优先搜索（BFS）结合记忆化搜索来找到最少的球数。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化队列和访问集合，将初始状态 (board, hand) 加入队列。
+2. 对于队列中的每个状态，尝试在每个可能的位置插入每种颜色的球，并检查是否可以移除连续的球。
+3. 如果可以移除球，更新新的 board 和 hand，并将新状态加入队列。
+4. 如果 board 为空，返回当前使用的球数。
+5. 如果队列为空且未找到解，返回 -1。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用记忆化搜索避免重复计算。
+- 优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(5^n) - 其中 n 是 board 的长度，因为每次插入球最多有 5 种选择。
+空间复杂度: O(5^n) - 记忆化搜索的空间复杂度。
 """
 
 # ============================================================================
@@ -49,28 +51,75 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import deque
+from functools import lru_cache
 
-
-def zuma_game(params):
+def zuma_game(board: str, hand: str) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算移除桌上所有球所需的最少球数
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用广度优先搜索（BFS）结合记忆化搜索来找到最少的球数。
     
     Args:
-        params: [待实现] 参数说明
+        board: 桌面上的球序列
+        hand: 手中的球序列
         
     Returns:
-        [待实现] 返回值说明
+        最少需要的球数，如果无法移除所有球则返回 -1
         
     Example:
-        >>> zuma_game([待实现])
-        [待实现]
+        >>> zuma_game("WRRBBW", "RB")
+        -1
+        >>> zuma_game("WWRRBBWW", "WRBRW")
+        2
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 hand 转换为计数字典
+    hand_count = {c: hand.count(c) for c in set(hand)}
+    
+    @lru_cache(None)
+    def remove_consecutive_balls(s: str) -> str:
+        """移除连续的三个或更多相同颜色的球"""
+        stack = []
+        for char in s:
+            if not stack or stack[-1][0] != char:
+                stack.append([char, 1])
+            else:
+                stack[-1][1] += 1
+                if stack[-1][1] == 3:
+                    stack.pop()
+        return ''.join(char * count for char, count in stack)
+    
+    @lru_cache(None)
+    def bfs() -> int:
+        queue = deque([(board, hand_count)])
+        visited = set([(board, tuple(sorted(hand_count.items())))])
 
+        steps = 0
+        while queue:
+            for _ in range(len(queue)):
+                current_board, current_hand = queue.popleft()
+
+                if not current_board:
+                    return steps
+
+                for i in range(len(current_board) + 1):
+                    for color, count in current_hand.items():
+                        if count > 0:
+                            new_board = current_board[:i] + color + current_board[i:]
+                            new_board = remove_consecutive_balls(new_board)
+                            new_hand = current_hand.copy()
+                            new_hand[color] -= 1
+                            new_state = (new_board, tuple(sorted(new_hand.items())))
+
+                            if new_state not in visited:
+                                visited.add(new_state)
+                                queue.append((new_board, new_hand))
+
+            steps += 1
+        return -1
+
+    return bfs()
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(zuma_game)

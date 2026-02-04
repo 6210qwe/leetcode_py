@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每个可能的位置，尝试水平和竖直方向放置单词，并检查是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历整个 board，找到所有可能的起始位置。
+2. 对于每个起始位置，尝试水平和竖直方向放置单词。
+3. 检查放置后的单词是否满足边界条件和字符匹配条件。
 
 关键点:
-- [TODO]
+- 使用两个辅助函数分别检查水平和竖直方向的放置。
+- 在检查时，需要确保单词的每个字符都匹配或为空格，并且单词的两端不能是空格或字母。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))，其中 m 和 n 分别是 board 的行数和列数。最坏情况下，每个位置都需要检查水平和竖直方向。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_place_word(board: List[List[str]], word: str) -> bool:
+    def check_horizontal(row: int, col: int) -> bool:
+        for i in range(len(word)):
+            if col + i >= len(board[0]) or (board[row][col + i] != ' ' and board[row][col + i] != word[i]):
+                return False
+        return (col == 0 or board[row][col - 1] == '#') and (col + len(word) == len(board[0]) or board[row][col + len(word)] == '#')
+
+    def check_vertical(row: int, col: int) -> bool:
+        for i in range(len(word)):
+            if row + i >= len(board) or (board[row + i][col] != ' ' and board[row + i][col] != word[i]):
+                return False
+        return (row == 0 or board[row - 1][col] == '#') and (row + len(word) == len(board) or board[row + len(word)][col] == '#')
+
+    def check_reverse_horizontal(row: int, col: int) -> bool:
+        for i in range(len(word)):
+            if col - i < 0 or (board[row][col - i] != ' ' and board[row][col - i] != word[i]):
+                return False
+        return (col == len(board[0]) - 1 or board[row][col + 1] == '#') and (col - len(word) == -1 or board[row][col - len(word) - 1] == '#')
+
+    def check_reverse_vertical(row: int, col: int) -> bool:
+        for i in range(len(word)):
+            if row - i < 0 or (board[row - i][col] != ' ' and board[row - i][col] != word[i]):
+                return False
+        return (row == len(board) - 1 or board[row + 1][col] == '#') and (row - len(word) == -1 or board[row - len(word) - 1][col] == '#')
+
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            if board[i][j] == ' ' or board[i][j] == word[0]:
+                if check_horizontal(i, j) or check_vertical(i, j) or check_reverse_horizontal(i, j) or check_reverse_vertical(i, j):
+                    return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_place_word)

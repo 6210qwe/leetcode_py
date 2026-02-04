@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用 Pandas 库处理数据。
+2. 先筛选出有下属的经理。
+3. 计算每个经理的下属数量和平均年龄。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取 Employees 表。
+2. 筛选出有下属的经理。
+3. 计算每个经理的下属数量和平均年龄。
+4. 将结果按 employee_id 排序并返回。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行高效的数据处理。
+- 使用 groupby 和 agg 函数计算每个经理的下属数量和平均年龄。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Employees 表的长度。因为我们需要遍历整个表来计算每个经理的下属数量和平均年龄。
+空间复杂度: O(n)，因为我们需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出有下属的经理
+    managers = employees[employees['reports_to'].notna()]['reports_to'].unique()
+    
+    # 计算每个经理的下属数量和平均年龄
+    result = (
+        employees[employees['employee_id'].isin(managers)]
+        .groupby(['employee_id', 'name'])
+        .agg(reports_count=('age', 'count'), average_age=('age', 'mean'))
+        .reset_index()
+    )
+    
+    # 四舍五入平均年龄
+    result['average_age'] = result['average_age'].round().astype(int)
+    
+    # 按 employee_id 排序
+    result = result.sort_values(by='employee_id')
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

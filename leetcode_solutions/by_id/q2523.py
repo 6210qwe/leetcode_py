@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数 LAG 和 COALESCE 来替换空值
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 LAG 函数获取每一行的前一行的值
+2. 使用 COALESCE 函数将当前行的空值替换为前一行的值
 
 关键点:
-- [TODO]
+- LAG 函数用于获取前一行的值
+- COALESCE 函数用于在第一个非空值中选择
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -51,10 +52,22 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        id,
+        COALESCE(value, prev_value) AS value
+    FROM (
+        SELECT 
+            id, 
+            value, 
+            LAG(value) OVER (ORDER BY id) AS prev_value
+        FROM table_name
+    ) subquery
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

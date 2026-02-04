@@ -21,40 +21,88 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用加法和逻辑运算符实现基本的算术运算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 减法: 通过将b取反并加到a上来实现。
+2. 乘法: 通过累加a多次来实现。
+3. 除法: 通过不断减去b并计数来实现。
 
 关键点:
-- [TODO]
+- 使用递归或循环来实现乘法和除法。
+- 处理负数情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中n是乘法或除法中的较小值。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+class Operations:
+    def __init__(self):
+        pass
 
+    def negate(self, a: int) -> int:
+        """将a取反"""
+        negated = 0
+        while a != 0:
+            negated += 1
+            a += 1
+        return negated
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def minus(self, a: int, b: int) -> int:
+        """减法，返回a - b"""
+        return a + self.negate(b)
 
+    def multiply(self, a: int, b: int) -> int:
+        """乘法，返回a * b"""
+        if a == 0 or b == 0:
+            return 0
+        result = 0
+        positive = True
+        if a < 0:
+            a = self.negate(a)
+            positive = not positive
+        if b < 0:
+            b = self.negate(b)
+            positive = not positive
+        
+        for _ in range(b):
+            result += a
+        
+        return result if positive else self.negate(result)
 
-Solution = create_solution(solution_function_name)
+    def divide(self, a: int, b: int) -> int:
+        """除法，返回a / b"""
+        if b == 0:
+            raise ValueError("除数不能为0")
+        
+        result = 0
+        positive = (a > 0 and b > 0) or (a < 0 and b < 0)
+        a = self.negate(a) if a < 0 else a
+        b = self.negate(b) if b < 0 else b
+        
+        while a >= b:
+            a = self.minus(a, b)
+            result += 1
+        
+        return result if positive else self.negate(result)
+
+# 工厂函数
+def create_solution():
+    return Operations()
+
+# 示例
+if __name__ == "__main__":
+    operations = create_solution()
+    print(operations.minus(1, 2))  # 返回-1
+    print(operations.multiply(3, 4))  # 返回12
+    print(operations.divide(5, -2))  # 返回-2

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个字符，计算将其转换为 'a' 所需的最小操作次数。对于每个字符 c，有两种方式将其转换为 'a'：
+1. 直接转换到 'a'，需要的操作次数为 (c - 'a') % 26。
+2. 先转换到 'z'，再转换到 'a'，需要的操作次数为 (26 - (c - 'a')) % 26。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 26 的数组，用于记录每个字符转换为 'a' 所需的最小操作次数。
+2. 遍历字符串 s，对于每个字符 c，更新其对应的最小操作次数。
+3. 最后返回所有字符的最小操作次数之和。
 
 关键点:
-- [TODO]
+- 使用贪心算法，每次选择最小的操作次数。
+- 利用字符的 ASCII 值进行计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_operations_to_transform_string(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算将字符串 s 转换为仅由 'a' 组成的字符串所需的最小操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为 26 的数组，用于记录每个字符转换为 'a' 所需的最小操作次数
+    min_ops = [float('inf')] * 26
+    
+    # 遍历字符串 s，对于每个字符 c，更新其对应的最小操作次数
+    for c in s:
+        index = ord(c) - ord('a')
+        direct_ops = (ord(c) - ord('a')) % 26
+        indirect_ops = (26 - (ord(c) - ord('a'))) % 26
+        min_ops[index] = min(min_ops[index], direct_ops, indirect_ops)
+    
+    # 返回所有字符的最小操作次数之和
+    return sum(min_ops)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_operations_to_transform_string)

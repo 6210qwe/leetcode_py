@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，遍历字符串并记录当前字符和前一个字符，如果当前字符与前一个字符近似相等，则进行一次操作，并更新前一个字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数 `operations` 为 0。
+2. 初始化前一个字符 `prev_char` 为空字符。
+3. 遍历字符串 `word`：
+   - 如果当前字符与前一个字符近似相等，则增加操作次数 `operations`，并更新前一个字符 `prev_char` 为一个不同于当前字符且不与下一个字符近似相等的字符。
+   - 否则，更新前一个字符 `prev_char` 为当前字符。
+4. 返回操作次数 `operations`。
 
 关键点:
-- [TODO]
+- 通过贪心算法，每次遇到近似相等字符时，立即进行操作，确保最少操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `word` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 消除 word 中所有相邻近似相等字符的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    def is_almost_equal(a: str, b: str) -> bool:
+        """判断两个字符是否近似相等"""
+        return abs(ord(a) - ord(b)) <= 1
+
+    operations = 0
+    prev_char = ''
+
+    for char in word:
+        if is_almost_equal(char, prev_char):
+            operations += 1
+            # 更新前一个字符为一个不同于当前字符且不与下一个字符近似相等的字符
+            next_char = 'a' if char != 'a' else 'b'
+            prev_char = next_char
+        else:
+            prev_char = char
+
+    return operations
 
 
 Solution = create_solution(solution_function_name)

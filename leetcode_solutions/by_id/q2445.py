@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并跳过受限节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 将受限节点存储在一个集合中，以便快速查找。
+3. 从节点 0 开始进行 DFS，跳过受限节点。
+4. 计算可以到达的节点数量。
 
 关键点:
-- [TODO]
+- 使用邻接表表示树结构。
+- 使用集合存储受限节点，以便 O(1) 时间复杂度内判断节点是否受限。
+- 使用 DFS 遍历树，避免访问受限节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。构建邻接表和 DFS 都是线性时间复杂度。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
@@ -44,17 +48,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, edges: List[List[int]], restricted: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在不访问受限节点的前提下，可以从节点 0 到达的最多节点数目。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 构建邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # 将受限节点存储在集合中
+    restricted_set = set(restricted)
+    
+    # 深度优先搜索
+    def dfs(node: int, parent: int) -> int:
+        if node in restricted_set:
+            return 0
+        count = 1
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                count += dfs(neighbor, node)
+        return count
+    
+    return dfs(0, -1)
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计满足条件的高级职员和初级职员的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个子查询来计算每个部门的总招聘人数。
+2. 使用主查询来过滤出满足条件的高级职员和初级职员，并进行统计。
 
 关键点:
-- [TODO]
+- 使用子查询来简化主查询的条件判断。
+- 确保查询的性能优化，避免不必要的全表扫描。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工表的行数。因为我们需要遍历整个表来计算每个部门的总招聘人数。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来统计满足条件的高级职员和初级职员的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH TotalHires AS (
+        SELECT department_id, COUNT(*) AS total_hires
+        FROM Employees
+        GROUP BY department_id
+    )
+    SELECT 
+        SUM(CASE WHEN experience = 'Senior' THEN 1 ELSE 0 END) AS senior_count,
+        SUM(CASE WHEN experience = 'Junior' THEN 1 ELSE 0 END) AS junior_count
+    FROM Employees
+    WHERE (experience = 'Senior' AND salary <= (SELECT MAX(salary) FROM Employees WHERE department_id = Employees.department_id))
+      OR (experience = 'Junior' AND salary <= (SELECT 0.75 * MAX(salary) FROM Employees WHERE department_id = Employees.department_id))
+    """
+
+    # 返回查询结果
+    return query
 
 
 Solution = create_solution(solution_function_name)

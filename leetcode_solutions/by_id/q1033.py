@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从 target 反向推导到 startValue，通过贪心算法减少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 target 大于 startValue，则优先使用除以 2 的操作，因为这样可以更快地接近 startValue。
+2. 如果 target 是奇数，则需要先加 1 再除以 2。
+3. 当 target 小于等于 startValue 时，直接用减法操作将 startValue 减到 target。
 
 关键点:
-- [TODO]
+- 从 target 反向推导到 startValue，优先使用除以 2 的操作。
+- 如果 target 是奇数，则先加 1 再除以 2。
+- 当 target 小于等于 startValue 时，直接用减法操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(target))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def broken_calculator(startValue: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回显示数字 target 所需的最小操作数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    while target > startValue:
+        if target % 2 == 0:
+            target //= 2
+        else:
+            target += 1
+        operations += 1
+    return operations + (startValue - target)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(broken_calculator)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来生成所有长度为 n 的有效二进制字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表 `ends_with_0` 和 `ends_with_1`，分别存储以 '0' 结尾和以 '1' 结尾的有效字符串。
+2. 对于长度为 1 的字符串，直接初始化 `ends_with_0` 和 `ends_with_1`。
+3. 从长度 2 开始，逐步构建长度为 n 的有效字符串：
+   - 以 '0' 结尾的有效字符串只能由上一步以 '1' 结尾的有效字符串加上 '0' 得到。
+   - 以 '1' 结尾的有效字符串可以由上一步以 '0' 或 '1' 结尾的有效字符串加上 '1' 得到。
+4. 最后，将 `ends_with_0` 和 `ends_with_1` 合并得到所有长度为 n 的有效字符串。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算，确保每个字符串只生成一次。
+- 通过分步构建，确保每一步都只生成有效的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n) - 每个位置有两种选择（0 或 1），但由于限制条件，实际生成的字符串数量远小于 2^n。
+空间复杂度: O(2^n) - 存储所有有效字符串的空间。
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def generate_binary_strings(n: int) -> List[str]:
+    if n == 1:
+        return ["0", "1"]
+    
+    ends_with_0 = ["0"]
+    ends_with_1 = ["1"]
+    
+    for length in range(2, n + 1):
+        new_ends_with_0 = [s + "0" for s in ends_with_1]
+        new_ends_with_1 = [s + "1" for s in ends_with_0 + ends_with_1]
+        
+        ends_with_0 = new_ends_with_0
+        ends_with_1 = new_ends_with_1
+    
+    return ends_with_0 + ends_with_1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_binary_strings)

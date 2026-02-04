@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个服务器的利用时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个服务器的开始时间和结束时间。
+2. 使用窗口函数计算每个服务器的利用时间。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用窗口函数来计算每个服务器的利用时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是记录的数量。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +52,30 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT 
+        server_id, 
+        ROUND(SUM(end_time - start_time) / COUNT(DISTINCT request_id), 3) AS utilization_time
+    FROM 
+        (
+            SELECT 
+                server_id, 
+                request_id, 
+                MIN(event_time) AS start_time, 
+                MAX(event_time) AS end_time
+            FROM 
+                Activity
+            GROUP BY 
+                server_id, 
+                request_id
+        ) AS subquery
+    GROUP BY 
+        server_id;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

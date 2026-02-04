@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来判断是否满足山脉数组的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，一个从左向右遍历，一个从右向左遍历。
+2. 左指针找到第一个不满足递增条件的位置。
+3. 右指针找到第一个不满足递减条件的位置。
+4. 如果左指针和右指针相遇且不在数组的两端，则数组是有效的山脉数组。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可完成判断，时间复杂度为 O(n)。
+- 不需要额外的空间，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定数组是否为有效的山脉数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    if n < 3:
+        return False
+    
+    left = 0
+    # 找到第一个不满足递增条件的位置
+    while left + 1 < n and arr[left] < arr[left + 1]:
+        left += 1
+    
+    right = n - 1
+    # 找到第一个不满足递减条件的位置
+    while right > 0 and arr[right - 1] > arr[right]:
+        right -= 1
+    
+    # 如果左指针和右指针相遇且不在数组的两端，则数组是有效的山脉数组
+    return left == right and left != 0 and right != n - 1
 
 
 Solution = create_solution(solution_function_name)

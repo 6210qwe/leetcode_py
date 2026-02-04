@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示以 nums[i] 结尾的最长好子序列，且最多有 j 个不连续的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示以 nums[i] 结尾的最长好子序列，且最多有 j 个不连续的元素。
+2. 遍历数组，对于每个元素 nums[i]，更新 dp[i][j]。
+3. 如果 nums[i] == nums[i-1]，则 dp[i][j] = dp[i-1][j] + 1。
+4. 如果 nums[i] != nums[i-1]，则 dp[i][j] = max(dp[i-1][j-1] + 1, dp[i-1][j])。
+5. 最后，取 dp 数组中的最大值作为结果。
 
 关键点:
-- [TODO]
+- 使用二维 dp 数组来记录状态。
+- 处理边界情况，特别是当 j == 0 时的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是 nums 的长度，k 是给定的非负整数。
+空间复杂度: O(n * k)，使用了二维 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中好子序列的最长长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0] * (k + 1) for _ in range(n)]
+    dp[0][0] = 1
+
+    # 动态规划填表
+    for i in range(1, n):
+        for j in range(k + 1):
+            if nums[i] == nums[i - 1]:
+                dp[i][j] = dp[i - 1][j] + 1
+            else:
+                if j > 0:
+                    dp[i][j] = max(dp[i - 1][j - 1] + 1, dp[i - 1][j])
+                else:
+                    dp[i][j] = 1
+
+    # 取 dp 数组中的最大值
+    return max(max(row) for row in dp)
 
 
 Solution = create_solution(solution_function_name)

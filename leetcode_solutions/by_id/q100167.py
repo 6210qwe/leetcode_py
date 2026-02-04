@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法找到两个链表的交点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 pA 和 pB，分别指向链表 headA 和 headB 的头节点。
+2. 让 pA 和 pB 同时遍历两个链表，当 pA 到达链表末尾时，将其重定位到 headB；同理，pB 到达链表末尾时，将其重定位到 headA。
+3. 当 pA 和 pB 相遇时，即为两个链表的交点；如果两者都到达 None，则说明两个链表没有交点。
 
 关键点:
-- [TODO]
+- 通过双指针法，可以确保两个指针同时走完两个链表的长度，从而找到交点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n)，其中 m 和 n 分别是两个链表的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_intersection_node(headA: ListNode, headB: ListNode) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    找到两个单链表的交点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not headA or not headB:
+        return None
+
+    pA, pB = headA, headB
+
+    while pA != pB:
+        pA = pA.next if pA else headB
+        pB = pB.next if pB else headA
+
+    return pA
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_intersection_node)

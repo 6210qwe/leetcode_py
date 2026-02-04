@@ -21,40 +21,52 @@ LCR 174. 寻找二叉搜索树中的目标节点 - 某公司组织架构以二�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质，通过反向中序遍历（右-根-左）找到第 k 大的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `reverse_inorder`，用于反向中序遍历。
+2. 在 `reverse_inorder` 中，首先递归访问右子树，然后处理当前节点，最后递归访问左子树。
+3. 使用一个计数器 `count` 来记录已经访问过的节点数，当 `count` 等于 `k` 时，返回当前节点的值。
 
 关键点:
-- [TODO]
+- 反向中序遍历可以按从大到小的顺序访问二叉搜索树的节点。
+- 通过计数器 `count` 来确定第 k 大的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉搜索树的节点数。最坏情况下需要遍历所有节点。
+空间复杂度: O(h)，其中 h 是二叉搜索树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_kth_largest(root: Optional[TreeNode], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    寻找二叉搜索树中的第 k 大节点。
     """
-    # TODO: 实现最优解法
-    pass
+    def reverse_inorder(node: Optional[TreeNode]) -> int:
+        nonlocal count, result
+        if node is None:
+            return
+        reverse_inorder(node.right)
+        count += 1
+        if count == k:
+            result = node.val
+            return
+        reverse_inorder(node.left)
 
+    count = 0
+    result = -1
+    reverse_inorder(root)
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_largest)

@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素分成两组，第一组和为 j 的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 遍历数组中的每个元素，对于每个元素，更新 dp 数组。
+3. 最后，计算所有满足条件的 dp[n][j] 的和。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过模运算来防止结果溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是数组长度，k 是给定的整数。
+空间复杂度: O(n * k)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好分区的数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    MOD = 10**9 + 7
+    n = len(nums)
+    total_sum = sum(nums)
+    
+    if total_sum < 2 * k:
+        return 0
+    
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            dp[i][j] = dp[i - 1][j]
+            if j >= nums[i - 1]:
+                dp[i][j] += dp[i - 1][j - nums[i - 1]]
+            dp[i][j] %= MOD
+    
+    result = 0
+    for j in range(k, min(total_sum, 2 * k) + 1):
+        if total_sum - j >= k:
+            result = (result + dp[n][j]) % MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

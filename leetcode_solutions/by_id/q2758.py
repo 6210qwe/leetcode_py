@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的 isinstance 函数来检查对象是否是某个类或其子类的实例。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 obj 是否为 None，如果是则返回 False。
+2. 使用 isinstance 函数检查 obj 是否是 cls 或其子类的实例。
 
 关键点:
-- [TODO]
+- 使用 isinstance 函数可以处理继承关系。
+- 处理 obj 为 None 的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - isinstance 函数的时间复杂度是常数级别的。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any, Type
 
 
-def solution_function_name(params):
+def check_if_instance(obj: Any, cls: Type) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查给定的对象是否是给定类或其子类的实例。
+
+    :param obj: 待检查的对象
+    :param cls: 类
+    :return: 如果 obj 是 cls 或其子类的实例，则返回 True，否则返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    if obj is None:
+        return False
+    return isinstance(obj, cls)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_instance)

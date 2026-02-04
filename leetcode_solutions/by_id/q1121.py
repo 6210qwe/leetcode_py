@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个数组 dp，其中 dp[i] 表示前 i 个元素的最大和。
+2. 初始化 dp[0] = 0。
+3. 对于每个位置 i，从 i-1 到 max(0, i-k) 进行遍历，找到当前子数组的最大值，并更新 dp[i]。
+4. 最终返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每个位置的最大和。
+- 通过滑动窗口来找到当前子数组的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是数组的长度，k 是子数组的最大长度。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxSumAfterPartitioning(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    dp = [0] * (n + 1)
 
+    for i in range(1, n + 1):
+        max_val = 0
+        for j in range(1, min(k, i) + 1):
+            max_val = max(max_val, arr[i - j])
+            dp[i] = max(dp[i], dp[i - j] + max_val * j)
 
-Solution = create_solution(solution_function_name)
+    return dp[n]
+
+Solution = create_solution(maxSumAfterPartitioning)

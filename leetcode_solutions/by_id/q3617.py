@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的数组 dp，其中 dp[i] 表示以第 i 个字符结尾的子字符串的方案数。
+2. 遍历字符串 word，对于每个字符 word[i]：
+   - 如果 word[i] 与 word[i-1] 相同，则 dp[i+1] = dp[i] + dp[i-1]。
+   - 否则，dp[i+1] = dp[i]。
+3. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每一步的方案数。
+- 通过比较当前字符和前一个字符来决定是否增加方案数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 word 的长度。
+空间复杂度: O(n)，用于存储动态规划数组 dp。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 Alice 一开始可能想要输入字符串的总方案数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word)
+    if n == 1:
+        return 1
+
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    dp[1] = 1
+
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1]
+        if word[i - 1] == word[i - 2]:
+            dp[i] += dp[i - 2]
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

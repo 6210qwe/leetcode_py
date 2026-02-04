@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）找到每个数据服务器到主服务器的最短路径，然后计算每个数据服务器最后一次发送信息的时间和网络空闲的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 BFS 从主服务器开始遍历，记录每个数据服务器到主服务器的最短路径。
+3. 计算每个数据服务器最后一次发送信息的时间。
+4. 计算整个网络空闲的时间。
 
 关键点:
-- [TODO]
+- 使用 BFS 来找到每个数据服务器到主服务器的最短路径。
+- 计算每个数据服务器最后一次发送信息的时间。
+- 计算整个网络空闲的时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是服务器的数量，m 是边的数量。BFS 的时间复杂度是 O(n + m)。
+空间复杂度: O(n + m)，存储图的邻接表和 BFS 的队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def network_becomes_idle(edges: List[List[int]], patience: List[int]) -> int:
+    n = len(patience)
+    graph = [[] for _ in range(n)]
+    
+    # 构建图的邻接表表示
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # 初始化距离数组
+    dist = [-1] * n
+    dist[0] = 0
+    
+    # 使用 BFS 找到每个数据服务器到主服务器的最短路径
+    queue = deque([0])
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if dist[neighbor] == -1:
+                dist[neighbor] = dist[node] + 1
+                queue.append(neighbor)
+    
+    # 计算每个数据服务器最后一次发送信息的时间
+    last_send_time = 0
+    for i in range(1, n):
+        round_trip = 2 * dist[i]
+        if patience[i] >= round_trip:
+            last_send_time = max(last_send_time, round_trip)
+        else:
+            last_send_time = max(last_send_time, (round_trip - 1) // patience[i] * patience[i] + round_trip)
+    
+    # 计算整个网络空闲的时间
+    return last_send_time + 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(network_becomes_idle)

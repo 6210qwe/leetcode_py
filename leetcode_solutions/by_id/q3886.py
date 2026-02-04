@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过哈希表记录每个 y 坐标上的点的数量，然后遍历所有可能的 y 坐标组合，计算每对 y 坐标之间的水平梯形数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个 y 坐标上的点的数量。
+2. 遍历所有可能的 y 坐标组合，计算每对 y 坐标之间的水平梯形数量。
+3. 对于每对 y 坐标，使用组合公式计算水平梯形的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个 y 坐标上的点的数量，以便快速查找和计算。
+- 通过组合公式计算每对 y 坐标之间的水平梯形数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 points 的长度。需要遍历所有可能的 y 坐标组合。
+空间复杂度: O(n)，用于存储每个 y 坐标上的点的数量。
 """
 
 # ============================================================================
@@ -48,13 +50,34 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_number_of_trapezoids(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算从 points 中任意选择四个不同点组成的水平梯形数量。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    y_count = {}
+    
+    # 记录每个 y 坐标上的点的数量
+    for x, y in points:
+        if y not in y_count:
+            y_count[y] = []
+        y_count[y].append(x)
+    
+    result = 0
+    
+    # 遍历所有可能的 y 坐标组合
+    for y1, xs1 in y_count.items():
+        for y2, xs2 in y_count.items():
+            if y1 >= y2:
+                continue
+            # 计算每对 y 坐标之间的水平梯形数量
+            common_x = set(xs1) & set(xs2)
+            if len(common_x) < 2:
+                continue
+            num_common_x = len(common_x)
+            result += (num_common_x * (num_common_x - 1) // 2) * (len(xs1) - num_common_x) * (len(xs2) - num_common_x)
+            result %= MOD
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_number_of_trapezoids)

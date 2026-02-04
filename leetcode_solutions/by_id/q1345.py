@@ -14,47 +14,60 @@
 # 问题描述
 # ============================================================================
 """
-1427. 字符串的左右移 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个字符串 s 和一个移位数组 shift，其中 shift[i] = [direction, amount] 表示将 s 的字符向左或向右移动 amount 个位置。方向为 0 表示左移，1 表示右移。
+所有移位操作按顺序依次执行。
+返回最终的字符串。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算总移位量来简化多次移位操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左移和右移的总步数。
+2. 遍历移位数组，根据方向累加左移或右移的步数。
+3. 计算最终的净移位量（左移步数 - 右移步数）。
+4. 根据净移位量对字符串进行一次移位操作。
 
 关键点:
-- [TODO]
+- 通过模运算处理移位超出字符串长度的情况。
+- 使用切片操作简化字符串移位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串的长度，m 是移位数组的长度。
+空间复杂度: O(n)，用于存储最终的字符串结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def perform_string_shifts(s: str, shift: List[List[int]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 执行字符串移位
     """
-    # TODO: 实现最优解法
-    pass
+    left_shift = 0
+    right_shift = 0
+    
+    # 计算总的左移和右移步数
+    for direction, amount in shift:
+        if direction == 0:
+            left_shift += amount
+        else:
+            right_shift += amount
+    
+    # 计算净移位量
+    net_shift = (right_shift - left_shift) % len(s)
+    
+    # 根据净移位量对字符串进行移位
+    return s[-net_shift:] + s[:-net_shift]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(perform_string_shifts)

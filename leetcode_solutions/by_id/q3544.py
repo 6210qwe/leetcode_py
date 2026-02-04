@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录所有可能的变换后的数字，并统计每种变换后的数字出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个数字，生成所有通过一次或两次交换数位后可能得到的新数字。
+2. 使用哈希表记录每个新数字出现的次数。
+3. 遍历哈希表，计算每种新数字对应的近似相等数对的数量。
 
 关键点:
-- [TODO]
+- 生成所有可能的变换后的数字。
+- 使用哈希表来高效统计和查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d^2)，其中 n 是数组长度，d 是数字的最大位数（最多 7 位）。
+空间复杂度: O(n * d^2)，用于存储所有可能的变换后的数字及其出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def get_transformed_numbers(num: int) -> set:
     """
-    函数式接口 - [TODO] 实现
+    生成通过一次或两次交换数位后可能得到的新数字。
     """
-    # TODO: 实现最优解法
-    pass
+    num_str = str(num)
+    transformed = {num}
+    
+    # 一次交换
+    for i in range(len(num_str)):
+        for j in range(i + 1, len(num_str)):
+            new_num = list(num_str)
+            new_num[i], new_num[j] = new_num[j], new_num[i]
+            transformed.add(int(''.join(new_num)))
+    
+    # 两次交换
+    for num1 in transformed.copy():
+        num_str1 = str(num1)
+        for i in range(len(num_str1)):
+            for j in range(i + 1, len(num_str1)):
+                new_num = list(num_str1)
+                new_num[i], new_num[j] = new_num[j], new_num[i]
+                transformed.add(int(''.join(new_num)))
+    
+    return transformed
 
+def count_almost_equal_pairs(nums: List[int]) -> int:
+    """
+    返回 nums 中，下标 i 和 j 满足 i < j 且 nums[i] 和 nums[j] 近似相等 的数对数目。
+    """
+    from collections import defaultdict
+    
+    count = 0
+    transformed_counts = defaultdict(int)
+    
+    for num in nums:
+        transformed = get_transformed_numbers(num)
+        for t in transformed:
+            count += transformed_counts[t]
+        for t in transformed:
+            transformed_counts[t] += 1
+    
+    return count
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_almost_equal_pairs)

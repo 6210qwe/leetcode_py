@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入数组进行排序。
+2. 使用动态规划来记录每个位置的最大伤害值。
+3. 定义 dp[i] 为前 i 个咒语的最大伤害值。
+4. 对于每个咒语，选择是否使用它，并更新 dp 数组。
 
 关键点:
-- [TODO]
+- 使用排序和动态规划来优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度
+空间复杂度: O(n) - 动态规划数组的空间复杂度
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximum_total_damage(power: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算施咒的最大总伤害
     """
-    # TODO: 实现最优解法
-    pass
+    # 对输入数组进行排序
+    power.sort()
+    
+    # 初始化动态规划数组
+    n = len(power)
+    dp = [0] * (n + 1)
+    
+    # 动态规划计算最大伤害值
+    for i in range(1, n + 1):
+        # 如果当前咒语与前一个咒语相同或相邻，则不能使用
+        if i > 1 and power[i - 1] == power[i - 2] + 1 or power[i - 1] == power[i - 2]:
+            dp[i] = dp[i - 1]
+        else:
+            dp[i] = max(dp[i - 1], dp[i - 2] + power[i - 1])
+    
+    return dp[n]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_total_damage)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法找到字典序最大的子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向字符串的起始位置和下一个位置。
+2. 比较从 i 和 j 开始的子串，如果从 i 开始的子串字典序更大，则更新答案，并将 j 移动到下一个位置。
+3. 如果从 j 开始的子串字典序更大，则更新答案，并将 i 移动到 j 的位置，j 移动到 i 的下一个位置。
+4. 如果两个子串相等，则同时移动 i 和 j。
+5. 重复上述步骤直到遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用双指针方法避免了生成所有子串的高时间复杂度。
+- 通过比较子串的字典序来找到最大的子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def last_substring_in_lexicographical_order(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出字符串 s 的所有子串并按字典序排列，返回排在最后的那个子串。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    i, j, k = 0, 1, 0
+    
+    while j + k < n:
+        if s[i + k] == s[j + k]:
+            k += 1
+            continue
+        elif s[i + k] < s[j + k]:
+            i = max(i + k + 1, j)
+            j = i + 1
+        else:
+            j = j + k + 1
+        k = 0
+    
+    return s[i:]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(last_substring_in_lexicographical_order)

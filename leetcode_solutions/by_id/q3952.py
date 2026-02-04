@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历找到符合条件的 p 和 q。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 p 和 q，分别用于标记递增和递减部分的结束位置。
+2. 遍历数组，找到第一个递减的位置 p。
+3. 从 p 开始继续遍历，找到第一个递增的位置 q。
+4. 检查 q 之后的部分是否严格递增。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到 p 和 q，确保时间复杂度最优。
+- 确保 p 和 q 之间的部分严格递减，q 之后的部分严格递增。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_trionic_array(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定数组是否为三段式数组
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) < 3:
+        return False
+
+    p = 0
+    while p + 1 < len(nums) and nums[p] < nums[p + 1]:
+        p += 1
+
+    if p == len(nums) - 1:
+        return False
+
+    q = p
+    while q + 1 < len(nums) and nums[q] > nums[q + 1]:
+        q += 1
+
+    if q == len(nums) - 1 or p == q:
+        return False
+
+    for i in range(q, len(nums) - 1):
+        if nums[i] >= nums[i + 1]:
+            return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_trionic_array)

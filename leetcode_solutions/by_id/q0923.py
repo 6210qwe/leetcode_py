@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来优化解法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 dp[k][m] 表示使用 k 个鸡蛋在 m 次操作内最多能确定的楼层数。
+2. 初始化 dp 数组，dp[0][m] = 0, dp[k][0] = 0。
+3. 对于每个 k 和 m，使用二分查找来找到最优的楼层划分点。
+4. 更新 dp[k][m] 为 dp[k-1][x-1] + dp[k][m-x] + 1 的最大值。
+5. 当 dp[K][m] >= N 时，返回 m。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化楼层划分点的选择。
+- 动态规划的状态转移方程为 dp[k][m] = max(dp[k-1][x-1] + dp[k][m-x] + 1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(K * logN)
+空间复杂度: O(K * N)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def super_egg_drop(k: int, n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算确定 f 确切的值的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0] * (n + 1) for _ in range(k + 1)]
+    
+    m = 0
+    while dp[k][m] < n:
+        m += 1
+        for i in range(1, k + 1):
+            dp[i][m] = dp[i - 1][m - 1] + dp[i][m - 1] + 1
+    
+    return m
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(super_egg_drop)

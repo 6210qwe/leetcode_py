@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过优先队列来处理最大的差值平方和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始的差值平方和，并记录每个差值的绝对值。
+2. 使用一个最大堆来存储这些差值的绝对值。
+3. 从堆中取出最大的差值，尽可能地减少这个差值，直到不能再减少为止。
+4. 更新差值平方和，并继续处理下一个最大的差值，直到用完所有的操作次数。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地找到并处理最大的差值。
+- 通过贪心策略，每次尽量减少最大的差值，以达到最小化总差值平方和的目的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_sum_of_squared_difference(nums1: List[int], nums2: List[int], k1: int, k2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回修改数组 nums1 至多 k1 次且修改数组 nums2 至多 k2 次后的最小差值平方和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算初始的差值平方和
+    diff_squares = []
+    total_diff = 0
+    for num1, num2 in zip(nums1, nums2):
+        diff = abs(num1 - num2)
+        diff_squares.append(-diff)  # 使用负数来构建最大堆
+        total_diff += diff ** 2
+    
+    # 构建最大堆
+    heapq.heapify(diff_squares)
+    
+    # 总的操作次数
+    total_operations = k1 + k2
+    
+    # 贪心地减少最大的差值
+    while total_operations > 0 and diff_squares:
+        max_diff = -heapq.heappop(diff_squares)
+        if max_diff == 0:
+            break
+        # 尽可能地减少这个差值
+        operations = min(total_operations, max_diff)
+        max_diff -= operations
+        total_operations -= operations
+        # 更新差值平方和
+        total_diff -= (max_diff + operations) ** 2 - max_diff ** 2
+        # 将更新后的差值重新放入堆中
+        heapq.heappush(diff_squares, -max_diff)
+    
+    return total_diff
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_sum_of_squared_difference)

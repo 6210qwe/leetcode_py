@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用锁机制来控制两个线程的执行顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个锁，一个用于控制 foo 的执行，另一个用于控制 bar 的执行。
+2. 在 foo 方法中，先获取 foo 锁，打印 "foo"，然后释放 bar 锁。
+3. 在 bar 方法中，先获取 bar 锁，打印 "bar"，然后释放 foo 锁。
+4. 通过这种方式，确保 "foo" 和 "bar" 交替打印。
 
 关键点:
-- [TODO]
+- 使用锁机制来控制线程的执行顺序。
+- 初始时，foo 锁处于解锁状态，bar 锁处于锁定状态，确保从 foo 开始。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from threading import Lock
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FooBar:
+    def __init__(self, n):
+        self.n = n
+        self.foo_lock = Lock()
+        self.bar_lock = Lock()
+        self.bar_lock.acquire()  # 初始时，bar 锁处于锁定状态
+
+    def foo(self, printFoo: 'Callable[[], None]') -> None:
+        for _ in range(self.n):
+            self.foo_lock.acquire()  # 获取 foo 锁
+            printFoo()  # 打印 "foo"
+            self.bar_lock.release()  # 释放 bar 锁
+
+    def bar(self, printBar: 'Callable[[], None]') -> None:
+        for _ in range(self.n):
+            self.bar_lock.acquire()  # 获取 bar 锁
+            printBar()  # 打印 "bar"
+            self.foo_lock.release()  # 释放 foo 锁
 
 
-Solution = create_solution(solution_function_name)
+# 示例调用
+if __name__ == "__main__":
+    from threading import Thread
+    from typing import Callable
+
+    def printFoo():
+        print("foo", end="")
+
+    def printBar():
+        print("bar", end="")
+
+    n = 2
+    foobar = FooBar(n)
+
+    t1 = Thread(target=foobar.foo, args=(printFoo,))
+    t2 = Thread(target=foobar.bar, args=(printBar,))
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()

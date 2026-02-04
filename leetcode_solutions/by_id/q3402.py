@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先使用 cost2 操作来减少总开销。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素与最大值之间的差值。
+2. 如果 cost2 < 2 * cost1，则优先使用 cost2 操作来增加多个元素。
+3. 否则，直接使用 cost1 操作来增加单个元素。
+4. 计算总开销并取模。
 
 关键点:
-- [TODO]
+- 优先使用 cost2 操作来减少总开销。
+- 使用前缀和来快速计算多个元素的增量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 仅使用常数级额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_cost_to_equalize_array(nums: List[int], cost1: int, cost2: int) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 计算每个元素与最大值之间的差值
+    max_val = max(nums)
+    diff = [max_val - num for num in nums]
+    
+    # 如果 cost2 < 2 * cost1，则优先使用 cost2 操作
+    if cost2 < 2 * cost1:
+        total_cost = 0
+        pairs = sum(diff) // 2
+        single = sum(diff) % 2
+        total_cost += (pairs * cost2 + single * cost1) % MOD
+    else:
+        # 否则，直接使用 cost1 操作
+        total_cost = sum(diff) * cost1 % MOD
+    
+    return total_cost
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_equalize_array)

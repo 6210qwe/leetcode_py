@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过动态规划计算每个位置的贡献值，从而高效地计算所有子字符串中的元音总数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `dp`，其中 `dp[i]` 表示以第 `i` 个字符结尾的所有子字符串中的元音总数。
+2. 遍历字符串，对于每个字符，如果它是元音，则更新 `dp[i]` 为 `dp[i-1] + (i+1)`，否则 `dp[i] = dp[i-1]`。
+3. 最终结果为 `dp` 数组的最后一个元素。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算。
+- 通过前缀和的思想，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(n)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowels_in_substrings(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算字符串 word 的所有子字符串中元音的总数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word)
+    dp = [0] * n
+    vowels = set('aeiou')
+
+    for i in range(n):
+        if word[i] in vowels:
+            dp[i] = (dp[i-1] if i > 0 else 0) + (i + 1)
+        else:
+            dp[i] = dp[i-1] if i > 0 else 0
+
+    return dp[-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowels_in_substrings)

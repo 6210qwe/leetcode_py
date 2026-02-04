@@ -21,22 +21,26 @@ LCP 68. 美观的花束 - 力扣嘉年华的花店中从左至右摆放了一排
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来统计每个品种的鲜花数量，并确保每个品种的数量不超过 `cnt`。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别表示滑动窗口的左右边界。
+2. 使用一个字典 `count` 来记录当前窗口内每个品种的鲜花数量。
+3. 移动右指针 `right`，扩展窗口，同时更新 `count` 字典。
+4. 如果某个品种的鲜花数量超过 `cnt`，则移动左指针 `left`，缩小窗口，直到所有品种的鲜花数量都不超过 `cnt`。
+5. 计算当前窗口的合法子区间数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前区间的合法性。
+- 通过字典来高效地统计每个品种的鲜花数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `flowers` 的长度。每个元素最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(k)，其中 k 是不同品种的鲜花数量。字典 `count` 最多存储 k 个键值对。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(flowers: List[int], cnt: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    left = 0
+    count = {}
+    result = 0
+    
+    for right in range(len(flowers)):
+        if flowers[right] in count:
+            count[flowers[right]] += 1
+        else:
+            count[flowers[right]] = 1
+        
+        while count[flowers[right]] > cnt:
+            count[flowers[left]] -= 1
+            left += 1
+        
+        result += right - left + 1
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

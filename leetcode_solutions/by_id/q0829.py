@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个子域名的访问次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `domain_count` 来存储每个子域名的访问次数。
+2. 遍历 `cpdomains` 列表，对于每个元素，提取访问次数和完整的域名。
+3. 将完整的域名拆分成子域名，并更新 `domain_count` 中对应子域名的访问次数。
+4. 最后，将 `domain_count` 中的键值对转换为所需的输出格式。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和更新子域名的访问次数。
+- 通过从完整域名中逐步去除最左侧的部分来生成所有子域名。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `cpdomains` 的长度，m 是每个域名的平均长度。
+空间复杂度: O(k)，其中 k 是不同子域名的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def subdomain_visits(cpdomains: List[str]) -> List[str]:
+    domain_count = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for entry in cpdomains:
+        count, domain = entry.split()
+        count = int(count)
+        subdomains = domain.split('.')
+        
+        for i in range(len(subdomains)):
+            subdomain = '.'.join(subdomains[i:])
+            if subdomain in domain_count:
+                domain_count[subdomain] += count
+            else:
+                domain_count[subdomain] = count
 
+    result = [f"{count} {domain}" for domain, count in domain_count.items()]
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(subdomain_visits)

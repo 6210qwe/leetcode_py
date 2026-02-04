@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对数组进行排序，然后从最长边开始尝试构建多边形，直到找到满足条件的最大周长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前缀和。
+3. 从最长边开始，检查是否满足多边形条件（即当前边小于其余边之和）。
+4. 如果满足条件，计算周长并更新最大周长。
+5. 返回最大周长，如果没有找到符合条件的多边形则返回 -1。
 
 关键点:
-- [TODO]
+- 通过排序和前缀和快速判断多边形条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(n) - 前缀和数组的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大周长的多边形
     """
-    # TODO: 实现最优解法
-    pass
-
+    if len(nums) < 3:
+        return -1
+    
+    # 对数组进行排序
+    nums.sort()
+    
+    # 计算前缀和
+    prefix_sum = [0] * (len(nums) + 1)
+    for i in range(1, len(nums) + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
+    
+    max_perimeter = -1
+    
+    # 从最长边开始，检查是否满足多边形条件
+    for i in range(len(nums) - 1, 1, -1):
+        if nums[i] < prefix_sum[i]:
+            max_perimeter = prefix_sum[i + 1]
+            break
+    
+    return max_perimeter
 
 Solution = create_solution(solution_function_name)

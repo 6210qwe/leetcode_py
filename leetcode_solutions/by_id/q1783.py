@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个位置删除后的奇偶和
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的奇数下标和和偶数下标和。
+2. 遍历数组，对于每个位置 i，计算删除 i 后的奇数和和偶数和。
+3. 判断删除 i 后的数组是否是平衡数组。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算删除某个元素后的奇偶和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def ways_to_make_fair(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删除操作后，剩下的数组 nums 是平衡数组的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    odd_sum, even_sum = 0, 0
+    for i in range(n):
+        if i % 2 == 0:
+            even_sum += nums[i]
+        else:
+            odd_sum += nums[i]
+
+    count = 0
+    left_odd, left_even = 0, 0
+    for i in range(n):
+        if i % 2 == 0:
+            even_sum -= nums[i]
+            if left_odd + even_sum == left_even + odd_sum:
+                count += 1
+            left_even += nums[i]
+        else:
+            odd_sum -= nums[i]
+            if left_odd + even_sum == left_even + odd_sum:
+                count += 1
+            left_odd += nums[i]
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ways_to_make_fair)

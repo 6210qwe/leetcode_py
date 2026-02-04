@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串来检查是否存在多于一个由连续 '1' 组成的段。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个标志变量 `found_one_segment` 为 False。
+2. 遍历字符串，如果遇到 '1'，检查 `found_one_segment` 是否为 True，如果是则返回 False。
+3. 如果遇到 '0' 且 `found_one_segment` 为 True，则将 `found_one_segment` 置为 False。
+4. 遍历结束后，返回 True。
 
 关键点:
-- [TODO]
+- 只需要一次遍历来检查是否存在多于一个由连续 '1' 组成的段。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_ones_segment(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查二进制字符串是否包含最多一个由连续 '1' 组成的段。
     """
-    # TODO: 实现最优解法
-    pass
+    found_one_segment = False
+    
+    for char in s:
+        if char == '1':
+            if found_one_segment:
+                return False
+            found_one_segment = True
+        elif char == '0' and found_one_segment:
+            found_one_segment = False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_ones_segment)

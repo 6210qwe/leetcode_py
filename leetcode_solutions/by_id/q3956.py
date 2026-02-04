@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `inc` 和 `dec`，分别记录以当前元素结尾的严格递增子数组和严格递减子数组的最大和。
+2. 遍历数组，更新 `inc` 和 `dec` 数组。
+3. 再次遍历数组，计算每个可能的三段式子数组的最大和。
 
 关键点:
-- [TODO]
+- 动态规划的思想，通过前缀和来优化计算。
+- 两次遍历数组，一次用于更新 `inc` 和 `dec` 数组，另一次用于计算最大和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_trionic_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算给定数组中的最大三段式子数组和。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    inc = [0] * n  # 以当前元素结尾的严格递增子数组的最大和
+    dec = [0] * n  # 以当前元素结尾的严格递减子数组的最大和
+    
+    # 初始化第一个元素
+    inc[0] = nums[0]
+    dec[0] = nums[0]
+    
+    # 更新 inc 和 dec 数组
+    for i in range(1, n):
+        if nums[i] > nums[i - 1]:
+            inc[i] = inc[i - 1] + nums[i]
+            dec[i] = nums[i]
+        elif nums[i] < nums[i - 1]:
+            dec[i] = dec[i - 1] + nums[i]
+            inc[i] = nums[i]
+        else:
+            inc[i] = nums[i]
+            dec[i] = nums[i]
+    
+    max_sum = float('-inf')
+    
+    # 计算最大三段式子数组和
+    for i in range(2, n):
+        for j in range(1, i):
+            if nums[j] > nums[j - 1] and nums[j] > nums[i]:
+                current_sum = inc[j - 1] + dec[i] - dec[j] + inc[i]
+                max_sum = max(max_sum, current_sum)
+    
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_trionic_sum)

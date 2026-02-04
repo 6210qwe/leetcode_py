@@ -21,40 +21,59 @@ LCR 042. 最近的请求次数 - 写一个 RecentCounter 类来计算特定时�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个队列来存储所有的请求时间，并在每次调用 ping 时移除不在 [t-3000, t] 范围内的请求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空队列。
+2. 每次调用 ping 时，将当前时间 t 加入队列。
+3. 移除队列中所有小于 t-3000 的请求。
+4. 返回队列的长度，即为 [t-3000, t] 范围内的请求数。
 
 关键点:
-- [TODO]
+- 使用队列来存储请求时间，确保每次操作的时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次 ping 操作的时间复杂度为 O(1)，因为每个元素最多只会被加入和移除一次。
+空间复杂度: O(W) - 其中 W 是窗口大小 3000，队列中最多存储 3000 个请求。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class RecentCounter:
+
+    def __init__(self):
+        self.requests = deque()
+
+    def ping(self, t: int) -> int:
+        # 将当前时间 t 加入队列
+        self.requests.append(t)
+        
+        # 移除队列中所有小于 t-3000 的请求
+        while self.requests and self.requests[0] < t - 3000:
+            self.requests.popleft()
+        
+        # 返回队列的长度
+        return len(self.requests)
 
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_recent_counter():
+    return RecentCounter()
+
+
+# 示例测试
+if __name__ == "__main__":
+    recent_counter = create_recent_counter()
+    print(recent_counter.ping(1))    # 输出: 1
+    print(recent_counter.ping(100))  # 输出: 2
+    print(recent_counter.ping(3001)) # 输出: 3
+    print(recent_counter.ping(3002)) # 输出: 3

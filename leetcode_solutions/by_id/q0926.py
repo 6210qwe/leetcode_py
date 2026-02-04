@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双射来检查每个单词是否与模式匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个单词，创建两个字典来记录从单词到模式和从模式到单词的映射。
+2. 遍历单词和模式的字符，检查当前字符是否已经存在于映射中：
+   - 如果存在，检查映射是否一致。
+   - 如果不存在，建立新的映射关系。
+3. 如果所有字符都匹配，则将该单词加入结果列表。
 
 关键点:
-- [TODO]
+- 使用两个字典来确保双向映射的一致性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是 pattern 的长度。
+空间复杂度: O(m)，用于存储映射关系。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_and_replace_pattern(words: List[str], pattern: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找与模式匹配的单词列表
     """
-    # TODO: 实现最优解法
-    pass
+    def matches(word: str, pattern: str) -> bool:
+        if len(word) != len(pattern):
+            return False
+        
+        word_to_pattern = {}
+        pattern_to_word = {}
+        
+        for w_char, p_char in zip(word, pattern):
+            if w_char in word_to_pattern:
+                if word_to_pattern[w_char] != p_char:
+                    return False
+            else:
+                word_to_pattern[w_char] = p_char
+            
+            if p_char in pattern_to_word:
+                if pattern_to_word[p_char] != w_char:
+                    return False
+            else:
+                pattern_to_word[p_char] = w_char
+        
+        return True
+    
+    return [word for word in words if matches(word, pattern)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_and_replace_pattern)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储 allowed 字符串中的字符，并检查每个 word 是否只包含这些字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 allowed 字符串转换为集合，以便 O(1) 时间复杂度内进行成员检查。
+2. 遍历 words 数组，对于每个 word，检查其所有字符是否都在 allowed 集合中。
+3. 如果某个 word 的所有字符都在 allowed 集合中，则计数器加一。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用集合来提高字符检查的效率。
+- 通过遍历每个 word 并检查其字符是否在 allowed 集合中来统计一致字符串的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是每个 word 的平均长度。
+空间复杂度: O(k)，其中 k 是 allowed 字符串的长度。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_consistent_strings(allowed: str, words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计一致字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 allowed 字符串转换为集合
+    allowed_set = set(allowed)
+    
+    # 计数器初始化
+    count = 0
+    
+    # 遍历 words 数组
+    for word in words:
+        # 检查 word 中的所有字符是否都在 allowed_set 中
+        if all(char in allowed_set for char in word):
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_consistent_strings)

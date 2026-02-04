@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数和子查询来计算每个用户的平均消费金额，并找出消费金额大于平均值的用户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个用户的总消费金额。
+2. 计算所有用户的平均消费金额。
+3. 找出消费金额大于平均值的用户。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `SUM` 和 `AVG` 来计算总消费金额和平均消费金额。
+- 使用子查询来过滤出消费金额大于平均值的用户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +50,25 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    WITH UserSpending AS (
+        SELECT user_id, SUM(amount) AS total_spent
+        FROM Transactions
+        GROUP BY user_id
+    ),
+    AverageSpending AS (
+        SELECT AVG(total_spent) AS avg_spent
+        FROM UserSpending
+    )
+    SELECT user_id
+    FROM UserSpending, AverageSpending
+    WHERE UserSpending.total_spent > AverageSpending.avg_spent;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

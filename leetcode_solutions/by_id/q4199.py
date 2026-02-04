@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法找到最小的前缀长度，使得剩余数组严格递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，分别指向数组的起始位置。
+2. 使用指针 `i` 遍历数组，同时使用指针 `j` 记录当前严格递增子数组的起始位置。
+3. 如果当前元素 `nums[i]` 小于或等于 `nums[i-1]`，更新 `j` 为 `i`。
+4. 最后返回 `j` 作为需要移除的前缀长度。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在 O(n) 时间复杂度内找到最小前缀长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_prefix_removal(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最小的前缀长度，使得剩余数组严格递增。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    j = 0  # 记录当前严格递增子数组的起始位置
+    for i in range(1, n):
+        if nums[i] <= nums[i - 1]:
+            j = i  # 更新 j 为 i
+    return j
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_prefix_removal)

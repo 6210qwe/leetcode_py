@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,22 +22,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用嵌套的字典来表示文件系统中的目录和文件结构。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化文件系统根目录。
+2. 使用递归或迭代的方法遍历路径，创建或查找目录和文件。
+3. 对于每个操作（如创建文件、创建目录、读取内容等），使用路径解析来定位到目标位置并执行相应操作。
 
 关键点:
-- [TODO]
+- 使用字典来存储子目录和文件。
+- 路径解析时，逐层遍历目录。
+- 文件和目录使用不同的类来表示，以便区分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - n 是路径长度，每次操作需要遍历路径。
+空间复杂度: O(m + n) - m 是文件系统的节点数，n 是路径长度。
 """
 
 # ============================================================================
@@ -44,17 +48,78 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class FileSystemNode:
+    def __init__(self):
+        self.children = {}
+        self.content = ""
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FileSystem:
+    def __init__(self):
+        self.root = FileSystemNode()
 
+    def _split_path(self, path: str) -> List[str]:
+        # 去掉开头的 '/'
+        if path == "/":
+            return []
+        return path.split("/")[1:]
 
-Solution = create_solution(solution_function_name)
+    def _find_node(self, path: str) -> Optional[FileSystemNode]:
+        parts = self._split_path(path)
+        node = self.root
+        for part in parts:
+            if part not in node.children:
+                return None
+            node = node.children[part]
+        return node
+
+    def ls(self, path: str) -> List[str]:
+        node = self._find_node(path)
+        if node is None:
+            return []
+        if node.content:
+            return [path.split("/")[-1]]
+        return sorted(node.children.keys())
+
+    def mkdir(self, path: str) -> None:
+        parts = self._split_path(path)
+        node = self.root
+        for part in parts:
+            if part not in node.children:
+                node.children[part] = FileSystemNode()
+            node = node.children[part]
+
+    def addContentToFile(self, filePath: str, content: str) -> None:
+        parts = self._split_path(filePath)
+        node = self.root
+        for part in parts[:-1]:
+            if part not in node.children:
+                node.children[part] = FileSystemNode()
+            node = node.children[part]
+        file_name = parts[-1]
+        if file_name not in node.children:
+            node.children[file_name] = FileSystemNode()
+        node = node.children[file_name]
+        node.content += content
+
+    def readContentFromFile(self, filePath: str) -> str:
+        node = self._find_node(filePath)
+        if node is None or not node.content:
+            return ""
+        return node.content
+
+def create_solution():
+    return FileSystem
+
+# ============================================================================
+# 测试代码
+# ============================================================================
+if __name__ == "__main__":
+    fs = create_solution()
+    fs.mkdir("/a/b/c")
+    fs.addContentToFile("/a/b/c/d", "hello")
+    print(fs.ls("/"))  # 输出: ['a']
+    print(fs.readContentFromFile("/a/b/c/d"))  # 输出: hello
+```
+
+这个实现中，我们使用了嵌套的字典来表示文件系统中的目录和文件结构。通过路径解析和递归/迭代的方法，我们可以高效地进行文件和目录的操作。时间复杂度和空间复杂度都得到了优化。

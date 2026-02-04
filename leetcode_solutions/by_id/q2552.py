@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到长度为 k 且所有元素各不相同的子数组，并计算其和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个滑动窗口，使用两个指针 left 和 right 来表示窗口的左右边界。
+2. 使用一个哈希表来记录当前窗口内每个元素的出现次数。
+3. 移动右指针扩展窗口，直到窗口大小达到 k。
+4. 如果窗口内的元素各不相同（即哈希表中所有元素的计数都为 1），更新最大和。
+5. 移动左指针缩小窗口，同时更新哈希表中的元素计数。
+6. 重复步骤 3-5，直到遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地检查子数组是否包含重复元素。
+- 通过维护一个最大和变量来记录满足条件的子数组的最大和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 只需要遍历一次数组。
+空间复杂度: O(k) - 哈希表最多存储 k 个元素。
 """
 
 # ============================================================================
@@ -49,12 +54,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到长度为 k 且所有元素各不相同的子数组的最大和
     """
-    # TODO: 实现最优解法
-    pass
+    if k > len(nums):
+        return 0
+
+    max_sum = 0
+    current_sum = 0
+    count = {}
+    left = 0
+
+    for right in range(len(nums)):
+        # 添加新元素到窗口
+        if nums[right] in count:
+            count[nums[right]] += 1
+        else:
+            count[nums[right]] = 1
+        current_sum += nums[right]
+
+        # 窗口大小达到 k
+        if right - left + 1 == k:
+            # 检查窗口内是否有重复元素
+            if all(v == 1 for v in count.values()):
+                max_sum = max(max_sum, current_sum)
+
+            # 移除左端元素
+            count[nums[left]] -= 1
+            if count[nums[left]] == 0:
+                del count[nums[left]]
+            current_sum -= nums[left]
+            left += 1
+
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

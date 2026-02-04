@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针来遍历数组，找到所有符合条件的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 `result`。
+2. 遍历数组 `nums`，记录所有等于 `key` 的下标到 `key_indices` 列表中。
+3. 再次遍历数组 `nums`，对于每个下标 `i`，检查是否存在 `key_indices` 中的下标 `j` 使得 `|i - j| <= k`。
+4. 如果存在，则将 `i` 添加到 `result` 列表中。
+5. 返回 `result` 列表。
 
 关键点:
-- [TODO]
+- 使用双指针来高效地查找符合条件的下标。
+- 通过预处理 `key_indices` 列表来减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们需要遍历数组两次，每次遍历的时间复杂度是 O(n)。
+空间复杂度: O(n)，最坏情况下 `key_indices` 列表的长度可能与 `nums` 的长度相同。
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_k_distant_indices(nums: List[int], key: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中的所有 K 近邻下标
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    key_indices = [i for i, num in enumerate(nums) if num == key]
+    
+    for i in range(len(nums)):
+        for j in key_indices:
+            if abs(i - j) <= k:
+                result.append(i)
+                break
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_k_distant_indices)

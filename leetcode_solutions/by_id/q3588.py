@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算 Bob 可以用来战胜 Alice 的不同出招序列的数量。我们定义 dp[i][j] 表示前 i 个回合中，Bob 在第 i 个回合召唤 j 类型生物时，Bob 能获胜的序列数量。其中 j 可以是 'F', 'W', 'E'。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][j] 表示第一个回合 Bob 召唤 j 类型生物时，Bob 能获胜的序列数量。
+2. 对于每个回合 i，更新 dp[i][j]，考虑 Bob 在第 i 个回合召唤 j 类型生物时，Bob 能获胜的序列数量。
+3. 最终结果是对所有可能的最后一个回合的生物类型的 dp 值求和。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 注意 Bob 不能在连续两个回合中召唤相同的生物。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +50,33 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_winning_sequences(s: str) -> int:
+    n = len(s)
+    if n == 1:
+        return 0
 
+    # 定义 dp 数组
+    dp = [[0] * 3 for _ in range(n)]
+    win_map = {'F': 0, 'W': 1, 'E': 2}
+    lose_map = {0: [2], 1: [0], 2: [1]}
 
-Solution = create_solution(solution_function_name)
+    # 初始化第一个回合
+    for j in range(3):
+        if j != win_map[s[0]]:
+            dp[0][j] = 1
+
+    # 动态规划更新 dp 数组
+    for i in range(1, n):
+        for j in range(3):
+            if j != win_map[s[i]]:
+                for k in range(3):
+                    if k != j:
+                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD
+
+    # 计算最终结果
+    result = sum(dp[n - 1]) % MOD
+    return result
+
+Solution = create_solution(count_winning_sequences)

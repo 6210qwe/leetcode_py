@@ -21,40 +21,72 @@ LCP 24. 数字游戏 - 小扣在秋日市集入口处发现了一个数字游戏
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个堆（优先队列）来维护当前窗口内的最大值和最小值，从而计算最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个堆（优先队列），一个用于存储当前窗口内的最大值，另一个用于存储当前窗口内的最小值。
+2. 遍历数组，对于每个位置 i，计算当前窗口内的最小操作数。
+3. 更新结果数组，并将当前元素加入两个堆中。
+4. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用两个堆来维护当前窗口内的最大值和最小值，从而高效地计算最小操作数。
+- 通过维护窗口内的差值和，可以快速计算最小操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次插入和删除堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，需要额外的空间来存储两个堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 0~i 号计数器所示数字操作成满足所有条件 nums[a]+1 == nums[a+1],(0 <= a < i) 的最小操作数
     """
-    # TODO: 实现最优解法
-    pass
-
+    MOD = 1000000007
+    n = len(nums)
+    result = [0] * n
+    max_heap = []
+    min_heap = []
+    max_sum = 0
+    min_sum = 0
+    diff_sum = 0
+    
+    for i in range(n):
+        # 调整 nums[i] 使其与前一个元素相差 1
+        adjusted_num = nums[i] - i
+        diff_sum += adjusted_num
+        
+        # 维护最大堆
+        heapq.heappush(max_heap, -adjusted_num)
+        max_sum += adjusted_num
+        if len(max_heap) > (i + 1) // 2:
+            max_sum -= -heapq.heappop(max_heap)
+        
+        # 维护最小堆
+        heapq.heappush(min_heap, adjusted_num)
+        min_sum += adjusted_num
+        if len(min_heap) > (i + 1) // 2:
+            min_sum -= heapq.heappop(min_heap)
+        
+        # 计算最小操作数
+        if (i + 1) % 2 == 0:
+            median = (-max_heap[0] + min_heap[0]) // 2
+        else:
+            median = -max_heap[0]
+        
+        result[i] = (diff_sum - (i + 1) * median) % MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

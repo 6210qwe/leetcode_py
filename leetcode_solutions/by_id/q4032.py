@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到最长严格递增子序列，并在过程中检查按位与的结果是否为非零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，其中 dp[i] 表示以 nums[i] 结尾的最长严格递增子序列的长度。
+2. 初始化一个数组 ands，其中 ands[i] 表示以 nums[i] 结尾的最长严格递增子序列的按位与结果。
+3. 遍历数组 nums，对于每个元素 nums[i]，遍历其之前的所有元素 nums[j] (j < i)：
+   - 如果 nums[j] < nums[i] 且 ands[j] & nums[i] != 0，则更新 dp[i] 和 ands[i]。
+4. 最后返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划来找到最长严格递增子序列。
+- 在更新 dp 和 ands 数组时，确保按位与的结果为非零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_increasing_subsequence_with_non_zero_and(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中按位与结果为非零的最长严格递增子序列的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    dp = [1] * n
+    ands = [num for num in nums]
+
+    for i in range(1, n):
+        for j in range(i):
+            if nums[j] < nums[i] and ands[j] & nums[i] != 0:
+                if dp[j] + 1 > dp[i]:
+                    dp[i] = dp[j] + 1
+                    ands[i] = ands[j] & nums[i]
+
+    return max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_increasing_subsequence_with_non_zero_and)

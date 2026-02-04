@@ -21,22 +21,24 @@ LCR 161. 连续天数的最高销售额 - 某公司每日销售额记于整数�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Kadane算法来找到最大子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：当前子数组和 `current_sum` 和最大子数组和 `max_sum`。
+2. 遍历数组，对于每个元素，更新 `current_sum` 为当前元素和 `current_sum + 当前元素` 中的较大值。
+3. 更新 `max_sum` 为 `max_sum` 和 `current_sum` 中的较大值。
+4. 返回 `max_sum`。
 
 关键点:
-- [TODO]
+- Kadane算法的时间复杂度为O(n)，空间复杂度为O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(sales: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用Kadane算法找到最大子数组和
     """
-    # TODO: 实现最优解法
-    pass
+    if not sales:
+        return 0
+
+    current_sum = max_sum = sales[0]
+
+    for i in range(1, len(sales)):
+        current_sum = max(sales[i], current_sum + sales[i])
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

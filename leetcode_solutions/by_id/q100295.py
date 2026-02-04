@@ -21,22 +21,25 @@ LCR 134. Pow(x, n) - 实现 pow(x, n) [https://www.cplusplus.com/reference/valar
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速幂算法来计算 x 的 n 次幂。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 为 0，直接返回 1。
+2. 如果 n 为负数，将 x 取倒数并将 n 取反。
+3. 使用递归或迭代的方法，通过将 n 不断减半来减少乘法次数。
+4. 递归地计算 x 的 n/2 次幂，并根据 n 的奇偶性决定是否需要再乘以一个 x。
 
 关键点:
-- [TODO]
+- 通过将 n 不断减半，可以将时间复杂度从 O(n) 降低到 O(log n)。
+- 递归方法易于理解和实现，但迭代方法在空间复杂度上更优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1) (迭代方法)，O(log n) (递归方法)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def my_pow(x: float, n: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    计算 x 的 n 次幂。
+    :param x: 底数
+    :param n: 指数
+    :return: x 的 n 次幂
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 1
+    if n < 0:
+        x = 1 / x
+        n = -n
+    
+    result = 1
+    while n > 0:
+        if n % 2 == 1:
+            result *= x
+        x *= x
+        n //= 2
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(my_pow)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数字的各位数字分离，然后根据正负号进行排序，最后重组数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字转换为字符串，以便逐位处理。
+2. 分离出所有非零数字和零数字。
+3. 对于正数，将非零数字按升序排序，并将第一个非零数字放在最前面，其余零数字放在后面。
+4. 对于负数，将所有数字按降序排序。
+5. 重组数字并返回结果。
 
 关键点:
-- [TODO]
+- 处理前导零时，确保第一个数字是非零数字。
+- 负数时，直接按降序排序以获得最大值（即最小的负数）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d log d)，其中 d 是数字的位数。排序操作的时间复杂度为 O(d log d)。
+空间复杂度: O(d)，存储分离的数字需要 O(d) 的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_value_rearranged(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重排数字的最小值
     """
-    # TODO: 实现最优解法
-    pass
+    if num == 0:
+        return 0
+
+    is_negative = num < 0
+    num_str = str(abs(num))
+    
+    # 分离非零数字和零数字
+    non_zero_digits = [d for d in num_str if d != '0']
+    zero_digits = [d for d in num_str if d == '0']
+    
+    # 排序
+    if is_negative:
+        non_zero_digits.sort(reverse=True)
+    else:
+        non_zero_digits.sort()
+        non_zero_digits[0], non_zero_digits[-1] = non_zero_digits[-1], non_zero_digits[0]
+    
+    # 重组数字
+    result_str = ''.join(non_zero_digits + zero_digits)
+    result = int(result_str)
+    
+    return -result if is_negative else result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_value_rearranged)

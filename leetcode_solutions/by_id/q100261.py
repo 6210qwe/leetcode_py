@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查每一行、每一列以及两条对角线来判断是否有玩家获胜。如果没有玩家获胜，检查棋盘上是否有空位来决定是平局还是游戏仍在进行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化行、列、对角线的计数器。
+2. 遍历棋盘，更新行、列、对角线的计数器。
+3. 检查每一行、每一列以及两条对角线是否有玩家获胜。
+4. 如果没有玩家获胜，检查棋盘上是否有空位来决定是平局还是游戏仍在进行。
 
 关键点:
-- [TODO]
+- 使用计数器来记录每一行、每一列以及两条对角线的状态。
+- 通过一次遍历来完成所有检查，时间复杂度为 O(N)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N)，其中 N 是棋盘的边长。我们需要遍历整个棋盘一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tictactoe(board: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    判断井字游戏的结果。
+    :param board: N x N 的棋盘
+    :return: 游戏结果，"X" 或 "O" 表示获胜者，"Draw" 表示平局，"Pending" 表示游戏仍在进行
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(board)
+    rows, cols = [0] * n, [0] * n
+    diagonal, anti_diagonal = 0, 0
+    has_empty = False
+
+    for i in range(n):
+        for j in range(n):
+            if board[i][j] == 'X':
+                player = 1
+            elif board[i][j] == 'O':
+                player = -1
+            else:
+                has_empty = True
+                continue
+
+            rows[i] += player
+            cols[j] += player
+            if i == j:
+                diagonal += player
+            if i + j == n - 1:
+                anti_diagonal += player
+
+            if abs(rows[i]) == n or abs(cols[j]) == n or abs(diagonal) == n or abs(anti_diagonal) == n:
+                return 'X' if player == 1 else 'O'
+
+    if has_empty:
+        return "Pending"
+    else:
+        return "Draw"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tictactoe)

@@ -21,24 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 将等式 Ai/Bi = value 看作带权有向边，构建图后用 BFS/DFS 在图上查询两个变量间的乘积路径。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 遍历 equations 和 values，构建邻接表 `graph`：
+   - 对每个等式 a/b = v，添加边 a->b 权重 v，b->a 权重 1/v。
+2. 对于每个查询 (src, dst)：
+   - 若任一变量不在图中，答案为 -1.0。
+   - 若 src==dst，且存在于图中，答案为 1.0。
+   - 否则从 src 出发做 BFS/DFS，搜索到 dst 为止，并在路径上累乘边权，找到则返回该积；找不到则返回 -1.0。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 图中权值满足乘法传递性：a/c = (a/b) * (b/c)。 
+- 变量个数和等式条数都很小，用 BFS/DFS 搜索即可满足效率要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: 构图 O(E)，E 为等式条数；每个查询最坏遍历整张图 O(V+E)，V 为变量个数。
+空间复杂度: O(V+E)，存储图的邻接表。
 """
 
 # ============================================================================
@@ -51,25 +54,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def evaluate_division(params):
+def evaluate_division(
+    equations: List[List[str]], values: List[float], queries: List[List[str]]
+) -> List[float]:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> evaluate_division([待实现])
-        [待实现]
+    根据等式 Ai/Bi = values[i] 以及查询 Cj/Dj 计算结果。
+
+    构建带权有向图，权值表示除法结果，对每个查询用 DFS 搜索并累乘路径上的权值。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict, deque
+
+    graph: dict[str, list[tuple[str, float]]] = defaultdict(list)
+    for (a, b), v in zip(equations, values):
+        graph[a].append((b, v))
+        graph[b].append((a, 1.0 / v))
+
+    def bfs(src: str, dst: str) -> float:
+        if src not in graph or dst not in graph:
+            return -1.0
+        if src == dst:
+            return 1.0
+        q = deque([(src, 1.0)])
+        seen = {src}
+        while q:
+            x, val = q.popleft()
+            if x == dst:
+                return val
+            for y, w in graph[x]:
+                if y not in seen:
+                    seen.add(y)
+                    q.append((y, val * w))
+        return -1.0
+
+    return [bfs(a, b) for a, b in queries]
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从初始状态到目标状态的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将初始状态转换为字符串形式，并将其加入队列。
+2. 使用集合记录已访问的状态，避免重复访问。
+3. 对于队列中的每个状态，尝试所有可能的移动（上下左右），生成新的状态。
+4. 如果新状态为目标状态，返回当前步数。
+5. 如果新状态未被访问过，将其加入队列和已访问集合。
+6. 如果队列为空且未找到目标状态，返回 -1。
 
 关键点:
-- [TODO]
+- 使用字符串表示状态，方便比较和存储。
+- 使用集合记录已访问状态，避免重复计算。
+- 使用队列进行层次遍历，确保找到的路径是最短的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 状态总数固定为 6! = 720 种。
+空间复杂度: O(1) - 使用的额外空间与状态总数成正比。
 """
 
 # ============================================================================
@@ -49,12 +55,50 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sliding_puzzle(board: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使用广度优先搜索（BFS）来找到从初始状态到目标状态的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    # 目标状态
+    target = "123450"
+    
+    # 将初始状态转换为字符串
+    start = "".join(str(num) for row in board for num in row)
+    
+    # 记录已访问状态
+    visited = set([start])
+    
+    # 队列用于层次遍历
+    queue = [(start, 0)]
+    
+    # 可能的移动方向
+    moves = {
+        0: [1, 3],
+        1: [0, 2, 4],
+        2: [1, 5],
+        3: [0, 4],
+        4: [1, 3, 5],
+        5: [2, 4]
+    }
+    
+    while queue:
+        state, steps = queue.pop(0)
+        
+        if state == target:
+            return steps
+        
+        zero_index = state.index("0")
+        
+        for next_index in moves[zero_index]:
+            next_state = list(state)
+            next_state[zero_index], next_state[next_index] = next_state[next_index], next_state[zero_index]
+            next_state = "".join(next_state)
+            
+            if next_state not in visited:
+                visited.add(next_state)
+                queue.append((next_state, steps + 1))
+    
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sliding_puzzle)

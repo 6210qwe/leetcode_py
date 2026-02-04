@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示长度为 i+1 的以第 j 个元音字母结尾的字符串的数量。根据题目给定的规则，我们可以得到状态转移方程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][j] = 1，表示长度为 1 的字符串有 5 种情况。
+2. 根据状态转移方程更新 dp 数组。
+3. 最后将 dp[n-1] 中的所有值相加，取模 10^9 + 7。
 
 关键点:
-- [TODO]
+- 状态转移方程：
+  - dp[i][0] = dp[i-1][1] + dp[i-1][2] + dp[i-1][4]  # 'a' 可以跟在 'e', 'i', 'u' 后面
+  - dp[i][1] = dp[i-1][0] + dp[i-1][2]                # 'e' 可以跟在 'a', 'i' 后面
+  - dp[i][2] = dp[i-1][1] + dp[i-1][3]                # 'i' 可以跟在 'e', 'o' 后面
+  - dp[i][3] = dp[i-1][2]                             # 'o' 可以跟在 'i' 后面
+  - dp[i][4] = dp[i-1][2] + dp[i-1][3]                # 'u' 可以跟在 'i', 'o' 后面
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1) 通过滚动数组优化
 """
 
 # ============================================================================
@@ -49,12 +55,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowels_permutation(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的符合条件的元音字母序列的数量
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    if n == 1:
+        return 5
+    
+    # 初始化 dp 数组
+    dp = [1, 1, 1, 1, 1]
+    
+    for _ in range(2, n + 1):
+        new_dp = [
+            (dp[1] + dp[2] + dp[4]) % MOD,  # 'a'
+            (dp[0] + dp[2]) % MOD,           # 'e'
+            (dp[1] + dp[3]) % MOD,           # 'i'
+            dp[2] % MOD,                     # 'o'
+            (dp[2] + dp[3]) % MOD            # 'u'
+        ]
+        dp = new_dp
+    
+    return sum(dp) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowels_permutation)

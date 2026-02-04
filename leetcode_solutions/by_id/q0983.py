@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个辅助栈来模拟 push 和 pop 操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈 `stack` 和一个指针 `i` 指向 `popped` 序列的第一个元素。
+2. 遍历 `pushed` 序列：
+   - 将当前元素压入 `stack`。
+   - 检查 `stack` 的顶部元素是否与 `popped` 序列的当前元素相同，如果相同则弹出 `stack` 的顶部元素，并将 `i` 向后移动一位。
+3. 如果遍历结束后 `stack` 为空，则返回 `True`，否则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用一个辅助栈来模拟操作。
+- 通过比较 `stack` 的顶部元素和 `popped` 序列的当前元素来决定是否弹出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `pushed` 或 `popped` 的长度。每个元素最多只会被压入和弹出一次。
+空间复杂度: O(n)，辅助栈的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def validate_stack_sequences(pushed: List[int], popped: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 验证栈序列
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    i = 0
+    for num in pushed:
+        stack.append(num)
+        while stack and stack[-1] == popped[i]:
+            stack.pop()
+            i += 1
+    return not stack
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(validate_stack_sequences)

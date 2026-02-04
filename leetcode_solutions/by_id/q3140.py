@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 和记忆化来计算每个节点可以访问的不同节点数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `answer` 和一个 `visited` 数组来记录访问状态。
+2. 对于每个节点，使用 DFS 访问其所有可达节点，并记录访问路径。
+3. 如果遇到已经访问过的节点，根据环的长度更新结果数组。
+4. 使用记忆化来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用 `visited` 数组来记录访问状态和环的长度。
+- 使用 `memo` 字典来存储已经计算过的结果，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点最多访问一次。
+空间复杂度: O(n)，用于存储 `visited` 数组和 `memo` 字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_visited_nodes(edges: List[int]) -> List[int]:
+    n = len(edges)
+    answer = [0] * n
+    visited = [0] * n  # 0: 未访问, 1: 访问中, 2: 已访问
+    memo = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int) -> int:
+        if node in memo:
+            return memo[node]
+        
+        if visited[node] == 1:
+            # 找到环
+            cycle_length = 0
+            current = node
+            while True:
+                cycle_length += 1
+                visited[current] = 2
+                memo[current] = cycle_length
+                current = edges[current]
+                if current == node:
+                    break
+            return cycle_length
+        
+        if visited[node] == 2:
+            return memo[node]
+        
+        visited[node] = 1
+        next_node = edges[node]
+        result = 1 + dfs(next_node)
+        visited[node] = 2
+        memo[node] = result
+        return result
 
+    for i in range(n):
+        if visited[i] == 0:
+            dfs(i)
 
-Solution = create_solution(solution_function_name)
+    for i in range(n):
+        if visited[i] == 2:
+            answer[i] = memo[i]
+
+    return answer
+
+Solution = create_solution(count_visited_nodes)

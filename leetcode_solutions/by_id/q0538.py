@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用反向中序遍历（右-根-左）来累加节点值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个全局变量 `total` 用于累加节点值。
+2. 从右子树开始进行反向中序遍历。
+3. 在访问每个节点时，更新节点值为当前节点值加上 `total`，并更新 `total` 为当前节点的新值。
+4. 递归处理左子树。
 
 关键点:
-- [TODO]
+- 反向中序遍历确保了我们先访问较大的节点，再访问较小的节点。
+- 使用全局变量 `total` 来累加节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度取决于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        self.total = 0
+        self._reverse_inorder_traversal(root)
+        return root
+    
+    def _reverse_inorder_traversal(self, node: Optional[TreeNode]):
+        if not node:
+            return
+        # 先访问右子树
+        self._reverse_inorder_traversal(node.right)
+        # 更新当前节点值
+        self.total += node.val
+        node.val = self.total
+        # 再访问左子树
+        self._reverse_inorder_traversal(node.left)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三进制表示法来判断一个数是否可以表示为不同三的幂的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为三进制表示。
+2. 检查三进制表示中是否只包含 0 和 1，不包含 2。
 
 关键点:
-- [TODO]
+- 如果三进制表示中出现 2，则说明 n 不能表示为不同三的幂的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log₃(n)) - 因为我们将 n 转换为三进制表示，转换过程的时间复杂度是 O(log₃(n))。
+空间复杂度: O(1) - 我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_powers_of_three(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断一个数是否可以表示为不同三的幂的和。
     """
-    # TODO: 实现最优解法
-    pass
+    while n > 0:
+        if n % 3 == 2:
+            return False
+        n //= 3
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_powers_of_three)

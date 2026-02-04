@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算骑士在每一步移动后留在棋盘上的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[k][i][j] 表示骑士在第 k 步时位于 (i, j) 的概率。
+2. 设置初始条件：dp[0][row][column] = 1.0，表示骑士在初始位置的概率为 1.0。
+3. 对于每一步 k，遍历棋盘上的每个位置 (i, j)，更新 dp[k][i][j] 为其所有可能的前一步位置的概率之和除以 8。
+4. 最终结果为 dp[K][i][j] 的总和。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算。
+- 通过边界检查确保骑士不离开棋盘。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(K * N^2)
+空间复杂度: O(K * N^2)
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def knight_probability(n: int, k: int, row: int, column: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    计算骑士在棋盘上移动 k 步后仍留在棋盘上的概率。
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义骑士的 8 种可能移动
+    moves = [(2, 1), (2, -1), (-2, 1), (-2, -1),
+             (1, 2), (1, -2), (-1, 2), (-1, -2)]
+    
+    # 初始化 dp 数组
+    dp = [[[0.0 for _ in range(n)] for _ in range(n)] for _ in range(k + 1)]
+    dp[0][row][column] = 1.0
+    
+    # 动态规划更新 dp 数组
+    for step in range(1, k + 1):
+        for i in range(n):
+            for j in range(n):
+                for move in moves:
+                    ni, nj = i + move[0], j + move[1]
+                    if 0 <= ni < n and 0 <= nj < n:
+                        dp[step][ni][nj] += dp[step - 1][i][j] / 8.0
+    
+    # 计算最终结果
+    return sum(sum(row) for row in dp[k])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(knight_probability)

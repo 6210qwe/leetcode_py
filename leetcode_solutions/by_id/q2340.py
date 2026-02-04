@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个字符上次出现的位置，从而计算每个子字符串的引力。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `last_seen` 来记录每个字符上次出现的位置。
+2. 初始化一个数组 `dp`，其中 `dp[i]` 表示以 `s[i]` 结尾的所有子字符串的引力总和。
+3. 遍历字符串 `s`，对于每个字符 `s[i]`：
+   - 计算 `dp[i]` 的值，基于 `dp[i-1]` 和 `last_seen` 中的记录。
+   - 更新 `last_seen` 中 `s[i]` 的位置。
+4. 返回 `dp` 数组的总和。
 
 关键点:
-- [TODO]
+- 使用 `last_seen` 字典来记录每个字符上次出现的位置，从而避免重复计算。
+- 动态规划数组 `dp` 用于存储以当前字符结尾的所有子字符串的引力总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `s` 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，虽然使用了 `last_seen` 字典，但由于字符集是固定的（26 个小写字母），因此空间复杂度可以视为常数。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def total_appeal(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算字符串 s 的所有子字符串的总引力。
     """
-    # TODO: 实现最优解法
-    pass
+    last_seen = {}
+    dp = [0] * len(s)
+    total = 0
+    
+    for i in range(len(s)):
+        if i == 0:
+            dp[i] = 1
+        else:
+            dp[i] = dp[i-1] + (i - last_seen.get(s[i], -1))
+        
+        last_seen[s[i]] = i
+        total += dp[i]
+    
+    return total
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(total_appeal)

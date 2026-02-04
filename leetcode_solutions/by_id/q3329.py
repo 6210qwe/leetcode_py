@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储 arr1 中每个数字的前缀，并在遍历 arr2 时查找最长公共前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个 Trie 树，将 arr1 中每个数字的每一位插入到 Trie 中。
+2. 遍历 arr2 中的每个数字，使用 Trie 查找与 arr1 中数字的最长公共前缀。
+3. 记录并更新最长公共前缀的长度。
 
 关键点:
-- [TODO]
+- 使用 Trie 来高效地存储和查找前缀。
+- 在 Trie 中记录每个节点的深度，以便计算前缀长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 arr1 的长度，m 是 arr2 的长度。每个数字的平均长度为常数。
+空间复杂度: O(n * L)，其中 n 是 arr1 的长度，L 是数字的平均长度。Trie 树的空间复杂度取决于 arr1 中数字的总长度。
 """
 
 # ============================================================================
@@ -49,12 +51,49 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+        self.depth = 0
 
 
-Solution = create_solution(solution_function_name)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, num: int):
+        node = self.root
+        for digit in str(num):
+            if digit not in node.children:
+                node.children[digit] = TrieNode()
+            node = node.children[digit]
+            node.depth += 1
+        node.is_end = True
+
+    def longest_common_prefix(self, num: int) -> int:
+        node = self.root
+        prefix_length = 0
+        for digit in str(num):
+            if digit in node.children:
+                node = node.children[digit]
+                prefix_length += 1
+            else:
+                break
+        return prefix_length
+
+
+def find_longest_common_prefix(arr1: List[int], arr2: List[int]) -> int:
+    trie = Trie()
+    for num in arr1:
+        trie.insert(num)
+
+    max_prefix_length = 0
+    for num in arr2:
+        prefix_length = trie.longest_common_prefix(num)
+        max_prefix_length = max(max_prefix_length, prefix_length)
+
+    return max_prefix_length
+
+
+Solution = create_solution(find_longest_common_prefix)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算行列坐标的奇偶性来判断格子的颜色。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字母坐标转换为数字（a -> 0, b -> 1, ... h -> 7）。
+2. 计算行和列的和。
+3. 如果行和列的和为偶数，则格子为黑色；否则为白色。
 
 关键点:
-- [TODO]
+- 使用 ASCII 码进行字母到数字的转换。
+- 利用奇偶性判断颜色。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(coordinates: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断国际象棋棋盘中一个格子的颜色
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字母坐标转换为数字
+    col = ord(coordinates[0]) - ord('a')
+    row = int(coordinates[1]) - 1
+    
+    # 计算行和列的和
+    sum_coords = col + row
+    
+    # 判断格子的颜色
+    return sum_coords % 2 == 0
 
 
 Solution = create_solution(solution_function_name)

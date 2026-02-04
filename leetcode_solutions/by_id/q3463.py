@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组并检查每个长度为3的子数组是否满足交替条件来计算交替组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组扩展为原来的两倍，以便处理环形结构。
+2. 遍历扩展后的数组，检查每个长度为3的子数组是否满足交替条件。
+3. 如果满足条件，则计数器加一。
 
 关键点:
-- [TODO]
+- 扩展数组以处理环形结构。
+- 检查每个长度为3的子数组是否满足交替条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 colors 的长度。我们只需要遍历一次扩展后的数组。
+空间复杂度: O(n)，扩展后的数组需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_alternating_groups(colors: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算交替组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 扩展数组以处理环形结构
+    extended_colors = colors + colors
+    
+    count = 0
+    n = len(colors)
+    
+    for i in range(1, n + 1):
+        if extended_colors[i] != extended_colors[i - 1] and extended_colors[i] != extended_colors[i + 1]:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_alternating_groups)

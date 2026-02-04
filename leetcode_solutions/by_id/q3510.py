@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过排序和分配最小可用高度来确保所有塔的高度互不相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 maximumHeight 数组进行降序排序。
+2. 初始化一个集合 used_heights 来记录已经使用过的高度。
+3. 初始化一个变量 total_height 来记录总高度。
+4. 遍历排序后的 maximumHeight 数组，对于每个高度：
+   - 从 1 开始尝试分配最小未使用的高度。
+   - 如果当前高度大于等于待分配的高度，则将其分配给当前塔，并更新 total_height 和 used_heights。
+   - 如果遍历完所有可能的高度都无法分配，则返回 -1。
+5. 返回 total_height。
 
 关键点:
-- [TODO]
+- 通过降序排序确保优先处理较高的塔。
+- 使用集合记录已使用的高度，确保高度互不相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 maximumHeight 的长度，主要由排序操作决定。
+空间复杂度: O(n)，用于存储已使用的高度集合。
 """
 
 # ============================================================================
@@ -49,12 +56,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_total_height(maximumHeight: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算高度互不相同的最大塔高和
     """
-    # TODO: 实现最优解法
-    pass
+    # 降序排序
+    maximumHeight.sort(reverse=True)
+    
+    used_heights = set()
+    total_height = 0
+    
+    for max_h in maximumHeight:
+        for h in range(1, max_h + 1):
+            if h not in used_heights:
+                used_heights.add(h)
+                total_height += h
+                break
+        else:
+            return -1  # 无法找到合适的高度
+    
+    return total_height
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_total_height)

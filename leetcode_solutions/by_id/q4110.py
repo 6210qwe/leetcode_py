@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护当前子数组的稳定性，并使用前缀和来快速计算区间内的稳定子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个单调递增栈 `stack` 和一个前缀和数组 `prefix_sum`。
+2. 遍历 `nums` 数组，对于每个元素，使用单调栈来找到当前元素左侧第一个大于它的元素的位置。
+3. 更新前缀和数组 `prefix_sum`，记录每个位置的稳定子数组数量。
+4. 对于每个查询 `[li, ri]`，使用前缀和数组快速计算区间内的稳定子数组数量。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地找到每个元素左侧第一个大于它的元素的位置。
+- 使用前缀和数组来快速计算区间内的稳定子数组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是 `nums` 的长度，q 是 `queries` 的长度。
+空间复杂度: O(n)，用于存储前缀和数组和单调栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_stable_subarrays(nums: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    stack = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        while stack and nums[stack[-1]] > nums[i]:
+            stack.pop()
+        if stack:
+            prev = stack[-1]
+        else:
+            prev = -1
+        prefix_sum[i + 1] = prefix_sum[i] + (i - prev)
+        stack.append(i)
 
+    def query(l: int, r: int) -> int:
+        return prefix_sum[r + 1] - prefix_sum[l]
 
-Solution = create_solution(solution_function_name)
+    return [query(l, r) for l, r in queries]
+
+Solution = create_solution(count_stable_subarrays)

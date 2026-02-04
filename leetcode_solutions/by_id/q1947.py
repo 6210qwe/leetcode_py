@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储所有可能的最大公约数，并通过遍历每个可能的公约数来计算其是否可以作为某个子序列的最大公约数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `gcds` 来存储所有可能的最大公约数。
+2. 遍历从 1 到 max(nums) 的每一个整数 `i`，检查 `i` 是否可以作为某个子序列的最大公约数。
+3. 对于每个 `i`，遍历 `nums` 中的所有元素 `num`，如果 `num % i == 0`，则更新当前子序列的最大公约数。
+4. 如果当前子序列的最大公约数等于 `i`，则将 `i` 添加到 `gcds` 集合中。
+5. 返回 `gcds` 集合的大小。
 
 关键点:
-- [TODO]
+- 使用集合来存储不同的最大公约数，确保唯一性。
+- 通过遍历每个可能的公约数来计算其是否可以作为某个子序列的最大公约数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))
+空间复杂度: O(max(nums))
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算并返回 nums 的所有非空子序列中不同最大公约数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    def gcd(a: int, b: int) -> int:
+        """计算两个数的最大公约数"""
+        while b:
+            a, b = b, a % b
+        return a
+
+    max_num = max(nums)
+    gcds = set()
+
+    for i in range(1, max_num + 1):
+        current_gcd = 0
+        for num in nums:
+            if num % i == 0:
+                current_gcd = gcd(current_gcd, num)
+                if current_gcd == i:
+                    gcds.add(i)
+                    break
+
+    return len(gcds)
 
 
 Solution = create_solution(solution_function_name)

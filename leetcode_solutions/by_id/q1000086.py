@@ -21,22 +21,22 @@ LCP 11. 期望个数统计 - 某互联网公司一年一度的春招开始了，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 期望值 E(X) 等于不同能力值的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用集合去重，得到不同能力值的数量。
+2. 返回不同能力值的数量作为期望值。
 
 关键点:
-- [TODO]
+- 由于能力值相同的简历出现顺序是从它们的全排列中等可能地取一个，因此只有不同能力值的简历才会在小 A 和小 B 的浏览顺序中出现在同一位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(scores: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算期望个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用集合去重，得到不同能力值的数量
+    unique_scores = set(scores)
+    return len(unique_scores)
 
 
 Solution = create_solution(solution_function_name)

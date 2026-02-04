@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来存储石子堆的数量，每次取出堆顶元素（即当前最大的石子堆），移除一半的石子后重新放回堆中。这样可以保证每次操作都是对当前最大的石子堆进行操作，从而使得剩余石子的总数最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，并将所有石子堆的数量加入堆中。
+2. 执行 k 次操作，每次从堆中取出最大的石子堆，移除一半的石子后重新放回堆中。
+3. 计算并返回堆中所有石子堆的总数。
 
 关键点:
-- [TODO]
+- 使用 Python 的 heapq 模块来实现最大堆，通过将每个元素取负数来模拟最大堆。
+- 每次操作后，需要更新堆顶元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log n)，其中 n 是石子堆的数量，k 是操作次数。每次操作涉及堆的插入和删除操作，时间复杂度为 O(log n)。
+空间复杂度: O(n)，需要额外的空间来存储堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def remove_stones_to_minimize_total(piles: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除石子使总数最小
     """
-    # TODO: 实现最优解法
-    pass
+    # 将每个元素取负数以模拟最大堆
+    max_heap = [-pile for pile in piles]
+    heapq.heapify(max_heap)
+    
+    for _ in range(k):
+        # 取出堆顶元素（即当前最大的石子堆）
+        largest_pile = -heapq.heappop(max_heap)
+        # 移除一半的石子
+        removed_stones = largest_pile // 2
+        new_pile = largest_pile - removed_stones
+        # 将新的石子堆数量放回堆中
+        heapq.heappush(max_heap, -new_pile)
+    
+    # 计算并返回堆中所有石子堆的总数
+    return -sum(max_heap)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_stones_to_minimize_total)

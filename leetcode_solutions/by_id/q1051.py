@@ -7,7 +7,7 @@
 标题: Shortest Way to Form String
 难度: medium
 链接: https://leetcode.cn/problems/shortest-way-to-form-string/
-题目类型: 贪心、双指针、字符串、二分查找
+题目类型: 贪心、双指针、字符串
 """
 
 # ============================================================================
@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到形成目标字符串所需的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 source 和 target 的起始位置。
+2. 遍历 target 字符串：
+   - 如果 source[i] 等于 target[j]，则同时移动 i 和 j。
+   - 如果不相等，则只移动 i。
+   - 如果 i 到达 source 的末尾，重置 i 并增加计数器。
+3. 返回计数器的值，即为形成目标字符串所需的最短路径。
 
 关键点:
-- [TODO]
+- 使用双指针遍历 source 和 target。
+- 通过重置 i 来处理 source 中的字符匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 target 的长度，m 是 source 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(source: str, target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    i, j = 0, 0
+    count = 0
+    while j < len(target):
+        if source[i] == target[j]:
+            j += 1
+        i += 1
+        if i == len(source):
+            if j == 0:  # 如果 target 没有匹配任何字符
+                return -1
+            i = 0
+            count += 1
+    return count + (j > 0)  # 最后一次匹配也需要计数
 
 Solution = create_solution(solution_function_name)

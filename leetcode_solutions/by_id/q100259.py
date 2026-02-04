@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个单词的频率，这样可以在 O(1) 时间内进行查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在构造函数中，遍历书中的每个单词，并使用哈希表记录每个单词的频率。
+2. 在 get 方法中，直接从哈希表中获取指定单词的频率。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储单词频率，以实现高效的查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 构造函数的时间复杂度，其中 n 是书中的单词数量。get 方法的时间复杂度是 O(1)。
+空间复杂度: O(n) - 哈希表的空间复杂度，其中 n 是书中的单词数量。
 """
 
 # ============================================================================
@@ -49,12 +49,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class WordsFrequency:
+
+    def __init__(self, book: List[str]):
+        self.word_count = {}
+        for word in book:
+            if word in self.word_count:
+                self.word_count[word] += 1
+            else:
+                self.word_count[word] = 1
+
+    def get(self, word: str) -> int:
+        return self.word_count.get(word, 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(WordsFrequency)

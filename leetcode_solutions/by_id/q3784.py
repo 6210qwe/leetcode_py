@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储所有字符串，并在删除每个字符串后计算剩余字符串的最长公共前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树，将所有字符串插入字典树。
+2. 对于每个字符串，从字典树中删除该字符串。
+3. 在删除后的字典树中，找到出现次数大于等于 k 的最长公共前缀。
+4. 将结果存储在答案数组中。
+5. 将删除的字符串重新插入字典树，以便处理下一个字符串。
 
 关键点:
-- [TODO]
+- 使用字典树高效地存储和查找字符串。
+- 通过计数节点来确定某个前缀出现的次数。
+- 在删除和重新插入字符串时，维护字典树的正确性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串的数量，m 是字符串的最大长度。构建和操作字典树的时间复杂度为 O(n * m)。
+空间复杂度: O(n * m)，字典树的空间复杂度为 O(n * m)。
 """
 
 # ============================================================================
@@ -48,13 +53,50 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.count = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+            node.count += 1
 
-Solution = create_solution(solution_function_name)
+    def delete(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            node = node.children[char]
+            node.count -= 1
+
+    def find_longest_common_prefix(self, k: int) -> int:
+        node = self.root
+        length = 0
+        while node and len(node.children) == 1 and node.count >= k:
+            char = next(iter(node.children))
+            node = node.children[char]
+            length += 1
+        return length
+
+def longest_common_prefix_after_removal(words: List[str], k: int) -> List[int]:
+    trie = Trie()
+    for word in words:
+        trie.insert(word)
+
+    result = []
+    for i in range(len(words)):
+        word = words[i]
+        trie.delete(word)
+        result.append(trie.find_longest_common_prefix(k))
+        trie.insert(word)
+
+    return result
+
+Solution = create_solution(longest_common_prefix_after_removal)

@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）结合状态压缩来解决这个问题。每个状态包括当前的位置、剩余能量和已经收集的垃圾集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 BFS 队列，包含起始位置、初始能量和空的垃圾集合。
+2. 使用一个集合来记录访问过的状态，避免重复计算。
+3. 在 BFS 过程中，对于每个状态，尝试向四个方向移动，并更新能量和垃圾集合。
+4. 如果遇到 'R'，则恢复能量到初始值。
+5. 如果收集到所有的垃圾，则返回移动次数。
+6. 如果 BFS 结束仍未找到解，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示已经收集的垃圾集合。
+- 使用队列进行广度优先搜索，确保找到最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 2^k)，其中 m 和 n 分别是网格的行数和列数，k 是垃圾的数量。因为每个状态最多会被处理一次。
+空间复杂度: O(m * n * 2^k)，用于存储访问过的状态集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from collections import deque
 
+def min_moves_to_clean_classroom(classroom: List[str], energy: int) -> int:
+    m, n = len(classroom), len(classroom[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # 找到起点和垃圾的位置
+    start = None
+    garbage_positions = []
+    for i in range(m):
+        for j in range(n):
+            if classroom[i][j] == 'S':
+                start = (i, j)
+            elif classroom[i][j] == 'L':
+                garbage_positions.append((i, j))
+    
+    # 状态压缩
+    all_garbage_collected = (1 << len(garbage_positions)) - 1
+    
+    # BFS 初始化
+    queue = deque([(start, energy, 0)])
+    visited = set([(start, energy, 0)])
+    moves = 0
+    
+    while queue:
+        for _ in range(len(queue)):
+            (x, y), e, collected = queue.popleft()
+            
+            # 检查是否收集完所有垃圾
+            if collected == all_garbage_collected:
+                return moves
+            
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    new_energy = e - 1
+                    new_collected = collected
+                    if classroom[nx][ny] == 'R':
+                        new_energy = energy
+                    elif classroom[nx][ny] == 'L':
+                        idx = garbage_positions.index((nx, ny))
+                        new_collected |= (1 << idx)
+                    
+                    if new_energy >= 0 and (nx, ny, new_energy, new_collected) not in visited:
+                        visited.add((nx, ny, new_energy, new_collected))
+                        queue.append(((nx, ny), new_energy, new_collected))
+        
+        moves += 1
+    
+    return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_clean_classroom)

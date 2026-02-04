@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个元素作为最大值的最左和最右边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 left 和 right，分别记录每个元素作为最大值的最左和最右边界。
+2. 使用单调递减栈从左到右遍历数组，找到每个元素的最左边界。
+3. 使用单调递减栈从右到左遍历数组，找到每个元素的最右边界。
+4. 计算每个元素的最大范围，并返回结果。
 
 关键点:
-- [TODO]
+- 使用单调栈可以在线性时间内找到每个元素的边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maximalRange(nums: List[int]) -> List[int]:
+    n = len(nums)
+    left, right = [0] * n, [0] * n
+    stack = []
+    
+    # 从左到右遍历，找到每个元素的最左边界
+    for i in range(n):
+        while stack and nums[stack[-1]] < nums[i]:
+            stack.pop()
+        left[i] = stack[-1] + 1 if stack else 0
+        stack.append(i)
+    
+    stack.clear()
+    
+    # 从右到左遍历，找到每个元素的最右边界
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] < nums[i]:
+            stack.pop()
+        right[i] = stack[-1] - 1 if stack else n - 1
+        stack.append(i)
+    
+    # 计算每个元素的最大范围
+    result = [right[i] - left[i] + 1 for i in range(n)]
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximalRange)

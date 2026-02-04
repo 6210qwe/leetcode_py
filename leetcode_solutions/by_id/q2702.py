@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和滑动窗口来解决这个问题。我们可以通过维护一个滑动窗口来找到满足条件的最大子数组长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将区间按左端点排序。
+2. 使用滑动窗口来遍历区间，维护当前窗口内的最小右端点。
+3. 对于每个区间，更新窗口的右边界，并计算当前窗口的长度。
+4. 记录最大窗口长度作为结果。
 
 关键点:
-- [TODO]
+- 通过排序和滑动窗口来高效地找到满足条件的最大子数组长度。
+- 维护窗口的最小右端点来确保窗口内的所有区间都满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是区间的数量。排序操作的时间复杂度为 O(n log n)，滑动窗口的遍历操作为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_count(nums1: List[int], nums2: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 合并两个数组并去重
+    nums = list(set(nums1 + nums2))
+    
+    # 按左端点排序
+    nums.sort()
+    
+    # 初始化滑动窗口
+    left = 0
+    right = 0
+    min_right = 0
+    max_length = 0
+    
+    while right < len(nums):
+        # 更新窗口的最小右端点
+        min_right = min(min_right, nums[right])
+        
+        # 检查当前窗口是否满足条件
+        if nums[right] - min_right > k:
+            # 不满足条件，移动左边界
+            left += 1
+            min_right = min(nums[left:right+1])
+        
+        # 更新最大窗口长度
+        max_length = max(max_length, right - left + 1)
+        
+        # 移动右边界
+        right += 1
+    
+    return max_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_count)

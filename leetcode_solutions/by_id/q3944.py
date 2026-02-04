@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和二分查找来高效计算有效子字符串的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个前缀和数组 `prefix_sum`，用于记录在每个位置之前的 '*' 的数量。
+2. 遍历 `order` 数组，逐步将字符替换为 '*'，并更新 `prefix_sum`。
+3. 使用二分查找来确定最小的时间 `t`，使得有效子字符串的数量大于或等于 `k`。
+4. 如果找到这样的 `t`，返回 `t`；否则返回 -1。
 
 关键点:
-- [TODO]
+- 前缀和数组 `prefix_sum` 用于快速计算有效子字符串的数量。
+- 二分查找用于高效地找到最小的时间 `t`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time_to_activate_string(s: str, order: List[int], k: int) -> int:
+    n = len(s)
+    prefix_sum = [0] * (n + 1)
+    active_count = 0
+
+    def count_valid_substrings(t: int) -> int:
+        nonlocal active_count
+        for i in range(t):
+            index = order[i]
+            if s[index] != '*':
+                s_list = list(s)
+                s_list[index] = '*'
+                s = ''.join(s_list)
+                prefix_sum[index + 1] = prefix_sum[index] + 1
+                active_count += (index + 1) * 2 - prefix_sum[index + 1]
+        return active_count
+
+    left, right = 0, n
+    while left < right:
+        mid = (left + right) // 2
+        if count_valid_substrings(mid) >= k:
+            right = mid
+        else:
+            left = mid + 1
+
+    if count_valid_substrings(left) >= k:
+        return left
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_activate_string)

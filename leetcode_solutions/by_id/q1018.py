@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法找到最大的三角形周长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行降序排序。
+2. 从排序后的数组中依次检查每三个连续的元素是否能构成三角形。
+3. 如果能构成三角形，则返回这三个元素的和作为最大周长。
+4. 如果遍历完所有可能的组合仍无法构成三角形，则返回 0。
 
 关键点:
-- [TODO]
+- 排序后，从大到小检查每三个连续的元素，确保找到的最大周长是可能的最大值。
+- 利用三角形的性质：任意两边之和大于第三边。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_perimeter_triangle(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到由给定长度数组中的三个长度组成的、面积不为零的三角形的最大周长。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行降序排序
+    nums.sort(reverse=True)
+    
+    # 检查每三个连续的元素是否能构成三角形
+    for i in range(len(nums) - 2):
+        if nums[i] < nums[i + 1] + nums[i + 2]:
+            return nums[i] + nums[i + 1] + nums[i + 2]
+    
+    # 如果没有找到符合条件的三角形，返回 0
+    return 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_perimeter_triangle)

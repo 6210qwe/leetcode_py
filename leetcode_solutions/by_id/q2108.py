@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用一个集合来存储每一步可能的和，并在每一步更新这个集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `dp`，包含初始值 0。
+2. 遍历每一行，对于每个元素，计算当前行所有可能的和，并将这些和存储在一个新的集合 `new_dp` 中。
+3. 更新 `dp` 为 `new_dp`。
+4. 在遍历完所有行后，找到 `dp` 中最接近 `target` 的值，并返回其与 `target` 的绝对差。
 
 关键点:
-- [TODO]
+- 使用集合来存储每一步可能的和，避免重复计算。
+- 通过动态规划逐步更新可能的和，确保每一步都只保留必要的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * min(n, target))
+空间复杂度: O(min(n, target))
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimizeTheDifference(mat: List[List[int]], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    
+    # 初始化 dp 集合
+    dp = {0}
+    
+    for row in mat:
+        new_dp = set()
+        for prev_sum in dp:
+            for num in row:
+                new_sum = prev_sum + num
+                if new_sum < target or (not new_dp or new_sum < max(new_dp)):
+                    new_dp.add(new_sum)
+        dp = new_dp
+    
+    # 找到最接近 target 的和
+    return min(abs(s - target) for s in dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimizeTheDifference)

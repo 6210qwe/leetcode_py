@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每对乘积出现的次数，然后计算满足条件的四元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `product_count` 用于记录每对乘积出现的次数。
+2. 遍历数组中的每一对元素 `(i, j)`，计算它们的乘积 `prod = i * j`，并更新 `product_count[prod]`。
+3. 遍历哈希表 `product_count`，对于每个乘积 `prod`，如果 `product_count[prod] > 1`，则可以形成 `product_count[prod] * (product_count[prod] - 1) * 4` 个满足条件的四元组。
+4. 返回所有满足条件的四元组数量之和。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每对乘积出现的次数。
+- 计算满足条件的四元组数量时，考虑排列组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tuple_same_product(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足 a * b = c * d 的元组 (a, b, c, d) 的数量
     """
-    # TODO: 实现最优解法
-    pass
+    product_count = {}
+    
+    # 计算每对乘积出现的次数
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            prod = nums[i] * nums[j]
+            if prod in product_count:
+                product_count[prod] += 1
+            else:
+                product_count[prod] = 1
+    
+    # 计算满足条件的四元组数量
+    count = 0
+    for prod, freq in product_count.items():
+        if freq > 1:
+            count += freq * (freq - 1) * 4
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tuple_same_product)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速找到需要补充粉笔的学生。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算粉笔消耗的前缀和。
+2. 对 k 取模以减少不必要的循环。
+3. 使用二分查找找到第一个使得前缀和大于等于 k 的位置。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算出某个位置的累计消耗。
+- 通过取模操作减少 k 的值，避免多次循环。
+- 二分查找可以在 O(log n) 时间内找到需要补充粉笔的学生。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_student_to_replace(chalk: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回需要补充粉笔的学生编号。
+
+    :param chalk: 每个学生消耗的粉笔数量
+    :param k: 初始粉笔数量
+    :return: 需要补充粉笔的学生编号
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀和
+    prefix_sum = [0]
+    for c in chalk:
+        prefix_sum.append(prefix_sum[-1] + c)
+
+    # 对 k 取模
+    k %= prefix_sum[-1]
+
+    # 使用二分查找找到第一个使得前缀和大于等于 k 的位置
+    left, right = 0, len(prefix_sum) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if prefix_sum[mid] > k:
+            right = mid
+        else:
+            left = mid + 1
+
+    return left - 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_student_to_replace)

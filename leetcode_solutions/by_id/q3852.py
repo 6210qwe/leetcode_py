@@ -21,40 +21,99 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理连通性问题，并使用广度优先搜索 (BFS) 来计算最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历所有节点，将满足条件的节点进行合并。
+3. 对于每个查询，使用 BFS 计算最短路径。
 
 关键点:
-- [TODO]
+- 并查集用于高效地处理连通性问题。
+- BFS 用于计算无权图中的最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + q * (n + m))，其中 n 是节点数，q 是查询数，m 是边数。
+空间复杂度: O(n)，并查集和 BFS 所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+def bfs(graph, start, end):
+    if start == end:
+        return 0
+    queue = deque([(start, 0)])
+    visited = set([start])
+    while queue:
+        node, dist = queue.popleft()
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                if neighbor == end:
+                    return dist + 1
+                visited.add(neighbor)
+                queue.append((neighbor, dist + 1))
+    return -1
+
+def solution_function_name(n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # Step 1: Initialize Union-Find
+    uf = UnionFind(n)
+    
+    # Step 2: Merge nodes that satisfy the condition
+    for i in range(n):
+        for j in range(i + 1, n):
+            if abs(nums[i] - nums[j]) <= maxDiff:
+                uf.union(i, j)
+    
+    # Step 3: Build the graph
+    graph = defaultdict(list)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if uf.find(i) == uf.find(j):
+                graph[i].append(j)
+                graph[j].append(i)
+    
+    # Step 4: Process each query using BFS
+    result = []
+    for u, v in queries:
+        if uf.find(u) != uf.find(v):
+            result.append(-1)
+        else:
+            result.append(bfs(graph, u, v))
+    
+    return result
 
 Solution = create_solution(solution_function_name)

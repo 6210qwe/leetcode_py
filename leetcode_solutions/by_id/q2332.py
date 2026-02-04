@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储所有在圆内的格点，避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `points` 来存储所有的格点。
+2. 遍历每个圆，对于每个圆，遍历其可能包含的所有格点。
+3. 对于每个格点，检查它是否在圆内（即距离圆心的距离小于等于半径）。
+4. 如果格点在圆内，将其加入集合 `points`。
+5. 最后，返回集合 `points` 的大小。
 
 关键点:
-- [TODO]
+- 使用集合来存储格点，避免重复计算。
+- 通过遍历圆的边界范围来减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * r^2)，其中 n 是圆的数量，r 是圆的最大半径。
+空间复杂度: O(n * r^2)，最坏情况下所有格点都在集合中。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_lattice_points(circles: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计圆内格点数目
     """
-    # TODO: 实现最优解法
-    pass
+    points = set()
+    
+    for x, y, r in circles:
+        for i in range(x - r, x + r + 1):
+            for j in range(y - r, y + r + 1):
+                if (i - x) ** 2 + (j - y) ** 2 <= r ** 2:
+                    points.add((i, j))
+    
+    return len(points)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_lattice_points)

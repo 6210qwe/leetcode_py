@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每两个相邻点之间的曼哈顿距离来确定最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总时间为 0。
+2. 遍历所有相邻点对，计算它们之间的曼哈顿距离，并将其加到总时间中。
+3. 返回总时间。
 
 关键点:
-- [TODO]
+- 曼哈顿距离可以同时考虑水平和垂直方向的移动，以及对角线移动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是点的数量。我们需要遍历所有相邻点对。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_time_to_visit_all_points(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算访问所有点的最小时间。
     """
-    # TODO: 实现最优解法
-    pass
+    total_time = 0
+    for i in range(1, len(points)):
+        dx = abs(points[i][0] - points[i - 1][0])
+        dy = abs(points[i][1] - points[i - 1][1])
+        total_time += max(dx, dy)
+    return total_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_visit_all_points)

@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用层次遍历（广度优先搜索）来找到最底层最左边的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 进行层次遍历，每次处理一层的所有节点。
+3. 在每一层开始时，记录当前层的第一个节点的值。
+4. 当遍历完所有层后，最后一个记录的节点值即为最底层最左边的节点值。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每次处理一层时，记录第一个节点的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(w)，其中 w 是二叉树的最大宽度。队列中最多会存储一层的节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_bottom_left_value(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到二叉树最底层最左边的节点值
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+
+    queue = [root]
+    leftmost_value = None
+
+    while queue:
+        level_length = len(queue)
+        for i in range(level_length):
+            node = queue.pop(0)
+            if i == 0:
+                leftmost_value = node.val
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    return leftmost_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_bottom_left_value)

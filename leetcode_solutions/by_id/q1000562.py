@@ -21,40 +21,62 @@ LCP 74. 最强祝福力场 - 小扣在探索丛林的过程中，无意间发现
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法来计算每个点的力场强度。通过将每个力场的边界转换为事件，然后对这些事件进行排序和处理。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个力场的边界转换为事件（开始事件和结束事件）。
+2. 对这些事件按 x 坐标进行排序。
+3. 使用一个平衡树来维护当前的 y 区间，并计算每个区间的力场强度。
+4. 更新全局最大力场强度。
 
 关键点:
-- [TODO]
+- 使用平衡树来高效地维护当前的 y 区间。
+- 通过扫描线算法处理事件，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是力场的数量。排序操作的时间复杂度是 O(n log n)，处理事件的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储事件和平衡树。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
-
-def solution_function_name(params):
+def solution_function_name(force_field: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最强力场强度
     """
-    # TODO: 实现最优解法
-    pass
-
+    events = []
+    for x, y, side in force_field:
+        left, right = x - side / 2, x + side / 2
+        bottom, top = y - side / 2, y + side / 2
+        events.append((left, 'start', (bottom, top)))
+        events.append((right, 'end', (bottom, top)))
+    
+    events.sort()
+    
+    active_intervals = []
+    max_strength = 0
+    current_strength = 0
+    
+    for x, event_type, interval in events:
+        if event_type == 'start':
+            bisect.insort(active_intervals, interval)
+            current_strength += 1
+        else:
+            index = bisect.bisect_left(active_intervals, interval)
+            del active_intervals[index]
+            current_strength -= 1
+        
+        max_strength = max(max_strength, current_strength)
+    
+    return max_strength
 
 Solution = create_solution(solution_function_name)

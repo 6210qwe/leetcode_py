@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和计数器来找到最少的整数集合，使得删除这些整数后数组长度减半。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Counter 统计每个元素的频率。
+2. 将频率从高到低排序。
+3. 依次选择频率最高的元素，直到删除的元素数量达到数组长度的一半。
 
 关键点:
-- [TODO]
+- 使用 Counter 进行频率统计。
+- 按频率从高到低排序，优先选择频率高的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，使用了额外的存储空间来存储频率。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个元素的频率
+    freq = Counter(arr)
+    
+    # 按频率从高到低排序
+    sorted_freq = sorted(freq.values(), reverse=True)
+    
+    # 计算需要删除的元素数量
+    target = len(arr) // 2
+    count = 0
+    result = 0
+    
+    for f in sorted_freq:
+        if count >= target:
+            break
+        count += f
+        result += 1
+    
+    return result
 
 Solution = create_solution(solution_function_name)

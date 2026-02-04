@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算从起点到终点的所有路径数。由于网格中可能存在障碍物，我们需要在计算路径时跳过这些障碍物。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示从起点 (0, 0) 到达 (i, j) 的路径数。
+2. 设置 dp[0][0] = 1，表示起点的路径数为 1。
+3. 遍历网格中的每个单元格 (i, j)，如果该单元格是障碍物，则 dp[i][j] = 0。
+4. 否则，dp[i][j] = dp[i-1][j] + dp[i][j-1]，即从上方和左方到达 (i, j) 的路径数之和。
+5. 最终结果为 dp[m-1][n-1]，即从起点到终点的路径数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = dp[i-1][j] + dp[i][j-1]
+- 跳过障碍物
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。
+空间复杂度: O(m * n)，用于存储动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从起点到终点的所有路径数
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not grid or not grid[0]:
+        return 0
+    
+    m, n = len(grid), len(grid[0])
+    dp = [[0] * n for _ in range(m)]
+    
+    # 起点
+    dp[0][0] = 1
+    
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:  # 障碍物
+                dp[i][j] = 0
+            else:
+                if i > 0:
+                    dp[i][j] += dp[i-1][j]
+                if j > 0:
+                    dp[i][j] += dp[i][j-1]
+    
+    return dp[m-1][n-1]
 
 Solution = create_solution(solution_function_name)

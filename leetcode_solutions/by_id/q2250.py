@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 从起点开始遍历网格，记录符合条件的物品，并使用堆来维护排名最高的 k 个物品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 BFS 队列和访问标记数组。
+2. 从起点开始进行 BFS 遍历，记录每个物品的距离、价格和坐标。
+3. 使用堆来维护排名最高的 k 个物品。
+4. 返回堆中的 k 个物品的坐标。
 
 关键点:
-- [TODO]
+- 使用 BFS 确保找到的物品距离最近。
+- 使用堆来高效地维护排名最高的 k 个物品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log k)，其中 m 和 n 分别是网格的行数和列数，k 是需要返回的物品数量。
+空间复杂度: O(m * n)，用于存储访问标记数组和 BFS 队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def k_highest_ranked_items(grid: List[List[int]], pricing: List[int], start: List[int], k: int) -> List[List[int]]:
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    visited = [[False] * n for _ in range(m)]
+    queue = [start]
+    visited[start[0]][start[1]] = True
+    items = []
+    
+    while queue:
+        next_queue = []
+        for r, c in queue:
+            if pricing[0] <= grid[r][c] <= pricing[1]:
+                heapq.heappush(items, (len(next_queue), grid[r][c], r, c))
+                if len(items) > k:
+                    heapq.heappop(items)
+            
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < m and 0 <= nc < n and not visited[nr][nc] and grid[nr][nc] != 0:
+                    visited[nr][nc] = True
+                    next_queue.append((nr, nc))
+        
+        queue = next_queue
+    
+    return [list(item[2:]) for item in sorted(items)]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(k_highest_ranked_items)

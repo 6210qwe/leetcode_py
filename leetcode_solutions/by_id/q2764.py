@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历每个连通的水域区域，计算每个区域内的鱼的总数，并记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_fish` 用于记录最多可以捕捞的鱼的数量。
+2. 定义一个辅助函数 `dfs`，用于从给定的起点开始进行深度优先搜索，计算该连通区域内所有鱼的数量。
+3. 遍历整个网格，对于每个水域格子，如果未被访问过，则调用 `dfs` 计算该连通区域内的鱼的数量，并更新 `max_fish`。
+4. 返回 `max_fish`。
 
 关键点:
-- [TODO]
+- 使用深度优先搜索遍历连通区域。
+- 使用一个访问标记数组 `visited` 来避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个格子最多被访问一次。
+空间复杂度: O(m * n)，最坏情况下递归栈的深度为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_max_fish(grid: List[List[int]]) -> int:
+    def dfs(r: int, c: int) -> int:
+        if r < 0 or r >= len(grid) or c < 0 or c >= len(grid[0]) or grid[r][c] == 0 or visited[r][c]:
+            return 0
+        visited[r][c] = True
+        fish_count = grid[r][c]
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            fish_count += dfs(r + dr, c + dc)
+        return fish_count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    max_fish = 0
+    m, n = len(grid), len(grid[0])
+    visited = [[False] * n for _ in range(m)]
 
+    for r in range(m):
+        for c in range(n):
+            if grid[r][c] > 0 and not visited[r][c]:
+                max_fish = max(max_fish, dfs(r, c))
 
-Solution = create_solution(solution_function_name)
+    return max_fish
+
+Solution = create_solution(find_max_fish)

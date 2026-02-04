@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法来划分数组，确保每个子数组中的元素差不超过 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 遍历排序后的数组，每次取三个连续的元素组成一个子数组。
+3. 检查每个子数组中的最大差值是否超过 k，如果超过则返回空数组。
+4. 如果所有子数组都满足条件，则返回这些子数组。
 
 关键点:
-- [TODO]
+- 排序后，相邻的三个元素组成的子数组更容易满足差值条件。
+- 通过贪心算法，每次取三个连续的元素，确保子数组的数量尽可能多。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def divide_array(nums: List[int], k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    将数组划分为 n / 3 个长度为 3 的子数组，并满足每个子数组中任意两个元素的差不大于 k。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 结果列表
+    result = []
+    
+    # 遍历排序后的数组，每次取三个连续的元素
+    for i in range(0, len(nums), 3):
+        if i + 2 < len(nums):
+            # 检查子数组中的最大差值是否超过 k
+            if nums[i + 2] - nums[i] > k:
+                return []
+            result.append([nums[i], nums[i + 1], nums[i + 2]])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(divide_array)

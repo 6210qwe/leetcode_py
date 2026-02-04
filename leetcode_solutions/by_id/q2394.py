@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来维护一个子数组，使其分数严格小于 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向当前子数组的起始和结束位置。
+2. 初始化一个变量 total 来记录当前子数组的和。
+3. 使用 right 指针遍历数组：
+   - 将当前元素加入 total。
+   - 如果当前子数组的分数大于等于 k，则移动 left 指针，直到子数组的分数小于 k。
+   - 计算当前子数组的贡献，即 right - left + 1，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态调整子数组的大小，确保其分数始终小于 k。
+- 通过移动 left 指针来缩小子数组的范围，从而降低分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个指针最多遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_subarrays_with_score_less_than_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计得分小于 K 的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    left = 0
+    total = 0
+    result = 0
+    
+    for right in range(n):
+        total += nums[right]
+        
+        while (total * (right - left + 1)) >= k and left <= right:
+            total -= nums[left]
+            left += 1
+        
+        result += (right - left + 1)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_subarrays_with_score_less_than_k)

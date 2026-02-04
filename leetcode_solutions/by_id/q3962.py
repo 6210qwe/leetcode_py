@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算锯齿形数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维 DP 数组 dp[i][j][k]，其中 i 表示当前数组的长度，j 表示上一个元素的值，k 表示当前元素的值。
+2. 对于每个长度 i，遍历所有可能的 j 和 k 值，并更新 DP 数组。
+3. 最终结果是 dp[n][*][*] 的总和。
 
 关键点:
-- [TODO]
+- 使用模运算来防止结果溢出。
+- 通过动态规划避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * (r - l + 1) * (r - l + 1))
+空间复杂度: O(n * (r - l + 1) * (r - l + 1))
 """
 
 # ============================================================================
@@ -48,13 +50,39 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(n: int, l: int, r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的锯齿形数组的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    if n == 1:
+        return r - l + 1
+    
+    # 初始化 DP 数组
+    dp = [[[0 for _ in range(r - l + 1)] for _ in range(r - l + 1)] for _ in range(n + 1)]
+    
+    # 初始状态
+    for j in range(r - l + 1):
+        dp[1][j][j] = 1
+    
+    # 动态规划
+    for i in range(2, n + 1):
+        for j in range(r - l + 1):
+            for k in range(r - l + 1):
+                if j != k:
+                    for prev in range(r - l + 1):
+                        if (prev < j and j > k) or (prev > j and j < k):
+                            dp[i][j][k] += dp[i - 1][prev][j]
+                            dp[i][j][k] %= MOD
+    
+    # 计算最终结果
+    result = 0
+    for j in range(r - l + 1):
+        for k in range(r - l + 1):
+            result += dp[n][j][k]
+            result %= MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

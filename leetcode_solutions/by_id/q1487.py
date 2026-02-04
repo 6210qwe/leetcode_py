@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来标记每行的座位状态，并根据这些状态来计算最多能安排多少个4人家庭。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `row_status` 来记录每行的座位状态，使用位运算来标记哪些座位被预定。
+2. 遍历 `reservedSeats`，更新 `row_status` 中对应行的座位状态。
+3. 对于每行，检查是否有足够的连续座位来安排4人家庭。根据位运算的结果，判断该行可以安排的家庭数量。
+4. 计算总的可以安排的家庭数量。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地表示和处理每行的座位状态。
+- 通过预定义的掩码来快速判断每行的可用座位组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是 `reservedSeats` 的长度。
+空间复杂度: O(min(n, m))，因为 `row_status` 字典的大小取决于 `reservedSeats` 的长度或行数 n。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_number_of_families(n: int, reservedSeats: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多能安排多少个4人家庭
     """
-    # TODO: 实现最优解法
-    pass
+    # 位掩码表示每个可能的4人家庭座位组合
+    left_mask = 0b1111000000
+    right_mask = 0b0000011110
+    middle_mask = 0b0011110000
+    full_mask = 0b1111111110
+    
+    # 初始化每行的座位状态
+    row_status = {}
+    
+    # 更新每行的座位状态
+    for row, seat in reservedSeats:
+        if row not in row_status:
+            row_status[row] = full_mask
+        row_status[row] &= ~(1 << (seat - 1))
+    
+    # 计算可以安排的家庭数量
+    families = 0
+    for row in range(1, n + 1):
+        if row in row_status:
+            row_mask = row_status[row]
+            if row_mask & left_mask == left_mask and row_mask & right_mask == right_mask:
+                families += 2
+            elif row_mask & left_mask == left_mask or row_mask & right_mask == right_mask or row_mask & middle_mask == middle_mask:
+                families += 1
+        else:
+            families += 2
+    
+    return families
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_number_of_families)

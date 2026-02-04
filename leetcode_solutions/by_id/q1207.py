@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在遇到需要删除的节点时将其子节点加入结果列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `to_delete` 转换为集合以实现 O(1) 查找。
+2. 定义一个递归函数 `dfs` 来处理每个节点。
+3. 在 `dfs` 函数中：
+   - 如果当前节点为空，返回 None。
+   - 递归处理左子节点和右子节点。
+   - 如果当前节点需要删除，则将非空子节点加入结果列表，并返回 None。
+   - 否则，返回当前节点。
+4. 初始化结果列表，并调用 `dfs` 函数处理根节点。
+5. 如果根节点不需要删除，将其加入结果列表。
 
 关键点:
-- [TODO]
+- 使用集合来存储 `to_delete` 以实现 O(1) 查找。
+- 递归处理每个节点，并在需要删除的节点处断开连接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为树的高度，最坏情况下为 O(n)。
 """
 
 # ============================================================================
@@ -44,17 +52,28 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def delNodes(root: TreeNode, to_delete: List[int]) -> List[TreeNode]:
+    to_delete_set = set(to_delete)
+    result = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not node:
+            return None
+        node.left = dfs(node.left)
+        node.right = dfs(node.right)
+        if node.val in to_delete_set:
+            if node.left:
+                result.append(node.left)
+            if node.right:
+                result.append(node.right)
+            return None
+        return node
 
+    if dfs(root):
+        result.append(root)
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(delNodes)

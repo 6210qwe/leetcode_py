@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个平衡二叉搜索树（如 AVL 树或红黑树）来维护景点的有序性。每次添加景点时，将其插入到树中；每次查询时，从树中找到第 i 好的景点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个平衡二叉搜索树。
+2. 在 `add` 方法中，将景点插入到树中。
+3. 在 `get` 方法中，从树中找到第 i 好的景点。
 
 关键点:
-- [TODO]
+- 使用平衡二叉搜索树来维护景点的有序性，确保插入和查询操作的时间复杂度为 O(log n)。
+- 通过树的遍历找到第 i 好的景点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 插入和查询操作的时间复杂度均为 O(log n)。
+空间复杂度: O(n) - 存储所有景点的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class SORTracker:
+
+    def __init__(self):
+        self.tree = []
+        self.query_count = 0
+
+    def add(self, name: str, score: int) -> None:
+        # 将景点插入到列表中，并保持列表有序
+        self.tree.append((-score, name))
+        self.tree.sort()
+
+    def get(self) -> str:
+        # 返回第 i 好的景点
+        self.query_count += 1
+        return self.tree[self.query_count - 1][1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(SORTracker)

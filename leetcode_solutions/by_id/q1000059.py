@@ -21,22 +21,25 @@ LCP 14. 切分数组 - 给定一个整数数组 nums ，小李想将 nums 切割
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划结合质因数分解来解决问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个数进行质因数分解，并记录每个质因数最后出现的位置。
+2. 使用动态规划数组 dp 来记录到当前位置为止的最小切割次数。
+3. 对于每个位置 i，更新 dp[i] 为从上一个相同质因数的位置 j 到 i 的最小切割次数加一。
+4. 最终结果为 dp[n-1]。
 
 关键点:
-- [TODO]
+- 通过质因数分解和记录每个质因数最后出现的位置，可以快速找到可以合并的子数组。
+- 动态规划数组 dp 用于记录到当前位置为止的最小切割次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是数组长度，m 是数组中最大值。
+空间复杂度: O(n + m)，其中 n 是数组长度，m 是数组中最大值。
 """
 
 # ============================================================================
@@ -49,12 +52,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return 1
+
+    # 质因数分解
+    def prime_factors(x):
+        factors = set()
+        d = 2
+        while d * d <= x:
+            while (x % d) == 0:
+                factors.add(d)
+                x //= d
+            d += 1
+        if x > 1:
+            factors.add(x)
+        return factors
+
+    # 记录每个质因数最后出现的位置
+    last_pos = {}
+    for i, num in enumerate(nums):
+        for factor in prime_factors(num):
+            last_pos[factor] = i
+
+    # 动态规划数组
+    dp = [float('inf')] * n
+    dp[0] = 1
+
+    for i in range(1, n):
+        dp[i] = dp[i - 1] + 1
+        for factor in prime_factors(nums[i]):
+            if last_pos[factor] < i:
+                dp[i] = min(dp[i], dp[last_pos[factor]] + 1)
+
+    return dp[-1]
 
 
 Solution = create_solution(solution_function_name)

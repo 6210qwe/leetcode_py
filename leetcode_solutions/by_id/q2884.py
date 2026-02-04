@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和字典树（Trie）来高效地检查子字符串是否包含禁用词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个 Trie 树，将所有禁用词插入到 Trie 中。
+2. 使用滑动窗口遍历字符串 `word`，维护一个左指针 `left` 和右指针 `right`。
+3. 对于每个右指针 `right`，检查从 `left` 到 `right` 的子字符串是否包含禁用词。
+4. 如果包含禁用词，移动左指针 `left`，直到子字符串不再包含禁用词。
+5. 更新最长合法子字符串的长度。
 
 关键点:
-- [TODO]
+- 使用 Trie 树可以高效地检查子字符串是否包含禁用词。
+- 滑动窗口技术可以在 O(n) 时间复杂度内遍历字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串 `word` 的长度，m 是禁用词的最大长度。
+空间复杂度: O(k * m)，其中 k 是禁用词的数量，m 是禁用词的最大长度。
 """
 
 # ============================================================================
@@ -48,13 +52,46 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def build_trie(forbidden: List[str]) -> TrieNode:
+    root = TrieNode()
+    for word in forbidden:
+        node = root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end = True
+    return root
 
+def is_forbidden(trie: TrieNode, s: str, start: int, end: int) -> bool:
+    node = trie
+    for i in range(start, end + 1):
+        if s[i] not in node.children:
+            return False
+        node = node.children[s[i]]
+        if node.is_end:
+            return True
+    return False
+
+def solution_function_name(word: str, forbidden: List[str]) -> int:
+    """
+    函数式接口 - 返回最长合法子字符串的长度
+    """
+    trie = build_trie(forbidden)
+    left = 0
+    max_length = 0
+    n = len(word)
+
+    for right in range(n):
+        while is_forbidden(trie, word, left, right):
+            left += 1
+        max_length = max(max_length, right - left + 1)
+
+    return max_length
 
 Solution = create_solution(solution_function_name)

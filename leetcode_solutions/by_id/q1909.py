@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调递减栈来记录能看到海景的建筑物。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈 `stack` 和结果列表 `result`。
+2. 从右到左遍历建筑物高度数组 `heights`。
+3. 对于每个建筑物高度 `h`，如果栈为空或 `h` 大于栈顶元素，则将当前建筑物索引加入结果列表，并将 `h` 压入栈中。
+4. 最后，返回结果列表的逆序。
 
 关键点:
-- [TODO]
+- 使用单调递减栈来确保只有比之前所有建筑物都高的建筑物才能看到海景。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是建筑物的高度数组长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会存储所有的建筑物高度。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_buildings(heights: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到能看到海景的建筑物索引
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = []
+
+    for i in range(len(heights) - 1, -1, -1):
+        h = heights[i]
+        if not stack or h > stack[-1]:
+            result.append(i)
+            stack.append(h)
+
+    return result[::-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_buildings)

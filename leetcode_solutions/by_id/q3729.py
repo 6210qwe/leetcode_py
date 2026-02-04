@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历单位转换图，计算每个单位相对于单位 0 的转换因子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，其中每个节点表示一个单位，边表示单位之间的转换关系和转换因子。
+2. 从单位 0 开始进行 DFS，计算每个单位相对于单位 0 的转换因子。
+3. 使用一个数组 `base_unit_conversion` 来存储每个单位相对于单位 0 的转换因子，并对结果取模。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历图，确保每个单位只访问一次。
+- 在计算转换因子时，使用乘法并取模以防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是单位的数量。每个单位只会被访问一次。
+空间复杂度: O(n)，用于存储图和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+
+MOD = 10**9 + 7
 
 
-def solution_function_name(params):
+def unit_conversion(conversions: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算每个单位相对于单位 0 的转换因子。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(conversions) + 1
+    graph = [[] for _ in range(n)]
+    
+    # 构建图
+    for src, tgt, factor in conversions:
+        graph[src].append((tgt, factor))
+        graph[tgt].append((src, 1 / factor))
+    
+    # 存储每个单位相对于单位 0 的转换因子
+    base_unit_conversion = [0] * n
+    base_unit_conversion[0] = 1
+    
+    def dfs(unit: int, parent: int, factor: float):
+        for next_unit, next_factor in graph[unit]:
+            if next_unit == parent:
+                continue
+            new_factor = factor * next_factor
+            base_unit_conversion[next_unit] = int(new_factor) % MOD
+            dfs(next_unit, unit, new_factor)
+    
+    dfs(0, -1, 1)
+    return base_unit_conversion
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(unit_conversion)

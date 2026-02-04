@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双端队列来存储文本，并维护光标的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建两个双端队列 left 和 right，分别存储光标左边和右边的字符。
+2. addText: 将文本添加到 left 队列的末尾。
+3. deleteText: 从 left 队列中删除 k 个字符，返回实际删除的字符数目。
+4. cursorLeft: 将光标向左移动 k 次，每次将 left 队列的最后一个字符移到 right 队列的开头。
+5. cursorRight: 将光标向右移动 k 次，每次将 right 队列的第一个字符移到 left 队列的末尾。
 
 关键点:
-- [TODO]
+- 使用双端队列可以高效地在光标左右移动和添加删除字符。
+- 通过维护两个双端队列，可以确保操作的时间复杂度为 O(k)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(n)，其中 n 是文本的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
+
+class TextEditor:
+
+    def __init__(self):
+        self.left = deque()
+        self.right = deque()
+
+    def addText(self, text: str) -> None:
+        for char in text:
+            self.left.append(char)
+
+    def deleteText(self, k: int) -> int:
+        deleted = 0
+        while k > 0 and self.left:
+            self.left.pop()
+            k -= 1
+            deleted += 1
+        return deleted
+
+    def cursorLeft(self, k: int) -> str:
+        while k > 0 and self.left:
+            self.right.appendleft(self.left.pop())
+            k -= 1
+        return ''.join(list(self.left)[-10:])
+
+    def cursorRight(self, k: int) -> str:
+        while k > 0 and self.right:
+            self.left.append(self.right.popleft())
+            k -= 1
+        return ''.join(list(self.left)[-10:])
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# Your TextEditor object will be instantiated and called as such:
+# obj = TextEditor()
+# obj.addText(text)
+# param_2 = obj.deleteText(k)
+# param_3 = obj.cursorLeft(k)
+# param_4 = obj.cursorRight(k)

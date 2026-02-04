@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每个 3x3 子矩阵是否为幻方。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历网格中的每个 3x3 子矩阵。
+2. 对于每个子矩阵，检查其是否包含 1 到 9 的所有数字且每行、每列和对角线的和均为 15。
+3. 如果满足条件，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用集合来检查子矩阵是否包含 1 到 9 的所有数字。
+- 计算每行、每列和对角线的和，确保它们都等于 15。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 和 m 分别是网格的行数和列数。我们需要遍历每个 3x3 子矩阵。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_magic_square(subgrid: List[List[int]]) -> bool:
+    # 检查子矩阵是否包含 1 到 9 的所有数字
+    if set(sum(subgrid, [])) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+        return False
+    
+    # 检查每行、每列和对角线的和是否为 15
+    for i in range(3):
+        if sum(subgrid[i]) != 15 or sum(subgrid[j][i] for j in range(3)) != 15:
+            return False
+    if subgrid[0][0] + subgrid[1][1] + subgrid[2][2] != 15 or subgrid[0][2] + subgrid[1][1] + subgrid[2][0] != 15:
+        return False
+    
+    return True
+
+
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计网格中 3x3 幻方的数量
     """
-    # TODO: 实现最优解法
-    pass
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+    
+    for i in range(rows - 2):
+        for j in range(cols - 2):
+            subgrid = [grid[i + k][j:j + 3] for k in range(3)]
+            if is_magic_square(subgrid):
+                count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

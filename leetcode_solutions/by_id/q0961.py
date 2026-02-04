@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针分别遍历 name 和 typed 字符串，确保 typed 中的每个字符都能对应到 name 中的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 name 和 typed 的起始位置。
+2. 遍历 typed 字符串：
+   - 如果当前字符与 name 中的字符相同，则同时移动两个指针。
+   - 如果当前字符与 name 中的字符不同，则检查是否是长按字符（即与前一个字符相同），如果是则只移动 typed 的指针，否则返回 False。
+3. 最后检查 name 是否已经完全匹配。
 
 关键点:
-- [TODO]
+- 确保 typed 中的每个字符都能对应到 name 中的字符。
+- 处理长按字符的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 name 的长度，m 是 typed 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_long_pressed_name(name: str, typed: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 typed 是否是 name 的长按键入结果
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    n, m = len(name), len(typed)
+    
+    while j < m:
+        if i < n and name[i] == typed[j]:
+            i += 1
+        elif j == 0 or typed[j] != typed[j - 1]:
+            return False
+        j += 1
+    
+    return i == n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_long_pressed_name)

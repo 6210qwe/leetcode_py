@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j][m] 表示将区间 [i, j] 的石头合并成 m 堆的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 prefix_sum，用于快速计算区间和。
+2. 初始化 dp 数组，dp[i][j][m] 表示将区间 [i, j] 的石头合并成 m 堆的最小成本。
+3. 遍历区间长度 l，从 1 到 n。
+4. 对于每个区间长度 l，遍历起点 i，从 0 到 n-l。
+5. 计算终点 j = i + l - 1。
+6. 如果区间 [i, j] 的长度小于 m，则直接跳过。
+7. 如果 m 为 1，则 dp[i][j][1] 等于 dp[i][j][k] + 区间 [i, j] 的总和。
+8. 如果 m 大于 1，则 dp[i][j][m] 等于 dp[i][mid][1] + dp[mid+1][j][m-1] 的最小值。
 
 关键点:
-- [TODO]
+- 使用前缀和数组快速计算区间和。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 * k)
+空间复杂度: O(n^2 * k)
 """
 
 # ============================================================================
@@ -49,12 +56,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_stones(stones: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 合并石头的最低成本
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(stones)
+    if (n - 1) % (k - 1) != 0:
+        return -1
+
+    # 前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + stones[i - 1]
+
+    # 动态规划数组
+    dp = [[[float('inf')] * (k + 1) for _ in range(n)] for _ in range(n)]
+
+    # 初始化 dp 数组
+    for i in range(n):
+        dp[i][i][1] = 0
+
+    # 动态规划状态转移
+    for l in range(2, n + 1):  # 区间长度
+        for i in range(n - l + 1):
+            j = i + l - 1
+            for m in range(2, k + 1):
+                if (j - i + 1) < m:
+                    continue
+                for mid in range(i, j, k - 1):
+                    dp[i][j][m] = min(dp[i][j][m], dp[i][mid][1] + dp[mid + 1][j][m - 1])
+            if (j - i) % (k - 1) == 0:
+                dp[i][j][1] = dp[i][j][k] + prefix_sum[j + 1] - prefix_sum[i]
+
+    return dp[0][n - 1][1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_stones)

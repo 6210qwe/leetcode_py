@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库对数据进行处理，通过分组、筛选和聚合操作来找到符合条件的黄金时段客户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `order_timestamp` 转换为时间戳，并提取小时信息。
+2. 筛选出高峰时间订单。
+3. 计算每个客户的总订单数、高峰时间订单数、已评分订单数和平均评分。
+4. 根据条件筛选出符合条件的客户。
+5. 按平均评分降序排序，然后按 customer_id 降序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 `groupby` 和 `agg` 方法进行高效的数据处理。
+- 通过条件筛选和排序来确保结果符合要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是订单数量。Pandas 的操作通常是线性的。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_golden_hour_customers(restaurant_orders: pd.DataFrame) -> pd.DataFrame:
+    # 将 order_timestamp 转换为时间戳，并提取小时信息
+    restaurant_orders['hour'] = pd.to_datetime(restaurant_orders['order_timestamp']).dt.hour
+    
+    # 筛选出高峰时间订单
+    peak_hours = (restaurant_orders['hour'].between(11, 14)) | (restaurant_orders['hour'].between(18, 21))
+    restaurant_orders['is_peak_hour'] = peak_hours
+    
+    # 计算每个客户的总订单数、高峰时间订单数、已评分订单数和平均评分
+    customer_stats = restaurant_orders.groupby('customer_id').agg(
+        total_orders=('order_id', 'count'),
+        peak_hour_orders=('is_peak_hour', 'sum'),
+        rated_orders=('order_rating', lambda x: x.count()),
+        average_rating=('order_rating', 'mean')
+    ).reset_index()
+    
+    # 计算高峰时间订单百分比
+    customer_stats['peak_hour_percentage'] = (customer_stats['peak_hour_orders'] / customer_stats['total_orders'] * 100).round(2)
+    
+    # 筛选出符合条件的客户
+    golden_customers = customer_stats[
+        (customer_stats['total_orders'] >= 3) &
+        (customer_stats['peak_hour_percentage'] >= 60) &
+        (customer_stats['average_rating'] >= 4.0) &
+        (customer_stats['rated_orders'] / customer_stats['total_orders'] >= 0.5)
+    ]
+    
+    # 按 average_rating 降序排序，然后按 customer_id 降序排序
+    result = golden_customers.sort_values(by=['average_rating', 'customer_id'], ascending=[False, False])
+    
+    return result[['customer_id', 'total_orders', 'peak_hour_percentage', 'average_rating']]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_golden_hour_customers)

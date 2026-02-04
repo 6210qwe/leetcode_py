@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划计算每个位置作为山顶时的最长递增子序列和最长递减子序列，然后通过这些信息找到最小删除次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置的最长递增子序列长度。
+2. 计算每个位置的最长递减子序列长度。
+3. 遍历所有可能的山顶位置，计算删除次数，并取最小值。
 
 关键点:
-- [TODO]
+- 使用二分查找优化最长递增子序列的计算。
+- 通过两次遍历分别计算最长递增子序列和最长递减子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_removals_to_make_mountain_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 nums 变成山形数组的最少删除次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return 0
 
+    # 计算最长递增子序列长度
+    def length_of_lis(nums):
+        dp = []
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+            else:
+                dp[idx] = num
+        return len(dp)
 
-Solution = create_solution(solution_function_name)
+    # 计算最长递减子序列长度
+    def length_of_lds(nums):
+        dp = []
+        for num in reversed(nums):
+            idx = bisect.bisect_left(dp, -num)
+            if idx == len(dp):
+                dp.append(-num)
+            else:
+                dp[idx] = -num
+        return len(dp)
+
+    import bisect
+
+    lis = [length_of_lis(nums[:i+1]) for i in range(n)]
+    lds = [length_of_lds(nums[i:]) for i in range(n)]
+
+    # 计算最小删除次数
+    min_removals = float('inf')
+    for i in range(1, n-1):
+        if lis[i] > 1 and lds[i] > 1:
+            min_removals = min(min_removals, n - (lis[i] + lds[i] - 1))
+
+    return min_removals
+
+Solution = create_solution(min_removals_to_make_mountain_array)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）从每个节点出发，寻找最短环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图。
+2. 对于每个节点，使用 BFS 寻找从该节点出发的最短环。
+3. 记录并更新最短环的长度。
+4. 如果所有节点都遍历完毕且没有找到环，返回 -1。
 
 关键点:
-- [TODO]
+- 使用一个队列进行 BFS 遍历。
+- 使用一个集合记录访问过的节点，避免重复访问。
+- 通过记录当前路径长度来判断是否形成环。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * (n + m))，其中 n 是节点数，m 是边数。每个节点都需要进行一次 BFS。
+空间复杂度: O(n + m)，用于存储图的邻接表和 BFS 的辅助数据结构。
 """
 
 # ============================================================================
@@ -49,12 +53,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_shortest_cycle(n: int, edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找图中的最短环
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    def bfs(start: int) -> int:
+        queue = [(start, -1, 0)]  # (当前节点, 父节点, 当前路径长度)
+        visited = set()
+        visited.add(start)
+        
+        while queue:
+            node, parent, length = queue.pop(0)
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, node, length + 1))
+                elif neighbor != parent:
+                    return length + 1
+        return float('inf')
+
+    min_cycle = float('inf')
+    for i in range(n):
+        min_cycle = min(min_cycle, bfs(i))
+
+    return min_cycle if min_cycle != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_shortest_cycle)

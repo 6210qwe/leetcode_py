@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用 SQL 查询来计算每个用户的确认率。
+- 首先，我们需要计算每个用户的确认消息数量和总请求消息数量。
+- 然后，通过这些数量计算确认率，并四舍五入到小数点后两位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个用户的确认消息数量。
+2. 计算每个用户的总请求消息数量。
+3. 计算每个用户的确认率。
+4. 四舍五入确认率到小数点后两位。
+5. 返回结果表。
 
 关键点:
-- [TODO]
+- 使用子查询来计算每个用户的确认消息数量和总请求消息数量。
+- 使用 CASE WHEN 语句来区分确认消息和超时消息。
+- 使用 ROUND 函数来四舍五入确认率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Confirmations 表的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +57,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(signups: List[List[int]], confirmations: List[List[str]]) -> List[List[float]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每个用户的确认率
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建 Signups 和 Confirmations 表
+    signups_table = {row[0]: row[1] for row in signups}
+    confirmations_table = {}
+    
+    # 统计每个用户的确认消息数量和总请求消息数量
+    for user_id, _, action in confirmations:
+        if user_id not in confirmations_table:
+            confirmations_table[user_id] = {'confirmed': 0, 'total': 0}
+        confirmations_table[user_id]['total'] += 1
+        if action == 'confirmed':
+            confirmations_table[user_id]['confirmed'] += 1
+    
+    # 计算每个用户的确认率
+    result = []
+    for user_id in signups_table:
+        if user_id in confirmations_table:
+            confirmed = confirmations_table[user_id]['confirmed']
+            total = confirmations_table[user_id]['total']
+            confirmation_rate = round(confirmed / total, 2) if total > 0 else 0.00
+        else:
+            confirmation_rate = 0.00
+        result.append([user_id, confirmation_rate])
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

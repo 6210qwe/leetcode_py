@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到可以使所有多米诺骨牌上半部分或下半部分相等的最小旋转次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查第一个多米诺骨牌的上下两面的值（A[0] 和 B[0]），这两个值是我们可能的目标值。
+2. 对于每个目标值，计算将其作为所有多米诺骨牌的上半部分或下半部分所需的最小旋转次数。
+3. 如果某个目标值可以使所有多米诺骨牌的上半部分或下半部分相等，则返回最小旋转次数；否则返回 -1。
 
 关键点:
-- [TODO]
+- 通过计数器来记录每个多米诺骨牌的上半部分和下半部分的值出现次数。
+- 使用贪心策略，选择最小的旋转次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_domino_rotations(tops: List[int], bottoms: List[int]) -> int:
+    def check(x: int) -> int:
+        rotations_a = rotations_b = 0
+        for i in range(len(tops)):
+            if tops[i] != x and bottoms[i] != x:
+                return -1
+            elif tops[i] != x:
+                rotations_a += 1
+            elif bottoms[i] != x:
+                rotations_b += 1
+        return min(rotations_a, rotations_b)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    rotations = check(tops[0])
+    if rotations != -1 or tops[0] == bottoms[0]:
+        return rotations
+    else:
+        return check(bottoms[0])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_domino_rotations)

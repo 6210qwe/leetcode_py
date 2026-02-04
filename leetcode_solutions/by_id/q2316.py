@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组，跳过连续相同的元素，并检查每个元素是否为峰或谷。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `prev` 和 `next` 分别指向当前元素的前一个和后一个不同的元素。
+2. 遍历数组，跳过连续相同的元素。
+3. 检查当前元素是否为峰或谷。
+4. 更新 `prev` 和 `next` 指针。
 
 关键点:
-- [TODO]
+- 跳过连续相同的元素以避免重复计算。
+- 确保每个元素都有左右不同的邻居。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_hills_and_valleys(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计数组中峰和谷的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) < 3:
+        return 0
+
+    count = 0
+    prev = 0
+    next_ = 1
+
+    while next_ < len(nums):
+        # 跳过连续相同的元素
+        while next_ < len(nums) and nums[next_] == nums[prev]:
+            next_ += 1
+
+        if next_ < len(nums):
+            # 检查当前元素是否为峰或谷
+            if (nums[prev] < nums[next_] and nums[next_] > nums[next_ + 1]) or \
+               (nums[prev] > nums[next_] and nums[next_] < nums[next_ + 1]):
+                count += 1
+
+            # 更新指针
+            prev = next_
+            next_ += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_hills_and_valleys)

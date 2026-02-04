@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为从第 i 个魔法师开始能获得的最大能量。通过递推公式 dp[i] = max(dp[i], dp[i + k] + energy[i]) 来更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的 dp 数组，初始值为负无穷。
+2. 从后向前遍历数组，更新 dp 数组。
+3. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 从后向前遍历数组，确保在更新 dp[i] 时，dp[i + k] 已经被计算过。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(energy: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(energy)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [float('-inf')] * n
+
+    # 从后向前遍历数组
+    for i in range(n - 1, -1, -1):
+        if i + k < n:
+            dp[i] = dp[i + k] + energy[i]
+        else:
+            dp[i] = energy[i]
+
+    # 更新 dp 数组
+    for i in range(n - k - 1, -1, -1):
+        dp[i] = max(dp[i], dp[i + k] + energy[i])
+
+    # 返回 dp 数组中的最大值
+    return max(dp)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环和前缀和来统计满足条件的三元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `left` 和 `right`，分别记录每个位置左侧和右侧比当前值小和大的数量。
+2. 计算 `left` 数组：遍历 `rating` 数组，对于每个位置 `i`，计算其左侧比 `rating[i]` 小和大的数量。
+3. 计算 `right` 数组：遍历 `rating` 数组，对于每个位置 `i`，计算其右侧比 `rating[i]` 小和大的数量。
+4. 遍历 `rating` 数组，对于每个位置 `i`，使用 `left` 和 `right` 数组计算满足条件的三元组数量。
 
 关键点:
-- [TODO]
+- 使用前缀和优化计算过程，减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(rating: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计满足条件的三元组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(rating)
+    if n < 3:
+        return 0
+
+    # 初始化 left 和 right 数组
+    left_less = [0] * n
+    left_greater = [0] * n
+    right_less = [0] * n
+    right_greater = [0] * n
+
+    # 计算 left 数组
+    for i in range(n):
+        for j in range(i):
+            if rating[j] < rating[i]:
+                left_less[i] += 1
+            else:
+                left_greater[i] += 1
+
+    # 计算 right 数组
+    for i in range(n - 1, -1, -1):
+        for j in range(n - 1, i, -1):
+            if rating[j] < rating[i]:
+                right_less[i] += 1
+            else:
+                right_greater[i] += 1
+
+    # 计算满足条件的三元组数量
+    count = 0
+    for i in range(n):
+        count += left_less[i] * right_greater[i]
+        count += left_greater[i] * right_less[i]
+
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将 num 转换为字符串，然后分别对奇数和偶数进行排序，最后重新组合成最大的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 num 转换为字符串列表。
+2. 分别提取出所有的奇数和偶数，并按降序排序。
+3. 遍历原字符串列表，将奇数和偶数替换为排序后的最大值。
+4. 将处理后的字符串列表重新组合成一个整数并返回。
 
 关键点:
-- [TODO]
+- 使用字符串操作来处理数字，便于逐位处理。
+- 对奇数和偶数分别排序，确保在相同奇偶性的位置上选择最大的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 num 的位数。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，需要存储 num 的每一位以及排序后的奇数和偶数。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 num 转换为字符串列表
+    digits = list(str(num))
+    
+    # 提取出所有的奇数和偶数，并按降序排序
+    odd_digits = sorted([d for d in digits if int(d) % 2 == 1], reverse=True)
+    even_digits = sorted([d for d in digits if int(d) % 2 == 0], reverse=True)
+    
+    # 重新组合成最大的数字
+    result = []
+    for d in digits:
+        if int(d) % 2 == 1:
+            result.append(odd_digits.pop(0))
+        else:
+            result.append(even_digits.pop(0))
+    
+    return int(''.join(result))
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和最大堆来维护当前窗口内频率最高的 x 个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个频率字典和一个最大堆。
+2. 先处理第一个窗口，统计频率并将其加入最大堆。
+3. 滑动窗口，每次移动时更新频率字典和最大堆。
+4. 从最大堆中取出频率最高的 x 个元素，计算其和并加入结果数组。
 
 关键点:
-- [TODO]
+- 使用最大堆来维护频率最高的 x 个元素。
+- 滑动窗口时，需要更新频率字典和最大堆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def find_x_sum_of_all_k_long_subarrays(nums: List[int], k: int, x: int) -> List[int]:
+    def get_top_x_elements(heap):
+        top_x_elements = []
+        for _ in range(min(x, len(heap))):
+            freq, num = heapq.heappop(heap)
+            top_x_elements.append(num)
+        return top_x_elements
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def add_to_heap(heap, num, freq):
+        heapq.heappush(heap, (-freq, -num))
 
+    def remove_from_heap(heap, num, freq):
+        heap.remove((-freq, -num))
+        heapq.heapify(heap)
 
-Solution = create_solution(solution_function_name)
+    n = len(nums)
+    result = []
+    freq = {}
+    max_heap = []
+
+    # 初始化第一个窗口
+    for i in range(k):
+        if nums[i] in freq:
+            freq[nums[i]] += 1
+        else:
+            freq[nums[i]] = 1
+        add_to_heap(max_heap, nums[i], freq[nums[i]])
+
+    # 计算第一个窗口的结果
+    top_x_elements = get_top_x_elements(max_heap)
+    result.append(sum(top_x_elements))
+
+    # 滑动窗口
+    for i in range(k, n):
+        # 更新频率
+        freq[nums[i]] = freq.get(nums[i], 0) + 1
+        add_to_heap(max_heap, nums[i], freq[nums[i]])
+
+        # 移除旧元素
+        freq[nums[i - k]] -= 1
+        if freq[nums[i - k]] == 0:
+            del freq[nums[i - k]]
+        else:
+            remove_from_heap(max_heap, nums[i - k], freq[nums[i - k]])
+
+        # 计算当前窗口的结果
+        top_x_elements = get_top_x_elements(max_heap)
+        result.append(sum(top_x_elements))
+
+    return result
+
+Solution = create_solution(find_x_sum_of_all_k_long_subarrays)

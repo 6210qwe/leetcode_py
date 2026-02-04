@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来遍历数组，并计算所有交替子数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，都指向数组的第一个元素。
+2. 使用 `right` 指针遍历数组，如果当前元素与前一个元素不同，则继续移动 `right` 指针。
+3. 当 `right` 指针遇到相邻元素相同的情况时，计算以 `left` 为起点的所有交替子数组的数量，并更新 `left` 指针到 `right` 的位置。
+4. 重复步骤 2 和 3，直到遍历完整个数组。
+5. 最后，处理从最后一个 `left` 到数组末尾的所有交替子数组。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以高效地找到所有交替子数组。
+- 通过计算子数组的长度，可以快速得到所有交替子数组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_alternating_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算二进制数组 nums 中交替子数组的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+    
+    left = 0
+    right = 0
+    count = 0
+    
+    while right < n:
+        # 移动 right 指针，直到遇到相邻元素相同的情况
+        while right + 1 < n and nums[right] != nums[right + 1]:
+            right += 1
+        
+        # 计算以 left 为起点的所有交替子数组的数量
+        length = right - left + 1
+        count += (length * (length + 1)) // 2
+        
+        # 更新 left 指针
+        left = right + 1
+        right = left
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_alternating_subarrays)

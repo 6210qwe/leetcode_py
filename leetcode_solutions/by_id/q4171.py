@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将非负元素提取出来，进行轮替操作，然后放回原数组的非负位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 提取数组中的非负元素。
+2. 对非负元素进行轮替操作。
+3. 将轮替后的非负元素放回原数组的非负位置。
 
 关键点:
-- [TODO]
+- 使用列表推导式提取非负元素。
+- 使用切片操作进行轮替。
+- 使用索引遍历原数组，将非负元素放回原位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def rotate_non_negative_elements(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现非负元素轮替
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取非负元素
+    non_negative_elements = [num for num in nums if num >= 0]
+    
+    # 计算实际轮替次数
+    k = k % len(non_negative_elements) if non_negative_elements else 0
+    
+    # 对非负元素进行轮替
+    rotated_elements = non_negative_elements[k:] + non_negative_elements[:k]
+    
+    # 将轮替后的非负元素放回原数组的非负位置
+    result = []
+    rotated_index = 0
+    for num in nums:
+        if num >= 0:
+            result.append(rotated_elements[rotated_index])
+            rotated_index += 1
+        else:
+            result.append(num)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rotate_non_negative_elements)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个余数出现的次数，然后找到第一个未出现的余数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素对 value 取模的结果，并记录每个余数出现的次数。
+2. 从 0 开始遍历，找到第一个未出现的余数，即为答案。
 
 关键点:
-- [TODO]
+- 通过取模操作将问题转化为余数问题。
+- 使用哈希表记录每个余数的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(value)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_smallest_missing_non_negative_integer(nums: List[int], value: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回在执行上述操作任意次后，nums 的最大 MEX。
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个余数出现的次数
+    remainder_count = [0] * value
+    for num in nums:
+        remainder_count[num % value] += 1
+    
+    # 找到第一个未出现的余数
+    for i in range(value):
+        if remainder_count[i] == 0:
+            return i
+    
+    # 如果所有余数都出现了，则返回 value
+    return value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_smallest_missing_non_negative_integer)

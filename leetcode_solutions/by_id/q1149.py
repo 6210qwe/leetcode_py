@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三个指针分别遍历三个有序数组，找到三个数组的公共元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个指针 i, j, k 分别指向三个数组的起始位置。
+2. 比较三个指针所指向的元素：
+   - 如果三个元素相等，则将该元素加入结果列表，并将三个指针都向前移动一位。
+   - 如果三个元素不相等，则将指向最小元素的指针向前移动一位。
+3. 重复步骤 2 直到任一指针到达数组末尾。
 
 关键点:
-- [TODO]
+- 由于数组是有序的，我们可以利用这一点来高效地找到交集。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m + p)，其中 n, m, p 分别是三个数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def arraysIntersection(arr1: List[int], arr2: List[int], arr3: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到三个有序数组的交集
     """
-    # TODO: 实现最优解法
-    pass
+    i, j, k = 0, 0, 0
+    result = []
+    
+    while i < len(arr1) and j < len(arr2) and k < len(arr3):
+        if arr1[i] == arr2[j] == arr3[k]:
+            result.append(arr1[i])
+            i += 1
+            j += 1
+            k += 1
+        elif arr1[i] <= arr2[j] and arr1[i] <= arr3[k]:
+            i += 1
+        elif arr2[j] <= arr1[i] and arr2[j] <= arr3[k]:
+            j += 1
+        else:
+            k += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(arraysIntersection)

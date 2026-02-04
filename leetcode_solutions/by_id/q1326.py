@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序和前缀和来优化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数的出现次数。
+2. 使用前缀和来快速计算区间内的数的数量。
+3. 对于每个数，计算其作为除数时的贡献。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算区间内的数的数量。
+- 通过遍历每个数及其倍数来计算贡献。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。因为我们需要遍历每个数及其倍数。
+空间复杂度: O(n)，用于存储计数和前缀和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+def sum_of_floored_pairs(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    max_num = max(nums)
+    count = [0] * (max_num + 1)
+    
+    # 计算每个数的出现次数
+    for num in nums:
+        count[num] += 1
+    
+    # 计算前缀和
+    prefix_sum = [0] * (max_num + 2)
+    for i in range(1, max_num + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + count[i]
+    
+    result = 0
+    for i in range(1, max_num + 1):
+        if count[i] == 0:
+            continue
+        for j in range(i, max_num + 1, i):
+            result += count[i] * (prefix_sum[min(j + i - 1, max_num + 1)] - prefix_sum[j - 1])
+            result %= MOD
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_floored_pairs)

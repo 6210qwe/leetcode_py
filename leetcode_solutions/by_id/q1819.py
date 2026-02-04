@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法从大到小尝试放置每个数字，确保每次放置时满足距离要求，并且尽量保持字典序最大。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果数组 res，长度为 2 * n - 1。
+2. 定义一个递归函数 backtrack(i)，表示从第 i 个位置开始尝试放置数字。
+3. 在递归函数中，如果 i 达到数组长度，说明已经成功构建了序列，返回 True。
+4. 如果 res[i] 已经被占用，跳过当前位置。
+5. 从 n 到 1 逆序尝试放置每个数字 k：
+   - 如果 k 为 1，直接放置在当前位置。
+   - 否则，检查 i + k 是否在有效范围内且未被占用，如果可以放置，则放置 k 并继续递归。
+6. 如果递归成功返回 True，否则撤销当前放置，继续尝试下一个数字。
+7. 最终返回结果数组 res。
 
 关键点:
-- [TODO]
+- 从大到小尝试放置数字，确保字典序最大。
+- 使用递归和回溯确保每一步都满足距离要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n) - 回溯法的时间复杂度在最坏情况下接近指数级。
+空间复杂度: O(n) - 递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +57,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足条件的字典序最大的序列
     """
-    # TODO: 实现最优解法
-    pass
+    res = [0] * (2 * n - 1)
+
+    def backtrack(i: int) -> bool:
+        if i == len(res):
+            return True
+        if res[i] != 0:
+            return backtrack(i + 1)
+        
+        for k in range(n, 0, -1):
+            if k == 1 and res[i] == 0:
+                res[i] = k
+                if backtrack(i + 1):
+                    return True
+                res[i] = 0
+            elif i + k < len(res) and res[i + k] == 0:
+                res[i] = res[i + k] = k
+                if backtrack(i + 1):
+                    return True
+                res[i] = res[i + k] = 0
+        
+        return False
+
+    backtrack(0)
+    return res
 
 
 Solution = create_solution(solution_function_name)

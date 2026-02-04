@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个 DP 数组 dp[i][j] 表示前 i 个区间中选择 j 个不重叠区间的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对区间按照结束时间进行排序。
+2. 初始化 DP 数组 dp，dp[i][j] 表示前 i 个区间中选择 j 个不重叠区间的最大得分。
+3. 遍历每个区间，对于每个区间，找到它之前可以与之不重叠的最大得分，并更新 DP 数组。
+4. 最后，通过回溯 DP 数组找到具体的区间索引。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 通过二分查找优化找到不重叠区间的过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n^2) - 排序的时间复杂度是 O(n log n)，遍历和更新 DP 数组的时间复杂度是 O(n^2)。
+空间复杂度: O(n) - DP 数组的空间复杂度是 O(n)。
 """
 
 # ============================================================================
@@ -48,13 +51,45 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_max_score_intervals(intervals: List[List[int]]) -> List[int]:
+    # 按结束时间排序
+    intervals.sort(key=lambda x: x[1])
+    
+    n = len(intervals)
+    dp = [[0] * 5 for _ in range(n + 1)]
+    prev = [-1] * (n + 1)
+    
+    for i in range(1, n + 1):
+        for j in range(1, min(i, 4) + 1):
+            # 不选择当前区间
+            dp[i][j] = dp[i - 1][j]
+            prev[i] = i - 1
+            
+            # 选择当前区间
+            k = binary_search(intervals, i - 1, intervals[i - 1][0])
+            if k != -1 and dp[k][j - 1] + intervals[i - 1][2] > dp[i][j]:
+                dp[i][j] = dp[k][j - 1] + intervals[i - 1][2]
+                prev[i] = k
+    
+    # 回溯找到具体的区间索引
+    result = []
+    i, j = n, 4
+    while i > 0 and j > 0:
+        if prev[i] != i - 1:
+            result.append(i - 1)
+            j -= 1
+        i = prev[i]
+    
+    return result[::-1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def binary_search(intervals: List[List[int]], end: int, target: int) -> int:
+    low, high = 0, end
+    while low < high:
+        mid = (low + high) // 2
+        if intervals[mid][1] < target:
+            low = mid + 1
+        else:
+            high = mid
+    return low if intervals[low][1] < target else -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_score_intervals)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典存储每个成员的子节点，并使用集合存储已死亡的成员。通过深度优先搜索（DFS）来获取当前的继承顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个字典 `children` 来存储每个成员的子节点，并创建一个集合 `dead` 来存储已死亡的成员。
+2. 在 `birth` 方法中，将新成员添加到其父节点的子节点列表中。
+3. 在 `death` 方法中，将成员添加到 `dead` 集合中。
+4. 在 `getInheritanceOrder` 方法中，使用 DFS 遍历树结构，生成当前的继承顺序，排除已死亡的成员。
 
 关键点:
-- [TODO]
+- 使用字典和集合来高效地管理成员及其状态。
+- 使用 DFS 来生成继承顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是成员数量，m 是 `getInheritanceOrder` 的调用次数。每次调用 `getInheritanceOrder` 需要遍历所有成员。
+空间复杂度: O(n)，用于存储成员及其子节点和已死亡成员的状态。
 """
 
 # ============================================================================
@@ -44,17 +47,35 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+
+class ThroneInheritance:
+
+    def __init__(self, kingName: str):
+        self.king = kingName
+        self.children = {kingName: []}
+        self.dead = set()
+
+    def birth(self, parentName: str, childName: str) -> None:
+        self.children[parentName].append(childName)
+        self.children[childName] = []
+
+    def death(self, name: str) -> None:
+        self.dead.add(name)
+
+    def getInheritanceOrder(self) -> List[str]:
+        order = []
+        self.dfs(self.king, order)
+        return order
+
+    def dfs(self, name: str, order: List[str]) -> None:
+        if name not in self.dead:
+            order.append(name)
+        for child in self.children[name]:
+            self.dfs(child, order)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# Your ThroneInheritance object will be instantiated and called as such:
+# obj = ThroneInheritance(kingName)
+# obj.birth(parentName,childName)
+# obj.death(name)
+# param_3 = obj.getInheritanceOrder()

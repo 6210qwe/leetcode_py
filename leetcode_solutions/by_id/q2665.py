@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的时间。我们可以在时间范围内进行二分查找，每次检查当前时间是否足够修理所有车辆。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 0，right 为 1e14（一个足够大的数）。
+2. 在 left 和 right 之间进行二分查找：
+   - 计算中间值 mid。
+   - 检查在 mid 时间内是否可以修理完所有车辆。
+   - 如果可以，则将 right 更新为 mid；否则，将 left 更新为 mid + 1。
+3. 返回 left 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小时间范围。
+- 每次检查当前时间是否足够修理所有车辆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log T)，其中 n 是 ranks 的长度，T 是时间范围的最大值（1e14）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_repair_all_cars(ranks: List[int], cars: int, time: int) -> bool:
+    """检查在给定时间内是否可以修理完所有车辆。"""
+    total_cars_repaired = sum((time // rank) ** 0.5 for rank in ranks)
+    return total_cars_repaired >= cars
 
-def solution_function_name(params):
+def solution_function_name(ranks: List[int], cars: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找来确定修理所有车辆所需的最少时间。
     """
-    # TODO: 实现最优解法
-    pass
-
+    left, right = 0, 10**14
+    while left < right:
+        mid = (left + right) // 2
+        if can_repair_all_cars(ranks, cars, mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 Solution = create_solution(solution_function_name)

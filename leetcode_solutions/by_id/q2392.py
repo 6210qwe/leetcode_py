@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到每个咒语对应的最小药水强度，从而计算出成功组合的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对药水数组进行排序。
+2. 对于每个咒语，使用二分查找找到满足条件的最小药水强度。
+3. 计算满足条件的药水数量，并将其添加到结果数组中。
 
 关键点:
-- [TODO]
+- 排序药水数组以便使用二分查找。
+- 二分查找可以高效地找到满足条件的最小药水强度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m + m log m)，其中 n 是 spells 的长度，m 是 potions 的长度。排序操作的时间复杂度是 O(m log m)，二分查找的时间复杂度是 O(log m)，对于每个咒语都需要进行一次二分查找。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def successful_pairs(spells: List[int], potions: List[int], success: int) -> List[int]:
+    def binary_search(target: int) -> int:
+        left, right = 0, len(potions)
+        while left < right:
+            mid = (left + right) // 2
+            if potions[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    potions.sort()
+    result = []
+    for spell in spells:
+        target = (success + spell - 1) // spell  # 计算满足条件的最小药水强度
+        index = binary_search(target)
+        result.append(len(potions) - index)
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(successful_pairs)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个元素的所有出现位置，然后对每个查询使用二分查找找到最近的相同元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表存储每个元素的所有出现位置。
+2. 对每个查询，使用二分查找找到最近的相同元素。
+3. 计算环形数组中的最小距离。
 
 关键点:
-- [TODO]
+- 使用哈希表存储每个元素的所有出现位置，便于快速查找。
+- 使用二分查找找到最近的相同元素，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q log n)，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n)，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +51,49 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def closest_equal_element_queries(nums: List[int], queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现距离最小相等元素查询
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表存储每个元素的所有出现位置
+    element_positions = {}
+    for i, num in enumerate(nums):
+        if num not in element_positions:
+            element_positions[num] = []
+        element_positions[num].append(i)
+
+    def find_closest_distance(positions: List[int], target: int) -> int:
+        if len(positions) == 1:
+            return -1
+
+        # 二分查找找到最近的相同元素
+        left, right = 0, len(positions) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if positions[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+
+        # 计算环形数组中的最小距离
+        if left == 0:
+            return min(abs(positions[left] - target), abs(len(nums) - positions[-1] + target))
+        elif left == len(positions):
+            return min(abs(positions[0] + len(nums) - target), abs(target - positions[-1]))
+        else:
+            return min(abs(positions[left] - target), abs(positions[left - 1] - target))
+
+    # 处理每个查询
+    result = []
+    for query in queries:
+        num = nums[query]
+        if num in element_positions:
+            distance = find_closest_distance(element_positions[num], query)
+            result.append(distance)
+        else:
+            result.append(-1)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closest_equal_element_queries)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从最大的因子开始构建最小的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 9 到 2 枚举每个因子，尽可能多地将 product 分解为这些因子。
+2. 将这些因子按从小到大的顺序排列，形成最小的数字。
+3. 如果 product 仍然大于 1，则将其放在最前面。
 
 关键点:
-- [TODO]
+- 从 9 到 2 枚举因子，确保生成的数字最小。
+- 如果 product 仍然大于 1，说明 product 是一个质数或剩余部分是质数，直接放在最前面。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(product))，因为每次循环都会将 product 除以一个因子。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_number_with_given_digit_product(product: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现给定数字乘积的最小数字
     """
-    # TODO: 实现最优解法
-    pass
+    if product == 0:
+        return "10"
+    
+    factors = []
+    for i in range(9, 1, -1):
+        while product % i == 0:
+            factors.append(i)
+            product //= i
+    
+    if product > 1:
+        factors.append(product)
+    
+    factors.sort()
+    return ''.join(map(str, factors))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_number_with_given_digit_product)

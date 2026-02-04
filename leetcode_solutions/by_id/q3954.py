@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个包裹作为最后一个包裹时的最大平衡装运。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右向左遍历数组，维护一个单调递增栈。
+2. 对于每个包裹，找到它左边第一个比它大的包裹的位置。
+3. 使用动态规划数组 dp 来记录以当前包裹为最后一个包裹的平衡装运的最大数量。
+4. 更新 dp 数组并返回结果。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地找到每个包裹左边第一个比它大的包裹的位置。
+- 动态规划数组 dp 用于记录以当前包裹为最后一个包裹的平衡装运的最大数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_balanced_shipments(weight: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以形成的平衡装运的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(weight)
+    if n < 2:
+        return 0
+
+    # 单调栈，存储索引
+    stack = []
+    # 动态规划数组
+    dp = [0] * n
+    next_greater = [-1] * n
+
+    # 从右向左遍历数组，维护单调栈
+    for i in range(n - 1, -1, -1):
+        while stack and weight[stack[-1]] <= weight[i]:
+            stack.pop()
+        if stack:
+            next_greater[i] = stack[-1]
+        stack.append(i)
+
+    # 动态规划计算最大平衡装运数量
+    for i in range(n):
+        if next_greater[i] != -1:
+            dp[i] = dp[next_greater[i]] + 1
+        else:
+            dp[i] = 1
+
+    return dp[n - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_balanced_shipments)

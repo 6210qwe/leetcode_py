@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法计算每个小朋友分到的糖果数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 num_people 的数组 result，用于存储每个小朋友分到的糖果数。
+2. 使用一个变量 current_candy 来表示当前要分发的糖果数，初始值为 1。
+3. 使用一个变量 remaining_candies 来表示剩余的糖果数，初始值为 candies。
+4. 循环分发糖果，直到剩余的糖果数为 0：
+   - 计算当前小朋友应该分到的糖果数，如果剩余的糖果数小于 current_candy，则将剩余的所有糖果都分给当前小朋友。
+   - 更新剩余的糖果数。
+   - 更新 current_candy，每次增加 1。
+   - 更新 result 数组中当前小朋友的糖果数。
+5. 返回 result 数组。
 
 关键点:
-- [TODO]
+- 通过循环分发糖果，确保每个小朋友都能按顺序分到正确的糖果数。
+- 使用数学方法避免不必要的循环，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(candies))，因为每次分发的糖果数是递增的，总次数大约为 sqrt(candies)。
+空间复杂度: O(num_people)，需要一个长度为 num_people 的数组来存储结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def distribute_candies(candies: int, num_people: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分糖果
     """
-    # TODO: 实现最优解法
-    pass
+    result = [0] * num_people
+    current_candy = 1
+    remaining_candies = candies
+    index = 0
 
+    while remaining_candies > 0:
+        # 计算当前小朋友应该分到的糖果数
+        if remaining_candies >= current_candy:
+            result[index % num_people] += current_candy
+            remaining_candies -= current_candy
+        else:
+            result[index % num_people] += remaining_candies
+            remaining_candies = 0
+        # 更新 current_candy 和索引
+        current_candy += 1
+        index += 1
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(distribute_candies)

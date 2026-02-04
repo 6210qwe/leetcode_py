@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个前缀和第一次出现的位置，从而快速找到具有相同数量 0 和 1 的最长连续子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和 `count` 为 0，哈希表 `count_map` 用于存储前缀和及其对应的索引。
+2. 遍历数组 `nums`，对于每个元素：
+   - 如果元素为 1，则 `count` 加 1；如果元素为 0，则 `count` 减 1。
+   - 检查 `count` 是否已经在 `count_map` 中出现过，如果出现过，则更新最大长度。
+   - 如果 `count` 未在 `count_map` 中出现过，则将其加入 `count_map` 并记录当前索引。
+3. 返回最大长度。
 
 关键点:
-- [TODO]
+- 使用前缀和将 0 和 1 的平衡问题转化为求解前缀和差值的问题。
+- 哈希表用于记录前缀和第一次出现的位置，从而快速找到最长子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `count_map` 最多需要存储 n 个不同的前缀和。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到含有相同数量的 0 和 1 的最长连续子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    count_map = {0: -1}  # 初始化前缀和为 0 的位置为 -1
+    max_length = 0
+
+    for i, num in enumerate(nums):
+        if num == 1:
+            count += 1
+        else:
+            count -= 1
+
+        if count in count_map:
+            max_length = max(max_length, i - count_map[count])
+        else:
+            count_map[count] = i
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

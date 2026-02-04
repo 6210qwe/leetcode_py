@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和二分查找来找到最早可以标记所有下标的秒数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔数组 `marked` 来记录每个下标是否被标记。
+2. 使用二分查找来确定最早可以标记所有下标的秒数。
+3. 在每次二分查找的过程中，检查当前秒数是否可以标记所有下标。
+4. 如果可以标记所有下标，则更新右边界；否则，更新左边界。
+5. 最后返回最早可以标记所有下标的秒数，如果无法标记所有下标，返回 -1。
 
 关键点:
-- [TODO]
+- 使用二分查找来减少时间复杂度。
+- 通过贪心算法来确定每一步的最佳操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m)，其中 m 是 changeIndices 的长度。二分查找的时间复杂度是 O(log m)，每次检查的时间复杂度是 O(m)。
+空间复杂度: O(n)，其中 n 是 nums 的长度。需要一个布尔数组来记录每个下标是否被标记。
 """
 
 # ============================================================================
@@ -49,12 +53,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def earliest_second_to_mark_indices(nums: List[int], change_indices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回最早可以标记所有下标的秒数，如果无法标记所有下标，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    m = len(change_indices)
+
+    def can_mark_all_by_second(second: int) -> bool:
+        marked = [False] * n
+        operations = [0] * n
+
+        for s in range(second):
+            idx = change_indices[s] - 1
+            if not marked[idx]:
+                if nums[idx] > 0:
+                    operations[idx] += 1
+                    if operations[idx] >= nums[idx]:
+                        marked[idx] = True
+                else:
+                    marked[idx] = True
+
+        return all(marked)
+
+    left, right = 1, m + 1
+    while left < right:
+        mid = (left + right) // 2
+        if can_mark_all_by_second(mid):
+            right = mid
+        else:
+            left = mid + 1
+
+    return left if left <= m else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliest_second_to_mark_indices)

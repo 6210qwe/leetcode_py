@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个字符在原始矩阵中的位置来重构原始字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算矩阵的列数。
+2. 初始化一个空字符串 `originalText`。
+3. 遍历 `encodedText`，根据当前字符在矩阵中的位置，将其添加到 `originalText` 中。
+4. 返回 `originalText`，去除尾随空格。
 
 关键点:
-- [TODO]
+- 计算矩阵的列数时，需要确保最右侧列不为空。
+- 通过计算每个字符在矩阵中的位置来重构原始字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `encodedText` 的长度。
+空间复杂度: O(n)，存储重构后的 `originalText`。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decode_ciphertext(encodedText: str, rows: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解码斜向换位密码
     """
-    # TODO: 实现最优解法
-    pass
+    if not encodedText or rows == 1:
+        return encodedText.strip()
+
+    n = len(encodedText)
+    cols = (n + rows - 1) // rows  # 计算列数
+    originalText = []
+
+    for col in range(cols):
+        for row in range(rows):
+            index = row * cols + col
+            if index < n:
+                originalText.append(encodedText[index])
+
+    return ''.join(originalText).rstrip()
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decode_ciphertext)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调队列来解决这个问题。我们维护一个单调队列来记录当前最优的购买方案。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个动态规划数组 dp，其中 dp[i] 表示购买前 i+1 个水果所需的最小金币数。
+2. 使用一个单调队列来记录当前最优的购买方案。
+3. 遍历价格数组，更新 dp 数组，并维护单调队列。
+4. 返回 dp 数组的最后一个元素，即为购买所有水果所需的最小金币数。
 
 关键点:
-- [TODO]
+- 动态规划数组 dp 用于记录每个位置的最小金币数。
+- 单调队列用于记录当前最优的购买方案，确保每次选择的都是最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是价格数组的长度。我们只需要遍历一次价格数组。
+空间复杂度: O(n)，我们需要一个动态规划数组和一个单调队列。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_coins_for_fruits(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算购买所有水果所需的最少金币数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(prices)
+    dp = [float('inf')] * n
+    dp[0] = prices[0]
+    queue = [(prices[0], 0)]
+
+    for i in range(1, n):
+        while queue and queue[0][1] < i - queue[0][1]:
+            queue.pop(0)
+        dp[i] = min(dp[i], queue[0][0])
+        while queue and queue[-1][0] > prices[i]:
+            queue.pop()
+        queue.append((prices[i], i))
+        dp[i] = min(dp[i], dp[i - 1] + prices[i])
+
+    return dp[-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_coins_for_fruits)

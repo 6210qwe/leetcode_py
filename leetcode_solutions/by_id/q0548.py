@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来检查是否存在满足条件的分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 使用哈希表记录每个前缀和出现的位置。
+3. 遍历数组，检查是否存在满足条件的分割点。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀和及其位置，以便快速查找。
+- 确保四个子数组的长度至少为 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断数组是否可以分割成四个和相等的子数组
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    if n < 4:
+        return False
+    
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    total_sum = prefix_sum[n]
+    if total_sum % 4 != 0:
+        return False
+    
+    target = total_sum // 4
+    seen = {}
+    
+    for i in range(1, n + 1):
+        current_sum = prefix_sum[i]
+        if current_sum == target:
+            seen[1] = i
+        elif current_sum == 2 * target and 1 in seen:
+            seen[2] = i
+        elif current_sum == 3 * target and 2 in seen:
+            seen[3] = i
+        elif current_sum == 4 * target and 3 in seen:
+            return True
+    
+    return False
 
 Solution = create_solution(solution_function_name)

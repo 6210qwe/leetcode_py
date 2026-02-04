@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，同时记录当前节点的父节点和祖父节点的值。如果祖父节点的值为偶数，则将当前节点的值累加到结果中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，参数包括当前节点、父节点值和祖父节点值。
+2. 在 `dfs` 函数中，如果当前节点为空，则返回。
+3. 如果祖父节点的值为偶数，则将当前节点的值累加到结果中。
+4. 递归调用 `dfs` 函数，分别处理当前节点的左子节点和右子节点，更新父节点和祖父节点的值。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 通过传递父节点和祖父节点的值来判断当前节点是否符合条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def sum_even_grandparent(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算祖父节点值为偶数的节点和
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], parent_val: int, grandparent_val: int) -> None:
+        if not node:
+            return
+        if grandparent_val % 2 == 0:
+            nonlocal result
+            result += node.val
+        dfs(node.left, node.val, parent_val)
+        dfs(node.right, node.val, parent_val)
 
+    result = 0
+    dfs(root, 1, 1)  # 初始时父节点和祖父节点的值设为奇数
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_even_grandparent)

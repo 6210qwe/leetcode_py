@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护一个二维数组 dp，其中 dp[i][j] 表示到达第 i 行第 j 列的最小路径和。为了确保相邻行的元素不在同一列，我们需要在每一行找到两个最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] 为 grid 的第一行。
+2. 对于每一行，找到前一行的两个最小值及其索引。
+3. 更新当前行的 dp 值，确保不使用前一行的最小值所在的列。
+4. 最后一行的最小值即为所求。
 
 关键点:
-- [TODO]
+- 使用前一行的两个最小值来更新当前行的 dp 值。
+- 确保相邻行的元素不在同一列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_falling_path_sum(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回非零偏移下降路径的最小和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    if n == 1:
+        return grid[0][0]
+
+    dp = [row[:] for row in grid]
+
+    for i in range(1, n):
+        first_min, second_min = float('inf'), float('inf')
+        first_idx, second_idx = -1, -1
+
+        # 找到前一行的两个最小值及其索引
+        for j in range(n):
+            if dp[i - 1][j] < first_min:
+                second_min, second_idx = first_min, first_idx
+                first_min, first_idx = dp[i - 1][j], j
+            elif dp[i - 1][j] < second_min:
+                second_min, second_idx = dp[i - 1][j], j
+
+        # 更新当前行的 dp 值
+        for j in range(n):
+            if j == first_idx:
+                dp[i][j] += second_min
+            else:
+                dp[i][j] += first_min
+
+    return min(dp[-1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_falling_path_sum)

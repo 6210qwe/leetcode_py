@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个时间点的代价，并找到最小代价的时间点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，记录到当前时间为止的 'N' 的数量。
+2. 遍历所有可能的关门时间，计算每个时间点的代价。
+3. 找到代价最小的时间点。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算某个时间段内的 'N' 的数量。
+- 通过遍历所有可能的关门时间，可以找到最小代价的时间点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(customers: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算商店的最小代价并返回最早关门时间
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(customers)
+    prefix_sum = [0] * (n + 1)
+
+    # 计算前缀和数组
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + (customers[i - 1] == 'N')
+
+    min_penalty = float('inf')
+    best_hour = 0
+
+    # 遍历所有可能的关门时间
+    for j in range(n + 1):
+        penalty = prefix_sum[j] + (n - j) - (prefix_sum[n] - prefix_sum[j])
+        if penalty < min_penalty:
+            min_penalty = penalty
+            best_hour = j
+
+    return best_hour
 
 
 Solution = create_solution(solution_function_name)

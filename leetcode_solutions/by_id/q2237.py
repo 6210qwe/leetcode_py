@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每种类型的两字母单词的数量，然后根据回文串的特性进行构造。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每种两字母单词的数量。
+2. 分别处理对称和非对称的两字母单词：
+   - 对于对称的两字母单词（如 "aa"），可以直接添加到回文串中，最多只能有一个未配对的对称单词。
+   - 对于非对称的两字母单词（如 "ab" 和 "ba"），找到它们的最小配对数量，将这些配对添加到回文串中。
+3. 计算最终的回文串长度。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计每种两字母单词的数量。
+- 根据回文串的特性，合理处理对称和非对称的两字母单词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 words 的长度。我们只需要遍历一次 words 数组。
+空间复杂度: O(1)，哈希表的大小是固定的，最多有 26*26 种两字母单词。
 """
 
 # ============================================================================
@@ -49,12 +53,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_palindrome(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回由给定两字母单词组成的最长回文串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表统计每种两字母单词的数量
+    word_count = {}
+    for word in words:
+        if word in word_count:
+            word_count[word] += 1
+        else:
+            word_count[word] = 1
+    
+    # 初始化回文串长度
+    length = 0
+    # 用于记录是否已经使用了一个未配对的对称单词
+    has_center = False
+    
+    for word, count in word_count.items():
+        if word[0] == word[1]:  # 对称的两字母单词
+            if count % 2 == 0:
+                length += count * 2
+            else:
+                length += (count - 1) * 2
+                has_center = True
+        else:  # 非对称的两字母单词
+            reverse_word = word[1] + word[0]
+            if reverse_word in word_count:
+                min_count = min(count, word_count[reverse_word])
+                length += min_count * 4
+                word_count[reverse_word] -= min_count
+                word_count[word] -= min_count
+    
+    # 如果有未配对的对称单词，可以在回文串中心添加一个
+    if has_center:
+        length += 2
+    
+    return length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindrome)

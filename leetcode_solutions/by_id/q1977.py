@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）来维护当前有效的区间，并在遍历查询时动态更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有区间按左端点升序排序。
+2. 将所有查询按值升序排序，并记录其原始索引。
+3. 初始化一个最小堆，用于存储当前有效的区间。
+4. 遍历排序后的查询：
+   - 移除堆中已经无效的区间（即右端点小于当前查询值的区间）。
+   - 将所有左端点小于等于当前查询值的区间加入堆中。
+   - 如果堆不为空，堆顶元素即为包含当前查询值的最小区间。
+   - 如果堆为空，说明没有区间包含当前查询值，结果为 -1。
 
 关键点:
-- [TODO]
+- 使用最小堆来动态维护当前有效的区间。
+- 在遍历查询时，通过堆顶元素获取最小区间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + m) log n)，其中 n 是 intervals 的长度，m 是 queries 的长度。排序操作的时间复杂度为 O(n log n)，每次插入和删除堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n + m)，需要额外的空间来存储排序后的 intervals 和 queries，以及最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minInterval(intervals: List[List[int]], queries: List[int]) -> List[int]:
+    # 按左端点升序排序
+    intervals.sort(key=lambda x: x[0])
+    
+    # 将查询按值升序排序，并记录其原始索引
+    sorted_queries = sorted(enumerate(queries), key=lambda x: x[1])
+    
+    # 结果数组
+    result = [-1] * len(queries)
+    
+    # 最小堆
+    min_heap = []
+    
+    # 当前处理到的区间索引
+    interval_index = 0
+    
+    for original_index, query in sorted_queries:
+        # 移除堆中已经无效的区间
+        while min_heap and min_heap[0][0] < query:
+            heapq.heappop(min_heap)
+        
+        # 将所有左端点小于等于当前查询值的区间加入堆中
+        while interval_index < len(intervals) and intervals[interval_index][0] <= query:
+            left, right = intervals[interval_index]
+            if right >= query:
+                heapq.heappush(min_heap, (right - left + 1, right))
+            interval_index += 1
+        
+        # 如果堆不为空，堆顶元素即为包含当前查询值的最小区间
+        if min_heap:
+            result[original_index] = min_heap[0][0]
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minInterval)

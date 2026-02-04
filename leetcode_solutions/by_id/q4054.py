@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储移除零后的整数，并利用数学方法避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合 `seen` 来存储移除零后的整数。
+2. 遍历从 1 到 n 的每个整数 x，将 x 转换为字符串并移除其中的所有零，然后将结果转换回整数并加入集合 `seen`。
+3. 返回集合 `seen` 的大小。
 
 关键点:
-- [TODO]
+- 使用集合来去重。
+- 将整数转换为字符串以方便移除零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(n))，其中 n 是输入的整数。对于每个整数 x，我们需要 O(log(x)) 的时间来处理其每一位数字。
+空间复杂度: O(n)，在最坏情况下，集合 `seen` 可能会存储 n 个不同的整数。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_distinct_integers_after_removing_zeros(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计移除零后不同整数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    seen = set()
+
+    for x in range(1, n + 1):
+        # 将整数 x 转换为字符串，移除其中的所有零，再转换回整数
+        no_zero_x = int(''.join(c for c in str(x) if c != '0'))
+        seen.add(no_zero_x)
+
+    return len(seen)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_distinct_integers_after_removing_zeros)

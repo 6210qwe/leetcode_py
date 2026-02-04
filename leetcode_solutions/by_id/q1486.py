@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来优化查找过程，减少时间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 arr2 进行排序。
+2. 遍历 arr1 中的每个元素，使用二分查找在 arr2 中查找是否存在满足 |arr1[i] - arr2[j]| <= d 的元素。
+3. 如果没有找到这样的元素，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是 arr1 的长度，m 是 arr2 的长度。排序操作的时间复杂度是 O(m log m)，二分查找的时间复杂度是 O(log m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_distance_value(arr1: List[int], arr2: List[int], d: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个数组之间的距离值
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid(num: int) -> bool:
+        left, right = 0, len(arr2) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if abs(arr2[mid] - num) <= d:
+                return False
+            elif arr2[mid] < num:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return True
+
+    arr2.sort()
+    count = sum(is_valid(num) for num in arr1)
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_distance_value)

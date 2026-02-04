@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个集合来记录已经接过球的朋友，并使用一个变量来跟踪当前持球的朋友。每一轮更新当前持球的朋友，并检查是否已经接过球。如果某个朋友第二次接到球，则游戏结束。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `visited` 来记录已经接过球的朋友。
+2. 初始化当前持球的朋友 `current` 为 1。
+3. 使用一个循环来模拟传球过程，每次传球后更新 `current` 并检查是否已经接过球。
+4. 如果某个朋友第二次接到球，则游戏结束。
+5. 返回所有没有接到球的朋友。
 
 关键点:
-- [TODO]
+- 使用模运算来处理环形结构。
+- 使用集合来高效地检查和记录已经接过球的朋友。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_losers(n: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    找出转圈游戏的输家
+    :param n: 参与游戏的朋友数量
+    :param k: 每次传球的距离
+    :return: 输家的编号列表
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化已经接过球的朋友集合
+    visited = set()
+    # 初始化当前持球的朋友
+    current = 1
+    # 初始化传球轮次
+    round = 1
+    
+    while True:
+        # 如果当前持球的朋友已经接过球，游戏结束
+        if current in visited:
+            break
+        # 记录当前持球的朋友
+        visited.add(current)
+        # 更新当前持球的朋友
+        current = (current + round * k - 1) % n + 1
+        # 更新传球轮次
+        round += 1
+    
+    # 返回所有没有接到球的朋友
+    return [i for i in range(1, n + 1) if i not in visited]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_losers)

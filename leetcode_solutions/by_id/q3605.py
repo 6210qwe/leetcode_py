@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算找到满足条件的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每个质数 num。
+2. 检查 num 是否为 2 的幂次方减 1（即 num & (num + 1) == 0）。
+3. 如果是，则结果为 num - 1；否则结果为 -1。
 
 关键点:
-- [TODO]
+- 通过位运算快速判断和计算结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。每个质数的处理都是常数时间。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足条件的最小位运算数组
     """
-    # TODO: 实现最优解法
-    pass
+    def find_min_value(num: int) -> int:
+        # 检查 num 是否为 2 的幂次方减 1
+        if num & (num + 1) == 0:
+            return num - 1
+        else:
+            return -1
 
+    # 遍历每个质数并计算结果
+    return [find_min_value(num) for num in nums]
 
 Solution = create_solution(solution_function_name)

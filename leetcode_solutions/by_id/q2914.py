@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 计算每个单元格到最近的小偷的距离，然后使用二分查找和并查集来找到最大安全系数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 BFS 计算每个单元格到最近的小偷的距离。
+2. 使用二分查找确定最大安全系数的可能值。
+3. 对于每个可能的安全系数，使用并查集检查是否存在一条路径满足条件。
 
 关键点:
-- [TODO]
+- 使用 BFS 计算每个单元格到最近的小偷的距离。
+- 使用二分查找和并查集来找到最大安全系数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是网格的边长。BFS 的时间复杂度是 O(n^2)，二分查找的时间复杂度是 O(log n)，每次并查集操作的时间复杂度是 O(n^2)。
+空间复杂度: O(n^2)，用于存储每个单元格到最近的小偷的距离以及并查集的数据结构。
 """
 
 # ============================================================================
@@ -47,14 +49,63 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import deque
+from typing import Tuple
 
+def find_safest_path(grid: List[List[int]]) -> int:
+    n = len(grid)
+    distances = [[float('inf')] * n for _ in range(n)]
+    
+    # Step 1: Calculate the distance to the nearest thief using BFS
+    queue = deque()
+    for r in range(n):
+        for c in range(n):
+            if grid[r][c] == 1:
+                distances[r][c] = 0
+                queue.append((r, c))
+    
+    while queue:
+        r, c = queue.popleft()
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < n and 0 <= nc < n and distances[nr][nc] > distances[r][c] + 1:
+                distances[nr][nc] = distances[r][c] + 1
+                queue.append((nr, nc))
+    
+    # Step 2: Use binary search to find the maximum safety factor
+    def can_reach_end(safety_factor: int) -> bool:
+        parent = list(range(n * n))
+        
+        def find(x: int) -> int:
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x: int, y: int) -> None:
+            parent[find(x)] = find(y)
+        
+        for r in range(n):
+            for c in range(n):
+                if distances[r][c] >= safety_factor:
+                    index = r * n + c
+                    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        nr, nc = r + dr, c + dc
+                        if 0 <= nr < n and 0 <= nc < n and distances[nr][nc] >= safety_factor:
+                            neighbor_index = nr * n + nc
+                            union(index, neighbor_index)
+        
+        return find(0) == find(n * n - 1)
+    
+    left, right = 0, n * 2
+    result = 0
+    while left <= right:
+        mid = (left + right) // 2
+        if can_reach_end(mid):
+            result = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_safest_path)

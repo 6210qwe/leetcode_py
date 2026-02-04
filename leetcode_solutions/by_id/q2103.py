@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来找到每个农场组，并记录其边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果列表 `result` 来存储所有农场组的边界。
+2. 遍历整个矩阵 `land`，对于每个未访问过的农场土地（值为1），启动一次DFS。
+3. 在DFS过程中，更新当前农场组的右下角边界。
+4. 将找到的农场组边界添加到结果列表中。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用DFS来遍历并标记已访问的土地。
+- 通过记录每个农场组的右下角边界来确定其范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个元素最多被访问一次。
+空间复杂度: O(m * n)，在最坏情况下，递归栈的深度可能达到 m * n。
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def findFarmland(land: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    找到所有的农场组
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(r, c, max_r, max_c):
+        if r < 0 or r >= len(land) or c < 0 or c >= len(land[0]) or land[r][c] != 1:
+            return
+        # 更新右下角边界
+        max_r[0] = max(max_r[0], r)
+        max_c[0] = max(max_c[0], c)
+        # 标记为已访问
+        land[r][c] = -1
+        # 递归访问四个方向
+        dfs(r + 1, c, max_r, max_c)
+        dfs(r - 1, c, max_r, max_c)
+        dfs(r, c + 1, max_r, max_c)
+        dfs(r, c - 1, max_r, max_c)
 
+    result = []
+    for r in range(len(land)):
+        for c in range(len(land[0])):
+            if land[r][c] == 1:
+                max_r, max_c = [r], [c]
+                dfs(r, c, max_r, max_c)
+                result.append([r, c, max_r[0], max_c[0]])
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findFarmland)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每种披萨配料的成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表来存储每个配料的总成本。
+2. 使用 GROUP BY 和 SUM 函数来计算每个配料的总成本。
+3. 返回结果表。
 
 关键点:
-- [TODO]
+- 使用 SQL 的 GROUP BY 和 SUM 函数来聚合数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是配料条目的数量。因为我们需要遍历所有条目来进行聚合。
+空间复杂度: O(m)，其中 m 是不同配料的数量。因为我们需要存储每个配料的总成本。
 """
 
 # ============================================================================
@@ -51,10 +52,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来计算每种披萨配料的成本
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        topping_name,
+        SUM(topping_cost) AS total_cost
+    FROM 
+        pizza_toppings
+    GROUP BY 
+        topping_name
+    ORDER BY 
+        total_cost DESC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

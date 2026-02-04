@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调栈来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个有序映射 (OrderedDict) 来存储每个元素的索引。
+2. 对于每个元素，找到其奇数跳跃和偶数跳跃的目标索引。
+3. 使用动态规划数组 dp 来记录从每个索引出发是否可以到达数组末尾。
+4. 从数组末尾向前遍历，更新 dp 数组。
+5. 最后统计 dp 数组中可以从奇数跳跃到达末尾的索引数量。
 
 关键点:
-- [TODO]
+- 使用有序映射来高效找到奇数跳跃和偶数跳跃的目标索引。
+- 动态规划数组 dp 用于记录从每个索引出发是否可以到达数组末尾。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，后续的遍历操作为 O(n)。
+空间复杂度: O(n)，需要额外的空间来存储有序映射和动态规划数组。
 """
 
 # ============================================================================
@@ -47,14 +51,67 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import bisect
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def odd_even_jumps(arr: List[int]) -> int:
+    n = len(arr)
+    if n == 1:
+        return 1
+
+    # 用于存储每个元素的索引
+    index_map = {}
+    for i, num in enumerate(arr):
+        if num not in index_map:
+            index_map[num] = []
+        index_map[num].append(i)
+
+    # 用于存储奇数跳跃和偶数跳跃的目标索引
+    odd_next = [None] * n
+    even_next = [None] * n
+
+    # 用于存储当前处理的元素
+    sorted_nums = sorted(index_map.keys())
+
+    # 用于存储当前处理的元素的索引
+    index_stack = []
+
+    # 找到奇数跳跃的目标索引
+    for num in sorted_nums:
+        indices = index_map[num]
+        for index in indices:
+            pos = bisect.bisect_left(index_stack, index)
+            if pos < len(index_stack):
+                odd_next[index] = index_stack[pos]
+        index_stack.extend(indices)
+
+    # 清空索引栈
+    index_stack.clear()
+
+    # 找到偶数跳跃的目标索引
+    for num in reversed(sorted_nums):
+        indices = index_map[num]
+        for index in indices:
+            pos = bisect.bisect_left(index_stack, index)
+            if pos < len(index_stack):
+                even_next[index] = index_stack[pos]
+        index_stack.extend(indices)
+
+    # 动态规划数组
+    dp_odd = [False] * n
+    dp_even = [False] * n
+    dp_odd[-1] = True
+    dp_even[-1] = True
+
+    # 从数组末尾向前遍历
+    for i in range(n - 2, -1, -1):
+        if odd_next[i] is not None:
+            dp_odd[i] = dp_even[odd_next[i]]
+        if even_next[i] is not None:
+            dp_even[i] = dp_odd[even_next[i]]
+
+    # 统计可以从奇数跳跃到达末尾的索引数量
+    return sum(dp_odd)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(odd_even_jumps)

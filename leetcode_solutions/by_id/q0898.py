@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表推导式来生成转置矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 获取原矩阵的行数和列数。
+2. 使用列表推导式生成转置矩阵，通过交换行索引和列索引。
 
 关键点:
-- [TODO]
+- 列表推导式可以简洁地实现矩阵转置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，需要额外的空间来存储转置后的矩阵。
 """
 
 # ============================================================================
@@ -49,12 +49,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def transpose_matrix(matrix: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回矩阵的转置矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    # 获取原矩阵的行数和列数
+    m, n = len(matrix), len(matrix[0])
+    
+    # 使用列表推导式生成转置矩阵
+    transposed_matrix = [[matrix[j][i] for j in range(m)] for i in range(n)]
+    
+    return transposed_matrix
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(transpose_matrix)

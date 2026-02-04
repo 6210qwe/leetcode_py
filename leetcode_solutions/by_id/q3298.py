@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个元素作为连续子序列结尾的最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用动态规划数组 dp，其中 dp[i] 表示以 nums[i] 结尾的最长连续子序列的长度。
+3. 初始化 dp 数组，dp[0] = 1。
+4. 遍历数组，对于每个元素 nums[i]，检查它是否可以接在前面的某个元素后面形成连续子序列。
+5. 更新 dp[i] 的值。
+6. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 排序后的数组可以帮助我们更容易地找到连续子序列。
+- 动态规划数组 dp 用于记录每个位置的最大连续子序列长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度，因为排序的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，因为我们使用了一个额外的 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
 
+    # 对数组进行排序
+    nums.sort()
+
+    n = len(nums)
+    dp = [1] * n  # 初始化 dp 数组
+
+    for i in range(1, n):
+        for j in range(i):
+            if nums[i] == nums[j] + 1 or (nums[i] == nums[j] and nums[i] != 1):
+                dp[i] = max(dp[i], dp[j] + 1)
+
+    return max(dp)
 
 Solution = create_solution(solution_function_name)

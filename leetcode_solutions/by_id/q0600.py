@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算不超过 n 的所有不含连续 1 的非负整数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为二进制字符串。
+2. 定义 dp[i][j] 表示长度为 i 的二进制数，以 j 结尾（j 为 0 或 1）且没有连续 1 的数量。
+3. 初始化 dp 数组，dp[1][0] = 1, dp[1][1] = 1。
+4. 通过状态转移方程更新 dp 数组：
+   - dp[i][0] = dp[i-1][0] + dp[i-1][1]
+   - dp[i][1] = dp[i-1][0]
+5. 遍历 n 的二进制表示，根据当前位和前一位的状态更新结果。
+6. 返回最终结果。
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算。
+- 通过二进制表示的遍历来处理边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，因为我们需要遍历 n 的二进制表示。
+空间复杂度: O(log n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +56,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_integers(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不超过 n 的所有不含连续 1 的非负整数的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 n 转换为二进制字符串
+    binary_n = bin(n)[2:]
+    length = len(binary_n)
+    
+    # 定义 dp 数组
+    dp = [[0, 0] for _ in range(length + 1)]
+    dp[1][0], dp[1][1] = 1, 1
+    
+    # 通过状态转移方程更新 dp 数组
+    for i in range(2, length + 1):
+        dp[i][0] = dp[i-1][0] + dp[i-1][1]
+        dp[i][1] = dp[i-1][0]
+    
+    # 初始化结果
+    result = 0
+    prev_bit = 0
+    
+    # 遍历 n 的二进制表示
+    for i in range(length):
+        bit = int(binary_n[i])
+        if bit == 1:
+            result += dp[length - i][0]
+            if prev_bit == 1:
+                break
+        prev_bit = bit
+    
+    # 如果没有提前退出，加上最后一个数
+    if prev_bit != 1:
+        result += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_integers)

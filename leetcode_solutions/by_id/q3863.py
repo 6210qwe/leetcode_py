@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理电网的连通性，并使用有序集合来快速找到电网中编号最小的在线电站。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建并查集，将所有电站初始化为在线状态。
+2. 对于每个查询：
+   - 如果是 [1, x] 类型的查询，检查电站 x 是否在线。如果在线，则返回 x；否则，查找该电网中编号最小的在线电站。
+   - 如果是 [2, x] 类型的查询，将电站 x 标记为离线。
 
 关键点:
-- [TODO]
+- 使用并查集来高效管理电网的连通性。
+- 使用有序集合来快速找到电网中编号最小的在线电站。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) * α(c))，其中 n 是 connections 的长度，q 是 queries 的长度，α 是反阿克曼函数。
+空间复杂度: O(c)，其中 c 是电站的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import sortedcontainers
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def power_grid_maintenance(c: int, connections: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 构建并查集
+    uf = UnionFind(c + 1)
+    for u, v in connections:
+        uf.union(u, v)
+    
+    # 初始化在线电站
+    online_stations = sortedcontainers.SortedSet(range(1, c + 1))
+    
+    result = []
+    for query in queries:
+        if query[0] == 1:
+            station = query[1]
+            if station in online_stations:
+                result.append(station)
+            else:
+                root = uf.find(station)
+                smallest_online = online_stations.bisect_left(root)
+                if smallest_online < len(online_stations) and uf.find(online_stations[smallest_online]) == root:
+                    result.append(online_stations[smallest_online])
+                else:
+                    result.append(-1)
+        elif query[0] == 2:
+            station = query[1]
+            online_stations.discard(station)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(power_grid_maintenance)

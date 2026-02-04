@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较两个事件的时间段来判断是否存在交集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将时间字符串转换为分钟数。
+2. 比较两个事件的时间段，判断是否存在交集。
 
 关键点:
-- [TODO]
+- 将时间字符串转换为分钟数以便于比较。
+- 使用简单的条件判断来确定是否存在交集。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 时间转换和比较都是常数时间操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def have_conflict(event1: List[str], event2: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两个事件是否存在冲突。
+    
+    :param event1: 第一个事件的时间段，格式为 ["HH:MM", "HH:MM"]
+    :param event2: 第二个事件的时间段，格式为 ["HH:MM", "HH:MM"]
+    :return: 如果两个事件存在冲突，返回 True；否则返回 False。
     """
-    # TODO: 实现最优解法
-    pass
+    def time_to_minutes(time: str) -> int:
+        """将时间字符串转换为分钟数。"""
+        hours, minutes = map(int, time.split(':'))
+        return hours * 60 + minutes
 
+    start1, end1 = map(time_to_minutes, event1)
+    start2, end2 = map(time_to_minutes, event2)
 
-Solution = create_solution(solution_function_name)
+    # 判断是否存在交集
+    return not (end1 < start2 or end2 < start1)
+
+Solution = create_solution(have_conflict)

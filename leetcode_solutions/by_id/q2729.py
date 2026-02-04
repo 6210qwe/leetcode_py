@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_valid`，用于判断给定的操作次数是否可以使所有数字变为非正数。
+2. 使用二分查找来确定最小的操作次数。初始范围是 [1, max(nums)]。
+3. 在每次迭代中，计算中间值 `mid`，并使用 `is_valid` 函数检查 `mid` 是否有效。
+4. 如果 `mid` 有效，则缩小右边界；否则，增大左边界。
+5. 最终返回左边界作为最小操作次数。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化时间复杂度。
+- 辅助函数 `is_valid` 通过模拟操作来判断是否可以使所有数字变为非正数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组的长度，max(nums) 是数组中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def is_valid(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的操作次数 k 是否可以使所有数字变为非正数。
     """
-    # TODO: 实现最优解法
-    pass
+    for num in nums:
+        if num > k * (k + 1) // 2:
+            return False
+    return True
 
+def solution_function_name(nums: List[int]) -> int:
+    """
+    函数式接口 - 使数字变为非正数的最小操作次数
+    """
+    left, right = 1, max(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if is_valid(nums, mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 Solution = create_solution(solution_function_name)

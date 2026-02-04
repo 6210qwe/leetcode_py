@@ -21,24 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用归并排序来统计逆序对，同时在合并过程中计算满足条件的翻转对。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 分解数组为两个子数组，分别递归处理。
+2. 在合并两个已排序子数组的过程中，统计满足 nums[i] > 2 * nums[j] 的翻转对。
+3. 合并两个子数组，并返回结果。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 利用归并排序的分治思想，同时在合并过程中统计翻转对。
+- 优化时间和空间复杂度，时间复杂度为 O(n log n)，空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n log n) - 归并排序的时间复杂度
+空间复杂度: O(n) - 归并排序的空间复杂度
 """
 
 # ============================================================================
@@ -51,25 +51,59 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def reverse_pairs(params):
+def reverse_pairs(nums: List[int]) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算数组中的重要翻转对数量
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用归并排序，在合并过程中统计满足条件的翻转对。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 输入的整数数组
         
     Returns:
-        [待实现] 返回值说明
+        返回数组中的重要翻转对数量
         
     Example:
-        >>> reverse_pairs([待实现])
-        [待实现]
+        >>> reverse_pairs([1,3,2,3,1])
+        2
     """
-    # TODO: 实现最优解法
-    pass
+    def merge_sort_and_count(l: int, r: int) -> int:
+        if l >= r:
+            return 0
+        
+        mid = (l + r) // 2
+        count = merge_sort_and_count(l, mid) + merge_sort_and_count(mid + 1, r)
+        
+        # 统计满足条件的翻转对
+        j = mid + 1
+        for i in range(l, mid + 1):
+            while j <= r and nums[i] > 2 * nums[j]:
+                j += 1
+            count += j - (mid + 1)
+        
+        # 合并两个子数组
+        temp = []
+        left, right = l, mid + 1
+        while left <= mid and right <= r:
+            if nums[left] <= nums[right]:
+                temp.append(nums[left])
+                left += 1
+            else:
+                temp.append(nums[right])
+                right += 1
+        while left <= mid:
+            temp.append(nums[left])
+            left += 1
+        while right <= r:
+            temp.append(nums[right])
+            right += 1
+        for k in range(len(temp)):
+            nums[l + k] = temp[k]
+        
+        return count
+    
+    return merge_sort_and_count(0, len(nums) - 1)
 
 
 # 自动生成Solution类（无需手动编写）

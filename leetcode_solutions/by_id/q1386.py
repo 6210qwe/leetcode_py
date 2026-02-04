@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将二维网格展平为一维数组，然后进行循环移位，再重新构造成二维网格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总元素数量 total_elements = m * n。
+2. 将二维网格展平为一维数组 flat_grid。
+3. 对一维数组进行 k 次循环移位。
+4. 将移位后的一维数组重新构造成二维网格。
 
 关键点:
-- [TODO]
+- 使用取模运算来处理循环移位。
+- 重新构造二维网格时注意行列索引的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是行数，n 是列数。
+空间复杂度: O(m * n)，需要额外的空间存储展平后的一维数组。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shift_2d_grid(grid: List[List[int]], k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将二维网格迁移 k 次
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    total_elements = m * n
+    k = k % total_elements  # 处理 k 超过总元素数量的情况
+
+    # 将二维网格展平为一维数组
+    flat_grid = [grid[i // n][i % n] for i in range(total_elements)]
+
+    # 对一维数组进行 k 次循环移位
+    shifted_flat_grid = flat_grid[-k:] + flat_grid[:-k]
+
+    # 重新构造成二维网格
+    result_grid = [[shifted_flat_grid[i * n + j] for j in range(n)] for i in range(m)]
+    return result_grid
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shift_2d_grid)

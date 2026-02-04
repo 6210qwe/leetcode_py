@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个计数器来记录每个数字的出现次数和每个出现次数的频率。通过遍历数组并更新这些计数器，可以判断当前前缀是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器：`count` 用于记录每个数字的出现次数，`freq` 用于记录每个出现次数的频率。
+2. 遍历数组 `nums`，更新 `count` 和 `freq`。
+3. 在每次更新后，检查当前前缀是否满足条件：
+   - 如果所有数字的出现次数相同，或者只有一个数字的出现次数比其他数字多 1，并且这个多 1 的数字只出现一次，那么当前前缀满足条件。
+4. 记录满足条件的最大前缀长度。
 
 关键点:
-- [TODO]
+- 使用两个计数器来高效地维护和检查前缀的频率。
+- 通过遍历数组并更新计数器，可以在 O(n) 时间内完成检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，最坏情况下需要存储每个数字的出现次数和每个出现次数的频率。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxEqualFreq(nums: List[int]) -> int:
+    count = {}
+    freq = {}
+    max_freq = 0
+    res = 0
+    
+    for i, num in enumerate(nums):
+        # 更新 count 和 freq
+        if num in count:
+            old_count = count[num]
+            freq[old_count] -= 1
+            if freq[old_count] == 0:
+                del freq[old_count]
+        new_count = count.get(num, 0) + 1
+        count[num] = new_count
+        freq[new_count] = freq.get(new_count, 0) + 1
+        max_freq = max(max_freq, new_count)
+        
+        # 检查当前前缀是否满足条件
+        if (max_freq * freq[max_freq] == i or
+            (max_freq - 1) * (freq[max_freq - 1] + 1) == i + 1 and freq[max_freq] == 1 or
+            max_freq == 1):
+            res = i + 1
+    
+    return res
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = maxEqualFreq

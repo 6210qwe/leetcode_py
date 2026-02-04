@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用度数数组来判断是否存在一个简单无向图。如果每个节点的度数都是偶数且总度数是偶数，则存在这样的图。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查每个节点的度数是否为偶数。
+2. 计算所有节点度数的总和，检查是否为偶数。
 
 关键点:
-- [TODO]
+- 简单无向图中每个节点的度数必须是偶数。
+- 总度数必须是偶数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(degrees: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否存在一个简单无向图
+    :param degrees: 每个节点的度数
+    :return: 是否存在这样的图
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查每个节点的度数是否为偶数
+    for degree in degrees:
+        if degree % 2 != 0:
+            return False
+    
+    # 计算所有节点度数的总和，检查是否为偶数
+    total_degrees = sum(degrees)
+    return total_degrees % 2 == 0
 
 
 Solution = create_solution(solution_function_name)

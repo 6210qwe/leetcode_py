@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组来快速计算每个区间的和，并使用哈希表记录每个前缀和的出现位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用哈希表记录每个前缀和的出现位置。
+3. 遍历哈希表，计算每个前缀和对应的区间数量。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意区间的和。
+- 哈希表记录每个前缀和的出现位置，方便后续计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算包含相等值数字块的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
+    
+    prefix_sum_count = {}
+    for i, ps in enumerate(prefix_sum):
+        if ps not in prefix_sum_count:
+            prefix_sum_count[ps] = []
+        prefix_sum_count[ps].append(i)
+    
+    count = 0
+    for indices in prefix_sum_count.values():
+        m = len(indices)
+        count += m * (m - 1) // 2
+    
+    return count
 
 Solution = create_solution(solution_function_name)

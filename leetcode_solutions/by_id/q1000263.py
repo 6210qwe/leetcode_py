@@ -21,40 +21,78 @@ LCR 027. 回文链表 - 给定一个链表的 头节点 head ，请判断其是�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针找到链表中点，反转后半部分链表，然后比较前半部分和反转后的后半部分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用快慢指针找到链表的中点。
+2. 反转链表的后半部分。
+3. 比较前半部分和反转后的后半部分是否相等。
+4. 恢复链表（可选）。
 
 关键点:
-- [TODO]
+- 快慢指针用于找到链表中点。
+- 反转链表的后半部分以进行比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def is_palindrome(head: Optional[ListNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定链表是否为回文链表。
+    
+    :param head: 链表的头节点
+    :return: 是否为回文链表
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or not head.next:
+        return True
 
+    # 使用快慢指针找到链表的中点
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
 
-Solution = create_solution(solution_function_name)
+    # 反转链表的后半部分
+    second_half = reverse_linked_list(slow)
+    first_half = head
+
+    # 比较前半部分和反转后的后半部分
+    while second_half:
+        if first_half.val != second_half.val:
+            return False
+        first_half = first_half.next
+        second_half = second_half.next
+
+    return True
+
+def reverse_linked_list(head: ListNode) -> ListNode:
+    """
+    反转链表。
+    
+    :param head: 链表的头节点
+    :return: 反转后的链表头节点
+    """
+    prev = None
+    current = head
+    while current:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+    return prev
+
+Solution = create_solution(is_palindrome)

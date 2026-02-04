@@ -21,22 +21,32 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来解决这个问题。由于数组被旋转过，我们需要处理两种情况：左半部分有序和右半部分有序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 arr[mid] == target，检查左侧是否有相同的元素，如果有则更新结果。
+   - 如果左半部分有序：
+     - 如果 target 在左半部分范围内，移动 right 指针。
+     - 否则，移动 left 指针。
+   - 如果右半部分有序：
+     - 如果 target 在右半部分范围内，移动 left 指针。
+     - 否则，移动 right 指针。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 通过比较中间元素与左右边界元素，确定哪一部分是有序的。
+- 处理重复元素时，需要向左查找以找到最小索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +59,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def search_rotated_array(arr: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 搜索旋转数组
     """
-    # TODO: 实现最优解法
-    pass
+    if not arr:
+        return -1
+
+    left, right = 0, len(arr) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            result = mid
+            # 查找左侧是否有相同的元素
+            while result > 0 and arr[result - 1] == target:
+                result -= 1
+            return result
+
+        # 左半部分有序
+        if arr[left] <= arr[mid]:
+            if arr[left] <= target < arr[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        # 右半部分有序
+        else:
+            if arr[mid] < target <= arr[right]:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(search_rotated_array)

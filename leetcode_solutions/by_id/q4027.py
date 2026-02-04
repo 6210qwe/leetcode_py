@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录以每个元素结尾的稳定子序列数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `dp_even` 和 `dp_odd`，分别记录以偶数和奇数结尾的稳定子序列数量。
+2. 遍历数组 `nums`，根据当前元素的奇偶性更新 `dp_even` 和 `dp_odd`。
+3. 最后，返回所有稳定子序列的数量，并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过维护两个数组来区分奇数和偶数结尾的子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_stable_subsequences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回所有稳定子序列的数量，并对 10^9 + 7 取余。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 初始化 dp 数组
+    dp_even = 0
+    dp_odd = 0
+    total = 0
+    
+    for i in range(n):
+        if nums[i] % 2 == 0:
+            # 当前元素是偶数
+            new_dp_even = (total + 1) % MOD
+            dp_even = (dp_even + new_dp_even - dp_even) % MOD
+        else:
+            # 当前元素是奇数
+            new_dp_odd = (total + 1) % MOD
+            dp_odd = (dp_odd + new_dp_odd - dp_odd) % MOD
+        
+        # 更新总数
+        total = (total + 1) % MOD
+    
+    return (dp_even + dp_odd) % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_stable_subsequences)

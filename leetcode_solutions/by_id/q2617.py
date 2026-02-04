@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）来模拟每个人通过门的过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将所有人的到达时间和通过时间存入队列。
+2. 按照到达时间从小到大处理每个人。
+3. 对于每个人，计算其实际通过门的时间，并更新总时间。
+4. 返回最后一个人通过门的时间。
 
 关键点:
-- [TODO]
+- 使用优先队列可以高效地按到达时间处理每个人。
+- 计算通过门的时间时需要考虑前一个人的通过时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是人数。因为我们需要对所有人进行排序，并且每次插入和删除操作的时间复杂度是 O(log n)。
+空间复杂度: O(n)，优先队列的空间复杂度是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(arrival: List[int], state: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算通过门的时间
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将每个人的到达时间和通过时间存入优先队列
+    events = []
+    for i in range(len(arrival)):
+        heapq.heappush(events, (arrival[i], i))
+    
+    current_time = 0
+    last_exit_time = 0
+    
+    while events:
+        arrival_time, index = heapq.heappop(events)
+        if arrival_time > current_time:
+            current_time = arrival_time
+        if state[index] == 1:  # 进门
+            current_time += 1
+        else:  # 出门
+            current_time = max(current_time + 1, last_exit_time + 1)
+        last_exit_time = current_time
+    
+    return last_exit_time
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用闭包来创建 `toBe` 和 `notToBe` 函数，并在这些函数中进行值的比较。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 `expect` 函数，接受一个值 `val`。
+2. 返回一个对象，该对象包含 `toBe` 和 `notToBe` 两个方法。
+3. `toBe` 方法接受一个值 `other_val`，如果 `val` 和 `other_val` 相等则返回 `True`，否则抛出 "Not Equal" 错误。
+4. `notToBe` 方法接受一个值 `other_val`，如果 `val` 和 `other_val` 不相等则返回 `True`，否则抛出 "Equal" 错误。
 
 关键点:
-- [TODO]
+- 使用闭包来捕获 `expect` 函数中的 `val` 值。
+- 在 `toBe` 和 `notToBe` 方法中进行值的比较并抛出相应的错误。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any
 
-
-def solution_function_name(params):
+def expect(val: Any):
     """
-    函数式接口 - [TODO] 实现
+    创建一个包含 toBe 和 notToBe 方法的对象，用于比较值。
     """
-    # TODO: 实现最优解法
-    pass
+    def toBe(other_val: Any) -> bool:
+        if val == other_val:
+            return True
+        else:
+            raise AssertionError("Not Equal")
 
+    def notToBe(other_val: Any) -> bool:
+        if val != other_val:
+            return True
+        else:
+            raise AssertionError("Equal")
 
-Solution = create_solution(solution_function_name)
+    return {"toBe": toBe, "notToBe": notToBe}
+
+# 测试示例
+if __name__ == "__main__":
+    # 示例 1
+    assert expect(5).toBe(5) is True
+    # 示例 2
+    try:
+        expect(5).toBe(None)
+    except AssertionError as e:
+        assert str(e) == "Not Equal"
+    # 示例 3
+    assert expect(5).notToBe(None) is True

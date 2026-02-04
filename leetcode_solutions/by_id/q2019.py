@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个行程编码数组，计算对应位置的乘积，并合并结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针分别指向两个行程编码数组的起始位置。
+2. 遍历两个数组，计算当前指针位置的乘积，并更新结果数组。
+3. 根据当前指针位置的频率，移动指针。
+4. 合并结果数组，返回最终的行程编码数组。
 
 关键点:
-- [TODO]
+- 使用双指针同时遍历两个数组，确保时间复杂度为 O(n + m)。
+- 合并结果时，处理相同值的连续段。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两个行程编码数组的长度。
+空间复杂度: O(1)，除了输出结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findRLEArray(encoded1: List[List[int]], encoded2: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个行程编码数组的积
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    result = []
+    
+    while i < len(encoded1) and j < len(encoded2):
+        val1, freq1 = encoded1[i]
+        val2, freq2 = encoded2[j]
+        product = val1 * val2
+        min_freq = min(freq1, freq2)
+        
+        if result and result[-1][0] == product:
+            result[-1][1] += min_freq
+        else:
+            result.append([product, min_freq])
+        
+        if freq1 == min_freq:
+            i += 1
+        if freq2 == min_freq:
+            j += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findRLEArray)

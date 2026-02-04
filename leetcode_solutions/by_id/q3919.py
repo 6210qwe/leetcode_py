@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和 Dijkstra 算法来找到满足条件的最大路径分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用二分查找来确定最大路径分数的范围。
+3. 对于每个二分查找的中间值，使用 Dijkstra 算法来检查是否存在一条路径满足条件。
+4. 如果存在满足条件的路径，则更新二分查找的下界；否则，更新上界。
+5. 最终返回二分查找的结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小最大路径分数的范围。
+- 使用 Dijkstra 算法来检查路径的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) log C)，其中 m 是边的数量，n 是节点的数量，C 是边的成本范围。
+空间复杂度: O(m + n)，用于存储图的邻接表和 Dijkstra 算法的辅助数据结构。
 """
 
 # ============================================================================
@@ -47,14 +51,45 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(edges: List[List[int]], online: List[bool], k: int) -> int:
+    def dijkstra(max_cost: int) -> bool:
+        # Dijkstra's algorithm to check if there is a valid path with minimum edge cost >= max_cost
+        n = len(online)
+        graph = [[] for _ in range(n)]
+        for u, v, cost in edges:
+            if online[u] and online[v] and cost >= max_cost:
+                graph[u].append((v, cost))
+        
+        dist = [float('inf')] * n
+        dist[0] = 0
+        pq = [(0, 0)]  # (cost, node)
+        
+        while pq:
+            current_cost, u = heapq.heappop(pq)
+            if u == n - 1:
+                return True
+            if current_cost > k:
+                continue
+            for v, cost in graph[u]:
+                new_cost = current_cost + cost
+                if new_cost < dist[v]:
+                    dist[v] = new_cost
+                    heapq.heappush(pq, (new_cost, v))
+        
+        return False
+    
+    low, high = 0, 10**9
+    result = -1
+    while low <= high:
+        mid = (low + high) // 2
+        if dijkstra(mid):
+            result = mid
+            low = mid + 1
+        else:
+            high = mid - 1
+    
+    return result
 
 Solution = create_solution(solution_function_name)

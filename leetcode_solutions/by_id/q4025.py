@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用 Pandas 库进行数据处理和分析。
+2. 计算每个客户的购买次数、退款次数和活跃天数。
+3. 筛选出符合条件的忠实客户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并转换为 Pandas DataFrame。
+2. 计算每个客户的购买次数和退款次数。
+3. 计算每个客户的活跃天数。
+4. 计算每个客户的退款率。
+5. 筛选出符合条件的忠实客户。
+6. 返回结果表并按 customer_id 升序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 groupby 和 agg 方法进行分组聚合。
+- 使用 Pandas 的日期处理功能计算活跃天数。
+- 使用 Pandas 的筛选功能过滤出符合条件的忠实客户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 customer_transactions 表的长度。主要操作包括分组聚合和筛选。
+空间复杂度: O(n)，使用了额外的 Pandas DataFrame 存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def find_loyal_customers(customer_transactions: pd.DataFrame) -> pd.DataFrame:
+    # 计算每个客户的购买次数和退款次数
+    transaction_counts = customer_transactions.groupby('customer_id')['transaction_type'].value_counts().unstack(fill_value=0)
+    
+    # 计算每个客户的活跃天数
+    active_days = customer_transactions.groupby('customer_id')['transaction_date'].agg(['min', 'max'])
+    active_days['active_days'] = (active_days['max'] - active_days['min']).dt.days
+    
+    # 合并结果
+    result = transaction_counts.join(active_days)
+    
+    # 计算退款率
+    result['refund_rate'] = result['refund'] / (result['purchase'] + result['refund'])
+    
+    # 筛选出符合条件的忠实客户
+    loyal_customers = result[
+        (result['purchase'] >= 3) &
+        (result['active_days'] >= 30) &
+        (result['refund_rate'] < 0.2)
+    ].index
+    
+    # 返回结果表并按 customer_id 升序排序
+    return pd.DataFrame(loyal_customers, columns=['customer_id']).sort_values(by='customer_id')
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_loyal_customers)

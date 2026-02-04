@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对数组进行排序，然后遍历数组找到第一个大于等于 k 的元素的位置，该位置之前的元素数量即为需要删除的元素数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 遍历排序后的数组，找到第一个大于等于 k 的元素的位置。
+3. 返回该位置之前的元素数量作为结果。
 
 关键点:
-- [TODO]
+- 排序后可以快速找到需要删除的元素数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 其中 n 是数组的长度，排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_operations_to_exceed_threshold(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组中所有元素都大于等于 k 所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 遍历排序后的数组，找到第一个大于等于 k 的元素的位置
+    for i, num in enumerate(nums):
+        if num >= k:
+            return i
+    
+    # 如果没有找到大于等于 k 的元素，返回数组长度
+    return len(nums)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_operations_to_exceed_threshold)

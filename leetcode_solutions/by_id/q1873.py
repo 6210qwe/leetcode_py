@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用分治法来找到最长的美好子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果字符串长度小于等于1，直接返回空字符串。
+2. 使用一个集合记录所有字符。
+3. 遍历字符串，检查每个字符及其对应的大写或小写形式是否都在集合中。
+4. 如果某个字符及其对应的大写或小写形式不在集合中，则以该字符为分隔点，将字符串分成两部分，递归处理这两部分。
+5. 返回两部分中最长的美好子字符串。
 
 关键点:
-- [TODO]
+- 使用分治法可以有效地减少重复计算。
+- 通过集合快速判断字符及其对应的大写或小写形式是否存在。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 在最坏情况下，每次分割都会产生两个子问题，总共需要 O(n^2) 的时间。
+空间复杂度: O(n) - 递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_nice_substring(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) <= 1:
+        return ""
+
+    char_set = set(s)
+    
+    for i in range(len(s)):
+        if s[i].swapcase() not in char_set:
+            left = longest_nice_substring(s[:i])
+            right = longest_nice_substring(s[i+1:])
+            return max(left, right, key=len)
+
+    return s
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_nice_substring)

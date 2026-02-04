@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过计算相邻元素之间的差值来确定需要的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数 `operations` 为 0。
+2. 初始化前一个元素 `prev` 为 0。
+3. 遍历 `target` 数组，对于每个元素 `num`：
+   - 计算当前元素与前一个元素的差值 `diff = num - prev`。
+   - 如果 `diff > 0`，则需要进行 `diff` 次操作。
+   - 更新 `prev` 为当前元素 `num`。
+4. 返回 `operations`。
 
 关键点:
-- [TODO]
+- 通过计算相邻元素之间的差值来确定需要的操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 target 数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_number_of_increments(target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 initial 数组构造 target 数组的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    prev = 0
+    for num in target:
+        diff = num - prev
+        if diff > 0:
+            operations += diff
+        prev = num
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_number_of_increments)

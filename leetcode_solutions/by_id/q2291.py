@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个三进制数来表示每个篮子的状态（0 表示没有放，1 表示放了一个数，2 表示放了两个数）。通过递归和记忆化搜索来找到最大与和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个篮子的状态用一个三进制数表示。
+2. 使用递归和记忆化搜索来计算最大与和。
+3. 对于每个数，尝试将其放入每一个篮子中，并更新状态。
+4. 返回最大与和。
 
 关键点:
-- [TODO]
+- 使用三进制数来表示每个篮子的状态。
+- 使用递归和记忆化搜索来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^numSlots * n)
+空间复杂度: O(3^numSlots * n)
 """
 
 # ============================================================================
@@ -47,14 +50,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], numSlots: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大与和
     """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(None)
+    def dp(index: int, state: int) -> int:
+        if index == len(nums):
+            return 0
+        max_sum = 0
+        for slot in range(numSlots):
+            slot_state = (state // (3 ** slot)) % 3
+            if slot_state < 2:
+                new_state = state + 3 ** slot
+                max_sum = max(max_sum, (nums[index] & (slot + 1)) + dp(index + 1, new_state))
+        return max_sum
 
+    return dp(0, 0)
 
 Solution = create_solution(solution_function_name)

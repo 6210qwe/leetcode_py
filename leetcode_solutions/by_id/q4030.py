@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将前 i 个元素划分为 j 个子数组的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示将前 i 个元素划分为 j 个子数组的最大得分。
+2. 对于每个 i 和 j，计算从 0 到 i 的所有可能的划分，并更新 dp[i][j]。
+3. 最后返回 dp[n][k] 的最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划来存储中间结果，避免重复计算。
+- 通过遍历所有可能的划分来找到最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximize_cyclic_partition_score(nums: List[int], k: int) -> int:
+    n = len(nums)
+    nums = nums + nums  # 处理循环数组
+    max_val = [0] * (2 * n)
+    min_val = [0] * (2 * n)
+    max_val[0] = min_val[0] = nums[0]
+
+    for i in range(1, 2 * n):
+        max_val[i] = max(max_val[i - 1], nums[i])
+        min_val[i] = min(min_val[i - 1], nums[i])
+
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        dp[i][1] = max_val[i - 1] - min_val[i - 1]
+
+    for j in range(2, k + 1):
+        for i in range(j, n + 1):
+            for l in range(j - 1, i):
+                dp[i][j] = max(dp[i][j], dp[l][j - 1] + max_val[i - 1] - min_val[l - 1])
+
+    return max(dp[n][j] for j in range(1, k + 1))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_cyclic_partition_score)

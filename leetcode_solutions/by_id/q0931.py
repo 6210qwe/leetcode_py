@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字典来维护每个元素的频率和频率对应的栈。一个字典 `freq` 用于记录每个元素的频率，另一个字典 `group` 用于存储每个频率对应的栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建两个字典 `freq` 和 `group`，以及一个变量 `max_freq` 来记录当前最大频率。
+2. 在 `push` 操作中，更新 `freq` 字典中对应元素的频率，并将该元素添加到 `group` 字典中对应频率的栈中。如果该频率大于 `max_freq`，则更新 `max_freq`。
+3. 在 `pop` 操作中，从 `group` 字典中 `max_freq` 对应的栈中弹出一个元素，并更新 `freq` 字典中该元素的频率。如果该频率的栈为空，则减少 `max_freq`。
 
 关键点:
-- [TODO]
+- 使用两个字典分别维护频率和频率对应的栈，可以高效地实现 `push` 和 `pop` 操作。
+- 通过 `max_freq` 变量快速找到当前频率最高的栈。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - `push` 和 `pop` 操作的时间复杂度都是 O(1)。
+空间复杂度: O(n) - 其中 n 是操作数，需要存储所有元素及其频率。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FreqStack:
+
+    def __init__(self):
+        self.freq = {}  # 记录每个元素的频率
+        self.group = {}  # 记录每个频率对应的栈
+        self.max_freq = 0  # 当前最大频率
+
+    def push(self, val: int) -> None:
+        # 更新频率
+        self.freq[val] = self.freq.get(val, 0) + 1
+        # 将元素添加到对应频率的栈中
+        if self.freq[val] not in self.group:
+            self.group[self.freq[val]] = []
+        self.group[self.freq[val]].append(val)
+        # 更新最大频率
+        self.max_freq = max(self.max_freq, self.freq[val])
+
+    def pop(self) -> int:
+        # 从最大频率的栈中弹出一个元素
+        val = self.group[self.max_freq].pop()
+        # 更新频率
+        self.freq[val] -= 1
+        # 如果该频率的栈为空，则减少最大频率
+        if not self.group[self.max_freq]:
+            self.max_freq -= 1
+        return val
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(FreqStack)

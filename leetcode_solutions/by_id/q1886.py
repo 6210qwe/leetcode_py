@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的最大球数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 1，right 为 nums 中的最大值。
+2. 在每次迭代中，计算中间值 mid。
+3. 计算将所有袋子中的球数减少到不超过 mid 所需的操作次数。
+4. 如果操作次数小于等于 maxOperations，则说明可以将最大球数减少到 mid 或更小，更新 right 为 mid - 1。
+5. 否则，更新 left 为 mid + 1。
+6. 最终返回 left 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小可能的最大球数范围。
+- 计算所需的操作次数时，使用 (num - 1) // mid 来计算将 num 减少到不超过 mid 所需的操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是 nums 的长度，log(max(nums)) 是二分查找的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimumSize(nums: List[int], maxOperations: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回进行上述操作后的最小开销。
     """
-    # TODO: 实现最优解法
-    pass
+    def count_operations_to_limit_max(num: int, limit: int) -> int:
+        return (num - 1) // limit
 
+    left, right = 1, max(nums)
+    
+    while left < right:
+        mid = (left + right) // 2
+        operations_needed = sum(count_operations_to_limit_max(num, mid) for num in nums)
+        
+        if operations_needed <= maxOperations:
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimumSize)

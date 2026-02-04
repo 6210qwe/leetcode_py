@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和与字典树（Trie）来高效计算子数组的最大异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或和数组 prefix_xor。
+2. 构建一个 Trie 树，用于存储前缀异或和。
+3. 对于每个查询，使用 Trie 树查找在给定范围内的最大异或值。
 
 关键点:
-- [TODO]
+- 前缀异或和可以快速计算子数组的异或值。
+- Trie 树可以帮助高效地查找最大异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * 32)，其中 n 是 nums 的长度，q 是 queries 的长度。构建前缀异或和数组需要 O(n) 时间，处理每个查询需要 O(32) 时间。
+空间复杂度: O(n * 32)，Trie 树的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.max_xor = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, num):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+            node.max_xor = max(node.max_xor, num)
+    
+    def query(self, num):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            target_bit = 1 - bit
+            if target_bit in node.children:
+                node = node.children[target_bit]
+            else:
+                node = node.children[bit]
+        return num ^ node.max_xor
 
+def solution_function_name(nums: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums)
+    prefix_xor = [0] * (n + 1)
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ nums[i]
+    
+    trie = Trie()
+    result = []
+    for l, r in queries:
+        xor_value = prefix_xor[r + 1] ^ prefix_xor[l]
+        trie.insert(prefix_xor[r + 1])
+        result.append(trie.query(xor_value))
+    
+    return result
 
 Solution = create_solution(solution_function_name)

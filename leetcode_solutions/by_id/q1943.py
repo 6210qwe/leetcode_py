@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个子串的起始位置，并通过滑动窗口找到所有符合条件的子串对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `substrings` 用于存储每个子串的起始位置列表。
+2. 使用滑动窗口遍历字符串，生成所有长度为 `k` 的子串，并将其起始位置存入哈希表。
+3. 遍历哈希表中的每个子串，计算每对子串之间的距离，并统计最小距离的子串对数量。
 
 关键点:
-- [TODO]
+- 使用哈希表存储子串的起始位置，可以快速查找和比较。
+- 通过滑动窗口生成子串，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是字符串的长度，k 是子串的长度。
+空间复杂度: O(n * k)，哈希表存储所有子串及其起始位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_equal_substrings(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计距离最小的子串对个数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    substrings = {}
+    
+    # 生成所有长度为 k 的子串，并将其起始位置存入哈希表
+    for i in range(n - k + 1):
+        substring = s[i:i + k]
+        if substring not in substrings:
+            substrings[substring] = []
+        substrings[substring].append(i)
+    
+    min_distance = float('inf')
+    pair_count = 0
+    
+    # 遍历哈希表中的每个子串，计算每对子串之间的距离
+    for positions in substrings.values():
+        for i in range(len(positions) - 1):
+            distance = positions[i + 1] - positions[i]
+            if distance < min_distance:
+                min_distance = distance
+                pair_count = 1
+            elif distance == min_distance:
+                pair_count += 1
+    
+    return pair_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_equal_substrings)

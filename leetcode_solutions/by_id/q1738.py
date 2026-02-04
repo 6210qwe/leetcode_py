@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用邻接表来记录每个城市的连接情况，并通过遍历所有城市对来计算最大网络秩。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表来记录每个城市的连接情况。
+2. 计算每个城市的度（即直接相连的道路数）。
+3. 遍历所有城市对，计算其网络秩，并更新最大网络秩。
 
 关键点:
-- [TODO]
+- 使用邻接表可以高效地记录和查询每个城市的连接情况。
+- 通过遍历所有城市对来确保找到最大网络秩。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是城市的数量。我们需要遍历所有城市对来计算网络秩。
+空间复杂度: O(n + m)，其中 n 是城市的数量，m 是道路的数量。邻接表的空间复杂度为 O(n + m)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximalNetworkRank(n: int, roads: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算基础设施网络的最大网络秩。
+    
+    :param n: 城市的数量
+    :param roads: 连接城市的道路列表
+    :return: 最大网络秩
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    adj_list = [set() for _ in range(n)]
+    for a, b in roads:
+        adj_list[a].add(b)
+        adj_list[b].add(a)
+    
+    # 计算每个城市的度
+    degrees = [len(adj_list[i]) for i in range(n)]
+    
+    # 初始化最大网络秩
+    max_rank = 0
+    
+    # 遍历所有城市对
+    for i in range(n):
+        for j in range(i + 1, n):
+            rank = degrees[i] + degrees[j]
+            if j in adj_list[i]:
+                rank -= 1
+            max_rank = max(max_rank, rank)
+    
+    return max_rank
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximalNetworkRank)

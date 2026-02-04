@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来高效地处理区间更新，并检查最终数组是否全为0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个差分数组 diff，长度为 len(nums) + 1。
+2. 对于每个查询 [li, ri]，在 diff[li] 位置加 1，在 diff[ri + 1] 位置减 1。
+3. 通过差分数组计算最终的 nums 数组。
+4. 检查最终的 nums 数组是否全为0。
 
 关键点:
-- [TODO]
+- 使用差分数组可以在 O(1) 时间内处理区间更新。
+- 最终通过差分数组还原原数组并检查是否全为0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，需要额外的差分数组。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_transform_to_zero_array(nums: List[int], queries: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过给定的查询将 nums 转换为零数组。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    diff = [0] * (n + 1)
+
+    # 处理每个查询
+    for li, ri in queries:
+        diff[li] += 1
+        if ri + 1 < n:
+            diff[ri + 1] -= 1
+
+    # 通过差分数组计算最终的 nums 数组
+    current_sum = 0
+    for i in range(n):
+        current_sum += diff[i]
+        nums[i] -= current_sum
+        if nums[i] < 0:
+            return False
+
+    # 检查最终的 nums 数组是否全为0
+    return all(x == 0 for x in nums)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_transform_to_zero_array)

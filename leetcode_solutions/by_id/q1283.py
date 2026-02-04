@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字符串操作和字典来解析和重新格式化日期。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入字符串按空格分割成三个部分：day, month, year。
+2. 去除 day 中的后缀（如 "th", "st", "nd", "rd"）并转换为整数。
+3. 使用字典将 month 映射到对应的数字。
+4. 格式化 day 和 month 为两位数。
+5. 拼接 year, month, day 为 YYYY-MM-DD 格式。
 
 关键点:
-- [TODO]
+- 使用字典快速映射月份。
+- 确保 day 和 month 为两位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 字符串操作和字典查找都是常数时间。
+空间复杂度: O(1) - 使用固定大小的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +52,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def reformat_date(date: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    将给定的日期字符串从 Day Month Year 格式转换为 YYYY-MM-DD 格式。
     """
-    # TODO: 实现最优解法
-    pass
+    # 月份映射
+    month_map = {
+        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
+        "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
+        "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"
+    }
+    
+    # 分割日期字符串
+    day, month, year = date.split()
+    
+    # 去除 day 中的后缀并转换为整数
+    day = int(day[:-2])
+    
+    # 格式化 day 和 month
+    day_str = f"{day:02d}"
+    month_str = month_map[month]
+    
+    # 拼接结果
+    return f"{year}-{month_str}-{day_str}"
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reformat_date)

@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理，找到每个玩家的第一次登录日期。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取Activity表。
+2. 按player_id分组，并找到每个玩家最早的event_date。
+3. 重命名列并返回结果。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和min函数来高效地找到每个玩家的最早登录日期。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是Activity表的行数。因为我们需要遍历整个表来找到每个玩家的最早登录日期。
+空间复杂度: O(m)，其中m是不同player_id的数量。存储每个玩家的最早登录日期需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现游戏玩法分析I
     """
-    # TODO: 实现最优解法
-    pass
+    # 按player_id分组，并找到每个玩家最早的event_date
+    first_login = activity.groupby('player_id')['event_date'].min().reset_index()
+    
+    # 重命名列
+    first_login.columns = ['player_id', 'first_login']
+    
+    return first_login
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(game_analysis)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学方法计算最小非零乘积。对于给定的 p，最大值是 2^p - 1，第二大的值是 2^p - 2。为了得到最小非零乘积，我们需要尽可能多的 1 和 (2^p - 2) 的乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 2^p - 1 和 2^p - 2。
+2. 计算 (2^p - 2)^(2^(p-1) - 1) % (10^9 + 7)。
+3. 返回结果乘以 (2^p - 1) 并对 (10^9 + 7) 取模。
 
 关键点:
-- [TODO]
+- 使用快速幂算法来计算大指数的幂。
+- 使用模运算来防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(2^p)) = O(p)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +50,26 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def fast_pow(base: int, exponent: int, mod: int) -> int:
+    """快速幂算法"""
+    result = 1
+    while exponent > 0:
+        if exponent & 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exponent >>= 1
+    return result
 
+def solution_function_name(p: int) -> int:
+    """
+    函数式接口 - 计算最小非零乘积
+    """
+    max_val = (1 << p) - 1
+    second_max_val = max_val - 1
+    count = (1 << (p - 1)) - 1
+    product = fast_pow(second_max_val, count, MOD)
+    return (product * max_val) % MOD
 
 Solution = create_solution(solution_function_name)

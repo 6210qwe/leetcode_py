@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最短的子串，使得替换这个子串后整个字符串变成平衡字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的目标数量（即 n/4）。
+2. 使用滑动窗口技术，从左到右遍历字符串，记录当前窗口内每个字符的数量。
+3. 当窗口内的字符数量满足目标数量时，尝试缩小窗口以找到最短的子串。
+4. 更新最小长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态调整子串的长度。
+- 通过计数器来判断当前窗口是否满足平衡条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def balancedString(s: str) -> int:
+    n = len(s)
+    target = n // 4
+    count = {'Q': 0, 'W': 0, 'E': 0, 'R': 0}
+    
+    # 计算初始字符频率
+    for char in s:
+        count[char] += 1
+    
+    # 如果已经是平衡字符串
+    if all(count[char] == target for char in 'QWER'):
+        return 0
+    
+    left = 0
+    min_len = n
+    for right in range(n):
+        count[s[right]] -= 1
+        
+        # 尝试缩小窗口
+        while all(count[char] <= target for char in 'QWER'):
+            min_len = min(min_len, right - left + 1)
+            count[s[left]] += 1
+            left += 1
+    
+    return min_len
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(balancedString)

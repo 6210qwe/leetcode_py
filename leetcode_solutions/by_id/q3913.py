@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将前 i 个元素分成 j 个子数组的最小最大 XOR 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀 XOR 数组 prefix_xor。
+2. 初始化 dp 数组，dp[i][1] = prefix_xor[i]，表示将前 i 个元素分成 1 个子数组的最大 XOR 值。
+3. 对于每个 j 从 2 到 k，更新 dp 数组。
+4. 最终结果是 dp[n-1][k]。
 
 关键点:
-- [TODO]
+- 使用前缀 XOR 数组简化计算。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == k:
+        return max(nums)
+
+    # 计算前缀 XOR 数组
+    prefix_xor = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_xor[i] = prefix_xor[i - 1] ^ nums[i - 1]
+
+    # 初始化 dp 数组
+    dp = [[float('inf')] * (k + 1) for _ in range(n)]
+    for i in range(n):
+        dp[i][1] = prefix_xor[i + 1]
+
+    # 动态规划状态转移
+    for j in range(2, k + 1):
+        for i in range(j - 1, n):
+            for p in range(j - 2, i):
+                current_xor = prefix_xor[i + 1] ^ prefix_xor[p + 1]
+                dp[i][j] = min(dp[i][j], max(dp[p][j - 1], current_xor))
+
+    return dp[n - 1][k]
 
 
 Solution = create_solution(solution_function_name)

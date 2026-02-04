@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来记录每个位置的元音和辅音数量，并使用哈希表来记录不同前缀和出现的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum` 和哈希表 `prefix_count`。
+2. 遍历字符串 `s`，更新前缀和数组 `prefix_sum`。
+3. 对于每个位置 `i`，检查是否存在之前的前缀和 `j` 满足 `(prefix_sum[i] - prefix_sum[j]) % 2 == 0` 且 `(prefix_sum[i] - prefix_sum[j]) // 2 * (prefix_sum[i] - prefix_sum[j]) // 2 % k == 0`。
+4. 更新哈希表 `prefix_count`，记录当前前缀和出现的位置。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算任意子字符串的元音和辅音数量。
+- 使用哈希表来记录前缀和出现的位置，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_beautiful_substrings(s: str, k: int) -> int:
+    n = len(s)
+    vowels = set('aeiou')
+    prefix_sum = [0] * (n + 1)
+    prefix_count = {}
+    result = 0
+
+    for i in range(1, n + 1):
+        if s[i - 1] in vowels:
+            prefix_sum[i] = prefix_sum[i - 1] + 1
+        else:
+            prefix_sum[i] = prefix_sum[i - 1] - 1
+
+        current_sum = prefix_sum[i]
+        if current_sum not in prefix_count:
+            prefix_count[current_sum] = []
+
+        for j in prefix_count[current_sum]:
+            length = i - j
+            if (length // 2) * (length // 2) % k == 0:
+                result += 1
+
+        prefix_count[current_sum].append(i)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_substrings)

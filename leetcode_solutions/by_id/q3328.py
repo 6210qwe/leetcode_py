@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，尽可能通过增加元素值来减少复制操作的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前数组和为 1，操作次数为 0。
+2. 如果当前数组和已经大于等于 k，则返回操作次数。
+3. 否则，计算当前数组和与 k 的差值，并找到最优的增加和复制策略。
+4. 更新当前数组和和操作次数，直到满足条件。
 
 关键点:
-- [TODO]
+- 通过增加元素值来减少复制操作的次数。
+- 通过二分查找来找到最优的增加和复制策略。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使得最终数组元素之和大于或等于 k 所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 1:
+        return 0
+
+    current_sum = 1
+    operations = 0
+
+    while current_sum < k:
+        # 通过二分查找找到最优的增加和复制策略
+        left, right = 1, k
+        while left < right:
+            mid = (left + right) // 2
+            if mid * (current_sum + mid) >= k:
+                right = mid
+            else:
+                left = mid + 1
+
+        # 更新当前数组和和操作次数
+        current_sum += left
+        operations += left
+
+    return operations
 
 
 Solution = create_solution(solution_function_name)

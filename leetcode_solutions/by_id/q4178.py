@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历字符串来统计元音和辅音的数量，然后计算得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化元音和辅音的计数器。
+2. 遍历字符串，更新元音和辅音的计数器。
+3. 根据元音和辅音的数量计算得分。
 
 关键点:
-- [TODO]
+- 使用集合来快速判断字符是否为元音。
+- 一次遍历即可完成统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只需要常数级的额外空间来存储计数器。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串的元音辅音得分
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiou')
+    v_count = 0
+    c_count = 0
+    
+    for char in s:
+        if char in vowels:
+            v_count += 1
+        elif char.isalpha():
+            c_count += 1
+    
+    if c_count == 0:
+        return 0
+    else:
+        return v_count // c_count
 
 
 Solution = create_solution(solution_function_name)

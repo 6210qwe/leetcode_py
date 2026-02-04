@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，分别计算以偶数索引和奇数索引开头的锯齿数组所需的操作次数，取两者中的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `min_moves`，用于计算从某个起始位置开始构建锯齿数组所需的最小操作次数。
+2. 在主函数中，分别调用 `min_moves` 计算以偶数索引和奇数索引开头的锯齿数组所需的操作次数。
+3. 返回两者中的最小值。
 
 关键点:
-- [TODO]
+- 使用贪心算法，每次只考虑当前元素和其相邻元素的关系。
+- 分别计算两种可能的锯齿数组（以偶数索引和奇数索引开头），取最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，每次遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_moves(nums: List[int], start: int) -> int:
+    moves = 0
+    for i in range(start, len(nums), 2):
+        if i == 0:
+            if nums[i] <= nums[i + 1]:
+                moves += (nums[i + 1] - nums[i]) + 1
+                nums[i] = nums[i + 1] + 1
+        elif i == len(nums) - 1:
+            if nums[i] <= nums[i - 1]:
+                moves += (nums[i - 1] - nums[i]) + 1
+                nums[i] = nums[i - 1] + 1
+        else:
+            if nums[i] <= nums[i - 1]:
+                diff = (nums[i - 1] - nums[i]) + 1
+                moves += diff
+                nums[i] = nums[i - 1] + 1
+            if nums[i] <= nums[i + 1]:
+                diff = (nums[i + 1] - nums[i]) + 1
+                moves += diff
+                nums[i] = nums[i + 1] + 1
+    return moves
+
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将数组转换为锯齿数组所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算以偶数索引和奇数索引开头的锯齿数组所需的操作次数
+    moves_even = min_moves(nums[:], 0)
+    moves_odd = min_moves(nums[:], 1)
+    
+    # 返回两者中的最小值
+    return min(moves_even, moves_odd)
 
 
 Solution = create_solution(solution_function_name)

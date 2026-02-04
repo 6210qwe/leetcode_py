@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择频率最高的字符来构建子序列，并使用组合数学计算这些子序列的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的频率。
+2. 选择频率最高的 k 个字符。
+3. 计算这些字符的所有可能组合的数量。
+4. 如果剩余字符数量不足以构成 k 个字符的子序列，则返回 0。
 
 关键点:
-- [TODO]
+- 使用优先队列（堆）来高效地选择频率最高的 k 个字符。
+- 使用组合数学公式来计算子序列的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log n)，其中 n 是字符串 s 的长度，k 是子序列的长度。统计字符频率的时间复杂度为 O(n)，选择频率最高的 k 个字符的时间复杂度为 O(k log n)。
+空间复杂度: O(n)，用于存储字符频率和中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
+from math import comb
 
+def count_k_subsequences(s: str, k: int) -> int:
+    MOD = 10**9 + 7
+    if k > 26 or len(s) < k:
+        return 0
+    
+    # 统计每个字符的频率
+    freq = [0] * 26
+    for char in s:
+        freq[ord(char) - ord('a')] += 1
+    
+    # 选择频率最高的 k 个字符
+    max_heap = []
+    for i in range(26):
+        if freq[i] > 0:
+            heapq.heappush(max_heap, (-freq[i], chr(i + ord('a'))))
+    
+    if len(max_heap) < k:
+        return 0
+    
+    # 计算这些字符的所有可能组合的数量
+    result = 1
+    for _ in range(k):
+        freq, char = heapq.heappop(max_heap)
+        result = (result * -freq) % MOD
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_k_subsequences)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个数字的波动值，并利用数位DP来优化计算过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 num1 和 num2 转换为字符串形式，方便逐位处理。
+2. 使用数位DP来计算从 0 到 num2 的波动值之和，再减去从 0 到 num1-1 的波动值之和。
+3. 对于每个数字，使用递归和记忆化搜索来计算其波动值。
 
 关键点:
-- [TODO]
+- 使用数位DP来避免重复计算。
+- 通过递归和记忆化搜索来高效计算每个数字的波动值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * 10^d)，其中 d 是数字的最大位数。
+空间复杂度: O(d * 10^d)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -48,13 +50,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_waviness(num: int) -> int:
+    num_str = str(num)
+    n = len(num_str)
+    
+    if n < 3:
+        return 0
+    
+    def dp(index: int, prev_digit: int, prev_prev_digit: int, is_limit: bool, has_peak_or_valley: bool, memo: dict) -> int:
+        if index == n:
+            return has_peak_or_valley
+        
+        key = (index, prev_digit, prev_prev_digit, is_limit, has_peak_or_valley)
+        if key in memo:
+            return memo[key]
+        
+        total = 0
+        max_digit = int(num_str[index]) if is_limit else 9
+        
+        for digit in range(max_digit + 1):
+            new_has_peak_or_valley = has_peak_or_valley or (index > 1 and (digit > prev_digit > prev_prev_digit or digit < prev_digit < prev_prev_digit))
+            total += dp(index + 1, digit, prev_digit, is_limit and digit == max_digit, new_has_peak_or_valley, memo)
+        
+        memo[key] = total
+        return total
+    
+    return dp(0, 0, 0, True, False, {})
 
-def solution_function_name(params):
+def solution_function_name(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算范围内所有数字的波动值之和
     """
-    # TODO: 实现最优解法
-    pass
-
+    return count_waviness(num2) - count_waviness(num1 - 1)
 
 Solution = create_solution(solution_function_name)

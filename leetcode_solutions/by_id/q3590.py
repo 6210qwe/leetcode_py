@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（堆）来维护当前活塞的宽度和位置，以确保在每个时刻都能找到最大面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，用于存储活塞的右边界及其对应的宽度。
+2. 遍历所有活塞，对于每个活塞：
+   - 将其右边界和宽度加入堆中。
+   - 移除堆中所有已经过期的活塞（即右边界小于当前左边界）。
+   - 计算当前时刻的最大面积，并更新结果。
+3. 返回最大面积。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地管理活塞的右边界和宽度。
+- 在遍历过程中及时移除过期的活塞，以确保堆中的数据有效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是活塞的数量。因为每次插入和删除堆的操作都是 O(log n) 的。
+空间复杂度: O(n)，因为堆中最多会存储 n 个活塞的信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(pistons: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算活塞占据的最大总区域
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最小堆
+    heap = []
+    max_area = 0
+    current_width = 0
+    
+    for left, right, width in sorted(pistons):
+        # 将当前活塞的右边界和宽度加入堆中
+        heapq.heappush(heap, (right, width))
+        current_width += width
+        
+        # 移除堆中所有已经过期的活塞
+        while heap and heap[0][0] < left:
+            _, expired_width = heapq.heappop(heap)
+            current_width -= expired_width
+        
+        # 计算当前时刻的最大面积
+        max_area = max(max_area, (right - left + 1) * current_width)
+    
+    return max_area
 
 
 Solution = create_solution(solution_function_name)

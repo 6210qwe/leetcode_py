@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算 Alice 和 Bob 的得分，并找到 Alice 至少需要完成的关卡数目，使得她的得分高于 Bob。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 `prefix_sum`，其中 `prefix_sum[i]` 表示从第 0 个关卡到第 i 个关卡的总得分。
+2. 遍历前缀和数组，找到第一个满足条件的索引 `i`，使得 `prefix_sum[i] > prefix_sum[-1] - prefix_sum[i]`。
+3. 返回该索引 `i + 1`，即 Alice 需要完成的最少关卡数目。如果没有找到满足条件的索引，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以高效地计算任意子数组的和。
+- 通过遍历前缀和数组，可以在 O(n) 时间内找到满足条件的索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_levels_to_gain_more_points(possible: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 Alice 获得比 Bob 更多的分数所需要完成的最少关卡数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(possible)
+    if n < 2:
+        return -1
+
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + (1 if possible[i] == 1 else -1)
+
+    # 遍历前缀和数组，找到第一个满足条件的索引
+    for i in range(1, n):
+        if prefix_sum[i] > prefix_sum[-1] - prefix_sum[i]:
+            return i
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_levels_to_gain_more_points)

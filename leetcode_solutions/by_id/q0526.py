@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的排列，并检查每个排列是否满足优美排列的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录优美排列的数量。
+2. 使用回溯法生成从 1 到 n 的所有排列。
+3. 在生成每个排列的过程中，检查当前排列是否满足优美排列的条件。
+4. 如果满足条件，则增加计数器 `count`。
+5. 返回计数器 `count` 的值。
 
 关键点:
-- [TODO]
+- 使用回溯法生成排列。
+- 在生成排列的过程中进行条件检查，避免生成不必要的排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)
+- 回溯法生成所有排列的时间复杂度为 O(n!)。
+
+空间复杂度: O(n)
+- 递归调用栈的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -48,13 +55,27 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_arrangement(n: int) -> int:
+    def is_beautiful(arrangement: List[int]) -> bool:
+        for i in range(1, n + 1):
+            if (i % arrangement[i - 1] != 0) and (arrangement[i - 1] % i != 0):
+                return False
+        return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(start: int):
+        if start == n:
+            if is_beautiful(perm):
+                nonlocal count
+                count += 1
+            return
+        for i in range(start, n):
+            perm[start], perm[i] = perm[i], perm[start]
+            backtrack(start + 1)
+            perm[start], perm[i] = perm[i], perm[start]
 
+    count = 0
+    perm = list(range(1, n + 1))
+    backtrack(0)
+    return count
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_arrangement)

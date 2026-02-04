@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 如果全局倒置的数量等于局部倒置的数量，那么对于每个元素 nums[i]，它最多只能偏离其原始位置 i 两个单位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，检查每个元素是否在其原始位置或其相邻位置。
+2. 如果某个元素偏离其原始位置超过两个单位，则返回 False。
+3. 如果遍历完整个数组都没有发现这种情况，则返回 True。
 
 关键点:
-- [TODO]
+- 通过检查每个元素与其索引的差值来判断是否存在非局部倒置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_ideal_permutation(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断全局倒置的数量是否等于局部倒置的数量
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(nums)):
+        if abs(nums[i] - i) > 1:
+            return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_ideal_permutation)

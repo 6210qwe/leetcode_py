@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，筛选出符合条件的三元组，然后检查是否可以通过这些三元组合并得到目标三元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个布尔变量，分别表示是否找到了满足条件的 a, b, c。
+2. 遍历所有三元组，对于每个三元组，如果它的三个值都小于等于目标三元组的对应值，则更新对应的布尔变量。
+3. 最后检查这三个布尔变量是否都为 True，如果是，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 只选择那些不会超过目标三元组的三元组进行合并。
+- 通过三个布尔变量来跟踪是否找到了满足条件的 a, b, c。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 triplets 的长度。我们只需要遍历一次 triplets 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_merge_triplets(triplets: List[List[int]], target: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过合并 triplets 中的三元组得到目标三元组 target。
     """
-    # TODO: 实现最优解法
-    pass
+    found_a, found_b, found_c = False, False, False
+    
+    for triplet in triplets:
+        if triplet[0] <= target[0] and triplet[1] <= target[1] and triplet[2] <= target[2]:
+            found_a = found_a or (triplet[0] == target[0])
+            found_b = found_b or (triplet[1] == target[1])
+            found_c = found_c or (triplet[2] == target[2])
+    
+    return found_a and found_b and found_c
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_merge_triplets)

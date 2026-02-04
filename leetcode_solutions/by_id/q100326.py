@@ -21,40 +21,55 @@ LCR 171. 训练计划 V - 某教练同时带教两位学员，分别以链表 l1
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法，让两个指针分别遍历两个链表，当一个指针到达链表末尾时，切换到另一个链表的头节点继续遍历。这样两个指针会在相交节点相遇。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 pA 和 pB，分别指向链表 l1 和 l2 的头节点。
+2. 当 pA 和 pB 不相等时：
+   - 如果 pA 到达链表末尾，则将其切换到 l2 的头节点。
+   - 如果 pB 到达链表末尾，则将其切换到 l1 的头节点。
+   - 否则，pA 和 pB 分别向前移动一个节点。
+3. 当 pA 和 pB 相等时，返回 pA 或 pB 即可。
 
 关键点:
-- [TODO]
+- 通过双指针法，确保两个指针在相交节点相遇。
+- 保证时间复杂度为 O(n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_intersection_node(headA: ListNode, headB: ListNode) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    找到两个链表的第一个相交节点
+    :param headA: 第一个链表的头节点
+    :param headB: 第二个链表的头节点
+    :return: 第一个相交节点，如果没有相交则返回 None
     """
-    # TODO: 实现最优解法
-    pass
+    if not headA or not headB:
+        return None
+
+    pA, pB = headA, headB
+
+    while pA != pB:
+        pA = pA.next if pA else headB
+        pB = pB.next if pB else headA
+
+    return pA
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_intersection_node)

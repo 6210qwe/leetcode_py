@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列来跟踪每个药水的处理时间，并确保每个巫师在药水到达时马上开始工作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，用于存储每个药水的当前处理时间和对应的巫师索引。
+2. 对于每个药水，初始化其处理时间为0，并将其加入优先队列。
+3. 处理优先队列中的每个药水，更新其处理时间，并将其重新加入优先队列，直到所有药水都处理完毕。
+4. 记录最后一个药水的处理时间作为结果。
 
 关键点:
-- [TODO]
+- 使用优先队列来确保每次处理的是当前处理时间最小的药水。
+- 通过累积处理时间来确保每个巫师在药水到达时马上开始工作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log(m))，其中 n 是巫师的数量，m 是药水的数量。每次处理药水时，优先队列的操作时间复杂度为 O(log(m))。
+空间复杂度: O(m)，优先队列中最多存储 m 个药水的处理时间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def find_minimum_time(skill: List[int], mana: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算酿造所有药水所需的最短总时间
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(skill), len(mana)
+    # 优先队列 (当前处理时间, 药水索引, 当前巫师索引)
+    pq = [(0, j, 0) for j in range(m)]
+    heapq.heapify(pq)
+    
+    while pq:
+        current_time, potion_index, wizard_index = heapq.heappop(pq)
+        if wizard_index == n - 1:
+            return current_time
+        next_time = current_time + skill[wizard_index + 1] * mana[potion_index]
+        heapq.heappush(pq, (next_time, potion_index, wizard_index + 1))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_minimum_time)

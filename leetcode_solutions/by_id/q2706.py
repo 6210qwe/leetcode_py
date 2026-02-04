@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序找到最小化分数的方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前三个元素之间的差值和最后三个元素之间的差值。
+3. 返回这些差值中的最小值。
 
 关键点:
-- [TODO]
+- 通过修改前两个或后两个元素来最小化分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_score(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回修改 nums 中至多两个元素的值后，可以得到的最小分数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 计算前三个元素之间的差值
+    min_diff1 = nums[2] - nums[0]
+    
+    # 计算最后三个元素之间的差值
+    min_diff2 = nums[-1] - nums[-3]
+    
+    # 返回这些差值中的最小值
+    return min(min_diff1, min_diff2)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_score)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义两个状态变量：
+- hold: 表示当前持有股票时的最大利润
+- not_hold: 表示当前不持有股票时的最大利润
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 hold 和 not_hold，hold 初始化为 -prices[0]，not_hold 初始化为 0。
+2. 遍历价格数组，更新 hold 和 not_hold 的值。
+3. 最后返回 not_hold 的值作为最大利润。
 
 关键点:
-- [TODO]
+- 持有股票时的最大利润可以通过前一天不持有股票时的最大利润减去当天的价格和手续费得到。
+- 不持有股票时的最大利润可以通过前一天持有股票时的最大利润加上当天的价格得到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是价格数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_profit_with_fee(prices: List[int], fee: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在给定价格数组和手续费的情况下，可以获得的最大利润。
     """
-    # TODO: 实现最优解法
-    pass
+    if not prices:
+        return 0
+
+    # 初始化持有和不持有股票时的最大利润
+    hold = -prices[0]
+    not_hold = 0
+
+    for price in prices[1:]:
+        # 更新持有股票时的最大利润
+        hold = max(hold, not_hold - price)
+        # 更新不持有股票时的最大利润
+        not_hold = max(not_hold, hold + price - fee)
+
+    return not_hold
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_profit_with_fee)

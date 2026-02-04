@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断两个字符串是否可以通过一次编辑（插入、删除或替换）变成相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查两个字符串的长度差，如果大于1，则直接返回False。
+2. 如果长度相等，检查有多少个字符不同，如果超过一个则返回False。
+3. 如果长度差为1，使用双指针方法比较两个字符串，检查是否可以通过插入或删除一个字符使它们相同。
 
 关键点:
-- [TODO]
+- 使用双指针方法来比较两个字符串。
+- 根据长度差来决定是进行替换还是插入/删除操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是较长字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def one_away(first: str, second: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两个字符串是否可以通过一次编辑（插入、删除或替换）变成相同。
     """
-    # TODO: 实现最优解法
-    pass
+    len1, len2 = len(first), len(second)
+    
+    # 如果长度差大于1，直接返回False
+    if abs(len1 - len2) > 1:
+        return False
+    
+    # 确保first是较短的字符串
+    if len1 > len2:
+        first, second = second, first
+        len1, len2 = len2, len1
+    
+    i, j = 0, 0
+    found_difference = False
+    
+    while i < len1 and j < len2:
+        if first[i] != second[j]:
+            if found_difference:
+                return False
+            found_difference = True
+            if len1 == len2:
+                i += 1
+        else:
+            i += 1
+        j += 1
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(one_away)

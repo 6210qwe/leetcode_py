@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个哈希表来跟踪每个数字的频率和每个频率的数字数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表：`number_to_count` 用于记录每个数字的出现次数，`count_to_numbers` 用于记录每个频率的数字数量。
+2. 在 `add` 方法中，更新 `number_to_count` 和 `count_to_numbers`。
+3. 在 `deleteOne` 方法中，更新 `number_to_count` 和 `count_to_numbers`。
+4. 在 `hasFrequency` 方法中，检查 `count_to_numbers` 中是否存在给定的频率。
 
 关键点:
-- [TODO]
+- 使用两个哈希表可以高效地更新和查询频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每个操作（add, deleteOne, hasFrequency）的时间复杂度都是常数级。
+空间复杂度: O(n) - 其中 n 是不同数字的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FrequencyTracker:
+
+    def __init__(self):
+        self.number_to_count = {}
+        self.count_to_numbers = {}
+
+    def add(self, number: int) -> None:
+        if number in self.number_to_count:
+            old_count = self.number_to_count[number]
+            self.count_to_numbers[old_count].remove(number)
+            if not self.count_to_numbers[old_count]:
+                del self.count_to_numbers[old_count]
+            new_count = old_count + 1
+        else:
+            new_count = 1
+        self.number_to_count[number] = new_count
+        if new_count not in self.count_to_numbers:
+            self.count_to_numbers[new_count] = set()
+        self.count_to_numbers[new_count].add(number)
+
+    def deleteOne(self, number: int) -> None:
+        if number in self.number_to_count:
+            old_count = self.number_to_count[number]
+            self.count_to_numbers[old_count].remove(number)
+            if not self.count_to_numbers[old_count]:
+                del self.count_to_numbers[old_count]
+            new_count = old_count - 1
+            if new_count > 0:
+                self.number_to_count[number] = new_count
+                if new_count not in self.count_to_numbers:
+                    self.count_to_numbers[new_count] = set()
+                self.count_to_numbers[new_count].add(number)
+            else:
+                del self.number_to_count[number]
+
+    def hasFrequency(self, frequency: int) -> bool:
+        return frequency in self.count_to_numbers
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(FrequencyTracker)

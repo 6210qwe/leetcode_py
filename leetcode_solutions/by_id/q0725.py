@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个部分的长度，然后遍历链表进行分割。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算链表的总长度。
+2. 根据总长度和 k 计算每个部分的基本长度和额外长度。
+3. 遍历链表，根据计算出的长度进行分割。
 
 关键点:
-- [TODO]
+- 计算每个部分的长度时，需要确保前面部分的长度大于或等于后面部分的长度。
+- 在遍历链表时，正确处理每个部分的结尾，将其 next 设为 None。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是链表的长度，k 是要分割的部分数。需要遍历链表一次来计算长度，然后再遍历链表进行分割。
+空间复杂度: O(k)，存储结果数组。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def split_list_to_parts(head: Optional[ListNode], k: int) -> List[Optional[ListNode]]:
+    # 计算链表的总长度
+    length = 0
+    current = head
+    while current:
+        length += 1
+        current = current.next
+    
+    # 计算每个部分的基本长度和额外长度
+    part_length, extra_length = divmod(length, k)
+    
+    result = []
+    current = head
+    for i in range(k):
+        part_head = current
+        part_size = part_length + (1 if i < extra_length else 0)
+        
+        for _ in range(part_size - 1):
+            if current:
+                current = current.next
+        
+        if current:
+            next_node = current.next
+            current.next = None
+            current = next_node
+        
+        result.append(part_head)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_list_to_parts)

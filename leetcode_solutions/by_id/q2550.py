@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历每个查询词和字典中的每个词，并计算它们之间的编辑距离。如果编辑距离不超过2，则将该查询词加入结果列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 res。
+2. 对于每个查询词 query，遍历字典中的每个词 word。
+3. 计算 query 和 word 之间的编辑距离。
+4. 如果编辑距离不超过2，则将 query 加入结果列表 res 并跳出当前循环。
+5. 返回结果列表 res。
 
 关键点:
-- [TODO]
+- 使用双重循环遍历查询词和字典词。
+- 计算编辑距离时，逐字符比较并计数不同字符的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)，其中 m 是 queries 的长度，n 是 dictionary 的长度，k 是单词的长度。
+空间复杂度: O(1)，除了结果列表外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(queries: List[str], dictionary: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    def edit_distance(word1: str, word2: str) -> int:
+        """计算两个单词之间的编辑距离（仅考虑替换操作）"""
+        return sum(c1 != c2 for c1, c2 in zip(word1, word2))
 
+    res = []
+    for query in queries:
+        for word in dictionary:
+            if edit_distance(query, word) <= 2:
+                res.append(query)
+                break
+    return res
 
 Solution = create_solution(solution_function_name)

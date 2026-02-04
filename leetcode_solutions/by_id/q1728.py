@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用懒惰更新和逆元来高效处理批量操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，维护一个序列 `seq` 和两个变量 `add` 和 `mul` 来记录当前的加法和乘法操作。
+2. 在 `append` 操作时，将值添加到序列中，并记录当前的 `add` 和 `mul`。
+3. 在 `addAll` 操作时，更新 `add`。
+4. 在 `multAll` 操作时，更新 `mul` 和 `add`。
+5. 在 `getIndex` 操作时，根据记录的 `add` 和 `mul` 计算出正确的值。
 
 关键点:
-- [TODO]
+- 使用逆元来处理乘法操作的撤销。
+- 通过懒惰更新来减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) 对于每个操作（append, addAll, multAll, getIndex）。
+空间复杂度: O(n) 其中 n 是序列的长度。
 """
 
 # ============================================================================
@@ -48,13 +52,36 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Fancy:
+
+    def __init__(self):
+        self.seq = []
+        self.add = 0
+        self.mul = 1
+        self.inv = 1
+
+    def append(self, val: int) -> None:
+        # 记录当前的 add 和 mul，并将值添加到序列中
+        self.seq.append((val - self.add) * pow(self.mul, MOD - 2, MOD) % MOD)
+
+    def addAll(self, inc: int) -> None:
+        # 更新 add
+        self.add = (self.add + inc) % MOD
+
+    def multAll(self, m: int) -> None:
+        # 更新 mul 和 add
+        self.mul = (self.mul * m) % MOD
+        self.add = (self.add * m) % MOD
+        self.inv = (self.inv * pow(m, MOD - 2, MOD)) % MOD
+
+    def getIndex(self, idx: int) -> int:
+        # 如果索引超出范围，返回 -1
+        if idx >= len(self.seq):
+            return -1
+        # 根据记录的 add 和 mul 计算出正确的值
+        return (self.seq[idx] * self.mul + self.add) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Fancy)

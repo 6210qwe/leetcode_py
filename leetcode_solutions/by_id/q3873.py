@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用一个二维数组 dp，其中 dp[i][j] 表示在前 i 个元素中，是否可以找到一个子序列使得其和为 j。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，大小为 (n+1) x (k+1)，dp[0][0] = True，表示在没有元素的情况下，和为 0。
+2. 遍历每个 x 从 1 到 n，对于每个 x，遍历数组 nums，计算限制后的数组。
+3. 更新 dp 数组，对于每个元素，更新 dp[i][j]，如果 dp[i-1][j] 或 dp[i-1][j - nums[i-1]] 为 True，则 dp[i][j] 也为 True。
+4. 最后，dp[n][k] 就是答案。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = dp[i-1][j] or dp[i-1][j - nums[i-1]]
+- 限制后的数组可以通过 min(nums[i], x) 来生成
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_form_subsequence_sum(nums: List[int], k: int) -> List[bool]:
+    n = len(nums)
+    dp = [[False] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = True  # Base case: with no elements, sum is 0
+
+    result = [False] * n
+
+    for x in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(k + 1):
+                if j >= min(nums[i - 1], x):
+                    dp[i][j] = dp[i - 1][j] or dp[i - 1][j - min(nums[i - 1], x)]
+                else:
+                    dp[i][j] = dp[i - 1][j]
+        
+        result[x - 1] = dp[n][k]
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_form_subsequence_sum)

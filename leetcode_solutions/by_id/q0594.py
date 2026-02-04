@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个数字出现的次数，然后遍历哈希表，检查每个数字及其相邻数字（即 num + 1）的出现次数之和，找到最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表 `count` 来统计每个数字的出现次数。
+2. 遍历哈希表，对于每个数字 `num`，检查 `num + 1` 是否也在哈希表中。
+3. 如果 `num + 1` 存在，则计算 `num` 和 `num + 1` 的出现次数之和，并更新最大和谐子序列的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表进行计数，可以快速查找和更新。
+- 通过遍历哈希表，避免了对数组的多次遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次来构建哈希表，再遍历哈希表一次来找到最长和谐子序列。
+空间复杂度: O(n)，哈希表的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的和谐子序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个数字的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 初始化最长和谐子序列的长度
+    max_length = 0
+    
+    # 遍历哈希表，检查每个数字及其相邻数字的出现次数之和
+    for num in count:
+        if num + 1 in count:
+            max_length = max(max_length, count[num] + count[num + 1])
+    
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

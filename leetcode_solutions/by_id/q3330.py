@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+- 首先计算每一列的最大值。
+- 然后遍历矩阵，将所有值为 -1 的元素替换为其所在列的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 col_maxes 来存储每一列的最大值。
+2. 遍历矩阵的每一列，计算并存储每一列的最大值。
+3. 再次遍历矩阵，将值为 -1 的元素替换为其所在列的最大值。
 
 关键点:
-- [TODO]
+- 通过两次遍历矩阵来实现最优的时间复杂度。
+- 使用额外的空间来存储每一列的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+- 需要两次遍历矩阵，每次遍历的时间复杂度为 O(m * n)。
+
+空间复杂度: O(n)
+- 需要一个长度为 n 的数组来存储每一列的最大值。
 """
 
 # ============================================================================
@@ -49,12 +56,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def modify_matrix(matrix: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 修改矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return matrix
+
+    m, n = len(matrix), len(matrix[0])
+    col_maxes = [max(col) for col in zip(*matrix)]  # 计算每一列的最大值
+
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == -1:
+                matrix[i][j] = col_maxes[j]  # 替换为所在列的最大值
+
+    return matrix
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(modify_matrix)

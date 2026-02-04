@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先将最小的箱子放入最合适的仓库位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对箱子按大小进行排序。
+2. 从左到右遍历仓库的位置，尝试将当前最小的箱子放入。
+3. 如果当前箱子不能放入当前位置，则继续尝试下一个位置。
+4. 重复上述过程，直到所有箱子都尝试过或所有位置都已尝试过。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每个箱子尽可能早地被放入仓库。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m)，其中 n 是箱子的数量，m 是仓库的位置数量。排序操作的时间复杂度是 O(n log n)，遍历仓库位置的时间复杂度是 O(m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_boxes_in_warehouse(boxes: List[int], warehouse: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将尽可能多的箱子放入仓库中
     """
-    # TODO: 实现最优解法
-    pass
+    # 对箱子按大小进行排序
+    boxes.sort()
+    
+    # 初始化指针
+    box_index = 0
+    warehouse_index = 0
+    count = 0
+    
+    # 遍历仓库位置，尝试将箱子放入
+    while box_index < len(boxes) and warehouse_index < len(warehouse):
+        if boxes[box_index] <= warehouse[warehouse_index]:
+            # 当前箱子可以放入当前位置
+            count += 1
+            box_index += 1
+            warehouse_index += 1
+        else:
+            # 当前箱子不能放入当前位置，尝试下一个位置
+            warehouse_index += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_boxes_in_warehouse)

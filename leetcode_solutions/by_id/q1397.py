@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和二分查找来高效地找到前缀匹配的产品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对产品列表进行排序。
+2. 对于 searchWord 的每个前缀，使用二分查找找到第一个匹配的索引。
+3. 从该索引开始，收集最多三个前缀匹配的产品。
 
 关键点:
-- [TODO]
+- 排序后的列表可以利用二分查找快速定位前缀匹配的起始位置。
+- 收集结果时，只需遍历最多三个产品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m * log n)，其中 n 是 products 的长度，m 是 searchWord 的长度。排序的时间复杂度是 O(n log n)，每次二分查找的时间复杂度是 O(log n)，总共进行 m 次二分查找。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def suggested_products(products: List[str], search_word: str) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现搜索建议系统
     """
-    # TODO: 实现最优解法
-    pass
+    # 对产品列表进行排序
+    products.sort()
+
+    def binary_search(left: int, right: int, prefix: str) -> int:
+        while left < right:
+            mid = (left + right) // 2
+            if products[mid] < prefix:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+
+    result = []
+    prefix = ""
+    left = 0
+    for char in search_word:
+        prefix += char
+        left = binary_search(left, len(products), prefix)
+        suggestions = []
+        for i in range(left, min(left + 3, len(products))):
+            if products[i].startswith(prefix):
+                suggestions.append(products[i])
+        result.append(suggestions)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(suggested_products)

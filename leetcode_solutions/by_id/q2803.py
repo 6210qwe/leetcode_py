@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法计算最短路径，并在需要时调整边权。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法计算从 source 到 destination 的最短路径。
+3. 如果最短路径小于 target，则无法通过增加边权来达到目标，返回空数组。
+4. 如果最短路径等于 target，则返回当前的边列表。
+5. 如果最短路径大于 target，则尝试将边权为 -1 的边调整为合适的值，使得最短路径等于 target。
 
 关键点:
-- [TODO]
+- 使用优先队列（最小堆）实现 Dijkstra 算法。
+- 在调整边权时，确保调整后的边权仍然在 [1, 2 * 10^9] 范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是顶点的数量。
+空间复杂度: O(E + V)，用于存储图的邻接表和 Dijkstra 算法的辅助数据结构。
 """
 
 # ============================================================================
@@ -44,17 +48,53 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
+def modify_graph_edge_weights(n: int, edges: List[List[int]], source: int, destination: int, target: int) -> List[List[int]]:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    edge_indices = {}
+    for i, (u, v, w) in enumerate(edges):
+        graph[u].append((v, w, i))
+        graph[v].append((u, w, i))
+        if w == -1:
+            edge_indices[(u, v)] = i
+            edge_indices[(v, u)] = i
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dijkstra() -> int:
+        min_heap = [(0, source)]
+        distance = [float('inf')] * n
+        distance[source] = 0
+        while min_heap:
+            dist, node = heapq.heappop(min_heap)
+            if dist > distance[node]:
+                continue
+            for neighbor, weight, idx in graph[node]:
+                new_dist = dist + (weight if weight != -1 else 1)
+                if new_dist < distance[neighbor]:
+                    distance[neighbor] = new_dist
+                    heapq.heappush(min_heap, (new_dist, neighbor))
+        return distance[destination]
 
+    # 计算初始最短路径
+    shortest_path = dijkstra()
 
-Solution = create_solution(solution_function_name)
+    if shortest_path < target:
+        return []
+    elif shortest_path == target:
+        return edges
+
+    # 尝试调整边权
+    for u, v, w in edges:
+        if w == -1:
+            idx = edge_indices[(u, v)]
+            edges[idx][2] = 2 * 10**9
+            shortest_path = dijkstra()
+            if shortest_path <= target:
+                edges[idx][2] = target - (shortest_path - 2 * 10**9) + 1
+                return edges
+            edges[idx][2] = 1
+
+    return []
+
+Solution = create_solution(modify_graph_edge_weights)

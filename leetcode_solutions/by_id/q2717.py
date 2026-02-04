@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索（DFS）来确定需要删除的叶子节点，从而减少不必要的边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 从没有金币的叶子节点开始，进行一次DFS，删除这些叶子节点及其边。
+3. 再进行一次DFS，删除剩余的叶子节点及其边。
+4. 计算剩余的边数并返回结果。
 
 关键点:
-- [TODO]
+- 通过两次DFS删除不必要的叶子节点，确保只保留必要的边。
+- 通过拓扑排序的思想，逐步删除叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def collectTheCoins(coins: List[int], edges: List[List[int]]) -> int:
+    n = len(coins)
+    if n == 1:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
 
+    # 删除没有金币的叶子节点
+    def remove_leaf_nodes():
+        leaves = []
+        for node in range(n):
+            if len(adj_list[node]) == 1 and coins[node] == 0:
+                leaves.append(node)
+        for leaf in leaves:
+            neighbor = adj_list[leaf][0]
+            adj_list[neighbor].remove(leaf)
+            adj_list[leaf].clear()
 
-Solution = create_solution(solution_function_name)
+    remove_leaf_nodes()
+
+    # 删除剩余的叶子节点
+    def remove_remaining_leaves():
+        leaves = []
+        for node in range(n):
+            if len(adj_list[node]) == 1:
+                leaves.append(node)
+        for _ in range(2):
+            new_leaves = []
+            for leaf in leaves:
+                if adj_list[leaf]:
+                    neighbor = adj_list[leaf][0]
+                    adj_list[neighbor].remove(leaf)
+                    adj_list[leaf].clear()
+                    if len(adj_list[neighbor]) == 1:
+                        new_leaves.append(neighbor)
+            leaves = new_leaves
+
+    remove_remaining_leaves()
+
+    # 计算剩余的边数
+    remaining_edges = sum(len(adj_list[node]) for node in range(n)) // 2
+    return remaining_edges
+
+Solution = create_solution(collectTheCoins)

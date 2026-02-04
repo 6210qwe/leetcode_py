@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和预生成的质数表来判断是否可以通过减去质数使数组严格递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成一个包含所有小于等于 1000 的质数的列表。
+2. 遍历数组，对于每个元素，使用二分查找找到一个合适的质数，使得当前元素减去该质数后仍大于前一个元素。
+3. 如果找不到合适的质数，则返回 False。
+4. 如果遍历完整个数组，返回 True。
 
 关键点:
-- [TODO]
+- 使用预生成的质数表来提高查找效率。
+- 使用二分查找来快速找到合适的质数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是数组长度，m 是质数的数量（最多 168 个）。
+空间复杂度: O(m)，用于存储质数表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def is_prime(n: int) -> bool:
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def generate_primes(limit: int) -> List[int]:
+    primes = []
+    for num in range(2, limit + 1):
+        if is_prime(num):
+            primes.append(num)
+    return primes
 
+def can_be_strictly_increasing(nums: List[int]) -> bool:
+    primes = generate_primes(1000)
+    prev = 0
+    for num in nums:
+        # 找到一个质数 p，使得 num - p > prev
+        index = bisect.bisect_left(primes, num - prev)
+        if index < len(primes) and primes[index] < num:
+            prev = num - primes[index]
+        else:
+            return False
+    return True
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_strictly_increasing)

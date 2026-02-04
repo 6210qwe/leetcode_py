@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的出现频次，然后遍历哈希表找到满足条件的最大幸运数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个数字的出现频次。
+2. 遍历哈希表，找到频次等于数值的数字，并记录最大值。
+3. 返回最大幸运数，如果没有找到则返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表统计频次，时间复杂度为 O(n)。
+- 一次遍历哈希表查找最大幸运数，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_lucky(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中的幸运数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个数字的出现频次
+    freq = {}
+    for num in arr:
+        if num in freq:
+            freq[num] += 1
+        else:
+            freq[num] = 1
+    
+    # 遍历哈希表，找到频次等于数值的数字，并记录最大值
+    max_lucky = -1
+    for num, count in freq.items():
+        if num == count and num > max_lucky:
+            max_lucky = num
+    
+    return max_lucky
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_lucky)

@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计 `licensePlate` 中的字母频率，然后遍历 `words`，找到第一个满足条件的最短补全词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计 `licensePlate` 中的字母频率。
+2. 遍历 `words`，对于每个单词，检查其是否包含 `licensePlate` 中的所有字母且频率不低于 `licensePlate` 中的频率。
+3. 如果满足条件，更新当前最短补全词。
+4. 返回最短补全词。
 
 关键点:
-- [TODO]
+- 使用 `collections.Counter` 来统计字母频率。
+- 使用 `all` 函数来检查单词是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `words` 的长度，m 是单词的平均长度。
+空间复杂度: O(1)，因为字母表的大小是固定的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def shortest_completing_word(license_plate: str, words: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    找出 words 中的最短补全词。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计 licensePlate 中的字母频率
+    license_counter = Counter(c.lower() for c in license_plate if c.isalpha())
+    
+    # 初始化最短补全词
+    shortest_word = None
+    
+    # 遍历 words
+    for word in words:
+        word_counter = Counter(word)
+        # 检查 word 是否包含 licensePlate 中的所有字母且频率不低于 licensePlate 中的频率
+        if all(word_counter[letter] >= count for letter, count in license_counter.items()):
+            if shortest_word is None or len(word) < len(shortest_word):
+                shortest_word = word
+    
+    return shortest_word
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_completing_word)

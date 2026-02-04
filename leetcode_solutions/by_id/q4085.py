@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托斯特尼筛法生成所有小于等于 n 的质数，然后使用滑动窗口技术找到最大的连续质数和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用埃拉托斯特尼筛法生成所有小于等于 n 的质数。
+2. 使用滑动窗口技术遍历这些质数，找到最大的连续质数和。
+3. 检查这个和是否为质数，如果是则更新结果。
 
 关键点:
-- [TODO]
+- 使用埃拉托斯特尼筛法高效生成质数。
+- 使用滑动窗口技术高效找到连续质数和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n) - 埃拉托斯特尼筛法的时间复杂度。
+空间复杂度: O(n) - 存储质数的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_prime_from_consecutive_sum(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回小于或等于 n 的最大质数，该质数可以表示为从 2 开始的一个或多个连续质数之和。
     """
-    # TODO: 实现最优解法
-    pass
+    def sieve_of_eratosthenes(limit: int) -> List[int]:
+        """生成所有小于等于 limit 的质数。"""
+        is_prime = [True] * (limit + 1)
+        p = 2
+        while p * p <= limit:
+            if is_prime[p]:
+                for i in range(p * p, limit + 1, p):
+                    is_prime[i] = False
+            p += 1
+        return [p for p in range(2, limit + 1) if is_prime[p]]
+
+    primes = sieve_of_eratosthenes(n)
+    max_prime_sum = 0
+    left = 0
+    current_sum = 0
+
+    for right in range(len(primes)):
+        current_sum += primes[right]
+        while current_sum > n:
+            current_sum -= primes[left]
+            left += 1
+        if current_sum in primes and current_sum > max_prime_sum:
+            max_prime_sum = current_sum
+
+    return max_prime_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_prime_from_consecutive_sum)

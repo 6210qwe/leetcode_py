@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 找出所有在 2015 年有相同投保额的投保人。
+2. 找出所有在城市位置上唯一的投保人。
+3. 计算满足上述两个条件的投保人在 2016 年的投保金额之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找出所有在 2015 年有相同投保额的投保人。
+2. 使用子查询找出所有在城市位置上唯一的投保人。
+3. 将上述两个子查询的结果进行交集操作，得到满足条件的投保人。
+4. 计算这些投保人在 2016 年的投保金额之和，并四舍五入到两位小数。
 
 关键点:
-- [TODO]
+- 使用子查询来筛选符合条件的数据。
+- 使用 GROUP BY 和 HAVING 来筛选出在 2015 年有相同投保额的投保人。
+- 使用 GROUP BY 和 COUNT 来筛选出在城市位置上唯一的投保人。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表中记录的数量。主要的时间开销来自于排序和分组操作。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +56,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(insurance: List[List[float]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from decimal import Decimal, getcontext
+
+    # 设置小数精度
+    getcontext().prec = 2
+
+    # 存储每个 tiv_2015 的投保人数量
+    tiv_2015_count = defaultdict(int)
+    # 存储每个 (lat, lon) 的投保人数量
+    location_count = defaultdict(int)
+
+    for _, tiv_2015, _, lat, lon in insurance:
+        tiv_2015_count[tiv_2015] += 1
+        location_count[(lat, lon)] += 1
+
+    # 筛选出满足条件的投保人
+    valid_tiv_2016 = []
+    for pid, tiv_2015, tiv_2016, lat, lon in insurance:
+        if tiv_2015_count[tiv_2015] > 1 and location_count[(lat, lon)] == 1:
+            valid_tiv_2016.append(tiv_2016)
+
+    # 计算总和并四舍五入到两位小数
+    total_tiv_2016 = sum(valid_tiv_2016)
+    return Decimal(total_tiv_2016).quantize(Decimal('0.01'))
 
 
 Solution = create_solution(solution_function_name)

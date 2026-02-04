@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个集合分别存储大写字母和小写字母，然后从后向前遍历大写字母，找到第一个同时在两个集合中出现的字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个集合，分别存储大写字母和小写字母。
+2. 遍历字符串，将每个字符添加到对应的集合中。
+3. 从 'Z' 到 'A' 依次检查每个大写字母是否在两个集合中都存在。
+4. 如果找到一个符合条件的大写字母，返回该字母。
+5. 如果没有找到符合条件的字母，返回空字符串。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找字母是否存在。
+- 从后向前遍历大写字母以确保找到的是最好的字母。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次，并且检查集合中的元素是 O(1) 的操作。
+空间复杂度: O(1)，因为集合中最多只会有 26 个字母。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def greatest_letter(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出字符串 s 中兼具大小写的最好英文字母
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化两个集合，分别存储大写字母和小写字母
+    upper_set = set()
+    lower_set = set()
+
+    # 遍历字符串，将每个字符添加到对应的集合中
+    for char in s:
+        if char.isupper():
+            upper_set.add(char)
+        else:
+            lower_set.add(char)
+
+    # 从 'Z' 到 'A' 依次检查每个大写字母是否在两个集合中都存在
+    for char in reversed(range(ord('A'), ord('Z') + 1)):
+        if chr(char) in upper_set and chr(char).lower() in lower_set:
+            return chr(char)
+
+    # 如果没有找到符合条件的字母，返回空字符串
+    return ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(greatest_letter)

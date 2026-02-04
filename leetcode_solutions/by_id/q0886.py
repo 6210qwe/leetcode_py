@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理括号字符串，遇到'('时将当前分数压入栈中，并将当前分数重置为0；遇到')'时，弹出栈顶元素，并将当前分数乘以2加上栈顶元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈和当前分数。
+2. 遍历字符串：
+   - 如果是'('，将当前分数压入栈中，并将当前分数重置为0。
+   - 如果是')'，弹出栈顶元素，并将当前分数乘以2加上栈顶元素。
+3. 返回最终的分数。
 
 关键点:
-- [TODO]
+- 使用栈来存储中间结果，避免重复计算。
+- 通过栈顶元素来计算当前子串的分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符只会被处理一次。
+空间复杂度: O(n)，在最坏情况下，栈的大小可能达到字符串长度的一半。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def score_of_parentheses(S: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算平衡括号字符串的分数
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    current_score = 0
+    
+    for char in S:
+        if char == '(':
+            stack.append(current_score)
+            current_score = 0
+        else:
+            current_score = stack.pop() + max(2 * current_score, 1)
+    
+    return current_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(score_of_parentheses)

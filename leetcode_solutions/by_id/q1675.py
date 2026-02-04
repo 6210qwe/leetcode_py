@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大化的最小磁力。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对位置数组进行排序。
+2. 定义一个辅助函数 `can_place`，用于判断给定的磁力值是否可以放置 m 个球。
+3. 使用二分查找来确定最大化的最小磁力：
+   - 初始化左右边界 `left` 和 `right`，分别表示最小和最大的可能磁力。
+   - 在每次迭代中，计算中间值 `mid`，并使用 `can_place` 函数判断是否可以放置 m 个球。
+   - 如果可以放置，则更新左边界 `left`；否则，更新右边界 `right`。
+4. 返回最终的 `left` 值作为结果。
 
 关键点:
-- [TODO]
+- 通过二分查找来高效地确定最大化的最小磁力。
+- 辅助函数 `can_place` 用于验证当前磁力值是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(position) - min(position)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_place(position: List[int], m: int, force: int) -> bool:
+    count = 1
+    last_position = position[0]
+    for pos in position[1:]:
+        if pos - last_position >= force:
+            count += 1
+            last_position = pos
+            if count == m:
+                return True
+    return False
 
-def solution_function_name(params):
+def solution_function_name(position: List[int], m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化最小磁力
     """
-    # TODO: 实现最优解法
-    pass
-
+    position.sort()
+    
+    left, right = 1, position[-1] - position[0]
+    
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_place(position, m, mid):
+            left = mid
+        else:
+            right = mid - 1
+    
+    return left
 
 Solution = create_solution(solution_function_name)

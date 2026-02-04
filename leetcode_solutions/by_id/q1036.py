@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来模拟腐烂过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列，将所有腐烂的橘子加入队列，并记录初始时间。
+2. 使用 BFS 进行层次遍历，每层遍历完后时间加一。
+3. 对于每个腐烂的橘子，检查其四个方向上的邻居，如果邻居是新鲜橘子，则将其标记为腐烂并加入队列。
+4. 如果队列为空且仍有新鲜橘子，则返回 -1，否则返回总时间。
 
 关键点:
-- [TODO]
+- 使用队列进行 BFS。
+- 记录时间和新鲜橘子的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。
+空间复杂度: O(m * n)，最坏情况下队列中可能包含所有的橘子。
 """
 
 # ============================================================================
@@ -49,12 +52,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def oranges_rotting(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    rows, cols = len(grid), len(grid[0])
+    queue = []
+    fresh_count = 0
+
+    # 初始化队列并将所有腐烂的橘子加入队列
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                queue.append((r, c))
+            elif grid[r][c] == 1:
+                fresh_count += 1
+
+    # 如果没有新鲜橘子，直接返回 0
+    if fresh_count == 0:
+        return 0
+
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    minutes_passed = 0
+
+    while queue and fresh_count > 0:
+        minutes_passed += 1
+        new_queue = []
+
+        for r, c in queue:
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    fresh_count -= 1
+                    new_queue.append((nr, nc))
+
+        queue = new_queue
+
+    return minutes_passed if fresh_count == 0 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(oranges_rotting)

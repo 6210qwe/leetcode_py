@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个数字的二进制反射值，并根据反射值和原始值进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `binary_reflection` 来计算一个数字的二进制反射值。
+2. 使用 `sorted` 函数对数组进行排序，排序的关键是先按反射值排序，如果反射值相同则按原始值排序。
 
 关键点:
-- [TODO]
+- 使用 `bin` 函数获取二进制表示，并去掉前导 '0b'。
+- 反转二进制字符串并转换回十进制。
+- 使用 `sorted` 函数进行多关键字排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储排序后的数组。
 """
 
 # ============================================================================
@@ -48,13 +50,16 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def binary_reflection(num: int) -> int:
+    """计算一个数字的二进制反射值"""
+    binary_str = bin(num)[2:]  # 获取二进制表示并去掉前导 '0b'
+    reversed_binary_str = binary_str[::-1]  # 反转二进制字符串
+    return int(reversed_binary_str, 2)  # 转换回十进制
 
-def solution_function_name(params):
+def sort_by_binary_reflection(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    按每个元素的二进制反射值的升序对数组进行排序。如果两个不同的数字具有相同的二进制反射值，则较小的原始数字应排在前面。
     """
-    # TODO: 实现最优解法
-    pass
+    return sorted(nums, key=lambda x: (binary_reflection(x), x))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_by_binary_reflection)

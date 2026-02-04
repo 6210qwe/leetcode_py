@@ -14,47 +14,73 @@
 # 问题描述
 # ============================================================================
 """
-1153. 字符串转化 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定两个字符串 s 和 t，判断是否可以通过一系列操作将 s 转换为 t。每一步可以将 s 中的一个字符替换为另一个字符。
+所有出现的该字符都必须同时替换。每个字符只能被替换一次。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用图和拓扑排序来检测是否有环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个有向图，表示字符之间的转换关系。
+2. 检查图中是否存在环，如果存在环则无法完成转换。
+3. 如果 s 和 t 的长度不同，直接返回 False。
+4. 如果 s 和 t 相同，直接返回 True。
+5. 如果 t 中存在某个字符在 s 中没有对应的字符，则需要检查 s 中是否有未使用的字符。
 
 关键点:
-- [TODO]
+- 使用拓扑排序检测环。
+- 确保每个字符只被替换一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是字符串 t 的长度。
+空间复杂度: O(1)，因为字符集大小是固定的（26 个字母）。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import defaultdict, deque
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_convert(s: str, t: str) -> bool:
+    if s == t:
+        return True
+    if len(s) != len(t):
+        return False
+    
+    # 构建有向图
+    graph = defaultdict(list)
+    in_degree = defaultdict(int)
+    for i in range(len(s)):
+        if s[i] != t[i]:
+            graph[s[i]].append(t[i])
+            in_degree[t[i]] += 1
+    
+    # 拓扑排序
+    queue = deque([c for c in set(s) if in_degree[c] == 0])
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # 检查是否有环
+    for c in set(t):
+        if in_degree[c] > 0:
+            return False
+    
+    # 检查 t 中是否有未映射的字符
+    return all(c in graph or c not in set(s) for c in set(t))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_convert)

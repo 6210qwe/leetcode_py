@@ -21,40 +21,96 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 预处理字符串 s，计算出每个位置左边和右边的 '1' 和 '0' 的数量。
+2. 对于每个查询，计算出子字符串 s[li...ri] 在进行最优操作后的最大活跃区间数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理字符串 s，计算出每个位置左边和右边的 '1' 和 '0' 的数量。
+2. 对于每个查询，计算出子字符串 s[li...ri] 在进行最优操作后的最大活跃区间数。
+   - 计算出子字符串中的 '1' 和 '0' 的数量。
+   - 计算出子字符串中的 '1' 和 '0' 的边界。
+   - 根据边界情况，计算出最大活跃区间数。
 
 关键点:
-- [TODO]
+- 预处理字符串 s，计算出每个位置左边和右边的 '1' 和 '0' 的数量。
+- 对于每个查询，根据边界情况，计算出最大活跃区间数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，用于存储预处理的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_active_sections(s: str, queries: List[List[int]]) -> List[int]:
+    n = len(s)
+    left_ones = [0] * n
+    right_ones = [0] * n
+    left_zeros = [0] * n
+    right_zeros = [0] * n
+    
+    # 预处理左边的 '1' 和 '0' 的数量
+    for i in range(1, n):
+        if s[i-1] == '1':
+            left_ones[i] = left_ones[i-1] + 1
+        else:
+            left_ones[i] = left_ones[i-1]
+        
+        if s[i-1] == '0':
+            left_zeros[i] = left_zeros[i-1] + 1
+        else:
+            left_zeros[i] = left_zeros[i-1]
+    
+    # 预处理右边的 '1' 和 '0' 的数量
+    for i in range(n-2, -1, -1):
+        if s[i+1] == '1':
+            right_ones[i] = right_ones[i+1] + 1
+        else:
+            right_ones[i] = right_ones[i+1]
+        
+        if s[i+1] == '0':
+            right_zeros[i] = right_zeros[i+1] + 1
+        else:
+            right_zeros[i] = right_zeros[i+1]
+    
+    def count_max_active(l: int, r: int) -> int:
+        # 计算子字符串 s[l...r] 的最大活跃区间数
+        total_ones = left_ones[r] - (left_ones[l-1] if l > 0 else 0)
+        total_zeros = left_zeros[r] - (left_zeros[l-1] if l > 0 else 0)
+        
+        if total_ones == 0 or total_zeros == 0:
+            return total_ones + 1
+        
+        # 找到第一个 '1' 和最后一个 '1'
+        first_one = l + left_zeros[l] - (left_zeros[l-1] if l > 0 else 0)
+        last_one = r - (right_ones[r] - right_ones[r+1] if r < n-1 else 0)
+        
+        # 找到第一个 '0' 和最后一个 '0'
+        first_zero = l + left_ones[l] - (left_ones[l-1] if l > 0 else 0)
+        last_zero = r - (right_zeros[r] - right_zeros[r+1] if r < n-1 else 0)
+        
+        # 计算最大活跃区间数
+        max_active = 0
+        if first_zero > first_one and last_zero < last_one:
+            max_active = total_ones - (last_zero - first_zero + 1) + 1
+        else:
+            max_active = total_ones + 1
+        
+        return max_active
+    
+    result = []
+    for l, r in queries:
+        result.append(count_max_active(l, r))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_active_sections)

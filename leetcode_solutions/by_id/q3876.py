@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算数组中 -1 的数量来判断是否可以通过 k 次操作使所有元素相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中 -1 的数量。
+2. 如果 -1 的数量是偶数，则可以通过 k 次操作使所有元素相等。
+3. 如果 -1 的数量是奇数，则需要检查 k 是否足够大，使得可以通过 k 次操作使所有元素相等。
 
 关键点:
-- [TODO]
+- 通过计算 -1 的数量来判断是否可以通过 k 次操作使所有元素相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历整个数组来计算 -1 的数量。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_transform_to_equal(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以通过 k 次操作使数组的所有元素相等。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组中 -1 的数量
+    count_neg_ones = sum(1 for num in nums if num == -1)
+    
+    # 如果 -1 的数量是偶数，则可以通过 k 次操作使所有元素相等
+    if count_neg_ones % 2 == 0:
+        return True
+    
+    # 如果 -1 的数量是奇数，则需要检查 k 是否足够大
+    # 每次操作可以减少两个 -1，因此需要 (count_neg_ones - 1) // 2 次操作
+    required_operations = (count_neg_ones - 1) // 2
+    return required_operations <= k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_transform_to_equal)

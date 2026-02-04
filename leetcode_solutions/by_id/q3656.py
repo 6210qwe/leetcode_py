@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，并计算需要移除的元素数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的出现次数。
+2. 计算需要移除的元素数量，每次移除 3 个元素，直到所有重复元素都被移除。
+3. 返回需要的操作次数。
 
 关键点:
-- [TODO]
+- 使用哈希表统计元素频率。
+- 每次移除 3 个元素，直到所有重复元素都被移除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组来统计元素频率。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储所有元素。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_make_distinct(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组元素互不相同所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+
+    # 计算需要移除的元素数量
+    operations = 0
+    for freq in count.values():
+        if freq > 1:
+            # 每次移除 3 个元素
+            operations += (freq - 1 + 2) // 3
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_distinct)

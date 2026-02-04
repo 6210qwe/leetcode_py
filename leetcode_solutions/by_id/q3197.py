@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Trie 树来存储二进制表示的数字，并在遍历过程中找到最大异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个 Trie 树，用于存储每个数字的二进制表示。
+2. 对数组进行排序，以便使用滑动窗口来维护当前范围内的数字。
+3. 使用双指针方法，确保当前窗口内的数字都满足强数对的条件。
+4. 在 Trie 树中查找当前数字的最大异或值，并更新结果。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来高效地查找最大异或值。
+- 使用双指针方法来维护当前窗口内的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + 32n) = O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)，插入和查询 Trie 树的时间复杂度是 O(32n)。
+空间复杂度: O(32n) = O(n)，Trie 树的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +52,58 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.count = 0
 
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, num):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+            node.count += 1
+
+    def remove(self, num):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            node = node.children[bit]
+            node.count -= 1
+
+    def find_max_xor(self, num):
+        node = self.root
+        xor = 0
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            target_bit = 1 - bit
+            if target_bit in node.children and node.children[target_bit].count > 0:
+                xor |= (1 << i)
+                node = node.children[target_bit]
+            else:
+                node = node.children.get(bit, TrieNode())
+        return xor
+
+def solution_function_name(nums: List[int]) -> int:
+    """
+    函数式接口 - 找出强数对的最大异或值 II
+    """
+    nums.sort()
+    trie = Trie()
+    max_xor = 0
+    left = 0
+    for right, num in enumerate(nums):
+        trie.insert(num)
+        while num - nums[left] > nums[left]:
+            trie.remove(nums[left])
+            left += 1
+        max_xor = max(max_xor, trie.find_max_xor(num))
+    return max_xor
 
 Solution = create_solution(solution_function_name)

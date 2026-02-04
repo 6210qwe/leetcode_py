@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数和自连接来找到连续日期
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用窗口函数 `ROW_NUMBER()` 为每个日期分配一个行号。
+2. 计算每个日期与行号之间的差值，以标识连续日期块。
+3. 使用自连接和条件过滤来找到连续日期块。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `ROW_NUMBER()` 来标识连续日期。
+- 通过自连接和条件过滤来找到连续日期块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表中的行数。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储中间结果。
 """
 
 # ============================================================================
@@ -48,13 +50,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    WITH DateRow AS (
+        SELECT 
+            fail_date,
+            ROW_NUMBER() OVER (ORDER BY fail_date) - 
+            ROW_NUMBER() OVER (PARTITION BY status ORDER BY fail_date) AS grp
+        FROM 
+            (SELECT fail_date, 'failed' AS status FROM Failed
+             UNION ALL
+             SELECT success_date, 'succeeded' AS status FROM Succeeded) AS Combined
+    ),
+    GroupedDates AS (
+        SELECT 
+            MIN(fail_date) AS start_date,
+            MAX(fail_date) AS end_date,
+            status
+        FROM 
+            DateRow
+        GROUP BY 
+            grp, status
+    )
+    SELECT 
+        start_date, 
+        end_date, 
+        status
+    FROM 
+        GroupedDates
+    ORDER BY 
+        start_date;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

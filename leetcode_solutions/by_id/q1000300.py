@@ -21,22 +21,26 @@ LCR 108. 单词接龙 - 在字典（单词列表） wordList 中，从单词 beg
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双向广度优先搜索（BFS）来找到从 beginWord 到 endWord 的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个队列，分别从 beginWord 和 endWord 开始进行 BFS。
+2. 使用两个集合分别记录从 beginWord 和 endWord 出发已经访问过的单词。
+3. 在每一步中，选择当前较小的队列进行扩展，生成所有可能的下一个单词，并检查这些单词是否在另一个方向的已访问集合中。
+4. 如果找到交集，则说明找到了最短路径，返回路径长度。
+5. 如果两个队列都为空且没有找到交集，则返回 0。
 
 关键点:
-- [TODO]
+- 双向 BFS 可以显著减少搜索空间，提高效率。
+- 使用通配符来生成所有可能的下一个单词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N * M^2)，其中 N 是 wordList 的长度，M 是单词的长度。每个单词最多生成 M 个新单词，每个新单词需要 O(M) 时间来生成和检查。
+空间复杂度: O(N * M)，用于存储队列和已访问的单词集合。
 """
 
 # ============================================================================
@@ -49,12 +53,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def ladder_length(begin_word: str, end_word: str, word_list: List[str]) -> int:
+    if end_word not in word_list:
+        return 0
+
+    word_set = set(word_list)
+    front_queue, back_queue = {begin_word}, {end_word}
+    visited_front, visited_back = {begin_word}, {end_word}
+    steps = 1
+
+    while front_queue and back_queue:
+        if len(front_queue) > len(back_queue):
+            front_queue, back_queue = back_queue, front_queue
+            visited_front, visited_back = visited_back, visited_front
+
+        next_level = set()
+        for word in front_queue:
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    new_word = word[:i] + c + word[i+1:]
+                    if new_word in back_queue:
+                        return steps + 1
+                    if new_word in word_set and new_word not in visited_front:
+                        next_level.add(new_word)
+                        visited_front.add(new_word)
+
+        front_queue = next_level
+        steps += 1
+
+    return 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ladder_length)

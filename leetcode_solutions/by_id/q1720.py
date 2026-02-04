@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来模拟文件夹的进出操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前所在的文件夹层级。
+2. 遍历 logs 列表：
+   - 如果是 "../"，并且栈不为空，则弹出栈顶元素。
+   - 如果是 "./"，则继续遍历下一个元素。
+   - 如果是 "x/"，则将 "x" 压入栈中。
+3. 最后返回栈的大小，即为返回主文件夹所需的最小步数。
 
 关键点:
-- [TODO]
+- 使用栈来模拟文件夹的进出操作。
+- 处理 "../" 时需要判断栈是否为空。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 logs 的长度。我们需要遍历整个 logs 列表。
+空间复杂度: O(n)，在最坏情况下，所有的操作都是进入子文件夹，栈的大小会达到 n。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(logs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算返回主文件夹所需的最小步数
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for log in logs:
+        if log == "../":
+            if stack:
+                stack.pop()
+        elif log != "./":
+            stack.append(log)
+    return len(stack)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组将偶数替换为 0，奇数替换为 1，然后对数组进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，将偶数替换为 0，奇数替换为 1。
+2. 对数组进行排序。
 
 关键点:
-- [TODO]
+- 使用列表推导式简化代码。
+- 利用 Python 的内置排序函数 `sorted` 进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def transform_array_by_parity(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组按照奇偶性转化
     """
-    # TODO: 实现最优解法
-    pass
+    # 将偶数替换为 0，奇数替换为 1
+    transformed_nums = [0 if num % 2 == 0 else 1 for num in nums]
+    # 对数组进行排序
+    sorted_nums = sorted(transformed_nums)
+    return sorted_nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(transform_array_by_parity)

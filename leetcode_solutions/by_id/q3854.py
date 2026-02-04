@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来解决这个问题。我们可以通过递归地计算每个员工的最大利润，并使用记忆化来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建员工之间的层级关系图。
+2. 定义一个递归函数 `dfs`，用于计算从某个员工开始的最大利润。
+3. 在递归函数中，考虑两种情况：
+   - 该员工不购买股票。
+   - 该员工购买股票，并且其下属可以选择是否购买股票。
+4. 使用记忆化搜索来存储已经计算过的状态，以减少重复计算。
+5. 从 CEO 开始调用递归函数，计算最大利润。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归计算。
+- 通过构建层级关系图来方便地访问每个员工的下属。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * budget)，其中 n 是员工数量，budget 是预算。每个状态最多被计算一次。
+空间复杂度: O(n * budget)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -48,13 +54,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def maximum_profit(n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
+    # 构建层级关系图
+    graph = [[] for _ in range(n + 1)]
+    for u, v in hierarchy:
+        graph[u].append(v)
+    
+    # 记忆化搜索
+    memo = {}
+    
+    def dfs(employee: int, remaining_budget: int) -> int:
+        if (employee, remaining_budget) in memo:
+            return memo[(employee, remaining_budget)]
+        
+        # 不购买股票的情况
+        max_profit = 0
+        
+        # 购买股票的情况
+        if remaining_budget >= present[employee - 1]:
+            profit = future[employee - 1] - present[employee - 1]
+            max_profit = max(max_profit, profit)
+            
+            # 递归计算下属的最大利润
+            for subordinate in graph[employee]:
+                discounted_price = present[subordinate - 1] // 2
+                if remaining_budget - present[employee - 1] >= discounted_price:
+                    max_profit = max(max_profit, profit + dfs(subordinate, remaining_budget - present[employee - 1]))
+        
+        # 递归计算不购买股票的情况
+        for subordinate in graph[employee]:
+            max_profit = max(max_profit, dfs(subordinate, remaining_budget))
+        
+        memo[(employee, remaining_budget)] = max_profit
+        return max_profit
+    
+    # 从 CEO 开始计算最大利润
+    return dfs(1, budget)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_profit)

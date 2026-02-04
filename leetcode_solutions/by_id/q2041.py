@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来过滤出 2020 年的登录记录，并找到每个用户的最后一次登录时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 过滤出 2020 年的登录记录。
+2. 对每个用户，找到其最后一次登录的时间。
 
 关键点:
-- [TODO]
+- 使用 `WHERE` 子句过滤出 2020 年的记录。
+- 使用 `GROUP BY` 和 `MAX` 函数找到每个用户的最后一次登录时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 Logins 表中的记录数。这是因为 SQL 引擎可能需要对数据进行排序和分组操作。
+空间复杂度: O(n)，因为我们需要存储 2020 年的所有登录记录。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(logins: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 获取 2020 年每个用户的最后一次登录时间
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from datetime import datetime
+
+    # 创建一个字典来存储每个用户的最后一次登录时间
+    last_login = defaultdict(lambda: datetime.min)
+
+    for user_id, time_stamp in logins:
+        time_stamp = datetime.fromisoformat(time_stamp)
+        if time_stamp.year == 2020 and time_stamp > last_login[user_id]:
+            last_login[user_id] = time_stamp
+
+    # 将结果转换为列表
+    result = [[user_id, time_stamp.isoformat(sep=' ', timespec='seconds')] for user_id, time_stamp in last_login.items() if time_stamp != datetime.min]
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

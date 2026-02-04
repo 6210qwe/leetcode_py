@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的位置，并通过双重循环找到符合条件的四元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个元素的所有出现位置。
+2. 遍历所有可能的 p 和 r，计算 nums[p] * nums[r]。
+3. 查找 q 和 s 的位置，确保它们满足条件 q - p > 1, r - q > 1, s - r > 1。
+4. 统计符合条件的四元组数量。
 
 关键点:
-- [TODO]
+- 使用哈希表高效查找元素位置。
+- 通过双重循环和条件判断找到符合条件的四元组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_special_subsequences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计特殊子序列的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个元素的所有出现位置
+    index_map = {}
+    for i, num in enumerate(nums):
+        if num not in index_map:
+            index_map[num] = []
+        index_map[num].append(i)
+
+    count = 0
+    n = len(nums)
+
+    # 遍历所有可能的 p 和 r
+    for p in range(n):
+        for r in range(p + 2, n):
+            product = nums[p] * nums[r]
+            # 查找 q 和 s 的位置
+            for q in index_map.get(product // nums[p], []):
+                if p < q < r:
+                    for s in index_map.get(product // nums[r], []):
+                        if r < s and s - r > 1:
+                            count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_special_subsequences)

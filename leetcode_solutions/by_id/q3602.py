@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算连续子数组的和，并使用双指针优化计算过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用双指针遍历前缀和数组，计算每个子数组的和。
+3. 将所有子数组的和累加起来。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意子数组的和。
+- 双指针可以避免重复计算，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有连续子数组的和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
+
+    total_sum = 0
+
+    # 使用双指针遍历前缀和数组，计算每个子数组的和
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            total_sum += prefix_sum[j] - prefix_sum[i]
+
+    return total_sum
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，找到所有的完美二叉子树，并记录它们的大小。然后对这些大小进行排序，找到第 k 大的完美二叉子树的大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_perfect` 来判断一个子树是否是完美二叉树。
+2. 定义一个主函数 `find_perfect_subtrees` 来遍历二叉树，找到所有的完美二叉子树，并记录它们的大小。
+3. 对记录的完美二叉子树大小进行降序排序，找到第 k 大的完美二叉子树的大小。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历二叉树。
+- 判断一个子树是否是完美二叉树。
+- 记录并排序完美二叉子树的大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log n)，其中 n 是二叉树的节点数。DFS 遍历的时间复杂度是 O(n)，排序的时间复杂度是 O(m * log m)，其中 m 是完美二叉子树的数量。
+空间复杂度: O(n)，存储完美二叉子树的大小和递归调用栈的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,45 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_perfect(node: TreeNode) -> bool:
+    """判断一个子树是否是完美二叉树"""
+    if not node:
+        return True
+    if not node.left and not node.right:
+        return True
+    if not node.left or not node.right:
+        return False
+    return is_perfect(node.left) and is_perfect(node.right)
+
+
+def find_perfect_subtrees(root: TreeNode, sizes: List[int]) -> None:
+    """遍历二叉树，找到所有的完美二叉子树，并记录它们的大小"""
+    if not root:
+        return
+    if is_perfect(root):
+        size = 1
+        while root.left:
+            root = root.left
+            size = size * 2 + 1
+        sizes.append(size)
+    find_perfect_subtrees(root.left, sizes)
+    find_perfect_subtrees(root.right, sizes)
+
+
+def solution_function_name(root: Optional[TreeNode], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到第 k 大的完美二叉子树的大小
     """
-    # TODO: 实现最优解法
-    pass
+    sizes = []
+    find_perfect_subtrees(root, sizes)
+    sizes.sort(reverse=True)
+    if len(sizes) < k:
+        return -1
+    return sizes[k - 1]
 
 
 Solution = create_solution(solution_function_name)

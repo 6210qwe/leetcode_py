@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针分别遍历正数和负数，并交替插入结果数组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，一个指向正数，一个指向负数。
+2. 遍历数组，将正数和负数分别存入两个列表中。
+3. 交替从正数和负数列表中取出元素，插入结果数组中。
 
 关键点:
-- [TODO]
+- 使用双指针分别处理正数和负数，确保它们的相对顺序不变。
+- 交替插入结果数组，保证相邻元素符号相反。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def rearrange_array_elements_by_sign(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按符号重排数组
     """
-    # TODO: 实现最优解法
-    pass
+    # 分离正数和负数
+    positive_nums = [num for num in nums if num > 0]
+    negative_nums = [num for num in nums if num < 0]
+
+    # 交替插入结果数组
+    result = []
+    for i in range(len(positive_nums)):
+        result.append(positive_nums[i])
+        result.append(negative_nums[i])
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_array_elements_by_sign)

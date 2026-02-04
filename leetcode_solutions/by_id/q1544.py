@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，并在遍历过程中维护当前路径的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，参数包括当前节点和当前路径的最大值。
+2. 如果当前节点为空，返回 0。
+3. 初始化好节点计数器 `good_count` 为 0。
+4. 如果当前节点的值大于等于当前路径的最大值，则该节点是好节点，`good_count` 加 1。
+5. 更新当前路径的最大值为 `max(max_val, current_node.val)`。
+6. 递归调用 `dfs` 函数处理左子树和右子树，并将结果累加到 `good_count`。
+7. 返回 `good_count`。
 
 关键点:
-- [TODO]
+- 使用递归 DFS 遍历二叉树。
+- 在遍历过程中维护当前路径的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的空间复杂度取决于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_nodes_in_binary_tree(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算二叉树中的好节点数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], max_val: int) -> int:
+        if not node:
+            return 0
+        
+        good_count = 0
+        if node.val >= max_val:
+            good_count += 1
+            max_val = node.val
+        
+        good_count += dfs(node.left, max_val)
+        good_count += dfs(node.right, max_val)
+        
+        return good_count
+    
+    return dfs(root, float('-inf'))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_nodes_in_binary_tree)

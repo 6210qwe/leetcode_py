@@ -21,40 +21,72 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来连接具有共同因子的数字，并找到最大的连通分量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 对每个数字进行质因数分解，并将这些质因数连接到并查集中。
+3. 遍历所有数字，找到每个数字所属的连通分量，并统计每个连通分量的大小。
+4. 返回最大的连通分量的大小。
 
 关键点:
-- [TODO]
+- 使用质因数分解来找到共同因子。
+- 使用并查集来高效地管理连通分量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(max(nums)))，其中 n 是 nums 的长度，max(nums) 是 nums 中的最大值。
+空间复杂度: O(n + max(nums))，用于存储并查集和质因数分解的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.max_size = 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.size[root_x] < self.size[root_y]:
+                root_x, root_y = root_y, root_x
+            self.parent[root_y] = root_x
+            self.size[root_x] += self.size[root_y]
+            self.max_size = max(self.max_size, self.size[root_x])
 
-Solution = create_solution(solution_function_name)
+def largestComponentSize(nums: List[int]) -> int:
+    n = len(nums)
+    uf = UnionFind(max(nums) + 1)
+
+    for num in nums:
+        for factor in range(2, int(math.sqrt(num)) + 1):
+            if num % factor == 0:
+                uf.union(num, factor)
+                uf.union(num, num // factor)
+
+    count = [0] * (max(nums) + 1)
+    max_size = 0
+    for num in nums:
+        root = uf.find(num)
+        count[root] += 1
+        max_size = max(max_size, count[root])
+
+    return max_size
+
+Solution = create_solution(largestComponentSize)

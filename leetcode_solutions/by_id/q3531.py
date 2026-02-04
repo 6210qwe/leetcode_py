@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先消灭每次攻击后能造成最大伤害的敌人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个敌人的伤害和健康值组合成一个列表。
+2. 按照每次攻击后能造成的伤害降序排序。
+3. 依次消灭敌人，计算总的伤害。
 
 关键点:
-- [TODO]
+- 优先消灭每次攻击后能造成最大伤害的敌人。
+- 计算每次攻击后的总伤害。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是敌人的数量，主要由排序操作决定。
+空间复杂度: O(n)，用于存储敌人的伤害和健康值组合。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_damage_dealt(power: int, damage: List[int], health: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 Bob 受到的最少伤害
     """
-    # TODO: 实现最优解法
-    pass
+    # 将每个敌人的伤害和健康值组合成一个列表
+    enemies = [(d, h) for d, h in zip(damage, health)]
+    
+    # 按照每次攻击后能造成的伤害降序排序
+    enemies.sort(key=lambda x: (x[0] / x[1]), reverse=True)
+    
+    total_damage = 0
+    for d, h in enemies:
+        # 计算消灭当前敌人需要的时间
+        time_to_kill = (h + power - 1) // power
+        # 计算在消灭当前敌人期间受到的伤害
+        total_damage += d * time_to_kill
+    
+    return total_damage
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_damage_dealt)

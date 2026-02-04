@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维 DP 数组 dp，其中 dp[mask][i] 表示第一组中前 i 个点已经连接了第二组中某些点（用 mask 表示）的最小成本。
+2. 遍历所有可能的状态 mask，并更新 DP 数组。
+3. 对于每个状态 mask，尝试将第一组中的点 i 连接到第二组中的点 j，并更新 DP 数组。
+4. 最终结果在 dp[(1 << size2) - 1][size1] 中。
 
 关键点:
-- [TODO]
+- 使用位掩码表示第二组中哪些点已经被连接。
+- 动态规划转移方程考虑了当前点连接到第二组中的点的成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(size1 * 2^size2 * size2)
+空间复杂度: O(2^size2 * size1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_cost_connect_points(cost: List[List[int]]) -> int:
+    size1, size2 = len(cost), len(cost[0])
+    
+    # 初始化 DP 数组
+    dp = [[float('inf')] * (size1 + 1) for _ in range(1 << size2)]
+    dp[0][0] = 0
+    
+    # 遍历所有可能的状态 mask
+    for mask in range(1 << size2):
+        for i in range(size1):
+            for j in range(size2):
+                new_mask = mask | (1 << j)
+                if i > 0:
+                    dp[new_mask][i + 1] = min(dp[new_mask][i + 1], dp[mask][i] + cost[i][j])
+                else:
+                    dp[new_mask][i + 1] = min(dp[new_mask][i + 1], dp[mask][i] + cost[i][j])
+    
+    # 计算最终结果
+    result = float('inf')
+    for mask in range(1 << size2):
+        if bin(mask).count('1') == size2:
+            result = min(result, dp[mask][size1])
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_connect_points)

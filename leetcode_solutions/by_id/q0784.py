@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法找到合适的插入位置，并插入新节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果根节点为空，直接创建一个新节点并返回。
+2. 如果根节点的值大于待插入值，则递归地在左子树中插入。
+3. 如果根节点的值小于待插入值，则递归地在右子树中插入。
+4. 返回根节点。
 
 关键点:
-- [TODO]
+- 递归地找到合适的插入位置。
+- 插入新节点时，确保树的结构仍然符合二叉搜索树的性质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h)，其中 h 是树的高度。在最坏情况下，树的高度可能等于节点数 n，即 O(n)；在最好情况下，树的高度为 O(log n)。
+空间复杂度: O(h)，递归调用栈的深度等于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def insert_into_bst(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    将值插入二叉搜索树，并返回插入后的根节点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return TreeNode(val)
+
+    if val < root.val:
+        root.left = insert_into_bst(root.left, val)
+    else:
+        root.right = insert_into_bst(root.right, val)
+
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(insert_into_bst)

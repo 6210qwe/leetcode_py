@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每种垃圾车的行驶时间和收集时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每种垃圾最后出现的房子索引。
+2. 计算前缀和数组，用于快速计算任意两个房子之间的行驶时间。
+3. 遍历每种垃圾，计算其收集时间和行驶时间。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算行驶时间。
+- 只计算每种垃圾最后出现的房子之前的行驶时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 garbage 的长度。我们需要遍历 garbage 和 travel 数组。
+空间复杂度: O(1)，除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_amount_of_time_to_collect_garbage(garbage: List[str], travel: List[int]) -> int:
+    # 计算每种垃圾最后出现的房子索引
+    last_M, last_P, last_G = -1, -1, -1
+    for i, g in enumerate(garbage):
+        if 'M' in g:
+            last_M = i
+        if 'P' in g:
+            last_P = i
+        if 'G' in g:
+            last_G = i
+    
+    # 计算前缀和数组
+    prefix_sum = [0]
+    for t in travel:
+        prefix_sum.append(prefix_sum[-1] + t)
+    
+    # 计算总时间
+    total_time = 0
+    for i, g in enumerate(garbage):
+        total_time += len(g)  # 收集时间
+        if i <= last_M:
+            total_time += prefix_sum[i] - prefix_sum[last_M]
+        if i <= last_P:
+            total_time += prefix_sum[i] - prefix_sum[last_P]
+        if i <= last_G:
+            total_time += prefix_sum[i] - prefix_sum[last_G]
+    
+    return total_time
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_amount_of_time_to_collect_garbage)

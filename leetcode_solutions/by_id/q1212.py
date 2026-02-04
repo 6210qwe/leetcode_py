@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举所有可能的顺次数，然后筛选出在给定范围内的顺次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有可能的顺次数。
+2. 筛选出在 [low, high] 范围内的顺次数。
+3. 返回结果列表。
 
 关键点:
-- [TODO]
+- 通过滑动窗口的方式生成所有可能的顺次数。
+- 使用字符串拼接来生成顺次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 生成顺次数的数量是固定的，最多有 36 个顺次数。
+空间复杂度: O(1) - 生成顺次数的数量是固定的，最多有 36 个顺次数。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(low: int, high: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 [low, high] 范围内的所有顺次数
     """
-    # TODO: 实现最优解法
-    pass
+    sequential_digits = []
+    for start in range(1, 10):
+        num = start
+        next_digit = start + 1
+        while num <= high and next_digit < 10:
+            num = num * 10 + next_digit
+            if low <= num <= high:
+                sequential_digits.append(num)
+            next_digit += 1
+    return sorted(sequential_digits)
 
 
 Solution = create_solution(solution_function_name)

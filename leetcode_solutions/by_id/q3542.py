@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过预处理每一行和每一列的最大值，然后枚举所有可能的放置位置，找到最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每一行和每一列的最大值。
+2. 枚举所有可能的放置位置，计算其价值之和，并记录最大值。
 
 关键点:
-- [TODO]
+- 通过预处理减少重复计算。
+- 枚举时避免同一行或同一列的冲突。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))
+空间复杂度: O(m + n)
 """
 
 # ============================================================================
@@ -49,12 +50,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(board: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算放置三个车的最大价值之和
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(board), len(board[0])
+    
+    # 预处理每一行和每一列的最大值
+    max_row = [max(row) for row in board]
+    max_col = [max(board[i][j] for i in range(m)) for j in range(n)]
+    
+    max_value = float('-inf')
+    
+    # 枚举所有可能的放置位置
+    for i1 in range(m):
+        for j1 in range(n):
+            for i2 in range(m):
+                if i2 == i1:
+                    continue
+                for j2 in range(n):
+                    if j2 == j1 or j2 == n - 1:
+                        continue
+                    for i3 in range(m):
+                        if i3 == i1 or i3 == i2:
+                            continue
+                        for j3 in range(n):
+                            if j3 == j1 or j3 == j2:
+                                continue
+                            value = board[i1][j1] + board[i2][j2] + board[i3][j3]
+                            max_value = max(max_value, value)
+    
+    return max_value
 
 
 Solution = create_solution(solution_function_name)

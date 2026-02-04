@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用字典树（Trie）来存储每个数字的二进制表示，并在遍历过程中找到最大异或值。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 构建一个字典树（Trie），用于存储每个数字的二进制表示。
+2. 对于每个数字，将其插入到字典树中。
+3. 对于每个数字，通过字典树查找与其异或值最大的另一个数字。
+4. 返回找到的最大异或值。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用字典树可以高效地存储和查找二进制表示。
+- 在查找过程中，尽量选择与当前位不同的路径，以最大化异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 其中 n 是数组的长度。每个数字的插入和查找操作都是 O(32) = O(1)。
+空间复杂度: O(n) - 字典树的空间复杂度为 O(n * 32) = O(n)。
 """
 
 # ============================================================================
@@ -50,27 +51,58 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
 
-def maximum_xor_of_two_numbers_in_an_array(params):
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, num: int):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+
+    def find_max_xor(self, num: int) -> int:
+        node = self.root
+        max_xor = 0
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            toggled_bit = 1 - bit
+            if toggled_bit in node.children:
+                max_xor |= (1 << i)
+                node = node.children[toggled_bit]
+            else:
+                node = node.children[bit]
+        return max_xor
+
+def maximum_xor_of_two_numbers_in_an_array(nums: List[int]) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 返回数组中两个数的最大异或值
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用字典树（Trie）来存储每个数字的二进制表示，并在遍历过程中找到最大异或值。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 整数数组
         
     Returns:
-        [待实现] 返回值说明
+        最大异或值
         
     Example:
-        >>> maximum_xor_of_two_numbers_in_an_array([待实现])
-        [待实现]
+        >>> maximum_xor_of_two_numbers_in_an_array([3, 10, 5, 25, 2, 8])
+        28
     """
-    # TODO: 实现最优解法
-    pass
-
+    trie = Trie()
+    max_xor = 0
+    for num in nums:
+        trie.insert(num)
+        max_xor = max(max_xor, trie.find_max_xor(num))
+    return max_xor
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(maximum_xor_of_two_numbers_in_an_array)

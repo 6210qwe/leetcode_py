@@ -4,7 +4,7 @@
 # ============================================================================
 """
 题号: 1718
-标题: Warehouse Manager
+标题: 仓库经理
 难度: easy
 链接: https://leetcode.cn/problems/warehouse-manager/
 题目类型: 数据库
@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个仓库的库存总量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表 `Inventory`，包含每个产品的库存量和仓库 ID。
+2. 使用 GROUP BY 和 SUM 函数按仓库 ID 分组，计算每个仓库的总库存量。
+3. 返回结果表，包含仓库 ID 和对应的总库存量。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 SUM 函数来聚合数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Inventory 表中的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +52,19 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来计算每个仓库的库存总量。
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现最优解法
+    query = """
+    SELECT 
+        warehouse_id, 
+        SUM(quantity) AS total_quantity
+    FROM 
+        Inventory
+    GROUP BY 
+        warehouse_id;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

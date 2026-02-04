@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组，记录每个单词的位置，并在遍历过程中更新最小距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 idx1 和 idx2 分别记录 word1 和 word2 的位置。
+2. 初始化最小距离 min_distance 为无穷大。
+3. 遍历 words 数组：
+   - 如果当前单词是 word1，更新 idx1 并计算与 idx2 的距离，更新 min_distance。
+   - 如果当前单词是 word2，更新 idx2 并计算与 idx1 的距离，更新 min_distance。
+4. 返回 min_distance。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到最短距离，避免了多次遍历。
+- 使用两个指针分别记录 word1 和 word2 的位置，实时更新最小距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 words 的长度，因为只需要一次遍历。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest(words: List[str], word1: str, word2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个单词在数组中的最短距离
     """
-    # TODO: 实现最优解法
-    pass
+    idx1, idx2 = -1, -1
+    min_distance = float('inf')
+    
+    for i, word in enumerate(words):
+        if word == word1:
+            idx1 = i
+            if idx2 != -1:
+                min_distance = min(min_distance, abs(idx1 - idx2))
+        elif word == word2:
+            idx2 = i
+            if idx1 != -1:
+                min_distance = min(min_distance, abs(idx1 - idx2))
+    
+    return min_distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest)

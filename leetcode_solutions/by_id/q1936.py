@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速幂和贪心算法来最大化好因子的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 primeFactors 尽可能多地分解为 3，因为 3 是最优的质因数。
+2. 如果剩余的质因数少于 3 个，则直接使用剩余的质因数。
+3. 使用快速幂计算结果，并对 10^9 + 7 取模。
 
 关键点:
-- [TODO]
+- 使用 3 作为主要质因数，因为 3 的幂次增长最快。
+- 处理剩余的质因数，确保最终结果最大化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(primeFactors)) - 快速幂的时间复杂度
+空间复杂度: O(1) - 常数级额外空间
 """
 
 # ============================================================================
@@ -48,13 +50,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(prime_factors: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大好因子数量
     """
-    # TODO: 实现最优解法
-    pass
+    def power(x: int, n: int) -> int:
+        result = 1
+        while n > 0:
+            if n % 2 == 1:
+                result = (result * x) % MOD
+            x = (x * x) % MOD
+            n //= 2
+        return result
 
+    if prime_factors <= 3:
+        return prime_factors
+
+    # 最大化 3 的数量
+    quotient, remainder = divmod(prime_factors, 3)
+    if remainder == 0:
+        return power(3, quotient)
+    elif remainder == 1:
+        return (power(3, quotient - 1) * 4) % MOD
+    else:
+        return (power(3, quotient) * 2) % MOD
 
 Solution = create_solution(solution_function_name)

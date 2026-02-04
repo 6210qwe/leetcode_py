@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对输入的数字列表进行排序，然后遍历列表找到连续区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入的数字列表进行排序。
+2. 遍历排序后的列表，找到连续区间的起始和结束位置。
+3. 将每个连续区间的结果存储在一个列表中并返回。
 
 关键点:
-- [TODO]
+- 使用排序来确保数字按顺序排列。
+- 在遍历时，通过比较当前数字和前一个数字来确定是否在同一个连续区间内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是输入列表的长度。排序操作的时间复杂度是 O(n log n)，遍历操作是 O(n)。
+空间复杂度: O(1)，除了输出结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_continuous_ranges(nums: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到连续区间的开始和结束数字
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return []
 
+    # 对输入的数字列表进行排序
+    nums.sort()
 
-Solution = create_solution(solution_function_name)
+    result = []
+    start = end = nums[0]
+
+    for i in range(1, len(nums)):
+        if nums[i] == end + 1:
+            # 如果当前数字是前一个数字的连续数字，则更新结束位置
+            end = nums[i]
+        else:
+            # 否则，将当前区间加入结果列表，并开始新的区间
+            result.append([start, end])
+            start = end = nums[i]
+
+    # 添加最后一个区间
+    result.append([start, end])
+
+    return result
+
+Solution = create_solution(find_continuous_ranges)

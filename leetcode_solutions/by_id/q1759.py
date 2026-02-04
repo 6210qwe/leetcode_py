@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合差集来找出缺失的ID
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有可能的ID范围存储在一个集合中
+2. 将给定的IDs存储在另一个集合中
+3. 计算两个集合的差集，得到缺失的ID
+4. 返回缺失的ID列表
 
 关键点:
-- [TODO]
+- 使用集合操作来高效地找出缺失的ID
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中n是可能的ID范围长度，m是给定的IDs长度
+空间复杂度: O(n + m)，用于存储两个集合
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_missing_ids(all_ids: List[int], given_ids: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出缺失的ID
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有可能的ID范围存储在一个集合中
+    all_set = set(all_ids)
+    
+    # 将给定的IDs存储在另一个集合中
+    given_set = set(given_ids)
+    
+    # 计算两个集合的差集，得到缺失的ID
+    missing_ids = list(all_set - given_set)
+    
+    # 返回缺失的ID列表
+    return missing_ids
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_missing_ids)

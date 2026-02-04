@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储位，并使用一个标志变量来记录是否翻转过。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个大小为 size 的列表，所有位初始化为 0。
+2. fix 和 unfix 操作直接修改列表中的值。
+3. flip 操作通过翻转标志变量来实现，避免实际翻转列表。
+4. all 和 one 操作根据翻转标志和当前的 1 的数量来判断。
+5. count 操作返回 1 的数量。
+6. toString 操作根据翻转标志生成字符串。
 
 关键点:
-- [TODO]
+- 使用一个标志变量来记录是否翻转过，避免实际翻转列表。
+- 维护一个 1 的数量计数器，用于快速计算 count、all 和 one。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作的时间复杂度均为 O(1)。
+空间复杂度: O(n) - 使用一个大小为 n 的列表来存储位。
 """
 
 # ============================================================================
@@ -49,12 +54,52 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Bitset:
+
+    def __init__(self, size: int):
+        self.size = size
+        self.bits = [0] * size
+        self.flipped = False
+        self.ones_count = 0
+
+    def fix(self, idx: int) -> None:
+        if self.flipped:
+            if self.bits[idx] == 1:
+                self.bits[idx] = 0
+                self.ones_count += 1
+        else:
+            if self.bits[idx] == 0:
+                self.bits[idx] = 1
+                self.ones_count += 1
+
+    def unfix(self, idx: int) -> None:
+        if self.flipped:
+            if self.bits[idx] == 0:
+                self.bits[idx] = 1
+                self.ones_count -= 1
+        else:
+            if self.bits[idx] == 1:
+                self.bits[idx] = 0
+                self.ones_count -= 1
+
+    def flip(self) -> None:
+        self.flipped = not self.flipped
+        self.ones_count = self.size - self.ones_count
+
+    def all(self) -> bool:
+        return self.ones_count == self.size
+
+    def one(self) -> bool:
+        return self.ones_count > 0
+
+    def count(self) -> int:
+        return self.ones_count
+
+    def toString(self) -> str:
+        if self.flipped:
+            return ''.join('1' if bit == 0 else '0' for bit in self.bits)
+        else:
+            return ''.join(str(bit) for bit in self.bits)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Bitset)

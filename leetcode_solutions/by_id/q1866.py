@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用图的深度优先搜索（DFS）来重构数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图。
+2. 找到起始节点（只有一个邻居的节点）。
+3. 从起始节点开始进行深度优先搜索，构建数组。
 
 关键点:
-- [TODO]
+- 使用字典构建邻接表。
+- 通过邻居数量找到起始节点。
+- 使用集合记录访问过的节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。构建邻接表和 DFS 都是线性时间复杂度。
+空间复杂度: O(n)，存储邻接表和访问集合所需的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def restore_array(adjacent_pairs: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    从相邻元素对还原数组
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    graph = {}
+    for u, v in adjacent_pairs:
+        if u not in graph:
+            graph[u] = []
+        if v not in graph:
+            graph[v] = []
+        graph[u].append(v)
+        graph[v].append(u)
+
+    # 找到起始节点（只有一个邻居的节点）
+    start_node = None
+    for node, neighbors in graph.items():
+        if len(neighbors) == 1:
+            start_node = node
+            break
+
+    # 深度优先搜索构建数组
+    result = []
+    visited = set()
+
+    def dfs(node):
+        if node in visited:
+            return
+        visited.add(node)
+        result.append(node)
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                dfs(neighbor)
+
+    dfs(start_node)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(restore_array)

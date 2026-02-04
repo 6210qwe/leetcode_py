@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到需要排序的子数组的左右边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从左到右遍历数组，使用单调递增栈找到最右边的需要排序的元素。
+2. 从右到左遍历数组，使用单调递减栈找到最左边的需要排序的元素。
+3. 计算左右边界的差值加一，即为最短无序连续子数组的长度。
 
 关键点:
-- [TODO]
+- 使用两个单调栈分别从左到右和从右到左遍历数组。
+- 找到需要排序的子数组的左右边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    n = len(nums)
+    left, right = n, 0
+    stack = []
+
+    # 从左到右遍历，找到最右边的需要排序的元素
+    for i in range(n):
+        while stack and nums[stack[-1]] > nums[i]:
+            left = min(left, stack.pop())
+        stack.append(i)
+
+    stack.clear()
+
+    # 从右到左遍历，找到最左边的需要排序的元素
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] < nums[i]:
+            right = max(right, stack.pop())
+        stack.append(i)
+
+    if left >= right:
+        return 0
+    return right - left + 1
 
 
 Solution = create_solution(solution_function_name)

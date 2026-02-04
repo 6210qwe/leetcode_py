@@ -21,22 +21,26 @@ LCR 165. 解密数字 - 现有一串神秘的密文 ciphertext，经调查，密
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i] 表示前 i 个字符的解密方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 1，表示空字符串有一种解密方法。
+2. 遍历字符串，对于每个位置 i：
+   - 如果当前字符可以单独解密（即在 1 到 9 之间），则 dp[i+1] += dp[i]。
+   - 如果当前字符和前一个字符可以组合解密（即在 10 到 25 之间），则 dp[i+1] += dp[i-1]。
+3. 返回 dp[n]，其中 n 是字符串的长度。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程是基于前一个字符和前两个字符的解密方法数。
+- 注意处理边界条件，特别是字符串长度为 0 或 1 的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。
+空间复杂度: O(n)，使用了长度为 n+1 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(ciphertext: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not ciphertext:
+        return 0
+
+    n = len(ciphertext)
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 空字符串有一种解密方法
+
+    for i in range(1, n + 1):
+        if ciphertext[i - 1] != '0':
+            dp[i] += dp[i - 1]
+        if i > 1 and '10' <= ciphertext[i - 2:i] <= '25':
+            dp[i] += dp[i - 2]
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

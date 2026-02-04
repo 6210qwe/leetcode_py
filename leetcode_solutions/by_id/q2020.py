@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历检查数组是否可以通过删除一个元素变成严格递增的。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `removed` 来记录是否已经删除了一个元素。
+2. 遍历数组，检查相邻元素是否满足严格递增条件。
+3. 如果发现不满足严格递增条件的情况：
+   - 如果 `removed` 为 `True`，则返回 `False`，因为已经删除了一个元素。
+   - 否则，将 `removed` 置为 `True`，并根据具体情况决定删除当前元素还是前一个元素。
+4. 如果遍历完数组没有返回 `False`，则返回 `True`。
 
 关键点:
-- [TODO]
+- 只允许删除一个元素。
+- 在遍历时需要考虑删除当前元素或前一个元素的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_strictly_increasing(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过删除一个元素使数组严格递增
     """
-    # TODO: 实现最优解法
-    pass
+    removed = False
+    for i in range(1, len(nums)):
+        if nums[i] <= nums[i - 1]:
+            if removed:
+                return False
+            removed = True
+            if i > 1 and nums[i] <= nums[i - 2]:
+                nums[i] = nums[i - 1]
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_strictly_increasing)

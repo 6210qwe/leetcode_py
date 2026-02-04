@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的最长相同子字符串长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_split`，用于判断是否可以将字符串分割成长度不超过 `max_len` 的子字符串，且翻转次数不超过 `numOps`。
+2. 使用二分查找来确定最小的 `max_len`，使得 `can_split` 返回 `True`。
 
 关键点:
-- [TODO]
+- 通过二分查找来缩小答案范围。
+- 辅助函数 `can_split` 用于验证当前长度是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_split(s: str, max_len: int, numOps: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以将字符串分割成长度不超过 max_len 的子字符串，且翻转次数不超过 numOps。
     """
-    # TODO: 实现最优解法
-    pass
+    ops = 0
+    i = 0
+    while i < len(s):
+        j = i + 1
+        while j < len(s) and s[j] == s[i]:
+            j += 1
+        length = j - i
+        if length > max_len:
+            ops += (length + max_len - 1) // max_len - 1
+        i = j
+    return ops <= numOps
+
+
+def solution_function_name(s: str, numOps: int) -> int:
+    """
+    函数式接口 - 实现最优解法
+    """
+    left, right = 1, len(s)
+    while left < right:
+        mid = (left + right) // 2
+        if can_split(s, mid, numOps):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
 Solution = create_solution(solution_function_name)

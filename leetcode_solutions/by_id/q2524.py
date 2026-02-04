@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储数组中的元素，并检查每个正数的负数是否存在。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个空的哈希集合。
+2. 遍历数组，将每个元素加入哈希集合。
+3. 再次遍历数组，对于每个正数，检查其负数是否在哈希集合中，如果是则更新结果。
+4. 返回结果，如果没有找到符合条件的正整数则返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希集合可以在 O(1) 时间内检查某个元素是否存在。
+- 只需要一次遍历即可完成所有操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要两次遍历数组。
+空间复杂度: O(n)，哈希集合最多存储 n 个元素。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_k(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出自身与对应的负数都在数组中存在的最大正整数 k
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希集合
+    num_set = set()
+    
+    # 将数组中的每个元素加入哈希集合
+    for num in nums:
+        num_set.add(num)
+    
+    # 初始化结果为 -1
+    result = -1
+    
+    # 遍历数组，检查每个正数的负数是否在哈希集合中
+    for num in nums:
+        if num > 0 and -num in num_set:
+            result = max(result, num)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_k)

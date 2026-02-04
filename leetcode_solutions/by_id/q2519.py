@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用异或的性质，通过前缀异或数组反推出原始数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `arr`，并将 `arr[0]` 设为 `pref[0]`。
+2. 从索引 1 开始遍历 `pref` 数组，对于每个 `i`，计算 `arr[i] = pref[i] ^ pref[i-1]`。
+3. 返回结果数组 `arr`。
 
 关键点:
-- [TODO]
+- 异或运算的性质：`a ^ a = 0` 和 `a ^ 0 = a`。
+- 通过 `pref[i] = arr[0] ^ ... ^ arr[i]` 和 `pref[i-1] = arr[0] ^ ... ^ arr[i-1]` 可以推导出 `arr[i] = pref[i] ^ pref[i-1]`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `pref` 的长度。我们需要遍历整个 `pref` 数组一次。
+空间复杂度: O(n)，结果数组 `arr` 的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_original_array(pref: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    通过前缀异或数组反推出原始数组。
+
+    :param pref: 前缀异或数组
+    :return: 原始数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(pref)
+    arr = [0] * n
+    arr[0] = pref[0]
+    for i in range(1, n):
+        arr[i] = pref[i] ^ pref[i - 1]
+    return arr
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_original_array)

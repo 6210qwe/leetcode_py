@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归生成所有可能的开心字符串，并按字典序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `generate_happy_strings`，用于生成所有可能的开心字符串。
+2. 在递归函数中，如果当前字符串长度达到 n，则将其加入结果列表。
+3. 否则，遍历字符集 ['a', 'b', 'c']，选择与前一个字符不同的字符继续递归。
+4. 最后，检查结果列表的长度是否大于等于 k，如果是则返回第 k-1 个字符串，否则返回空字符串。
 
 关键点:
-- [TODO]
+- 递归生成所有可能的开心字符串。
+- 保证每个字符与前一个字符不同。
+- 按字典序排序并返回第 k 个字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^n) - 生成所有可能的开心字符串需要 3^n 的时间。
+空间复杂度: O(3^n) - 存储所有可能的开心字符串需要 3^n 的空间。
 """
 
 # ============================================================================
@@ -48,13 +52,19 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def generate_happy_strings(current: str, n: int, result: List[str]):
+    if len(current) == n:
+        result.append(current)
+        return
+    for char in ['a', 'b', 'c']:
+        if not current or current[-1] != char:
+            generate_happy_strings(current + char, n, result)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def get_happy_string(n: int, k: int) -> str:
+    result = []
+    generate_happy_strings("", n, result)
+    if k > len(result):
+        return ""
+    return result[k - 1]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_happy_string)

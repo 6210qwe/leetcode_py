@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 优先选择标记为 1 的物品，其次是标记为 0 的物品，最后是标记为 -1 的物品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 尽可能多地选择标记为 1 的物品。
+2. 如果还需要更多物品，则选择标记为 0 的物品。
+3. 如果仍然需要更多物品，则选择标记为 -1 的物品。
 
 关键点:
-- [TODO]
+- 通过贪心策略，确保每次选择的物品都是当前最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def k_items_with_maximum_sum(num_ones: int, num_zeros: int, num_neg_ones: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回选择 k 件物品后，物品上所标记数字之和的最大值。
     """
-    # TODO: 实现最优解法
-    pass
+    # 尽可能多地选择标记为 1 的物品
+    ones_selected = min(num_ones, k)
+    k -= ones_selected
+    
+    # 如果还需要更多物品，则选择标记为 0 的物品
+    zeros_selected = min(num_zeros, k)
+    k -= zeros_selected
+    
+    # 如果仍然需要更多物品，则选择标记为 -1 的物品
+    neg_ones_selected = k
+    
+    # 计算总和
+    total_sum = ones_selected * 1 + zeros_selected * 0 + neg_ones_selected * (-1)
+    
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(k_items_with_maximum_sum)

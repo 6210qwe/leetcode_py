@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字符串按单词分割，然后逐字符构建结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入字符串按空格分割成单词列表。
+2. 找到最长单词的长度，确定结果列表的行数。
+3. 逐字符构建结果列表，不足的部分用空格补位。
+4. 去除每行末尾的多余空格。
 
 关键点:
-- [TODO]
+- 使用 zip_longest 来处理不同长度的单词，并用空格补位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是单词数量，m 是最长单词的长度。
+空间复杂度: O(n * m)，存储结果所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from itertools import zip_longest
 
-
-def solution_function_name(params):
+def print_words_vertically(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现竖直打印单词
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串按空格分割成单词列表
+    words = s.split()
+    
+    # 使用 zip_longest 处理不同长度的单词，并用空格补位
+    result = [''.join(char).rstrip() for char in zip_longest(*words, fillvalue=' ')]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(print_words_vertically)

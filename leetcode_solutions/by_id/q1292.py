@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 找出每个顾客的首次订单。
+2. 计算这些首次订单中即时订单的比例。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每个顾客的首次订单。
+2. 过滤出即时订单。
+3. 计算即时订单的比例并保留两位小数。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `ROW_NUMBER()` 来找出每个顾客的首次订单。
+- 使用条件聚合来计算即时订单的比例。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(n) - 存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(delivery: List[List[str]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算即时订单在所有用户的首次订单中的比例
     """
-    # TODO: 实现最优解法
-    pass
+    import pandas as pd
+    
+    # 将输入数据转换为 DataFrame
+    df = pd.DataFrame(delivery, columns=['delivery_id', 'customer_id', 'order_date', 'customer_pref_delivery_date'])
+    
+    # 转换日期格式
+    df['order_date'] = pd.to_datetime(df['order_date'])
+    df['customer_pref_delivery_date'] = pd.to_datetime(df['customer_pref_delivery_date'])
+    
+    # 找出每个顾客的首次订单
+    df['rank'] = df.groupby('customer_id')['order_date'].rank(method='dense')
+    first_orders = df[df['rank'] == 1]
+    
+    # 计算即时订单的比例
+    immediate_orders = first_orders[first_orders['order_date'] == first_orders['customer_pref_delivery_date']]
+    immediate_percentage = (len(immediate_orders) / len(first_orders)) * 100
+    
+    return round(immediate_percentage, 2)
 
 
 Solution = create_solution(solution_function_name)

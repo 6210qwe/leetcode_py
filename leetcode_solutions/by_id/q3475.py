@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为将 nums[0:i+1] 变为全 1 所需的最小操作次数。通过状态转移方程来更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = dp[1] = -1，因为长度小于 3 的子数组无法进行操作。
+2. 遍历数组，对于每个位置 i，根据 nums[i-2], nums[i-1], nums[i] 的值来更新 dp[i]。
+3. 如果 dp[n-1] 为 -1，说明无法将整个数组变为全 1，返回 -1；否则返回 dp[n-1]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑当前三个元素的组合情况。
+- 通过前缀和的思想来优化状态转移方程的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(n)，我们需要一个长度为 n 的 dp 数组来存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations_to_one(nums: List[int]) -> int:
+    n = len(nums)
+    if n < 3:
+        return -1
+    
+    # 初始化 dp 数组
+    dp = [-1] * n
+    dp[0] = 0 if nums[0] == 1 else 1
+    dp[1] = 0 if nums[0] == 1 and nums[1] == 1 else 2
+    
+    for i in range(2, n):
+        if nums[i] == 1:
+            if dp[i-1] != -1:
+                dp[i] = dp[i-1]
+            elif dp[i-2] != -1:
+                dp[i] = dp[i-2] + 1
+            else:
+                dp[i] = -1
+        else:
+            if dp[i-1] != -1:
+                dp[i] = dp[i-1] + 1
+            elif dp[i-2] != -1:
+                dp[i] = dp[i-2] + 2
+            else:
+                dp[i] = -1
+    
+    return dp[n-1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_one)

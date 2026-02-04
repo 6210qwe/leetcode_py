@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来检查每个子字符串是否与 pattern 几乎相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化滑动窗口的左右指针 left 和 right。
+2. 使用一个哈希表 diff 来记录当前窗口内与 pattern 不同的字符及其位置。
+3. 移动右指针扩展窗口，直到窗口大小等于 pattern 的长度。
+4. 检查当前窗口内的字符与 pattern 是否几乎相等：
+   - 如果 diff 的大小不超过 1，则返回左指针的位置。
+   - 否则，移动左指针缩小窗口，并更新 diff。
+5. 重复步骤 3 和 4，直到遍历完 s。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地检查每个子字符串。
+- 通过维护 diff 的大小来判断当前窗口是否与 pattern 几乎相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(m)，其中 m 是 pattern 的长度。哈希表 diff 的大小最多为 m。
 """
 
 # ============================================================================
@@ -49,12 +55,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_almost_equal_substring(s: str, pattern: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    找到 s 中下标最小的子字符串，它与 pattern 几乎相等。如果不存在，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(s), len(pattern)
+    if m > n:
+        return -1
+
+    # 初始化滑动窗口
+    left, right = 0, 0
+    diff = {}
+
+    while right < n:
+        # 扩展窗口
+        if s[right] != pattern[right - left]:
+            diff[right] = s[right]
+        
+        # 收缩窗口
+        if right - left + 1 > m:
+            if left in diff and diff[left] == s[left]:
+                del diff[left]
+            left += 1
+        
+        # 检查当前窗口是否几乎相等
+        if right - left + 1 == m and len(diff) <= 1:
+            return left
+        
+        right += 1
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_almost_equal_substring)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用区间合并的方法来找到所有员工的空闲时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有员工的时间段合并到一个列表中。
+2. 对时间段按开始时间进行排序，如果开始时间相同，则按结束时间排序。
+3. 合并重叠的时间段。
+4. 找出合并后时间段之间的空闲时间。
 
 关键点:
-- [TODO]
+- 使用排序和合并来处理重叠的时间段。
+- 通过比较相邻时间段的结束时间和开始时间来找到空闲时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是所有员工的时间段总数。主要开销在排序上。
+空间复杂度: O(n)，需要存储所有的时间段。
 """
 
 # ============================================================================
@@ -48,13 +51,43 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Interval:
+    def __init__(self, start: int, end: int):
+        self.start = start
+        self.end = end
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def merge_intervals(intervals: List[Interval]) -> List[Interval]:
+    if not intervals:
+        return []
+    
+    # 按开始时间排序，如果开始时间相同，则按结束时间排序
+    intervals.sort(key=lambda x: (x.start, x.end))
+    
+    merged = [intervals[0]]
+    for current in intervals[1:]:
+        last_merged = merged[-1]
+        if current.start <= last_merged.end:
+            last_merged.end = max(last_merged.end, current.end)
+        else:
+            merged.append(current)
+    
+    return merged
 
+def find_free_time(schedule: List[List[Interval]]) -> List[Interval]:
+    all_intervals = [interval for employee in schedule for interval in employee]
+    merged_intervals = merge_intervals(all_intervals)
+    
+    free_times = []
+    for i in range(1, len(merged_intervals)):
+        if merged_intervals[i].start > merged_intervals[i-1].end:
+            free_times.append(Interval(merged_intervals[i-1].end, merged_intervals[i].start))
+    
+    return free_times
+
+def solution_function_name(schedule: List[List[Interval]]) -> List[Interval]:
+    """
+    函数式接口 - 找到所有员工的空闲时间
+    """
+    return find_free_time(schedule)
 
 Solution = create_solution(solution_function_name)

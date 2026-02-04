@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为输入到第 i 个字符时，手指 1 在字符 j 位置的最小移动距离。通过递推公式更新 dp 数组，最终得到答案。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化键盘布局，将每个字母映射到其对应的坐标。
+2. 定义 dp 数组，dp[i][j] 表示输入到第 i 个字符时，手指 1 在字符 j 位置的最小移动距离。
+3. 初始化 dp 数组，考虑第一个字符的情况。
+4. 通过递推公式更新 dp 数组：
+   - 如果手指 1 移动到当前字符，则 dp[i][curr_char] = min(dp[i-1][k]) + distance(k, curr_char)
+   - 如果手指 2 移动到当前字符，则 dp[i][prev_char] = dp[i-1][prev_char] + distance(prev_char, curr_char)
+5. 最终结果为 dp[len(word)-1] 中的最小值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过预处理键盘布局，快速计算字符间的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * 26) = O(n^2)，其中 n 是 word 的长度。
+空间复杂度: O(n * 26) = O(n)，存储 dp 数组。
 """
 
 # ============================================================================
@@ -48,13 +54,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使用两根手指输入字符串的最小移动总距离
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 键盘布局
+    keyboard = [
+        ['A', 'B', 'C', 'D', 'E', 'F'],
+        ['G', 'H', 'I', 'J', 'K', 'L'],
+        ['M', 'N', 'O', 'P', 'Q', 'R'],
+        ['S', 'T', 'U', 'V', 'W', 'X'],
+        ['Y', 'Z']
+    ]
+    
+    # 将字母映射到坐标
+    char_to_pos = {}
+    for i, row in enumerate(keyboard):
+        for j, char in enumerate(row):
+            char_to_pos[char] = (i, j)
+    
+    # 计算字符间的曼哈顿距离
+    def distance(char1, char2):
+        (x1, y1), (x2, y2) = char_to_pos[char1], char_to_pos[char2]
+        return abs(x1 - x2) + abs(y1 - y2)
+    
+    n = len(word)
+    if n == 0:
+        return 0
+    
+    # 初始化 dp 数组
+    dp = [[float('inf')] * 26 for _ in range(n)]
+    
+    # 第一个字符的情况
+    for i in range(26):
+        dp[0][i] = 0
+    
+    # 动态规划更新 dp 数组
+    for i in range(1, n):
+        curr_char = ord(word[i]) - ord('A')
+        for prev_char in range(26):
+            dp[i][curr_char] = min(dp[i][curr_char], dp[i-1][prev_char] + distance(chr(prev_char + ord('A')), word[i]))
+            dp[i][prev_char] = min(dp[i][prev_char], dp[i-1][prev_char] + distance(word[i-1], chr(prev_char + ord('A'))))
+    
+    # 返回最终结果
+    return min(dp[n-1])
 
 Solution = create_solution(solution_function_name)

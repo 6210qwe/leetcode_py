@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列和Dijkstra算法来找到从起点到终点的最短路径。通过维护一个优先队列，每次选择当前成本最小的节点进行扩展，并考虑传送操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化优先队列，将起点 (0, 0) 和初始成本 0 放入队列。
+2. 使用一个三维数组 dp 来记录每个节点在不同传送次数下的最小成本。
+3. 从优先队列中取出当前成本最小的节点，检查是否到达终点，如果是则返回当前成本。
+4. 对于每个节点，尝试向右、向下移动以及传送操作，更新优先队列和 dp 数组。
+5. 重复步骤 3 和 4，直到找到最小成本路径或队列为空。
 
 关键点:
-- [TODO]
+- 使用优先队列确保每次扩展的节点都是当前成本最小的。
+- 通过三维数组 dp 记录每个节点在不同传送次数下的最小成本，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k * log(m * n * k))，其中 m 和 n 是网格的行数和列数，k 是最大传送次数。优先队列的插入和删除操作的时间复杂度为 O(log(m * n * k))。
+空间复杂度: O(m * n * k)，用于存储 dp 数组和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def min_cost_path(grid: List[List[int]], k: int) -> int:
+    m, n = len(grid), len(grid[0])
+    dp = [[[float('inf')] * (k + 1) for _ in range(n)] for _ in range(m)]
+    dp[0][0][0] = 0
+    pq = [(0, 0, 0, 0)]  # cost, row, col, teleport_count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    while pq:
+        cost, row, col, teleport_count = heapq.heappop(pq)
+        
+        if row == m - 1 and col == n - 1:
+            return cost
+        
+        for dr, dc in [(0, 1), (1, 0)]:
+            new_row, new_col = row + dr, col + dc
+            if 0 <= new_row < m and 0 <= new_col < n:
+                new_cost = cost + grid[new_row][new_col]
+                if new_cost < dp[new_row][new_col][teleport_count]:
+                    dp[new_row][new_col][teleport_count] = new_cost
+                    heapq.heappush(pq, (new_cost, new_row, new_col, teleport_count))
+        
+        if teleport_count < k:
+            for i in range(m):
+                for j in range(n):
+                    if grid[i][j] <= grid[row][col]:
+                        new_cost = cost
+                        if new_cost < dp[i][j][teleport_count + 1]:
+                            dp[i][j][teleport_count + 1] = new_cost
+                            heapq.heappush(pq, (new_cost, i, j, teleport_count + 1))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_path)

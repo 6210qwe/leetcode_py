@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或来快速计算子串中每个字符的奇偶性，并判断是否可以通过最多 k 次替换变成回文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或数组，用于快速查询子串中每个字符的奇偶性。
+2. 对于每个查询，使用前缀异或数组计算子串中每个字符的奇偶性。
+3. 统计子串中奇数次出现的字符数量，如果该数量的一半小于等于 k，则可以变成回文。
 
 关键点:
-- [TODO]
+- 前缀异或数组可以在 O(1) 时间内计算任意子串中每个字符的奇偶性。
+- 只需要统计奇数次出现的字符数量，因为每个字符最多需要替换一次才能变成回文。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是字符串 s 的长度，q 是查询的数量。
+空间复杂度: O(n)，用于存储前缀异或数组。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_make_pali_queries(s: str, queries: List[List[int]]) -> List[bool]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断子串是否可以通过最多 k 次替换变成回文。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀异或数组
+    prefix_xor = [0]
+    for char in s:
+        prefix_xor.append(prefix_xor[-1] ^ (1 << (ord(char) - ord('a'))))
+    
+    def count_odd_chars(left: int, right: int) -> int:
+        # 计算子串中每个字符的奇偶性
+        xor_result = prefix_xor[right + 1] ^ prefix_xor[left]
+        return bin(xor_result).count('1')
+    
+    result = []
+    for left, right, k in queries:
+        odd_count = count_odd_chars(left, right)
+        # 判断是否可以通过最多 k 次替换变成回文
+        result.append(odd_count // 2 <= k)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_make_pali_queries)

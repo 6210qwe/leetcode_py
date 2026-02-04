@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个长度为 k 的子数组是否满足交替条件，并处理环形数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组扩展为两倍长度以处理环形数组。
+2. 使用滑动窗口遍历扩展后的数组，检查每个长度为 k 的子数组是否满足交替条件。
+3. 计算满足条件的子数组数量。
 
 关键点:
-- [TODO]
+- 扩展数组以处理环形数组。
+- 使用滑动窗口高效地检查每个子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_alternating_groups(colors: List[int], k: int) -> int:
+    n = len(colors)
+    extended_colors = colors + colors  # 扩展数组以处理环形数组
+    count = 0
+    
+    for i in range(n):
+        is_alternating = True
+        for j in range(k - 1):
+            if extended_colors[i + j] == extended_colors[i + j + 1]:
+                is_alternating = False
+                break
+        if is_alternating:
+            count += 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_alternating_groups)

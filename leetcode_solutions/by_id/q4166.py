@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择尽可能多的元素，并确保总和不超过阈值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组按元素值从大到小排序。
+2. 依次累加元素，直到总和超过阈值或所有元素都已处理完毕。
+3. 返回累加的总和。
 
 关键点:
-- [TODO]
+- 通过排序和贪心选择，确保在不超过阈值的情况下，总和最大。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现带阈值约束的最大总和
     """
-    # TODO: 实现最优解法
-    pass
+    # 按元素值从大到小排序
+    nums.sort(reverse=True)
+    
+    total_sum = 0
+    for num in nums:
+        if total_sum + num <= threshold:
+            total_sum += num
+        else:
+            break
+    
+    return total_sum
 
 
 Solution = create_solution(solution_function_name)

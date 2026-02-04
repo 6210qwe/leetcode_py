@@ -21,40 +21,86 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并节点，并通过优先队列来处理节点值从小到大合并。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树结构。
+2. 使用优先队列存储节点值及其对应的节点。
+3. 按节点值从小到大处理节点，使用并查集合并节点。
+4. 在合并过程中，计算每个连通分量中的相同值节点数量，累加好路径的数量。
 
 关键点:
-- [TODO]
+- 通过并查集高效地合并节点，并维护每个连通分量中的节点值计数。
+- 使用优先队列确保按节点值从小到大处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是节点数。排序操作的时间复杂度是 O(n log n)，并查集的操作是 O(α(n))，近似为 O(1)。
+空间复杂度: O(n)，用于存储邻接表、并查集和节点值计数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import heapq
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def numberOfGoodPaths(vals: List[int], edges: List[List[int]]) -> int:
+    n = len(vals)
+    adj_list = collections.defaultdict(list)
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+    
+    # 优先队列存储节点值及其对应的节点
+    pq = []
+    for i, val in enumerate(vals):
+        heapq.heappush(pq, (val, i))
+    
+    uf = UnionFind(n)
+    value_count = [0] * n
+    good_paths = 0
+    
+    while pq:
+        val, node = heapq.heappop(pq)
+        value_count[node] = 1
+        good_paths += 1
+        
+        for neighbor in adj_list[node]:
+            if vals[neighbor] <= val and uf.find(node) != uf.find(neighbor):
+                root_node = uf.find(node)
+                root_neighbor = uf.find(neighbor)
+                good_paths += value_count[root_node] * value_count[root_neighbor]
+                value_count[root_node] += value_count[root_neighbor]
+                uf.union(root_node, root_neighbor)
+    
+    return good_paths
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numberOfGoodPaths)

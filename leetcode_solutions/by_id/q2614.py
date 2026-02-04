@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到第一个非负数的位置，从而确定正数和负数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找找到第一个非负数的位置。
+2. 计算负数的数量和正数的数量。
+3. 返回两者中的最大值。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度为 O(log n)，可以高效地找到第一个非负数的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到第一个非负数的位置，从而确定正数和负数的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def binary_search_left(arr, target):
+        left, right = 0, len(arr) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
+
+    # 找到第一个非负数的位置
+    first_non_negative_index = binary_search_left(nums, 0)
+
+    # 计算负数的数量
+    negative_count = first_non_negative_index
+
+    # 计算正数的数量
+    positive_count = len(nums) - first_non_negative_index - (nums[first_non_negative_index] == 0)
+
+    # 返回两者中的最大值
+    return max(negative_count, positive_count)
 
 
 Solution = create_solution(solution_function_name)

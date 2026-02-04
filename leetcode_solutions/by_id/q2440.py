@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计周末的任务数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 选择 `Tasks` 表中的 `task_id` 和 `created_at` 字段。
+2. 过滤出 `created_at` 在周六或周日的记录。
+3. 使用 `COUNT` 函数统计符合条件的记录数。
 
 关键点:
-- [TODO]
+- 使用 `EXTRACT(DOW FROM created_at)` 来获取一周中的天数（0 为周日，6 为周六）。
+- 使用 `WHERE` 子句过滤出周末的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `Tasks` 表中的记录数。需要遍历所有记录进行过滤和计数。
+空间复杂度: O(1)，查询过程中只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(tasks: List[dict]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计周末任务的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出创建日期在周末的任务
+    weekend_tasks = [task for task in tasks if task['created_at'].weekday() >= 5]
+    
+    # 返回周末任务的数量
+    return len(weekend_tasks)
 
 
 Solution = create_solution(solution_function_name)

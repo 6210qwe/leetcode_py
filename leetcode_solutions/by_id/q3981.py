@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护可以跳跃到的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `ans`，长度与 `nums` 相同，初始值为 `nums` 的最大值。
+2. 使用两个单调栈分别处理从左到右和从右到左的跳跃。
+3. 从左到右遍历 `nums`，使用单调递减栈来找到可以跳跃到的最大值。
+4. 从右到左遍历 `nums`，使用单调递增栈来找到可以跳跃到的最大值。
+5. 更新结果数组 `ans`。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地找到可以跳跃到的最大值。
+- 从左到右和从右到左分别处理两种跳跃规则。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def jump_game_ix(nums: List[int]) -> List[int]:
+    n = len(nums)
+    ans = [max(nums)] * n
+    stack = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 从左到右处理
+    for i in range(n):
+        while stack and nums[stack[-1]] < nums[i]:
+            ans[stack.pop()] = max(ans[stack[-1]], nums[i])
+        stack.append(i)
 
+    stack.clear()
 
-Solution = create_solution(solution_function_name)
+    # 从右到左处理
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] > nums[i]:
+            ans[stack.pop()] = max(ans[stack[-1]], nums[i])
+        stack.append(i)
+
+    return ans
+
+Solution = create_solution(jump_game_ix)

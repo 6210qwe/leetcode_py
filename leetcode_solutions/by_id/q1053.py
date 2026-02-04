@@ -14,47 +14,62 @@
 # 问题描述
 # ============================================================================
 """
-1058. 最小化舍入误差以满足目标 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个浮点数数组 prices 和一个整数 target，你需要将每个价格四舍五入到最接近的整数。返回最小化四舍五入误差以满足目标和的方案。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先选择对总和影响最小的价格进行四舍五入。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有价格向下取整后的和 base_sum。
+2. 计算需要向上取整的数量 diff = target - base_sum。
+3. 将每个价格的小数部分存储在一个列表中，并按小数部分从大到小排序。
+4. 选择前 diff 个价格向上取整，其余价格向下取整。
 
 关键点:
-- [TODO]
+- 通过排序和选择前 diff 个价格，确保总和尽可能接近目标值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 prices 的长度，主要由排序操作决定。
+空间复杂度: O(n)，用于存储小数部分和排序。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimize_rounding_error(prices: List[str], target: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 最小化舍入误差以满足目标
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串转换为浮点数
+    prices = [float(price) for price in prices]
+    
+    # 计算所有价格向下取整后的和
+    base_sum = sum(int(price) for price in prices)
+    
+    # 计算需要向上取整的数量
+    diff = target - base_sum
+    
+    # 存储每个价格的小数部分
+    fractional_parts = [(price - int(price), i) for i, price in enumerate(prices)]
+    
+    # 按小数部分从大到小排序
+    fractional_parts.sort(reverse=True)
+    
+    # 选择前 diff 个价格向上取整
+    rounded_prices = [int(prices[i]) + 1 if i < diff else int(prices[i]) for _, i in fractional_parts]
+    
+    # 返回结果
+    return ' '.join(map(str, rounded_prices))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_rounding_error)

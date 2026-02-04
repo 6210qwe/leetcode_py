@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和的思想，通过遍历数组并累加每个元素来计算动态和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果数组 `result`，并将第一个元素设置为 `nums[0]`。
+2. 遍历数组 `nums` 从第二个元素开始，将当前元素与前一个元素的和累加到结果数组中。
+3. 返回结果数组 `result`。
 
 关键点:
-- [TODO]
+- 使用单个循环遍历数组，并在原地更新结果数组，以节省空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，我们在原地修改输入数组，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def running_sum(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算数组的动态和
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, len(nums)):
+        nums[i] += nums[i - 1]
+    return nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(running_sum)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表推导式和切片来分块数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算出数组的总长度。
+2. 使用列表推导式和切片将数组分成指定大小的块。
 
 关键点:
-- [TODO]
+- 使用切片操作来获取子数组。
+- 列表推导式可以简洁地实现分块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历整个数组一次。
+空间复杂度: O(n)，存储分块后的数组。
 """
 
 # ============================================================================
@@ -49,12 +50,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def chunk_array(arr: List[int], size: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组 arr 分成大小为 size 的块。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用列表推导式和切片来分块数组
+    return [arr[i:i + size] for i in range(0, len(arr), size)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(chunk_array)

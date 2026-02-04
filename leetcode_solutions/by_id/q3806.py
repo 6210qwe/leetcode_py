@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示从第 i 个位置到第 j 个位置的最大硬币收集量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 n x n 的二维数组 dp，其中 n 是数组的长度。
+2. 对于每个子数组长度 l（从 1 到 n），计算 dp[i][i+l-1] 的值。
+3. 对于每个子数组 [i, j]，找到一个分割点 k，使得 dp[i][k] + dp[k+1][j] + coins[k] 最大。
+4. 返回 dp[0][n-1] 作为结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过枚举子数组长度和分割点来计算最大硬币收集量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(coins: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(coins)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0] * n for _ in range(n)]
+
+    # 计算 dp 数组
+    for l in range(1, n + 1):  # 子数组长度
+        for i in range(n - l + 1):
+            j = i + l - 1
+            if i == j:
+                dp[i][j] = coins[i]
+            else:
+                for k in range(i, j):
+                    dp[i][j] = max(dp[i][j], dp[i][k] + dp[k + 1][j] + coins[k])
+
+    return dp[0][n - 1]
 
 
 Solution = create_solution(solution_function_name)

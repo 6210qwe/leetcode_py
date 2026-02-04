@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个数组分别记录每一行和每一列中 1 的数量，然后遍历矩阵找到满足条件的特殊位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `row_count` 和 `col_count`，分别记录每一行和每一列中 1 的数量。
+2. 遍历矩阵，更新 `row_count` 和 `col_count`。
+3. 再次遍历矩阵，检查每个位置 (i, j) 是否满足 `mat[i][j] == 1` 且 `row_count[i] == 1` 且 `col_count[j] == 1`，如果是，则该位置为特殊位置。
 
 关键点:
-- [TODO]
+- 使用两个数组来记录每一行和每一列中 1 的数量，可以避免多次遍历矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。需要遍历矩阵两次。
+空间复杂度: O(m + n)，使用了两个数组 `row_count` 和 `col_count` 来记录每一行和每一列中 1 的数量。
 """
 
 # ============================================================================
@@ -49,12 +50,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_special_positions(mat: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回矩阵中特殊位置的数量
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    row_count = [0] * m
+    col_count = [0] * n
+
+    # 记录每一行和每一列中 1 的数量
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 1:
+                row_count[i] += 1
+                col_count[j] += 1
+
+    # 找到满足条件的特殊位置
+    special_count = 0
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 1 and row_count[i] == 1 and col_count[j] == 1:
+                special_count += 1
+
+    return special_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_special_positions)

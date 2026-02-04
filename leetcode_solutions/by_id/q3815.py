@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口生成所有可能的子字符串，并检查每个子字符串是否为质数。使用一个集合来存储所有不同的质数，最后返回最大的三个质数之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `is_prime` 来检查一个数是否为质数。
+2. 使用滑动窗口生成所有可能的子字符串，并将其转换为整数。
+3. 检查每个整数是否为质数，并将其添加到集合中。
+4. 将集合中的质数排序，取最大的三个质数并求和。
 
 关键点:
-- [TODO]
+- 使用滑动窗口生成所有可能的子字符串。
+- 使用集合来存储不同的质数，避免重复。
+- 对集合中的质数进行排序，取最大的三个质数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 * log(n))，其中 n 是字符串的长度。生成所有子字符串的时间复杂度为 O(n^2)，检查每个子字符串是否为质数的时间复杂度为 O(√m)，其中 m 是子字符串的整数值。总的质数检查次数为 O(n^3)。
+空间复杂度: O(n^2)，用于存储所有不同的质数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Set, List
 
+def is_prime(num: int) -> bool:
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定字符串 s 中最大的三个不同质数的和
     """
-    # TODO: 实现最优解法
-    pass
-
+    primes: Set[int] = set()
+    
+    # 生成所有可能的子字符串
+    for i in range(len(s)):
+        for j in range(i + 1, len(s) + 1):
+            substring = s[i:j]
+            if substring[0] != '0':  # 忽略前导零
+                num = int(substring)
+                if is_prime(num):
+                    primes.add(num)
+    
+    # 取最大的三个质数
+    largest_primes = sorted(primes, reverse=True)[:3]
+    
+    # 返回质数之和
+    return sum(largest_primes)
 
 Solution = create_solution(solution_function_name)

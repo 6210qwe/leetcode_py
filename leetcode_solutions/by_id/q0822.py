@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储摩尔斯密码表，并使用集合来存储不同的摩尔斯密码翻译结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化摩尔斯密码表。
+2. 遍历每个单词，将其转换为摩尔斯密码。
+3. 将每个摩尔斯密码翻译结果存入集合中。
+4. 返回集合的大小，即不同摩尔斯密码翻译的数量。
 
 关键点:
-- [TODO]
+- 使用集合来去重，确保每个摩尔斯密码翻译结果是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是每个单词的平均长度。
+空间复杂度: O(n * m)，用于存储摩尔斯密码翻译结果的集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现唯一摩尔斯密码词
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 摩尔斯密码表
+    morse_code = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+    
+    # 存储不同的摩尔斯密码翻译结果
+    unique_morse_codes = set()
+    
+    # 遍历每个单词
+    for word in words:
+        # 将单词转换为摩尔斯密码
+        morse_word = ''.join(morse_code[ord(char) - ord('a')] for char in word)
+        # 将摩尔斯密码翻译结果存入集合
+        unique_morse_codes.add(morse_word)
+    
+    # 返回不同摩尔斯密码翻译的数量
+    return len(unique_morse_codes)
 
 Solution = create_solution(solution_function_name)

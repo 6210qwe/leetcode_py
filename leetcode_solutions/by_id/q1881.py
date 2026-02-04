@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用分治法将问题分成两部分，分别计算所有可能的子序列和，然后使用双指针找到最接近目标值的子序列和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组分成两部分，分别计算每部分的所有可能的子序列和。
+2. 对两个部分的子序列和进行排序。
+3. 使用双指针在两个排序后的子序列和中找到最接近目标值的组合。
 
 关键点:
-- [TODO]
+- 分治法可以有效地减少问题规模，使得每个子问题可以在合理的时间内解决。
+- 双指针方法可以高效地找到最接近目标值的组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^(n/2) * log(2^(n/2))) = O(2^(n/2) * (n/2)) = O(n * 2^(n/2))
+空间复杂度: O(2^(n/2))，用于存储两个部分的所有可能的子序列和。
 """
 
 # ============================================================================
@@ -49,12 +51,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def closest_subsequence_sum(nums: List[int], goal: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最接近目标值的子序列和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    half = n // 2
+    
+    # 生成所有可能的子序列和
+    def generate_sums(arr):
+        sums = {0}
+        for num in arr:
+            new_sums = set()
+            for s in sums:
+                new_sums.add(s + num)
+            sums.update(new_sums)
+        return sorted(sums)
+    
+    left_sums = generate_sums(nums[:half])
+    right_sums = generate_sums(nums[half:])
+    
+    # 使用双指针找到最接近目标值的组合
+    i, j = 0, len(right_sums) - 1
+    min_diff = float('inf')
+    
+    while i < len(left_sums) and j >= 0:
+        current_sum = left_sums[i] + right_sums[j]
+        diff = abs(current_sum - goal)
+        if diff < min_diff:
+            min_diff = diff
+        if current_sum < goal:
+            i += 1
+        else:
+            j -= 1
+    
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closest_subsequence_sum)

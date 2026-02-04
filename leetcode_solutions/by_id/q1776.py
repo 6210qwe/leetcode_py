@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口找到和为 `total - x` 的最长子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和 `total`。
+2. 找到和为 `total - x` 的最长子数组，这样剩下的部分就是我们需要移除的最短子数组。
+3. 使用滑动窗口技术来找到这个最长子数组。
+4. 返回结果，如果找不到这样的子数组，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来找到和为 `total - x` 的最长子数组。
+- 通过计算总和和目标和之间的差值，将问题转化为寻找最长子数组的问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations(nums: List[int], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用滑动窗口找到和为 `total - x` 的最长子数组。
     """
-    # TODO: 实现最优解法
-    pass
+    total = sum(nums)
+    target = total - x
+    if target < 0:
+        return -1
+    
+    left = 0
+    current_sum = 0
+    max_length = -1
+    
+    for right in range(len(nums)):
+        current_sum += nums[right]
+        
+        while current_sum > target and left <= right:
+            current_sum -= nums[left]
+            left += 1
+        
+        if current_sum == target:
+            max_length = max(max_length, right - left + 1)
+    
+    return len(nums) - max_length if max_length != -1 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

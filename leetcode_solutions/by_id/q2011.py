@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到最优插入位置
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 判断 n 是否为负数。
+2. 如果 n 是正数，从左到右遍历 n，找到第一个比 x 小的数字的位置，在其前面插入 x。
+3. 如果 n 是负数，从左到右遍历 n，找到第一个比 x 大的数字的位置，在其前面插入 x。
 
 关键点:
-- [TODO]
+- 通过比较数字大小来确定插入位置，确保插入后数值最大。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 n 的长度，因为我们需要遍历字符串一次。
+空间复杂度: O(1)，我们只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: str, x: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if n[0] == '-':
+        # n 是负数
+        for i in range(1, len(n)):
+            if int(n[i]) > x:
+                return n[:i] + str(x) + n[i:]
+        return n + str(x)
+    else:
+        # n 是正数
+        for i in range(len(n)):
+            if int(n[i]) < x:
+                return n[:i] + str(x) + n[i:]
+        return n + str(x)
 
 
 Solution = create_solution(solution_function_name)

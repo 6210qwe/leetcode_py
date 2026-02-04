@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举所有可能的结尾组合（00, 25, 50, 75），找到最小的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从后向前遍历字符串，寻找第一个符合条件的结尾组合。
+2. 计算删除操作次数。
+3. 返回最小的操作次数。
 
 关键点:
-- [TODO]
+- 从后向前遍历可以确保找到最短的删除路径。
+- 通过预定义的结尾组合进行匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 num 的长度。每个字符最多被检查两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_special_number(num: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最少需要多少次操作可以使 num 变成特殊数字。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(num)
+    targets = ["00", "25", "50", "75"]
+    min_ops = n  # 初始化为最大值
+
+    for target in targets:
+        i = n - 1
+        ops = 0
+        for char in reversed(target):
+            while i >= 0 and (num[i] != char or (char == '0' and ops == 0)):
+                i -= 1
+                ops += 1
+            if i < 0:
+                break
+            i -= 1
+        if i >= -1:
+            min_ops = min(min_ops, ops)
+
+    return min_ops
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_special_number)

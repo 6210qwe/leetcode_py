@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用倍增法（Binary Lifting）来快速计算 k 次传球后的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建倍增数组 `parent`，其中 `parent[j][i]` 表示从节点 i 出发经过 2^j 次传球后到达的节点。
+2. 计算每个节点的前缀和 `prefix_sum`，用于快速计算 k 次传球后的总和。
+3. 对于每个起始节点，使用倍增法计算 k 次传球后的总和，并更新最大值。
 
 关键点:
-- [TODO]
+- 倍增法可以在 O(log k) 时间内计算 k 次传球后的结果。
+- 使用前缀和可以快速计算路径上的总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)
+空间复杂度: O(n log k)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximize_value(receiver: List[int], k: int) -> int:
+    n = len(receiver)
+    log_k = k.bit_length()  # 计算 log k
+    parent = [[-1] * n for _ in range(log_k)]
+    prefix_sum = [[0] * n for _ in range(log_k)]
+
+    # 初始化 parent 和 prefix_sum
+    for i in range(n):
+        parent[0][i] = receiver[i]
+        prefix_sum[0][i] = i + receiver[i]
+
+    # 构建倍增数组
+    for j in range(1, log_k):
+        for i in range(n):
+            if parent[j - 1][i] != -1:
+                parent[j][i] = parent[j - 1][parent[j - 1][i]]
+                prefix_sum[j][i] = prefix_sum[j - 1][i] + prefix_sum[j - 1][parent[j - 1][i]]
+
+    def get_sum(node: int, steps: int) -> int:
+        total = node
+        for j in range(log_k):
+            if (steps >> j) & 1:
+                total += prefix_sum[j][node]
+                node = parent[j][node]
+        return total
+
+    max_value = 0
+    for i in range(n):
+        max_value = max(max_value, get_sum(i, k))
+
+    return max_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_value)

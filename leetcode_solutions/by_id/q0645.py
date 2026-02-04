@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法计算缺失和重复的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和 sum(nums) 和 1 到 n 的理论总和 sum(1 to n)。
+2. 通过差值找到缺失的数字和重复的数字。
 
 关键点:
-- [TODO]
+- 利用数学公式简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出重复和缺失的数字
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    total_sum = sum(nums)
+    expected_sum = (n * (n + 1)) // 2
+    set_sum = sum(set(nums))
+    
+    # 重复的数字是实际总和与集合总和的差值
+    duplicate = total_sum - set_sum
+    # 缺失的数字是理论总和与集合总和的差值
+    missing = expected_sum - set_sum
+    
+    return [duplicate, missing]
 
 
 Solution = create_solution(solution_function_name)

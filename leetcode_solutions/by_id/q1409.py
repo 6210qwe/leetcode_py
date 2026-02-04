@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从初始状态到全零矩阵的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将矩阵转换为一个整数表示的状态，以便在 BFS 中使用。
+2. 初始化 BFS 队列，队列中的每个元素是一个元组 (state, steps)，其中 state 是当前矩阵的状态，steps 是到达该状态所需的步数。
+3. 使用一个集合 visited 来记录已经访问过的状态，避免重复访问。
+4. 在 BFS 过程中，对于每个状态，尝试翻转每个单元格及其相邻单元格，生成新的状态。
+5. 如果新状态是全零矩阵，返回当前步数加一。
+6. 如果 BFS 队列为空且没有找到全零矩阵，返回 -1。
 
 关键点:
-- [TODO]
+- 使用位运算来表示和操作矩阵状态。
+- 使用 BFS 来找到最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^(m*n) * m * n)，其中 m 和 n 分别是矩阵的行数和列数。因为每个状态最多有 m * n 种翻转方式。
+空间复杂度: O(2^(m*n))，用于存储 BFS 队列和 visited 集合。
 """
 
 # ============================================================================
@@ -49,12 +54,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_flips(mat: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将矩阵 mat 转化为全零矩阵的最少反转次数，如果无法转化为全零矩阵，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    target = 0
+    start = 0
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 1:
+                start |= 1 << (i * n + j)
+    
+    def flip(state, i, j):
+        new_state = state
+        for di, dj in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < m and 0 <= nj < n:
+                pos = ni * n + nj
+                new_state ^= 1 << pos
+        return new_state
+    
+    from collections import deque
+    queue = deque([(start, 0)])
+    visited = set([start])
+    
+    while queue:
+        state, steps = queue.popleft()
+        if state == target:
+            return steps
+        for i in range(m):
+            for j in range(n):
+                new_state = flip(state, i, j)
+                if new_state not in visited:
+                    visited.add(new_state)
+                    queue.append((new_state, steps + 1))
+    
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips)

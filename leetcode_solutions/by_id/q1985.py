@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个元素作为最小值的子数组范围，并计算这些子数组的最小乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 prefix_sum。
+2. 使用单调递增栈来找到每个元素作为最小值的子数组范围。
+3. 对于每个元素，计算其作为最小值的子数组的最小乘积，并更新最大值。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算任意子数组的和。
+- 单调栈可以帮助我们找到每个元素作为最小值的子数组范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 任意非空子数组的最小乘积的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+
+    stack = []
+    max_product = 0
+    mod = 10**9 + 7
+
+    for i in range(n + 1):
+        while stack and (i == n or nums[stack[-1]] >= nums[i]):
+            min_val_idx = stack.pop()
+            left = stack[-1] if stack else -1
+            right = i
+            subarray_sum = prefix_sum[right] - prefix_sum[left + 1]
+            product = nums[min_val_idx] * subarray_sum
+            max_product = max(max_product, product)
+
+        stack.append(i)
+
+    return max_product % mod
 
 
 Solution = create_solution(solution_function_name)

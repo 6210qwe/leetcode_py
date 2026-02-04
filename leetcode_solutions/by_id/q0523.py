@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录前缀和对 k 的余数及其对应的索引，以快速判断是否存在满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和变量 `prefix_sum` 为 0，哈希表 `mod_map` 用于存储前缀和对 k 的余数及其对应的最小索引。
+2. 将 `mod_map[0]` 设为 -1，以处理从数组开头开始的子数组。
+3. 遍历数组，更新前缀和 `prefix_sum`。
+4. 计算当前前缀和对 k 的余数 `mod`。
+5. 如果 `mod` 已经存在于 `mod_map` 中，并且当前索引与 `mod_map[mod]` 的差值大于等于 2，则返回 True。
+6. 如果 `mod` 不在 `mod_map` 中，将其添加到 `mod_map` 中。
+7. 遍历结束后，如果没有找到满足条件的子数组，返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀和对 k 的余数及其对应的最小索引，以快速判断是否存在满足条件的子数组。
+- 处理 k 为 0 的特殊情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需遍历数组一次。
+空间复杂度: O(min(n, k))，哈希表的大小最多为 k。
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断数组中是否存在长度至少为 2 且和为 k 的倍数的子数组
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = 0
+    mod_map = {0: -1}
+    
+    for i, num in enumerate(nums):
+        prefix_sum += num
+        mod = prefix_sum % k if k != 0 else prefix_sum
+        
+        if mod in mod_map:
+            if i - mod_map[mod] >= 2:
+                return True
+        else:
+            mod_map[mod] = i
+    
+    return False
 
 
 Solution = create_solution(solution_function_name)

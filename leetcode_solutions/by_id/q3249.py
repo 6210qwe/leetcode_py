@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算当前数组的异或和与目标 k 的异或结果，然后计算该结果中有多少个 1，这些 1 就是需要翻转的位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组 nums 的异或和 current_xor。
+2. 计算 current_xor 与 k 的异或结果 target_xor。
+3. 计算 target_xor 中 1 的个数，即为最少操作次数。
 
 关键点:
-- [TODO]
+- 异或运算的性质：a ^ a = 0, a ^ 0 = a
+- 计算二进制中 1 的个数可以使用内置函数 bin 和 count
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。我们需要遍历整个数组来计算异或和。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_make_array_xor_equal(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使数组异或和等于 k 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算当前数组的异或和
+    current_xor = 0
+    for num in nums:
+        current_xor ^= num
+    
+    # 计算当前异或和与目标 k 的异或结果
+    target_xor = current_xor ^ k
+    
+    # 计算 target_xor 中 1 的个数
+    return bin(target_xor).count('1')
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_array_xor_equal)

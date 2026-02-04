@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，记录每一层的节点值之和，并找到和最大的层。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 初始化变量 `max_sum` 和 `max_level`，分别记录当前最大层和及其对应的层号。
+3. 使用 BFS 遍历二叉树：
+   - 对于每一层，计算该层所有节点值的和。
+   - 更新 `max_sum` 和 `max_level`。
+4. 返回 `max_level`。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 记录每一层的节点值之和，并更新最大和及对应的层号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(w)，其中 w 是二叉树的最大宽度。队列中最多会存储一层的节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def max_level_sum(root: Optional[TreeNode]) -> int:
+    if not root:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    queue = [root]
+    max_sum = float('-inf')
+    max_level = 1
+    level = 1
 
+    while queue:
+        level_sum = 0
+        next_level = []
+        for node in queue:
+            level_sum += node.val
+            if node.left:
+                next_level.append(node.left)
+            if node.right:
+                next_level.append(node.right)
+        if level_sum > max_sum:
+            max_sum = level_sum
+            max_level = level
+        queue = next_level
+        level += 1
 
-Solution = create_solution(solution_function_name)
+    return max_level
+
+Solution = create_solution(max_level_sum)

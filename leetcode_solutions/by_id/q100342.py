@@ -21,40 +21,42 @@ LCR 176. 判断是否为平衡二叉树 - 输入一棵二叉树的根节点，�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归的方法来判断每个节点的左右子树的高度差是否超过1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `height` 来计算节点的高度。
+2. 在主函数 `isBalanced` 中，对于每个节点，递归地检查其左右子树是否平衡，并且高度差不超过1。
 
 关键点:
-- [TODO]
+- 通过自底向上的递归方法，可以在计算高度的同时判断是否平衡，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为 h。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def isBalanced(root: Optional[TreeNode]) -> bool:
+    def height(node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+        left_height = height(node.left)
+        right_height = height(node.right)
+        if left_height == -1 or right_height == -1 or abs(left_height - right_height) > 1:
+            return -1
+        return max(left_height, right_height) + 1
+    
+    return height(root) != -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(isBalanced)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法最大化每一行的二进制值。首先确保每一行的第一个元素为1，然后逐列检查，如果某一列的0比1多，则翻转该列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 确保每一行的第一个元素为1，如果不是则翻转该行。
+2. 逐列检查，如果某一列的0比1多，则翻转该列。
+3. 计算最终矩阵的得分。
 
 关键点:
-- [TODO]
+- 优先保证每一行的第一个元素为1，因为最高位对二进制数的影响最大。
+- 逐列检查并翻转0比1多的列，以最大化每行的二进制值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def flip_row(grid: List[List[int]], row: int) -> None:
+    for col in range(len(grid[0])):
+        grid[row][col] = 1 - grid[row][col]
 
 
-Solution = create_solution(solution_function_name)
+def flip_col(grid: List[List[int]], col: int) -> None:
+    for row in range(len(grid)):
+        grid[row][col] = 1 - grid[row][col]
+
+
+def matrix_score(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    
+    # 确保每一行的第一个元素为1
+    for row in range(m):
+        if grid[row][0] == 0:
+            flip_row(grid, row)
+    
+    # 逐列检查，如果某一列的0比1多，则翻转该列
+    for col in range(1, n):
+        count_ones = sum(grid[row][col] for row in range(m))
+        if count_ones < (m + 1) // 2:
+            flip_col(grid, col)
+    
+    # 计算最终矩阵的得分
+    score = 0
+    for row in range(m):
+        binary_value = 0
+        for col in range(n):
+            binary_value = (binary_value << 1) | grid[row][col]
+        score += binary_value
+    
+    return score
+
+
+Solution = create_solution(matrix_score)

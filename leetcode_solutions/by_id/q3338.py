@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二维前缀和来快速计算任意子矩阵的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算二维前缀和数组。
+2. 遍历所有可能的右下角位置，使用前缀和数组计算子矩阵的和。
+3. 如果子矩阵的和小于或等于 k，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用二维前缀和可以将子矩阵和的计算时间复杂度降低到 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，用于存储二维前缀和数组。
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_submatrices_with_sum_less_than_k(grid: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算元素和小于等于 k 的子矩阵的数目
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    m, n = len(grid), len(grid[0])
+    prefix_sum = [[0] * (n + 1) for _ in range(m + 1)]
+
+    # 计算二维前缀和
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix_sum[i][j] = grid[i - 1][j - 1] + prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1]
+
+    count = 0
+    # 遍历所有可能的右下角位置
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            submatrix_sum = prefix_sum[i][j]
+            if submatrix_sum <= k:
+                count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_submatrices_with_sum_less_than_k)

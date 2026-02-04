@@ -21,55 +21,72 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用滑动窗口和哈希表来解决这个问题
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化两个哈希表，一个用于记录 p 中字符的频率，另一个用于记录当前窗口中字符的频率。
+2. 使用滑动窗口遍历字符串 s，窗口大小为 p 的长度。
+3. 在每次滑动时，更新窗口中的字符频率，并检查是否与 p 的字符频率匹配。
+4. 如果匹配，则将当前窗口的起始索引加入结果列表。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用滑动窗口可以避免重复计算，提高效率。
+- 通过哈希表记录字符频率，可以快速判断当前窗口是否为 p 的异位词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - n 是字符串 s 的长度，因为每个字符最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(1) - 哈希表的大小最多为 26（小写字母的数量），因此空间复杂度为常数级。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def find_all_anagrams_in_a_string(params):
+def find_all_anagrams_in_a_string(s: str, p: str) -> List[int]:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 找到字符串 s 中所有 p 的异位词的起始索引
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用滑动窗口和哈希表来解决这个问题。通过滑动窗口遍历字符串 s，窗口大小为 p 的长度，并使用哈希表记录字符频率，快速判断当前窗口是否为 p 的异位词。
     
     Args:
-        params: [待实现] 参数说明
+        s (str): 主字符串
+        p (str): 模式字符串
         
     Returns:
-        [待实现] 返回值说明
+        List[int]: 返回所有 p 的异位词在 s 中的起始索引
         
     Example:
-        >>> find_all_anagrams_in_a_string([待实现])
-        [待实现]
+        >>> find_all_anagrams_in_a_string("cbaebabacd", "abc")
+        [0, 6]
     """
-    # TODO: 实现最优解法
-    pass
+    if len(p) > len(s):
+        return []
+
+    p_count = [0] * 26
+    s_count = [0] * 26
+    result = []
+
+    for i in range(len(p)):
+        p_count[ord(p[i]) - ord('a')] += 1
+        s_count[ord(s[i]) - ord('a')] += 1
+
+    if p_count == s_count:
+        result.append(0)
+
+    for i in range(len(p), len(s)):
+        s_count[ord(s[i]) - ord('a')] += 1
+        s_count[ord(s[i - len(p)]) - ord('a')] -= 1
+        if s_count == p_count:
+            result.append(i - len(p) + 1)
+
+    return result
 
 
 # 自动生成Solution类（无需手动编写）

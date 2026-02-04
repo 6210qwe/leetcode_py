@@ -21,22 +21,24 @@ LCR 060. 前 K 个高频元素 - 给定一个整数数组 nums 和一个整数 k
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计频率，然后使用最小堆来获取前 K 个高频元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的频率。
+2. 使用一个最小堆来存储频率最高的 K 个元素。
+3. 遍历哈希表，将频率和元素加入堆中，如果堆的大小超过 K，则弹出堆顶元素。
+4. 最后堆中的元素即为前 K 个高频元素。
 
 关键点:
-- [TODO]
+- 使用最小堆来维护前 K 个高频元素，确保时间复杂度优于 O(n log n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)
+空间复杂度: O(n + k)
 """
 
 # ============================================================================
@@ -47,14 +49,29 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def topKFrequent(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回前 K 个高频元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的频率
+    freq = {}
+    for num in nums:
+        if num in freq:
+            freq[num] += 1
+        else:
+            freq[num] = 1
 
+    # 使用最小堆来存储频率最高的 K 个元素
+    heap = []
+    for num, count in freq.items():
+        heapq.heappush(heap, (count, num))
+        if len(heap) > k:
+            heapq.heappop(heap)
 
-Solution = create_solution(solution_function_name)
+    # 从堆中提取前 K 个高频元素
+    result = [heapq.heappop(heap)[1] for _ in range(k)]
+    return result[::-1]
+
+Solution = create_solution(topKFrequent)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 为使用 i 根木棍且能看到 j 根木棍的排列数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示使用 i 根木棍且能看到 j 根木棍的排列数目。
+2. 设置初始条件 dp[0][0] = 1，表示没有木棍时，能看到 0 根木棍的排列数目为 1。
+3. 对于每一个 i 和 j，有两种情况：
+   - 将第 i 根木棍放在最前面，这样能看到的木棍数目增加 1，即 dp[i][j] += dp[i-1][j-1]。
+   - 将第 i 根木棍放在其他位置，这样能看到的木棍数目不变，即 dp[i][j] += dp[i-1][j] * (i-1)。
+4. 返回 dp[n][k] 并对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 对结果取模以防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +54,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_ways_to_rearrange_sticks(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算恰有 K 根木棍可以看到的排列数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j] * (i - 1)) % MOD
+
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_ways_to_rearrange_sticks)

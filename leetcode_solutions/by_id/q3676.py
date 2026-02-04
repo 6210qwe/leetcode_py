@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到大于等于 n 的最小的 2 的幂次减一。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n 的二进制长度。
+2. 构造一个所有位都为 1 的数，其长度与 n 的二进制长度相同。
+3. 如果构造的数小于 n，则增加一位并重复步骤 2，直到找到满足条件的数。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地构造和比较数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_number_with_all_set_bits(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到大于等于 n 且二进制表示仅包含置位位的最小整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 n 的二进制长度
+    bit_length = n.bit_length()
+    
+    # 构造一个所有位都为 1 的数
+    all_ones = (1 << bit_length) - 1
+    
+    # 如果构造的数小于 n，则增加一位
+    while all_ones < n:
+        bit_length += 1
+        all_ones = (1 << bit_length) - 1
+    
+    return all_ones
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_number_with_all_set_bits)

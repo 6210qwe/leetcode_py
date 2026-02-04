@@ -21,40 +21,47 @@ LCP 82. 万灵之树 - 探险家小扣终于来到了万灵之树前，挑战最
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归生成所有可能的二叉树结构，并计算每种结构的记录数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs` 来生成所有可能的二叉树结构。
+2. 在每次递归中，选择一个宝石作为当前节点，并递归生成其左右子树。
+3. 计算每种结构的记录数，并检查是否满足 `num % p == target`。
+4. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 递归生成所有可能的二叉树结构。
+- 使用记忆化搜索优化性能。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n!)，其中 n 是宝石的数量。因为我们需要生成所有可能的二叉树结构，并且每种结构的排列数是 n!。
+空间复杂度: O(n * 2^n)，用于存储递归调用栈和记忆化搜索的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+def count_trees(gem: List[int], p: int, target: int) -> int:
+    @lru_cache(None)
+    def dfs(index, path):
+        if index == len(gem):
+            num = int(''.join(map(str, path)))
+            return 1 if num % p == target else 0
+        count = 0
+        for i in range(len(path)):
+            new_path = path[:i] + ['1', '1'] + path[i:]
+            new_path[2 * i + 1] = str(gem[index])
+            count += dfs(index + 1, tuple(new_path))
+        return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    return dfs(0, ('1',))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_trees)

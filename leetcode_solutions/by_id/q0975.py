@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质进行递归遍历。如果当前节点的值在范围内，则累加其值，并递归遍历左右子树；如果当前节点的值小于 low，则只需递归右子树；如果当前节点的值大于 high，则只需递归左子树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `range_sum_bst`，传入当前节点、low 和 high。
+2. 如果当前节点为空，返回 0。
+3. 如果当前节点的值在 [low, high] 范围内，累加其值，并递归遍历左右子树。
+4. 如果当前节点的值小于 low，递归遍历右子树。
+5. 如果当前节点的值大于 high，递归遍历左子树。
+6. 返回累加的结果。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质减少不必要的遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。最坏情况下需要遍历所有节点。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def range_sum_bst(root: Optional[TreeNode], low: int, high: int) -> int:
+    if not root:
+        return 0
+    
+    if low <= root.val <= high:
+        return root.val + range_sum_bst(root.left, low, high) + range_sum_bst(root.right, low, high)
+    elif root.val < low:
+        return range_sum_bst(root.right, low, high)
+    else:
+        return range_sum_bst(root.left, low, high)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(range_sum_bst)

@@ -4,7 +4,7 @@
 # ============================================================================
 """
 题号: 1682
-标题: Most Visited Sector in  a Circular Track
+标题: Most Visited Sector in a Circular Track
 难度: easy
 链接: https://leetcode.cn/problems/most-visited-sector-in-a-circular-track/
 题目类型: 数组、模拟
@@ -21,40 +21,37 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算起始和结束扇区之间的路径，确定经过次数最多的扇区。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算起始扇区和结束扇区之间的路径。
+2. 如果起始扇区小于等于结束扇区，则直接返回起始扇区到结束扇区的区间。
+3. 否则，返回两部分区间：从起始扇区到 n，以及从 1 到结束扇区。
 
 关键点:
-- [TODO]
+- 处理起始扇区大于结束扇区的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def most_visited(n: int, rounds: List[int]) -> List[int]:
+    start, end = rounds[0], rounds[-1]
+    
+    if start <= end:
+        return list(range(start, end + 1))
+    else:
+        return list(range(1, end + 1)) + list(range(start, n + 1))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_visited)

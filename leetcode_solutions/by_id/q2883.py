@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和回溯来解决这个问题。我们需要找到所有可能的美丽子字符串，并使用动态规划来记录最小的分割数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理所有可能的美丽子字符串（即5的幂的二进制表示）。
+2. 使用动态规划数组 dp 来记录从每个位置开始的最小分割数目。
+3. 从后向前遍历字符串，对于每个位置 i，尝试将其分割成美丽子字符串，并更新 dp 数组。
+4. 返回 dp[0]，即从字符串开头开始的最小分割数目。
 
 关键点:
-- [TODO]
+- 预处理所有可能的美丽子字符串。
+- 使用动态规划来记录最小的分割数目。
+- 从后向前遍历字符串，确保每个位置都能被正确处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。因为我们需要检查每个子字符串是否是美丽的。
+空间复杂度: O(n)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -48,13 +52,40 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_beautiful(s: str) -> bool:
+    """检查字符串 s 是否是 5 的幂的二进制表示。"""
+    if s == '1':
+        return True
+    if s[0] == '0':
+        return False
+    num = int(s, 2)
+    while num % 5 == 0:
+        num //= 5
+    return num == 1
 
-def solution_function_name(params):
+def min_beautiful_substrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将字符串分割为最少的美丽子字符串的数目。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n == 0:
+        return 0
+    if s[0] == '0':
+        return -1
+    
+    # 预处理所有可能的美丽子字符串
+    beautiful_strings = [bin(5**i)[2:] for i in range(15) if bin(5**i)[2:] in s]
+    
+    # 动态规划数组
+    dp = [float('inf')] * (n + 1)
+    dp[n] = 0  # 空字符串的分割数目为 0
+    
+    # 从后向前遍历字符串
+    for i in range(n - 1, -1, -1):
+        for b in beautiful_strings:
+            if s.startswith(b, i):
+                dp[i] = min(dp[i], 1 + dp[i + len(b)])
+    
+    return dp[0] if dp[0] != float('inf') else -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_beautiful_substrings)

@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过生成回文数的一半来构建完整的回文数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算回文数的一半的长度。
+2. 生成所有可能的回文数的一半。
+3. 根据查询索引构建完整的回文数。
 
 关键点:
-- [TODO]
+- 通过生成回文数的一半来避免重复计算。
+- 处理奇数和偶数长度的回文数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 queries 的长度，m 是 intLength 的一半。
+空间复杂度: O(n)，存储结果数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def kthPalindrome(queries: List[int], intLength: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回长度为 intLength 的第 queries[i] 小的回文数。
     """
-    # TODO: 实现最优解法
-    pass
+    half_length = (intLength + 1) // 2
+    start = 10 ** (half_length - 1)
+    end = 10 ** half_length - 1
+    result = []
 
+    for query in queries:
+        if start + query - 1 > end:
+            result.append(-1)
+        else:
+            half_palindrome = str(start + query - 1)
+            if intLength % 2 == 0:
+                palindrome = half_palindrome + half_palindrome[::-1]
+            else:
+                palindrome = half_palindrome + half_palindrome[:-1][::-1]
+            result.append(int(palindrome))
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(kthPalindrome)

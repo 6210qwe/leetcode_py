@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用倍增法 (Binary Lifting) 来预处理每个节点的 2^j 级祖先，从而在 O(log k) 时间内找到第 k 个祖先。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示节点 i 的 2^j 级祖先。
+2. 预处理 dp 数组，对于每个节点 i 和 j，计算 dp[i][j]。
+3. 在查询时，通过二进制分解 k，使用 dp 数组快速找到第 k 个祖先。
 
 关键点:
-- [TODO]
+- 使用倍增法预处理祖先信息，使得每次查询的时间复杂度为 O(log k)。
+- 通过二进制分解 k，可以高效地找到第 k 个祖先。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 预处理的时间复杂度为 O(n log n)，每次查询的时间复杂度为 O(log k)。
+空间复杂度: O(n log n) - 存储 dp 数组的空间复杂度为 O(n log n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+
+class TreeAncestor:
+
+    def __init__(self, n: int, parent: List[int]):
+        self.log = 17  # 2^17 > 5*10^4
+        self.dp = [[-1] * self.log for _ in range(n)]
+        
+        # 初始化每个节点的 2^0 级祖先
+        for i in range(n):
+            self.dp[i][0] = parent[i]
+        
+        # 预处理每个节点的 2^j 级祖先
+        for j in range(1, self.log):
+            for i in range(n):
+                if self.dp[i][j-1] != -1:
+                    self.dp[i][j] = self.dp[self.dp[i][j-1]][j-1]
+
+    def getKthAncestor(self, node: int, k: int) -> int:
+        # 通过二进制分解 k，找到第 k 个祖先
+        while k > 0 and node != -1:
+            j = 0
+            while (1 << (j + 1)) <= k:
+                j += 1
+            node = self.dp[node][j]
+            k -= (1 << j)
+        return node
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    obj = TreeAncestor(7, [-1, 0, 0, 1, 1, 2, 2])
+    print(obj.getKthAncestor(3, 1))  # 输出: 1
+    print(obj.getKthAncestor(5, 2))  # 输出: 0
+    print(obj.getKthAncestor(6, 3))  # 输出: -1

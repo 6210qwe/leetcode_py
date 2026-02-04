@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用方向数组来控制移动方向，并逐步扩展步长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化方向数组和当前方向。
+2. 从起始位置开始，按照当前方向移动，并记录访问过的坐标。
+3. 每次移动完一个方向后，改变方向并增加步长。
+4. 当访问的坐标数量达到 rows * cols 时，结束循环。
 
 关键点:
-- [TODO]
+- 使用方向数组来控制移动方向。
+- 逐步扩展步长，确保覆盖所有网格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(rows * cols)
+空间复杂度: O(rows * cols)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def spiralMatrixIII(rows: int, cols: int, rStart: int, cStart: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回按照访问顺序表示网格位置的坐标列表
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向数组：右、下、左、上
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    # 当前方向索引
+    direction_index = 0
+    # 当前步长
+    step = 1
+    # 访问过的坐标
+    visited = []
+    # 当前坐标
+    r, c = rStart, cStart
+    
+    while len(visited) < rows * cols:
+        # 在当前方向上移动 step 步
+        for _ in range(step):
+            if 0 <= r < rows and 0 <= c < cols:
+                visited.append([r, c])
+            r += directions[direction_index][0]
+            c += directions[direction_index][1]
+        
+        # 改变方向
+        direction_index = (direction_index + 1) % 4
+        
+        # 每两个方向后增加步长
+        if direction_index % 2 == 0:
+            step += 1
+    
+    return visited
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(spiralMatrixIII)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录出现过的小写字母和大写字母，然后检查每个字母是否同时存在于两个集合中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个集合，分别用于存储小写字母和大写字母。
+2. 遍历字符串，将每个字符添加到相应的集合中。
+3. 遍历所有字母（从 'a' 到 'z'），检查其小写和大写形式是否同时存在于两个集合中。
+4. 统计满足条件的字母数量。
 
 关键点:
-- [TODO]
+- 使用集合进行快速查找。
+- 只需要遍历一次字符串和一次字母表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + 26) = O(n)，其中 n 是字符串的长度。
+空间复杂度: O(1)，因为集合的大小最多为 26 个字母。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_special_characters(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计特殊字母的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化两个集合
+    lower_set = set()
+    upper_set = set()
+
+    # 遍历字符串，将每个字符添加到相应的集合中
+    for char in word:
+        if char.islower():
+            lower_set.add(char)
+        else:
+            upper_set.add(char)
+
+    # 统计满足条件的字母数量
+    special_count = 0
+    for char in 'abcdefghijklmnopqrstuvwxyz':
+        if char in lower_set and char.upper() in upper_set:
+            special_count += 1
+
+    return special_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_special_characters)

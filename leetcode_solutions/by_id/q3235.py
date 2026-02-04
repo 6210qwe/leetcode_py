@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Floyd-Warshall 算法计算所有字符之间的最短路径，然后根据这些路径计算转换成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 26x26 的距离矩阵，表示每个字符到其他字符的转换成本。
+2. 使用给定的 `original` 和 `changed` 更新距离矩阵。
+3. 使用 Floyd-Warshall 算法计算所有字符之间的最短路径。
+4. 遍历 `source` 和 `target`，计算总的转换成本。
+5. 如果某个字符无法转换，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用 Floyd-Warshall 算法计算所有字符之间的最短路径。
+- 通过距离矩阵快速查找转换成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(26^3 + n) = O(1) + O(n)，其中 n 是字符串的长度，26 是字母表的大小。
+空间复杂度: O(26^2) = O(1)，用于存储距离矩阵。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_cost_to_convert_string(source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
+    # 初始化距离矩阵
+    dist = [[float('inf')] * 26 for _ in range(26)]
+    for i in range(26):
+        dist[i][i] = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 更新距离矩阵
+    for orig, chng, c in zip(original, changed, cost):
+        u, v = ord(orig) - ord('a'), ord(chng) - ord('a')
+        dist[u][v] = min(dist[u][v], c)
 
+    # Floyd-Warshall 算法计算所有字符之间的最短路径
+    for k in range(26):
+        for i in range(26):
+            for j in range(26):
+                if dist[i][k] + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
 
-Solution = create_solution(solution_function_name)
+    # 计算总的转换成本
+    total_cost = 0
+    for s, t in zip(source, target):
+        u, v = ord(s) - ord('a'), ord(t) - ord('a')
+        if dist[u][v] == float('inf'):
+            return -1
+        total_cost += dist[u][v]
+
+    return total_cost
+
+Solution = create_solution(minimum_cost_to_convert_string)

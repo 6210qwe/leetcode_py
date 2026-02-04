@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的出现次数，然后检查每个位置的数字是否符合要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 10 的数组 `count`，用于记录每个数字在字符串 `num` 中的出现次数。
+2. 遍历字符串 `num`，更新 `count` 数组。
+3. 再次遍历字符串 `num`，检查每个位置的数字是否等于 `count` 数组中对应位置的值。
+4. 如果所有位置都满足条件，则返回 `True`，否则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用固定大小的数组 `count` 来记录每个数字的出现次数，避免使用额外的空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `num` 的长度。我们需要遍历字符串两次。
+空间复杂度: O(1)，我们只使用了一个固定大小的数组 `count`。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断一个数的数字计数是否等于数位的值
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为 10 的数组来记录每个数字的出现次数
+    count = [0] * 10
+    
+    # 遍历字符串 num，更新 count 数组
+    for digit in num:
+        count[int(digit)] += 1
+    
+    # 再次遍历字符串 num，检查每个位置的数字是否等于 count 数组中对应位置的值
+    for i, digit in enumerate(num):
+        if int(digit) != count[i]:
+            return False
+    
+    return True
 
 
 Solution = create_solution(solution_function_name)

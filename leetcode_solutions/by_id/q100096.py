@@ -21,22 +21,24 @@ LCP 03. 机器人大冒险 - 力扣团队买了一个可编程机器人，机器
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟机器人在一个周期内的路径，判断终点和障碍物是否在路径上。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 模拟一个周期内的路径，并记录每个位置。
+2. 判断终点是否在路径上。
+3. 判断所有障碍物是否在路径上，如果在路径上且在终点之前，则返回 False。
 
 关键点:
-- [TODO]
+- 通过模运算来确定一个周期内的相对位置。
+- 使用集合来存储路径上的所有位置，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 command 的长度，m 是 obstacles 的长度。
+空间复杂度: O(n)，用于存储一个周期内的路径。
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(command: str, obstacles: List[List[int]], x: int, y: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断机器人能否完好地到达终点
     """
-    # TODO: 实现最优解法
-    pass
+    # 模拟一个周期内的路径
+    path = set()
+    px, py = 0, 0
+    for c in command:
+        if c == 'U':
+            py += 1
+        elif c == 'R':
+            px += 1
+        path.add((px, py))
+    
+    # 判断终点是否在路径上
+    def is_in_path(tx, ty):
+        if tx < 0 or ty < 0:
+            return False
+        cycle_x, cycle_y = tx % (px + 1), ty % (py + 1)
+        return (cycle_x, cycle_y) in path
+    
+    # 判断终点
+    if not is_in_path(x, y):
+        return False
+    
+    # 判断障碍物
+    for ox, oy in obstacles:
+        if ox <= x and oy <= y and is_in_path(ox, oy):
+            return False
+    
+    return True
 
 
 Solution = create_solution(solution_function_name)

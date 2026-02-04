@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个偶数的出现次数，然后找到出现次数最多的偶数。如果有多个偶数出现次数相同，则返回最小的那个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个偶数的出现次数。
+2. 遍历数组，更新哈希表。
+3. 找到出现次数最多的偶数。如果有多个偶数出现次数相同，则返回最小的那个。
+4. 如果没有偶数元素，返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个偶数的出现次数。
+- 在遍历哈希表时，同时考虑出现次数和元素值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def most_frequent_even(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回出现最频繁的偶数元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表记录每个偶数的出现次数
+    count = {}
+    for num in nums:
+        if num % 2 == 0:
+            if num in count:
+                count[num] += 1
+            else:
+                count[num] = 1
+    
+    # 找到出现次数最多的偶数
+    max_count = 0
+    result = -1
+    for num, freq in count.items():
+        if freq > max_count or (freq == max_count and num < result):
+            max_count = freq
+            result = num
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_frequent_even)

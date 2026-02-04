@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用闭包来保存当前的计数值，并在每次调用时递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个内部函数 `counter`，该函数使用外部变量 `current` 来保存当前的计数值。
+2. 每次调用 `counter` 时，返回 `current` 的值，并将 `current` 增加 1。
+3. 返回 `counter` 函数。
 
 关键点:
-- [TODO]
+- 使用闭包来保存和更新状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用 `counter` 函数的时间复杂度是常数级别的。
+空间复杂度: O(1) - 只使用了常数级别的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def createCounter(n: int):
     """
-    函数式接口 - [TODO] 实现
+    创建一个计数器函数，初始值为 n，每次调用返回当前值并递增 1。
     """
-    # TODO: 实现最优解法
-    pass
+    current = n
+
+    def counter():
+        nonlocal current
+        result = current
+        current += 1
+        return result
+
+    return counter
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(createCounter)

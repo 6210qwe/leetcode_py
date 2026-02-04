@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典将英文单词映射到对应的数字，然后逐个解析输入的单词并拼接成最终的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，将英文单词映射到对应的数字。
+2. 初始化一个空字符串 `result` 用于存储最终结果。
+3. 遍历输入的单词列表，对于每个单词，查找其在字典中的对应数字，并将其添加到 `result` 中。
+4. 返回 `result` 转换为整数的结果。
 
 关键点:
-- [TODO]
+- 使用字典进行快速查找。
+- 确保输入的单词都在字典中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入单词列表的长度。我们需要遍历整个列表一次。
+空间复杂度: O(1)，除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数字词转换为数字
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 数字词到数字的映射
+    word_to_digit = {
+        "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4",
+        "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"
+    }
+    
+    # 初始化结果字符串
+    result = ""
+    
+    # 遍历输入的单词列表
+    for word in words:
+        if word in word_to_digit:
+            result += word_to_digit[word]
+        else:
+            raise ValueError(f"Invalid word: {word}")
+    
+    # 返回结果字符串转换为整数
+    return int(result)
 
 Solution = create_solution(solution_function_name)

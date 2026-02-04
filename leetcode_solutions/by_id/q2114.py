@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维数组 dp，其中 dp[mask][i] 表示在当前状态下（由 mask 表示的任务集合）和当前时间段剩余时间 i 的最小工作时间段数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0，表示没有任务且剩余时间为 0 的情况下，不需要任何工作时间段。
+2. 对于每个可能的状态 mask，遍历所有任务，更新 dp 数组。
+3. 对于每个状态 mask，如果当前任务不在 mask 中，则尝试将该任务加入当前时间段或新开一个时间段。
+4. 最终结果是 dp[(1 << n) - 1][0]，表示所有任务都完成且当前时间段剩余时间为 0 的最小工作时间段数。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示任务集合。
+- 动态规划转移方程：
+  - 如果当前任务可以加入当前时间段：dp[mask | (1 << j)][i - tasks[j]] = min(dp[mask | (1 << j)][i - tasks[j]], dp[mask][i])
+  - 如果当前任务不能加入当前时间段：dp[mask | (1 << j)][sessionTime - tasks[j]] = min(dp[mask | (1 << j)][sessionTime - tasks[j]], dp[mask][i] + 1)
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n * sessionTime)，其中 n 是任务数量，sessionTime 是每个时间段的最大时间。
+空间复杂度: O(2^n * sessionTime)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_sessions(tasks: List[int], session_time: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回完成所有任务所需的最少工作时间段数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(tasks)
+    dp = [[float('inf')] * (session_time + 1) for _ in range(1 << n)]
+    dp[0][0] = 0
+
+    for mask in range(1 << n):
+        for i in range(n):
+            if mask & (1 << i):
+                continue
+            for j in range(session_time + 1):
+                if j >= tasks[i]:
+                    dp[mask | (1 << i)][j - tasks[i]] = min(dp[mask | (1 << i)][j - tasks[i]], dp[mask][j])
+                else:
+                    dp[mask | (1 << i)][session_time - tasks[i]] = min(dp[mask | (1 << i)][session_time - tasks[i]], dp[mask][j] + 1)
+
+    return min(dp[(1 << n) - 1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_sessions)

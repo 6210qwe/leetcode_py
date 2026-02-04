@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法构建答案列表，使得相邻元素的差值尽可能地覆盖从 1 到 k 的所有整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `answer`。
+2. 从 1 开始交替添加 `k+1` 和 `k+1-i` 到 `answer` 中，直到 `i` 达到 `k`。
+3. 将剩余的数字从 `k+2` 到 `n` 依次添加到 `answer` 中。
 
 关键点:
-- [TODO]
+- 通过交替添加 `k+1` 和 `k+1-i`，可以确保相邻元素的差值覆盖从 1 到 k 的所有整数。
+- 最后将剩余的数字依次添加到 `answer` 中，确保所有的数字都被使用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构造一个答案列表，包含从 1 到 n 的 n 个不同正整数，并满足相邻元素的差值有且仅有 k 个不同整数。
     """
-    # TODO: 实现最优解法
-    pass
+    answer = []
+    for i in range(k + 1):
+        if i % 2 == 0:
+            answer.append(i // 2 + 1)
+        else:
+            answer.append(k + 1 - (i // 2))
+    
+    for i in range(k + 2, n + 1):
+        answer.append(i)
+    
+    return answer
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示从 (0, 0) 到 (i, j) 的最小代价。根据题目要求，我们只能交替地向右或向下移动，因此我们需要分别考虑从上方和左方到达 (i, j) 的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0。
+2. 填充第一行和第一列，因为它们只能从左边或上边到达。
+3. 对于其他位置 (i, j)，计算从上方和左方到达 (i, j) 的最小代价，并更新 dp[i][j]。
+4. 返回 dp[m-1][n-1] 作为结果。
 
 关键点:
-- [TODO]
+- 交替方向的限制需要在状态转移时特别处理。
+- 使用动态规划来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现交替方向的最小路径代价
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+    
+    m, n = len(grid), len(grid[0])
+    dp = [[float('inf')] * n for _ in range(m)]
+    
+    # 初始化起点
+    dp[0][0] = 0
+    
+    # 填充第一行
+    for j in range(1, n):
+        dp[0][j] = dp[0][j-1] + grid[0][j]
+    
+    # 填充第一列
+    for i in range(1, m):
+        dp[i][0] = dp[i-1][0] + grid[i][0]
+    
+    # 填充其余部分
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+    
+    return dp[m-1][n-1]
 
 
 Solution = create_solution(solution_function_name)

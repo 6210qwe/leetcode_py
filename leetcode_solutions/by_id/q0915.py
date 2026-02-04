@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用极坐标系生成随机点，然后转换为笛卡尔坐标系。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成一个随机角度 theta，范围在 [0, 2π)。
+2. 生成一个随机半径 r，范围在 [0, radius)，使用 sqrt(random()) 来保证均匀分布。
+3. 将极坐标 (r, theta) 转换为笛卡尔坐标 (x, y)。
+4. 将生成的点平移到圆心位置。
 
 关键点:
-- [TODO]
+- 使用 sqrt(random()) 生成随机半径以确保点在圆内均匀分布。
+- 将极坐标转换为笛卡尔坐标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -47,14 +50,28 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import random
+import math
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Solution:
+
+    def __init__(self, radius: float, x_center: float, y_center: float):
+        self.radius = radius
+        self.x_center = x_center
+        self.y_center = y_center
+
+    def randPoint(self) -> List[float]:
+        # 生成随机角度
+        theta = random.uniform(0, 2 * math.pi)
+        # 生成随机半径
+        r = self.radius * math.sqrt(random.uniform(0, 1))
+        # 计算笛卡尔坐标
+        x = self.x_center + r * math.cos(theta)
+        y = self.y_center + r * math.sin(theta)
+        return [x, y]
 
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_solution(radius: float, x_center: float, y_center: float) -> Solution:
+    return Solution(radius, x_center, y_center)

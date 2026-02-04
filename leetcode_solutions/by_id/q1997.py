@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针找到需要交换的字符位置，然后生成下一个排列并重新构建回文串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入字符串转换为列表，以便进行原地修改。
+2. 使用双指针从中间向两边遍历，找到第一个不满足递增顺序的位置。
+3. 从该位置开始，找到右侧比当前字符大的最小字符，并交换它们。
+4. 将右侧部分反转，使其成为最小的字典序排列。
+5. 重新构建回文串。
 
 关键点:
-- [TODO]
+- 使用双指针找到需要交换的字符位置。
+- 生成下一个排列并重新构建回文串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def next_palindrome(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成下一个由相同数字构成的回文串
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) <= 1:
+        return s
+
+    # 将字符串转换为列表
+    s = list(s)
+    n = len(s)
+    mid = n // 2
+
+    # 找到第一个不满足递增顺序的位置
+    for i in range(mid - 1, -1, -1):
+        if s[i] < s[i + 1]:
+            break
+    else:
+        # 如果整个字符串都是递减的，则无法生成下一个回文串
+        return "-1"
+
+    # 从该位置开始，找到右侧比当前字符大的最小字符，并交换它们
+    for j in range(mid, n):
+        if s[j] > s[i]:
+            s[i], s[j] = s[j], s[i]
+            break
+
+    # 将右侧部分反转，使其成为最小的字典序排列
+    s[i + 1:mid] = reversed(s[i + 1:mid])
+    s[mid:] = s[:mid][::-1] if n % 2 == 0 else s[:mid + 1][::-1]
+
+    return "".join(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(next_palindrome)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据，通过分组和聚合操作找到每位顾客最经常订购的商品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取订单数据并进行预处理。
+2. 使用 `groupby` 和 `agg` 方法按顾客和产品分组，并计算每个产品的订购次数。
+3. 找出每位顾客订购次数最多的产品。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 `groupby` 和 `agg` 方法进行高效的分组和聚合操作。
+- 使用 `transform` 方法找到每个分组的最大值。
+- 使用 `query` 方法筛选出订购次数最多的产品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是订单的数量。主要的时间开销在于排序和分组操作。
+空间复杂度: O(n)，需要存储分组后的数据。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def find_frequent_products(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到每位顾客最经常订购的商品
     """
-    # TODO: 实现最优解法
-    pass
+    # 合并 customers 和 orders 表
+    merged_df = pd.merge(customers, orders, on='customer_id')
+    
+    # 按 customer_id 和 product_name 分组，并计算每个产品的订购次数
+    grouped_df = merged_df.groupby(['customer_id', 'product_name']).size().reset_index(name='order_count')
+    
+    # 找到每个 customer_id 的最大 order_count
+    max_counts = grouped_df.groupby('customer_id')['order_count'].transform('max')
+    
+    # 筛选出订购次数最多的产品
+    result_df = grouped_df[grouped_df['order_count'] == max_counts]
+    
+    # 选择需要的列并重命名
+    result_df = result_df[['customer_id', 'customer_name', 'product_name']].rename(columns={'customer_name': 'customer_name'})
+    
+    return result_df
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_frequent_products)

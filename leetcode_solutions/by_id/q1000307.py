@@ -21,40 +21,59 @@ LCR 050. 路径总和 III - 给定一个二叉树的根节点 root ，和一个�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录路径和的出现次数，从而快速查找满足条件的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于深度优先遍历二叉树。
+2. 使用一个哈希表 `prefix_sum` 记录从根节点到当前节点的路径和及其出现次数。
+3. 在遍历过程中，计算当前路径和 `current_sum`，并检查 `current_sum - targetSum` 是否在 `prefix_sum` 中，如果存在则说明存在满足条件的路径。
+4. 更新 `prefix_sum` 并继续递归遍历左右子树。
+5. 递归结束后，回溯时更新 `prefix_sum`。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表可以将时间复杂度优化到 O(n)。
+- 递归过程中维护路径和的哈希表，确保路径和的正确性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(n)，哈希表和递归栈的空间消耗。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def path_sum_iii(root: Optional[TreeNode], target_sum: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 求二叉树中路径和等于 targetSum 的路径数目
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], current_sum: int) -> int:
+        if not node:
+            return 0
+        
+        current_sum += node.val
+        count = prefix_sum.get(current_sum - target_sum, 0)
+        prefix_sum[current_sum] = prefix_sum.get(current_sum, 0) + 1
+        
+        count += dfs(node.left, current_sum) + dfs(node.right, current_sum)
+        
+        prefix_sum[current_sum] -= 1
+        if prefix_sum[current_sum] == 0:
+            del prefix_sum[current_sum]
+        
+        return count
+    
+    prefix_sum = {0: 1}
+    return dfs(root, 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(path_sum_iii)

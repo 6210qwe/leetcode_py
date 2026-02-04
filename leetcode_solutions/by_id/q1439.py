@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数 OVER() 来计算每个性别的累计分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询来获取每个用户的性别和分数。
+2. 使用窗口函数 SUM() OVER(PARTITION BY gender ORDER BY day) 来计算每个性别的累计分数。
+3. 返回结果集。
 
 关键点:
-- [TODO]
+- 使用窗口函数可以有效地计算累计分数，避免了自连接或循环计算的复杂性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表中的行数。排序操作的时间复杂度为 O(n log n)，窗口函数的计算时间为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，不使用额外的空间。
 """
 
 # ============================================================================
@@ -51,10 +52,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询实现不同性别的每日分数总计
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        gender, 
+        day, 
+        SUM(score) OVER (PARTITION BY gender ORDER BY day) AS total
+    FROM 
+        Scores
+    ORDER BY 
+        gender, 
+        day;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

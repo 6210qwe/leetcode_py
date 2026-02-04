@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择每个区间的最小值，然后计算这些最小值之间的最小绝对差。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个区间的左端点加上 d，得到每个区间的右端点。
+2. 对所有区间的右端点进行排序。
+3. 计算相邻两个右端点之间的最小差值，即为所选整数的最大可能得分。
 
 关键点:
-- [TODO]
+- 选择每个区间的最小值可以确保最小绝对差最大化。
+- 通过排序和遍历，可以高效地找到最小绝对差。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 start 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(start: List[int], d: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个区间的右端点
+    end_points = [s + d for s in start]
+    
+    # 对右端点进行排序
+    end_points.sort()
+    
+    # 初始化最小绝对差
+    min_diff = float('inf')
+    
+    # 计算相邻两个右端点之间的最小差值
+    for i in range(1, len(end_points)):
+        min_diff = min(min_diff, end_points[i] - end_points[i - 1])
+    
+    return min_diff
 
 
 Solution = create_solution(solution_function_name)

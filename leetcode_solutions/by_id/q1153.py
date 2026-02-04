@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询将 Sales 表和 Product 表进行连接，并选择所需的列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 INNER JOIN 将 Sales 表和 Product 表连接起来。
+2. 选择 product_name, year 和 price 列。
 
 关键点:
-- [TODO]
+- 使用 INNER JOIN 确保只选择在两个表中都存在的 product_id。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Sales 表的行数，m 是 Product 表的行数。
+空间复杂度: O(1)，因为查询结果的大小与输入表的大小无关。
 """
 
 # ============================================================================
@@ -49,12 +49,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(sales: List[List[int]], products: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询逻辑
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个字典来存储 product_id 和 product_name 的映射
+    product_map = {product[0]: product[1] for product in products}
+    
+    # 生成结果列表
+    result = []
+    for sale in sales:
+        product_id, year, _, price = sale
+        if product_id in product_map:
+            result.append([product_map[product_id], year, price])
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

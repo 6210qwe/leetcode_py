@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示在第 i 步时指针位于 j 位置的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示在第 i 步时指针位于 j 位置的方案数。
+2. 设置边界条件：dp[0][0] = 1，表示初始时指针在位置 0。
+3. 对于每个步数 i，更新 dp[i][j] 的值，考虑三种情况：从 j-1 移动到 j，从 j+1 移动到 j，以及停留在 j。
+4. 最终结果是 dp[steps][0]，即在 steps 步后指针仍然在位置 0 的方案数。
 
 关键点:
-- [TODO]
+- 为了优化空间复杂度，我们可以使用滚动数组，只保留当前行和上一行的状态。
+- 为了避免越界，我们需要确保 j 在 [0, min(arrLen-1, steps)] 范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(steps * min(arrLen, steps)) - 我们需要遍历每个步数和每个可能的位置。
+空间复杂度: O(min(arrLen, steps)) - 使用滚动数组优化后的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_ways(steps: int, arr_len: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算在恰好执行 steps 次操作以后，指针仍然指向索引 0 处的方案数。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    max_pos = min(arr_len - 1, steps)
+    dp = [0] * (max_pos + 1)
+    dp[0] = 1
+
+    for i in range(1, steps + 1):
+        next_dp = [0] * (max_pos + 1)
+        for j in range(max_pos + 1):
+            next_dp[j] = dp[j]
+            if j > 0:
+                next_dp[j] = (next_dp[j] + dp[j - 1]) % MOD
+            if j < max_pos:
+                next_dp[j] = (next_dp[j] + dp[j + 1]) % MOD
+        dp = next_dp
+
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_ways)

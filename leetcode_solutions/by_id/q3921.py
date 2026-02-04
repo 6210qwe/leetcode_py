@@ -21,40 +21,88 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用 SQL 查询来筛选出每个员工的最近三次评估，并检查这些评估是否严格递增。
+- 计算进步分数，并根据进步分数和名字进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `performance_reviews` 表中选择每个员工的最近三次评估。
+2. 检查这些评估是否严格递增。
+3. 计算进步分数（最后一次评分减去第一次评分）。
+4. 将结果与 `employees` 表连接，获取员工的名字。
+5. 根据进步分数降序和名字升序排序。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `ROW_NUMBER()` 来获取每个员工的最近三次评估。
+- 使用 `LAG()` 函数来检查评分是否严格递增。
+- 使用 `CASE` 语句来计算进步分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `performance_reviews` 表中的行数。主要的时间消耗在于排序操作。
+空间复杂度: O(n)，用于存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(employees, performance_reviews):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 SQL 查询来实现
+    query = """
+    WITH RecentReviews AS (
+        SELECT
+            pr.employee_id,
+            pr.review_date,
+            pr.rating,
+            ROW_NUMBER() OVER (PARTITION BY pr.employee_id ORDER BY pr.review_date DESC) AS rn
+        FROM
+            performance_reviews pr
+    ),
+    FilteredReviews AS (
+        SELECT
+            rr.employee_id,
+            rr.review_date,
+            rr.rating,
+            LAG(rr.rating, 1) OVER (PARTITION BY rr.employee_id ORDER BY rr.review_date) AS prev_rating,
+            LAG(rr.rating, 2) OVER (PARTITION BY rr.employee_id ORDER BY rr.review_date) AS prev_prev_rating
+        FROM
+            RecentReviews rr
+        WHERE
+            rr.rn <= 3
+    ),
+    ImprovedEmployees AS (
+        SELECT
+            fr.employee_id,
+            MAX(fr.rating) - MIN(fr.rating) AS improvement_score
+        FROM
+            FilteredReviews fr
+        GROUP BY
+            fr.employee_id
+        HAVING
+            COUNT(fr.employee_id) = 3 AND
+            SUM(CASE WHEN fr.rating > fr.prev_rating THEN 1 ELSE 0 END) = 2 AND
+            SUM(CASE WHEN fr.prev_rating > fr.prev_prev_rating THEN 1 ELSE 0 END) = 1
+    )
+    SELECT
+        e.employee_id,
+        e.name,
+        ie.improvement_score
+    FROM
+        ImprovedEmployees ie
+    JOIN
+        employees e ON ie.employee_id = e.employee_id
+    ORDER BY
+        ie.improvement_score DESC,
+        e.name ASC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

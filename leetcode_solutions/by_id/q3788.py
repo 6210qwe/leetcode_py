@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到包含唯一元素的最大子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个集合 seen 来记录当前窗口内的元素。
+3. 使用变量 current_sum 来记录当前窗口内的元素和。
+4. 使用变量 max_sum 来记录最大子数组和。
+5. 移动右指针 right，将 nums[right] 加入 seen 并更新 current_sum。
+6. 如果 nums[right] 已经在 seen 中，则移动左指针 left，直到 nums[right] 不再在 seen 中。
+7. 更新 max_sum。
+8. 返回 max_sum。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护一个包含唯一元素的子数组。
+- 通过移动左指针来确保窗口内的元素都是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(n)，最坏情况下 seen 集合中会包含所有的元素。
 """
 
 # ============================================================================
@@ -49,12 +56,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_unique_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到删除后的最大子数组元素和
     """
-    # TODO: 实现最优解法
-    pass
+    left = 0
+    right = 0
+    seen = set()
+    current_sum = 0
+    max_sum = 0
+    
+    while right < len(nums):
+        while nums[right] in seen:
+            seen.remove(nums[left])
+            current_sum -= nums[left]
+            left += 1
+        
+        seen.add(nums[right])
+        current_sum += nums[right]
+        max_sum = max(max_sum, current_sum)
+        right += 1
+    
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_unique_subarray)

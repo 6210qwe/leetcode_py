@@ -21,40 +21,94 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来维护子段，并使用有序集合来快速找到当前的最大子段和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 prefix_sum，用于快速计算任意子段的和。
+2. 初始化并查集 union_find，用于合并和查找子段。
+3. 初始化有序集合 max_heap，用于存储当前的最大子段和。
+4. 逆序遍历 removeQueries，模拟删除操作：
+   - 将当前删除位置标记为已删除。
+   - 更新并查集和有序集合。
+   - 记录当前的最大子段和。
+5. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地合并和查找子段。
+- 使用有序集合来快速找到当前的最大子段和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。主要由有序集合的操作决定。
+空间复杂度: O(n)，并查集和有序集合的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import heapq
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.max_size = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.size[root_x] < self.size[root_y]:
+                root_x, root_y = root_y, root_x
+            self.parent[root_y] = root_x
+            self.size[root_x] += self.size[root_y]
+            self.max_size[root_x] = max(self.max_size[root_x], self.max_size[root_y])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximum_segment_sum(nums: List[int], removeQueries: List[int]) -> List[int]:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    union_find = UnionFind(n)
+    max_heap = []
+    deleted = [False] * n
+    result = [0] * n
+    
+    for i in range(n - 1, -1, -1):
+        idx = removeQueries[i]
+        deleted[idx] = True
+        
+        left = right = idx
+        if idx > 0 and deleted[idx - 1]:
+            left = union_find.find(idx - 1)
+            union_find.union(left, idx)
+        if idx < n - 1 and deleted[idx + 1]:
+            right = union_find.find(idx + 1)
+            union_find.union(right, idx)
+        
+        root = union_find.find(idx)
+        segment_sum = prefix_sum[right + 1] - prefix_sum[left]
+        union_find.max_size[root] = segment_sum
+        heapq.heappush(max_heap, (-segment_sum, root))
+        
+        while max_heap and union_find.max_size[max_heap[0][1]] != -max_heap[0][0]:
+            heapq.heappop(max_heap)
+        
+        if max_heap:
+            result[i] = -max_heap[0][0]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_segment_sum)

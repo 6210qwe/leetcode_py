@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来计算从每个起点出发的最长 V 形对角线段。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个记忆化表 `memo` 来存储从每个点出发的最长 V 形对角线段长度。
+2. 定义一个递归函数 `dfs(x, y, direction)` 来计算从点 (x, y) 出发，沿着当前方向 `direction` 的最长 V 形对角线段长度。
+3. 在递归函数中，检查当前点是否在边界内且满足 V 形对角线段的条件。如果满足，递归计算下一个点的长度，并更新最大长度。
+4. 如果当前点是 1，可以尝试转向另一个方向，继续递归计算。
+5. 遍历所有起点，调用递归函数并更新全局最大长度。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算。
+- 递归函数中处理边界条件和 V 形对角线段的模式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)
+空间复杂度: O(n * m)
 """
 
 # ============================================================================
@@ -48,13 +52,44 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def longest_v_shaped_diagonal(grid: List[List[int]]) -> int:
+    if not grid or not grid[0]:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(grid), len(grid[0])
+    directions = [(1, 1), (-1, -1), (1, -1), (-1, 1)]
+    memo = {}
 
+    def dfs(x: int, y: int, direction: int) -> int:
+        if (x, y, direction) in memo:
+            return memo[(x, y, direction)]
+        
+        if x < 0 or x >= n or y < 0 or y >= m:
+            return 0
+        
+        expected_value = 1 if (x + y) % 2 == 0 else 2
+        if grid[x][y] != expected_value:
+            return 0
+        
+        dx, dy = directions[direction]
+        next_x, next_y = x + dx, y + dy
+        length = 1 + dfs(next_x, next_y, direction)
+        
+        if grid[x][y] == 1:
+            for new_direction in range(4):
+                if new_direction != direction:
+                    length = max(length, 1 + dfs(next_x, next_y, new_direction))
+        
+        memo[(x, y, direction)] = length
+        return length
 
-Solution = create_solution(solution_function_name)
+    max_length = 0
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                for direction in range(4):
+                    max_length = max(max_length, dfs(i, j, direction))
+    
+    return max_length
+
+Solution = create_solution(longest_v_shaped_diagonal)

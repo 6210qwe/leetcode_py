@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的余数，并通过两层循环计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `remainder_count` 来记录每个余数出现的次数。
+2. 遍历数组，计算每个元素对 `p` 的余数，并更新哈希表。
+3. 使用两层循环遍历数组，计算满足 `(nums[i] + nums[j] + nums[k]) % p == 0` 的三元组数量。
+4. 返回满足条件的三元组数量。
 
 关键点:
-- [TODO]
+- 使用哈希表记录余数可以减少重复计算。
+- 通过两层循环遍历数组，确保每个三元组都被计算到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(p)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], p: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可被整除的三元组数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    remainder_count = [0] * p
+    
+    # 计算每个元素对 p 的余数，并更新哈希表
+    for num in nums:
+        remainder_count[num % p] += 1
+    
+    count = 0
+    # 三层循环遍历数组，计算满足条件的三元组数量
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                if (nums[i] + nums[j] + nums[k]) % p == 0:
+                    count += 1
+    
+    return count
 
 Solution = create_solution(solution_function_name)

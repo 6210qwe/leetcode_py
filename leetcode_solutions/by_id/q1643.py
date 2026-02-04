@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 遍历树，并在遍历过程中统计每个节点的子树中各个标签的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 初始化结果数组 `ans`，长度为 `n`，用于存储每个节点的答案。
+3. 定义 DFS 函数，递归地遍历每个节点，并在回溯时更新子树中各个标签的数量。
+4. 在 DFS 函数中，使用一个字典 `count` 来记录当前子树中各个标签的数量。
+5. 对于每个节点，更新其子树中对应标签的数量，并将结果存储在 `ans` 数组中。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，并在回溯时更新子树中各个标签的数量。
+- 使用字典来记录每个节点子树中各个标签的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点的数量。每个节点和每条边只会被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，同时需要额外的空间来存储每个节点的子树中各个标签的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def countSubTrees(n: int, edges: List[List[int]], labels: str) -> List[int]:
+    # 构建树的邻接表表示
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 结果数组
+    ans = [0] * n
 
+    def dfs(node: int, parent: int):
+        # 记录当前子树中各个标签的数量
+        count = {labels[node]: 1}
+        for child in tree[node]:
+            if child != parent:
+                child_count = dfs(child, node)
+                for label, cnt in child_count.items():
+                    count[label] = count.get(label, 0) + cnt
+        ans[node] = count[labels[node]]
+        return count
 
-Solution = create_solution(solution_function_name)
+    # 从根节点开始进行 DFS
+    dfs(0, -1)
+    return ans
+
+Solution = create_solution(countSubTrees)

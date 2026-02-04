@@ -21,40 +21,51 @@ LCR 143. 子结构判断 - 给定两棵二叉树 tree1 和 tree2，判断 tree2 
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法来判断树 B 是否是树 A 的子结构。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果树 A 或树 B 为空，则返回 False。
+2. 定义一个辅助函数 `is_subtree`，用于判断从当前节点开始，树 B 是否是树 A 的子结构。
+3. 在主函数中，首先检查当前节点是否满足条件，如果满足则返回 True。
+4. 如果不满足，则递归检查左子树和右子树。
+5. 辅助函数 `is_subtree` 用于逐节点比较树 A 和树 B 的节点值，如果所有节点都匹配则返回 True。
 
 关键点:
-- [TODO]
+- 递归地检查每个节点及其子树。
+- 使用辅助函数来简化逻辑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是树 A 的节点数，n 是树 B 的节点数。在最坏情况下，需要对树 A 的每个节点都进行一次完整的树 B 的子结构匹配。
+空间复杂度: O(h)，其中 h 是树 A 的高度。递归调用栈的深度最多为树 A 的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_subtree(A: TreeNode, B: TreeNode) -> bool:
+    if not B:
+        return True
+    if not A or A.val != B.val:
+        return False
+    return is_subtree(A.left, B.left) and is_subtree(A.right, B.right)
 
-def solution_function_name(params):
+def solution_function_name(A: Optional[TreeNode], B: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断树 B 是否是树 A 的子结构
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not A or not B:
+        return False
+    if is_subtree(A, B):
+        return True
+    return solution_function_name(A.left, B) or solution_function_name(A.right, B)
 
 Solution = create_solution(solution_function_name)

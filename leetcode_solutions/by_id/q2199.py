@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过双指针法找到最远的不同颜色的房子对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向数组的首尾。
+2. 如果首尾指针所指的房子颜色不同，则返回它们的距离。
+3. 否则，移动指针，直到找到不同颜色的房子对。
+4. 比较所有可能的最大距离，返回最大值。
 
 关键点:
-- [TODO]
+- 使用双指针法可以在线性时间内找到最远的不同颜色的房子对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(colors: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两栋颜色不同且距离最远的房子
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(colors)
+    left, right = 0, n - 1
+    
+    # 双指针法
+    while left < right:
+        if colors[left] != colors[right]:
+            return right - left
+        # 移动指针
+        if colors[left] == colors[left + 1]:
+            left += 1
+        if colors[right] == colors[right - 1]:
+            right -= 1
+        if colors[left] != colors[left + 1] and colors[right] != colors[right - 1]:
+            left += 1
+            right -= 1
+    
+    return 0
 
 
 Solution = create_solution(solution_function_name)

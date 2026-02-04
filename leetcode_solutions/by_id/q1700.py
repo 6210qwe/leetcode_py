@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，逐个检查相邻的气球，如果它们颜色相同，则移除所需时间较小的那个气球。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总时间为 0。
+2. 遍历颜色数组，对于每一对相邻的气球：
+   - 如果它们颜色相同，移除所需时间较小的那个气球，并将该时间加到总时间中。
+   - 更新当前气球的所需时间，以便在下一个比较中使用。
+3. 返回总时间。
 
 关键点:
-- [TODO]
+- 通过比较相邻气球的所需时间，选择移除所需时间较小的那个气球。
+- 保持总时间的累加。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是颜色数组的长度。我们只需遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_time_to_make_rope_colorful(colors: str, needed_time: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使绳子变成彩色的最少时间
     """
-    # TODO: 实现最优解法
-    pass
+    total_time = 0
+    n = len(colors)
+    
+    for i in range(1, n):
+        if colors[i] == colors[i - 1]:
+            # 移除所需时间较小的那个气球
+            if needed_time[i] < needed_time[i - 1]:
+                total_time += needed_time[i]
+                needed_time[i] = needed_time[i - 1]
+            else:
+                total_time += needed_time[i - 1]
+    
+    return total_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_make_rope_colorful)

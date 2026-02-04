@@ -14,47 +14,61 @@
 # 问题描述
 # ============================================================================
 """
-1173. 即时食物配送 I - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+1291. 即时食物配送 I - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算即时配送的订单比例。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Delivery` 表中选择所有 `order_date` 和 `customer_pref_delivery_date` 相等的记录。
+2. 计算这些记录的数量。
+3. 计算总记录数。
+4. 返回即时配送订单的比例。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来过滤和计算所需的数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是 `Delivery` 表中的记录数。
+空间复杂度: O(1) - 不需要额外的空间，只使用常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def immediate_food_delivery(delivery: pd.DataFrame) -> float:
     """
-    函数式接口 - [TODO] 实现
+    计算即时配送订单的比例。
+
+    :param delivery: 包含订单信息的 DataFrame
+    :return: 即时配送订单的比例
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出即时配送的订单
+    immediate_deliveries = delivery[delivery['order_date'] == delivery['customer_pref_delivery_date']]
+    
+    # 计算即时配送订单的数量
+    immediate_count = len(immediate_deliveries)
+    
+    # 计算总订单数量
+    total_count = len(delivery)
+    
+    # 计算即时配送订单的比例
+    if total_count == 0:
+        return 0.0
+    else:
+        return immediate_count / total_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(immediate_food_delivery)

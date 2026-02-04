@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算两个数组的和差值，找到一个可以交换的元素对，使得交换后两个数组的和相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算两个数组的和 sum1 和 sum2。
+2. 如果 (sum1 + sum2) 是奇数，则无法通过交换使两个数组的和相等，直接返回空数组。
+3. 计算目标差值 target_diff = (sum1 - sum2) / 2。
+4. 使用集合存储数组 array2 的元素，以便快速查找。
+5. 遍历数组 array1，对于每个元素 x，检查 (x - target_diff) 是否在 array2 中，如果存在则返回 [x, x - target_diff]。
+6. 如果没有找到合适的元素对，返回空数组。
 
 关键点:
-- [TODO]
+- 通过集合来快速查找目标元素。
+- 确保 (sum1 + sum2) 是偶数，否则无法通过交换使两个数组的和相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 array1 和 array2 的长度。
+空间复杂度: O(m)，用于存储 array2 的元素集合。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(array1: List[int], array2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    sum1 = sum(array1)
+    sum2 = sum(array2)
+    
+    # 如果 (sum1 + sum2) 是奇数，则无法通过交换使两个数组的和相等
+    if (sum1 + sum2) % 2 != 0:
+        return []
+    
+    target_diff = (sum1 - sum2) // 2
+    set2 = set(array2)
+    
+    for x in array1:
+        if (x - target_diff) in set2:
+            return [x, x - target_diff]
+    
+    return []
 
 
 Solution = create_solution(solution_function_name)

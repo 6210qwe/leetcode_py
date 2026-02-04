@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为从顶点 i 到顶点 j 的子多边形的最小三角剖分分数。通过递归地计算每个子多边形的最小分数，并利用之前计算的结果来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示从顶点 i 到顶点 j 的子多边形的最小三角剖分分数。
+2. 对于每个子多边形，枚举中间顶点 k，计算 dp[i][j] = min(dp[i][j], values[i] * values[j] * values[k] + dp[i][k] + dp[k][j])。
+3. 最终结果保存在 dp[0][n-1] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 递归地计算每个子多边形的最小分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是多边形的顶点数。三重循环的时间复杂度为 O(n^3)。
+空间复杂度: O(n^2)，需要一个二维数组 dp 来存储子多边形的最小三角剖分分数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_score_triangulation(values: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算多边形三角剖分的最低得分
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(values)
+    dp = [[0] * n for _ in range(n)]
 
+    # 枚举区间长度
+    for length in range(2, n):
+        for i in range(n - length):
+            j = i + length
+            dp[i][j] = float('inf')
+            for k in range(i + 1, j):
+                dp[i][j] = min(dp[i][j], values[i] * values[j] * values[k] + dp[i][k] + dp[k][j])
 
-Solution = create_solution(solution_function_name)
+    return dp[0][n - 1]
+
+Solution = create_solution(min_score_triangulation)

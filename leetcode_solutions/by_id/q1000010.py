@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `dfs` 来进行深度优先搜索。
+2. 在 `dfs` 函数中，维护当前路径和剩余节点列表。
+3. 如果剩余节点列表为空，将当前路径加入结果列表。
+4. 否则，遍历剩余节点列表，选择一个节点作为下一个节点，并递归调用 `dfs`。
+5. 在递归调用后，恢复状态（回溯）。
 
 关键点:
-- [TODO]
+- 使用队列来存储当前路径和剩余节点。
+- 递归过程中，每次选择一个节点并将其子节点加入剩余节点列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n! * n)，其中 n 是节点数。因为每个节点都有 n! 种排列方式，每种排列需要 O(n) 时间来生成。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -44,17 +48,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def bst_sequences(root: Optional[TreeNode]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    生成所有可能的二叉搜索树序列。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return [[]]
 
+    def dfs(path, remaining):
+        if not remaining:
+            result.append(path)
+            return
 
-Solution = create_solution(solution_function_name)
+        for i in range(len(remaining)):
+            next_node = remaining[i]
+            new_path = path + [next_node.val]
+            new_remaining = remaining[:i] + remaining[i+1:]
+            if next_node.left:
+                new_remaining.append(next_node.left)
+            if next_node.right:
+                new_remaining.append(next_node.right)
+            dfs(new_path, new_remaining)
+
+    result = []
+    dfs([root.val], [root.left, root.right] if root else [])
+    return result
+
+Solution = create_solution(bst_sequences)

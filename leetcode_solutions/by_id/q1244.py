@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滚动哈希来检查所有可能的子字符串是否可以写成某个字符串与其自身相连接的形式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `seen` 来存储不同的回文子字符串。
+2. 遍历所有可能的子字符串长度 `len_a`，从 1 到 `n // 2`。
+3. 对于每个 `len_a`，计算滚动哈希值，并检查是否存在相同的哈希值。
+4. 如果存在相同的哈希值，则将该子字符串加入 `seen` 集合。
+5. 返回 `seen` 集合的大小。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来高效地计算和比较子字符串的哈希值。
+- 通过集合来存储不同的回文子字符串，确保唯一性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distinct_echo_substrings(text: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足条件的不同非空子字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(text)
+    if n < 2:
+        return 0
+
+    base = 26
+    mod = 10**9 + 7
+    seen = set()
+
+    for len_a in range(1, n // 2 + 1):
+        hash_a = 0
+        hash_b = 0
+        power = 1
+
+        for i in range(len_a):
+            hash_a = (hash_a * base + ord(text[i])) % mod
+            hash_b = (hash_b * base + ord(text[len_a + i])) % mod
+            if i < len_a - 1:
+                power = (power * base) % mod
+
+        for i in range(n - 2 * len_a + 1):
+            if hash_a == hash_b and text[i:i+len_a] == text[i+len_a:i+2*len_a]:
+                seen.add(text[i:i+2*len_a])
+
+            if i + 2 * len_a < n:
+                hash_a = (hash_a * base - ord(text[i]) * power + ord(text[i + len_a])) % mod
+                hash_b = (hash_b * base - ord(text[i + len_a]) * power + ord(text[i + 2 * len_a])) % mod
+                hash_a = (hash_a + mod) % mod
+                hash_b = (hash_b + mod) % mod
+
+    return len(seen)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_echo_substrings)

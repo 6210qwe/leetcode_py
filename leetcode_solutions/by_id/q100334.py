@@ -21,22 +21,25 @@ LCR 168. 丑数 - 给你一个整数 n ，请你找出并返回第 n 个 丑数 
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来生成丑数序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `dp`，其中 `dp[i]` 表示第 i+1 个丑数。
+2. 设置三个指针 `p2`, `p3`, `p5` 分别指向下一个要乘以 2, 3, 5 的位置。
+3. 每次取 `dp[p2]*2`, `dp[p3]*3`, `dp[p5]*5` 中的最小值作为下一个丑数，并更新相应的指针。
+4. 重复上述过程直到生成第 n 个丑数。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算。
+- 通过三个指针分别跟踪乘以 2, 3, 5 的位置，确保每次都能找到最小的下一个丑数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def nth_ugly_number(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回第 n 个丑数
     """
-    # TODO: 实现最优解法
-    pass
+    if n <= 0:
+        return 0
+
+    dp = [1] * n
+    p2, p3, p5 = 0, 0, 0
+
+    for i in range(1, n):
+        next_ugly = min(dp[p2] * 2, dp[p3] * 3, dp[p5] * 5)
+        dp[i] = next_ugly
+
+        if next_ugly == dp[p2] * 2:
+            p2 += 1
+        if next_ugly == dp[p3] * 3:
+            p3 += 1
+        if next_ugly == dp[p5] * 5:
+            p5 += 1
+
+    return dp[-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(nth_ugly_number)

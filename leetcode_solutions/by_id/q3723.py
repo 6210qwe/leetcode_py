@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法检查每个元素是否为好数字，并计算其和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向 i - k 和 i + k。
+2. 遍历数组，对于每个元素 nums[i]，检查它是否大于 left 和 right 指针所指向的元素。
+3. 如果 nums[i] 是好数字，则将其加入结果和中。
+4. 返回结果和。
 
 关键点:
-- [TODO]
+- 使用边界条件处理指针越界的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_good_numbers(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好数字之和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    good_sum = 0
+    
+    for i in range(n):
+        left = max(0, i - k)
+        right = min(n - 1, i + k)
+        
+        if (i == 0 or nums[i] > nums[left]) and (i == n - 1 or nums[i] > nums[right]):
+            good_sum += nums[i]
+    
+    return good_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_good_numbers)

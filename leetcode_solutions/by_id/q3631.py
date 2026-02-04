@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算小于 n 的 k-可约简整数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `count_set_bits` 来计算一个数的二进制表示中 1 的个数。
+2. 使用动态规划数组 `dp[i][j]` 表示长度为 i 的二进制数中，经过 j 次操作后可以约简到 1 的数量。
+3. 初始化 `dp` 数组，并根据题目要求逐步填充。
+4. 遍历输入字符串 s，根据当前位的情况更新 dp 数组。
+5. 最终结果是对所有可能的 k-可约简整数求和，并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 二进制数的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是二进制字符串 s 的长度，k 是给定的操作次数。
+空间复杂度: O(n * k)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -48,13 +52,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_k_reducible_numbers(s: str, k: int) -> int:
+    def count_set_bits(x: int) -> int:
+        return bin(x).count('1')
 
+    n = len(s)
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            if j > 0:
+                dp[i][j] = (dp[i][j] + dp[i - 1][j - 1]) % MOD
+            if s[i - 1] == '1':
+                dp[i][j] = (dp[i][j] + dp[i - 1][j]) % MOD
+            if s[i - 1] == '0':
+                dp[i][j] = (dp[i][j] + dp[i - 1][j]) % MOD
+
+    result = 0
+    for j in range(k + 1):
+        result = (result + dp[n][j]) % MOD
+
+    return result
+
+Solution = create_solution(count_k_reducible_numbers)

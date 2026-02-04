@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录不同偶数和奇数的数量差，并找到最长的平衡子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典 `prefix` 和 `first_occurrence`，分别用于存储前缀和及其对应的索引。
+2. 遍历数组 `nums`，计算当前前缀和 `diff`，即偶数数量减去奇数数量。
+3. 如果 `diff` 在 `prefix` 中出现过，说明从上次出现 `diff` 的位置到当前位置是一个平衡子数组，更新最大长度。
+4. 如果 `diff` 没有在 `prefix` 中出现过，将其加入 `prefix`，并记录其第一次出现的位置。
+5. 返回最大长度。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表来高效地找到最长的平衡子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，最坏情况下需要存储 n 个前缀和及其对应的索引。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_balanced_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长平衡子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    prefix = {0: -1}  # 前缀和及其对应的索引
+    first_occurrence = {}  # 第一次出现的前缀和及其索引
+    diff = 0  # 当前前缀和
+    max_length = 0  # 最大长度
+
+    for i, num in enumerate(nums):
+        if num % 2 == 0:
+            diff += 1
+        else:
+            diff -= 1
+
+        if diff in prefix:
+            max_length = max(max_length, i - prefix[diff])
+        else:
+            prefix[diff] = i
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_balanced_subarray)

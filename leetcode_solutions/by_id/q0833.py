@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，其中节点是车站，边表示公交车线路。
+2. 使用 BFS 从起点开始搜索，记录已经访问过的车站和公交车线路。
+3. 如果在搜索过程中到达目标车站，则返回乘坐的公交车数量。
+4. 如果搜索完毕仍未到达目标车站，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用字典来存储每个车站可以到达的公交车线路。
+- 使用队列来进行 BFS，并记录当前乘坐的公交车数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N + R)，其中 N 是所有车站的数量，R 是所有公交车线路的数量。
+空间复杂度: O(N + R)，用于存储图结构和 BFS 的队列。
 """
 
 # ============================================================================
@@ -44,17 +47,37 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import defaultdict, deque
 
+def numBusesToDestination(routes: List[List[int]], source: int, target: int) -> int:
+    if source == target:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 构建图
+    station_to_buses = defaultdict(set)
+    for bus, stations in enumerate(routes):
+        for station in stations:
+            station_to_buses[station].add(bus)
 
+    # 初始化 BFS
+    queue = deque([(source, 0)])  # (当前车站, 乘坐的公交车数量)
+    visited_stations = set([source])
+    visited_buses = set()
 
-Solution = create_solution(solution_function_name)
+    while queue:
+        current_station, bus_count = queue.popleft()
+        for bus in station_to_buses[current_station]:
+            if bus in visited_buses:
+                continue
+            visited_buses.add(bus)
+            for next_station in routes[bus]:
+                if next_station in visited_stations:
+                    continue
+                if next_station == target:
+                    return bus_count + 1
+                visited_stations.add(next_station)
+                queue.append((next_station, bus_count + 1))
+
+    return -1
+
+Solution = create_solution(numBusesToDestination)

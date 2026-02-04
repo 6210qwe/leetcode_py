@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 计算每对房屋之间的最短路径，并统计每个距离 k 的房屋对数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图表示房屋和街道。
+2. 使用 BFS 计算每对房屋之间的最短路径。
+3. 统计每个距离 k 的房屋对数量。
 
 关键点:
-- [TODO]
+- 使用 BFS 确保找到的路径是最短路径。
+- 通过前缀和优化计算每个距离 k 的房屋对数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def count_houses_at_distance(n: int, x: int, y: int) -> List[int]:
+    # 构建图
+    graph = {i: [] for i in range(1, n + 1)}
+    for i in range(1, n):
+        graph[i].append(i + 1)
+        graph[i + 1].append(i)
+    if x != y:
+        graph[x].append(y)
+        graph[y].append(x)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def bfs(start: int) -> List[int]:
+        distances = [-1] * (n + 1)
+        distances[start] = 0
+        queue = deque([start])
+        
+        while queue:
+            current = queue.popleft()
+            for neighbor in graph[current]:
+                if distances[neighbor] == -1:
+                    distances[neighbor] = distances[current] + 1
+                    queue.append(neighbor)
+        
+        return distances[1:]
 
+    # 计算每对房屋之间的最短路径
+    all_distances = [bfs(i) for i in range(1, n + 1)]
 
-Solution = create_solution(solution_function_name)
+    # 统计每个距离 k 的房屋对数量
+    result = [0] * n
+    for i in range(n):
+        for j in range(i + 1, n):
+            distance = min(all_distances[i][j], all_distances[j][i])
+            result[distance - 1] += 2  # 每对房屋 (i, j) 和 (j, i) 都要计数
+
+    return result
+
+Solution = create_solution(count_houses_at_distance)

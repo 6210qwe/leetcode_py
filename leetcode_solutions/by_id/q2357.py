@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合来存储区间，并在添加区间时进行合并操作，以确保区间不重叠。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `intervals` 来存储区间。
+2. 在 `add` 方法中，找到新区间与现有区间的所有交集，并进行合并。
+3. 在 `count` 方法中，遍历有序集合中的所有区间，计算总长度。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地管理和合并区间。
+- 在添加区间时，确保区间不重叠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n + m) 其中 n 是区间数量，m 是新区间的长度。
+空间复杂度: O(n) 其中 n 是区间数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedDict
+
+class CountIntervals:
+
+    def __init__(self):
+        self.intervals = SortedDict()
+        self.total_count = 0
+
+    def add(self, left: int, right: int) -> None:
+        # 找到第一个大于等于 left 的区间
+        i = self.intervals.bisect_left(left)
+        
+        # 合并区间
+        while i < len(self.intervals) and self.intervals.values()[i] <= right:
+            l, r = self.intervals.items()[i]
+            left = min(left, l)
+            right = max(right, r)
+            self.total_count -= (r - l + 1)
+            del self.intervals[l]
+        
+        # 插入新区间
+        self.intervals[left] = right
+        self.total_count += (right - left + 1)
+
+    def count(self) -> int:
+        return self.total_count
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    obj = CountIntervals()
+    obj.add(2, 3)
+    obj.add(7, 10)
+    print(obj.count())  # 输出 6
+    obj.add(5, 8)
+    print(obj.count())  # 输出 8

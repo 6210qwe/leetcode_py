@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和滑动窗口来找到最长的连续子数组，然后计算需要的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 去重并排序数组。
+2. 使用滑动窗口找到最长的连续子数组。
+3. 计算需要的操作次数。
 
 关键点:
-- [TODO]
+- 去重后的数组长度决定了最长连续子数组的长度。
+- 使用二分查找来确定当前窗口内的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 nums 连续的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 去重并排序
+    unique_nums = sorted(set(nums))
+    
+    # 使用滑动窗口找到最长的连续子数组
+    n = len(nums)
+    max_length = 0
+    left = 0
+    for right in range(len(unique_nums)):
+        while unique_nums[right] - unique_nums[left] >= n:
+            left += 1
+        max_length = max(max_length, right - left + 1)
+    
+    # 计算需要的操作次数
+    return n - max_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

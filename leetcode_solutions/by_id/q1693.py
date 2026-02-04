@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过前缀和数组来快速计算任意子数组的和，并利用数学公式计算每个元素在奇数长度子数组中出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 对于每个元素，计算其在奇数长度子数组中出现的次数。
+3. 将每个元素的贡献乘以其出现次数，累加得到最终结果。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意子数组的和。
+- 每个元素在奇数长度子数组中出现的次数可以通过数学公式计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_odd_length_subarrays(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有奇数长度子数组的和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + arr[i]
+    
+    total_sum = 0
+    
+    # 计算每个元素在奇数长度子数组中出现的次数
+    for i in range(n):
+        left_count = (i + 1) // 2
+        right_count = (n - i) // 2
+        odd_count = left_count * right_count + (left_count if i % 2 == 0 else right_count)
+        total_sum += arr[i] * odd_count
+    
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_odd_length_subarrays)

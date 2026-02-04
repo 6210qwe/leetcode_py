@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用两个二维数组 dp_buy 和 dp_sell 来记录在第 i 天进行第 j 次买入和卖出时的最大利润。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个二维数组 dp_buy 和 dp_sell，分别表示第 i 天进行第 j 次买入和卖出时的最大利润。
+2. 遍历每一天，更新 dp_buy 和 dp_sell 的值。
+3. 返回 dp_sell 的最大值。
 
 关键点:
-- [TODO]
+- dp_buy[i][j] 表示第 i 天进行第 j 次买入时的最大利润。
+- dp_sell[i][j] 表示第 i 天进行第 j 次卖出时的最大利润。
+- 初始条件：dp_buy[0][j] = -prices[0]，dp_sell[0][j] = 0。
+- 状态转移方程：
+  - dp_buy[i][j] = max(dp_buy[i-1][j], dp_sell[i-1][j-1] - prices[i])
+  - dp_sell[i][j] = max(dp_sell[i-1][j], dp_buy[i-1][j] + prices[i])
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是 prices 的长度，k 是交易次数。
+空间复杂度: O(n * k)，使用了两个二维数组 dp_buy 和 dp_sell。
 """
 
 # ============================================================================
@@ -49,12 +55,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def best_time_to_buy_and_sell_stock_v(prices: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过动态规划解决最多进行 k 笔交易的最大利润问题
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(prices)
+    if n == 0 or k == 0:
+        return 0
 
+    # 初始化 dp 数组
+    dp_buy = [[-float('inf')] * (k + 1) for _ in range(n)]
+    dp_sell = [[0] * (k + 1) for _ in range(n)]
 
-Solution = create_solution(solution_function_name)
+    # 初始条件
+    dp_buy[0][1] = -prices[0]
+
+    # 动态规划
+    for i in range(1, n):
+        for j in range(1, k + 1):
+            dp_buy[i][j] = max(dp_buy[i-1][j], dp_sell[i-1][j-1] - prices[i])
+            dp_sell[i][j] = max(dp_sell[i-1][j], dp_buy[i-1][j] + prices[i])
+
+    # 返回最大利润
+    return max(dp_sell[n-1])
+
+Solution = create_solution(best_time_to_buy_and_sell_stock_v)

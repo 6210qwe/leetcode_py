@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法修剪二叉搜索树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点为空，直接返回 None。
+2. 如果当前节点的值小于 low，则修剪后的树只可能在右子树中，递归修剪右子树并返回。
+3. 如果当前节点的值大于 high，则修剪后的树只可能在左子树中，递归修剪左子树并返回。
+4. 如果当前节点的值在 [low, high] 范围内，则递归修剪其左右子树，并将当前节点作为根节点返回。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质，快速定位需要修剪的部分。
+- 递归地处理左右子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点最多访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def trim_bst(root: Optional[TreeNode], low: int, high: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    修剪二叉搜索树，使得所有节点的值在 [low, high] 中。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+
+    if root.val < low:
+        return trim_bst(root.right, low, high)
+    elif root.val > high:
+        return trim_bst(root.left, low, high)
+
+    root.left = trim_bst(root.left, low, high)
+    root.right = trim_bst(root.right, low, high)
+
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(trim_bst)

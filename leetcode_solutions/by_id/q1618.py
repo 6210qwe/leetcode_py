@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历链表，跳过 M 个节点后删除 N 个节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `prev` 和 `current`，都指向链表头。
+2. 遍历链表，每次移动 `current` 指针 M 个节点。
+3. 将 `prev` 指针的 `next` 指向 `current` 的下一个节点，跳过 N 个节点。
+4. 更新 `prev` 指针为 `current`，继续遍历直到链表结束。
 
 关键点:
-- [TODO]
+- 使用双指针可以有效地遍历和删除节点。
+- 注意处理边界情况，如链表为空或 M、N 为 0 的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def delete_nodes(head: Optional[ListNode], m: int, n: int) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    删除链表中每 M 个节点后的 N 个节点。
+    
+    :param head: 链表头节点
+    :param m: 保留的节点数
+    :param n: 删除的节点数
+    :return: 修改后的链表头节点
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or m == 0:
+        return None
+    
+    dummy = ListNode(0)
+    dummy.next = head
+    prev, current = dummy, head
+    
+    while current:
+        # 保留 M 个节点
+        for _ in range(m):
+            if not current:
+                break
+            prev, current = current, current.next
+        
+        # 删除 N 个节点
+        for _ in range(n):
+            if not current:
+                break
+            current = current.next
+        
+        # 连接剩余的链表
+        prev.next = current
+    
+    return dummy.next
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(delete_nodes)

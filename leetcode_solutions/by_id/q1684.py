@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来维护每个连通块的大小，并在每次插入新的 1 时更新连通块的大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，记录每个位置的父节点和连通块的大小。
+2. 遍历 arr，对于每个位置 i，将其置为 1，并更新其左右相邻的连通块。
+3. 如果当前连通块的大小等于 m，则记录当前步骤。
+4. 最后返回最后一个满足条件的步骤，如果没有则返回 -1。
 
 关键点:
-- [TODO]
+- 使用并查集高效地管理连通块。
+- 在每次插入新的 1 时，合并相邻的连通块并更新连通块的大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * α(n))，其中 n 是 arr 的长度，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.count = [0] * (n + 1)
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.size[root_x] < self.size[root_y]:
+                root_x, root_y = root_y, root_x
+            self.parent[root_y] = root_x
+            self.size[root_x] += self.size[root_y]
+            self.count[self.size[root_y]] -= 1
+            self.count[self.size[root_x]] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_latest_step(arr: List[int], m: int) -> int:
+    n = len(arr)
+    uf = UnionFind(n)
+    last_step = -1
+    for step, i in enumerate(arr, start=1):
+        i -= 1
+        uf.count[uf.size[uf.find(i)]] -= 1
+        uf.size[uf.find(i)] += 1
+        uf.count[uf.size[uf.find(i)]] += 1
+        
+        if i > 0 and uf.size[uf.find(i - 1)] > 0:
+            uf.union(i, i - 1)
+        if i < n - 1 and uf.size[uf.find(i + 1)] > 0:
+            uf.union(i, i + 1)
+        
+        if uf.count[m] > 0:
+            last_step = step
+    
+    return last_step
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_latest_step)

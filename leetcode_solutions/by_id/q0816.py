@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用开放寻址法实现哈希集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个大小为 1000001 的布尔数组，所有元素初始化为 False。
+2. 对于 add 操作，将对应位置的布尔值设为 True。
+3. 对于 remove 操作，将对应位置的布尔值设为 False。
+4. 对于 contains 操作，检查对应位置的布尔值是否为 True。
 
 关键点:
-- [TODO]
+- 使用布尔数组来表示哈希集合中的元素。
+- 通过索引直接访问和修改布尔数组，实现 O(1) 时间复杂度的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作（add, remove, contains）的时间复杂度均为 O(1)。
+空间复杂度: O(1000001) - 布尔数组的大小固定为 1000001。
 """
 
 # ============================================================================
@@ -47,6 +50,22 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+
+
+class MyHashSet:
+
+    def __init__(self):
+        self.size = 1000001
+        self.set = [False] * self.size
+
+    def add(self, key: int) -> None:
+        self.set[key] = True
+
+    def remove(self, key: int) -> None:
+        self.set[key] = False
+
+    def contains(self, key: int) -> bool:
+        return self.set[key]
 
 
 def solution_function_name(params):

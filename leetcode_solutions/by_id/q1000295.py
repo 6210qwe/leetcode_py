@@ -21,22 +21,31 @@ LCR 043. 完全二叉树插入器 - 完全二叉树是每一层（除最后一�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用队列来存储当前层的所有非满节点，以便在插入新节点时找到合适的父节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用广度优先搜索将所有非满节点加入队列。
+2. 插入新节点时，从队列中取出第一个节点作为父节点，如果该节点左子节点为空，则插入左子节点；否则插入右子节点，并将该节点从队列中移除，同时将左右子节点加入队列。
+3. 返回插入新节点的父节点的值。
+4. 获取根节点时，直接返回根节点。
 
 关键点:
-- [TODO]
+- 使用队列来存储当前层的所有非满节点，确保插入操作的时间复杂度为 O(1)。
+- 在插入新节点时，维护队列中的节点顺序，确保树的完全性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: 
+- 初始化: O(n)，其中 n 是树中节点的数量。
+- 插入: O(1)。
+- 获取根节点: O(1)。
+
+空间复杂度: 
+- 初始化: O(n)，队列中最多存储 n 个节点。
+- 插入和获取根节点: O(1)。
 """
 
 # ============================================================================
@@ -44,17 +53,40 @@ LCR 043. 完全二叉树插入器 - 完全二叉树是每一层（除最后一�
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class CBTInserter:
+
+    def __init__(self, root: TreeNode):
+        self.root = root
+        self.queue = []
+        queue = [root]
+        
+        while queue:
+            node = queue.pop(0)
+            if not node.left or not node.right:
+                self.queue.append(node)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    def insert(self, v: int) -> int:
+        new_node = TreeNode(v)
+        parent = self.queue[0]
+        if not parent.left:
+            parent.left = new_node
+        else:
+            parent.right = new_node
+            self.queue.pop(0)
+            self.queue.append(parent.left)
+            self.queue.append(parent.right)
+        return parent.val
+
+    def get_root(self) -> TreeNode:
+        return self.root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(CBTInserter)

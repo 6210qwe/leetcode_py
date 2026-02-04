@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用字典来存储事件名和对应的回调函数列表。
+- 在 subscribe 方法中，将回调函数添加到对应事件名的列表中，并返回一个包含 unsubscribe 方法的对象。
+- 在 unsubscribe 方法中，从对应事件名的列表中移除回调函数。
+- 在 emit 方法中，遍历对应事件名的回调函数列表，依次调用每个回调函数并收集结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典来存储事件名和对应的回调函数列表。
+2. 在 subscribe 方法中，将回调函数添加到对应事件名的列表中，并返回一个包含 unsubscribe 方法的对象。
+3. 在 unsubscribe 方法中，从对应事件名的列表中移除回调函数。
+4. 在 emit 方法中，遍历对应事件名的回调函数列表，依次调用每个回调函数并收集结果。
 
 关键点:
-- [TODO]
+- 使用字典来高效地管理和查找事件名及其对应的回调函数列表。
+- 在 unsubscribe 方法中，通过索引直接移除回调函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - subscribe 和 unsubscribe 操作的时间复杂度为 O(1)，emit 操作的时间复杂度为 O(n)，其中 n 是对应事件名的回调函数数量。
+空间复杂度: O(m + k) - 其中 m 是事件名的数量，k 是所有事件名对应的回调函数总数。
 """
 
 # ============================================================================
@@ -49,12 +56,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class EventEmitter:
+    def __init__(self):
+        self.events = {}
+
+    def subscribe(self, event: str, callback: callable) -> dict:
+        if event not in self.events:
+            self.events[event] = []
+        self.events[event].append(callback)
+
+        def unsubscribe():
+            self.events[event].remove(callback)
+            if not self.events[event]:
+                del self.events[event]
+
+        return {'unsubscribe': unsubscribe}
+
+    def emit(self, event: str, args: List[Optional] = None) -> List[Optional]:
+        if event not in self.events:
+            return []
+        results = []
+        for callback in self.events[event]:
+            results.append(callback(*args))
+        return results
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(EventEmitter)

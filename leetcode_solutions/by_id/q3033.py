@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为将 s1 的前 i 个字符转换为 s2 的前 i 个字符，并且最后一个不匹配的位置在 j 处的最小代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示将 s1 的前 i 个字符转换为 s2 的前 i 个字符，并且最后一个不匹配的位置在 j 处的最小代价。
+2. 遍历字符串 s1 和 s2，更新 dp 数组。
+3. 如果 s1 和 s2 在某个位置不匹配，计算两种操作的代价并更新 dp 数组。
+4. 返回 dp[n][n] 的值，如果无法使两个字符串相等，返回 -1。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑两种操作的代价。
+- 初始化 dp 数组时，需要考虑边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_operations_to_equal_strings(s1: str, s2: str, x: int) -> int:
+    n = len(s1)
+    if n != len(s2):
+        return -1
+
+    # 初始化 dp 数组
+    dp = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+
+    # 遍历字符串 s1 和 s2
+    for i in range(1, n + 1):
+        for j in range(i + 1):
+            if s1[i - 1] == s2[i - 1]:
+                dp[i][j] = dp[i - 1][j]
+            else:
+                if j > 0:
+                    dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + x)
+                if j < i:
+                    dp[i][i] = min(dp[i][i], dp[i - 1][j] + (i - j - 1))
+
+    # 返回结果
+    result = min(dp[n])
+    return result if result != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_equal_strings)

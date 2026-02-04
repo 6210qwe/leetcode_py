@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前数组中的最小值，并在每次操作中更新该值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，并将数组中的每个元素及其索引存入堆中。
+2. 进行 k 次操作：
+   - 从堆中取出最小值及其索引。
+   - 计算新的值并更新数组中的对应位置。
+   - 将更新后的值及其索引重新插入堆中。
+3. 对数组中的每个元素进行取余操作。
+4. 返回最终的数组。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地找到和更新最小值。
+- 在每次操作后，需要将更新后的值重新插入堆中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log n)，其中 n 是数组的长度，k 是操作次数。每次操作中，堆的插入和删除操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储堆中的元素及其索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def final_array_state(nums: List[int], k: int, multiplier: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行完 k 次乘运算以及取余运算之后，最终的 nums 数组。
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    # 初始化最小堆
+    min_heap = [(num, i) for i, num in enumerate(nums)]
+    heapq.heapify(min_heap)
+    
+    for _ in range(k):
+        # 取出最小值及其索引
+        val, idx = heapq.heappop(min_heap)
+        # 更新值
+        new_val = (val * multiplier) % mod
+        # 更新数组
+        nums[idx] = new_val
+        # 将更新后的值及其索引重新插入堆中
+        heapq.heappush(min_heap, (new_val, idx))
+    
+    # 对数组中的每个元素进行取余操作
+    return [num % mod for num in nums]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(final_array_state)

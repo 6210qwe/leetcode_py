@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算每个长度为 k 的子字符串中的元音字母数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合，包含所有元音字母。
+2. 初始化两个指针 left 和 right，以及一个计数器 count 来记录当前窗口中的元音字母数量。
+3. 遍历字符串 s，右指针 right 从 0 到 n-1：
+   - 如果右指针指向的字符是元音字母，则增加计数器 count。
+   - 如果右指针和左指针之间的距离大于等于 k，则移动左指针，并根据左指针指向的字符是否是元音字母来更新计数器 count。
+   - 更新最大元音字母数量 max_vowels。
+4. 返回最大元音字母数量 max_vowels。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来保持窗口大小为 k。
+- 通过移动左右指针来更新窗口内的元音字母数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_vowels_in_substring(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串 s 中长度为 k 的子字符串中可能包含的最大元音字母数。
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set("aeiou")
+    max_vowels = 0
+    count = 0
+    left = 0
+
+    for right in range(len(s)):
+        if s[right] in vowels:
+            count += 1
+        if right - left + 1 > k:
+            if s[left] in vowels:
+                count -= 1
+            left += 1
+        max_vowels = max(max_vowels, count)
+
+    return max_vowels
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_vowels_in_substring)

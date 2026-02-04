@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 逆向思维，从目标点 (tx, ty) 逆向回溯到起始点 (sx, sy)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 tx > ty，则 tx 必须是从 (tx - ty, ty) 移动来的。
+2. 如果 ty > tx，则 ty 必须是从 (tx, ty - tx) 移动来的。
+3. 重复上述步骤直到 tx 或 ty 小于等于 sx 或 sy。
+4. 如果最终 tx == sx 且 ty == sy，则返回步数；否则返回 -1。
 
 关键点:
-- [TODO]
+- 逆向思维可以避免无效的移动，确保每次移动都是有效的。
+- 通过递归或迭代的方式实现逆向回溯。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(tx, ty))) - 每次移动都会减少一个坐标值。
+空间复杂度: O(1) - 只使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_moves_to_reach_target(sx: int, sy: int, tx: int, ty: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 (sx, sy) 到 (tx, ty) 的最小移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    moves = 0
+    while tx > sx or ty > sy:
+        if tx > ty:
+            if tx > ty + sy:
+                moves += (tx - ty - 1) // ty
+                tx -= ((tx - ty - 1) // ty) * ty
+            else:
+                tx -= ty
+                moves += 1
+        else:
+            if ty > tx + sx:
+                moves += (ty - tx - 1) // tx
+                ty -= ((ty - tx - 1) // tx) * tx
+            else:
+                ty -= tx
+                moves += 1
+    
+    if tx == sx and ty == sy:
+        return moves
+    else:
+        return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_reach_target)

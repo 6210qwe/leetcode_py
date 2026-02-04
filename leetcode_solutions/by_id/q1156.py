@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历文本中的每个单词，检查是否存在连续的 "first second third" 序列，并记录第三个词 "third"。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将文本按空格分割成单词列表。
+2. 遍历单词列表，检查是否存在 "first second" 序列。
+3. 如果存在，则将紧跟其后的单词 "third" 添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用单次遍历来检查和记录 "first second third" 序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是文本的长度。我们需要遍历整个文本一次。
+空间复杂度: O(n)，用于存储分割后的单词列表和结果列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findOcurrences(text: str, first: str, second: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有符合条件的 "third" 词。
     """
-    # TODO: 实现最优解法
-    pass
+    words = text.split()
+    result = []
+    
+    for i in range(len(words) - 2):
+        if words[i] == first and words[i + 1] == second:
+            result.append(words[i + 2])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findOcurrences)

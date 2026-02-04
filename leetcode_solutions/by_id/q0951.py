@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个辅助数组分别记录从左到右的最大值和从右到左的最小值，然后找到第一个满足条件的分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个辅助数组 `max_left` 和 `min_right`，分别记录从左到右的最大值和从右到左的最小值。
+2. 遍历数组，填充 `max_left` 和 `min_right`。
+3. 遍历数组，找到第一个满足 `max_left[i] <= min_right[i + 1]` 的索引 i，即为分割点。
 
 关键点:
-- [TODO]
+- 使用两个辅助数组来记录前缀最大值和后缀最小值，从而在 O(n) 时间内找到分割点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def partition_disjoint(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组划分为两个连续子数组 left 和 right，使得 left 中的每个元素都小于或等于 right 中的每个元素，并返回 left 的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    max_left = [0] * n
+    min_right = [0] * n
+    
+    # 填充 max_left 数组
+    max_left[0] = nums[0]
+    for i in range(1, n):
+        max_left[i] = max(max_left[i - 1], nums[i])
+    
+    # 填充 min_right 数组
+    min_right[-1] = nums[-1]
+    for i in range(n - 2, -1, -1):
+        min_right[i] = min(min_right[i + 1], nums[i])
+    
+    # 找到第一个满足条件的分割点
+    for i in range(n - 1):
+        if max_left[i] <= min_right[i + 1]:
+            return i + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition_disjoint)

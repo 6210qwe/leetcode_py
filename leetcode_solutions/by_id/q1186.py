@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用锁和信号量来同步氢和氧线程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个信号量 `hydrogen_semaphore` 和 `oxygen_semaphore`，分别用于控制氢和氧线程的数量。
+2. 每当一个氢线程到达时，释放一个氢信号量，并等待氧信号量。
+3. 每当一个氧线程到达时，释放一个氧信号量，并等待两个氢信号量。
+4. 当氢和氧信号量都达到要求时，释放所有信号量，继续下一轮。
 
 关键点:
-- [TODO]
+- 使用信号量来控制线程的同步。
+- 通过信号量的计数来确保每次生成一个水分子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每个线程的操作都是常数时间。
+空间复杂度: O(1) - 只使用了固定的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from threading import Semaphore, Barrier
+from typing import Callable
 
+class H2O:
+    def __init__(self):
+        self.hydrogen_semaphore = Semaphore(2)
+        self.oxygen_semaphore = Semaphore(1)
+        self.barrier = Barrier(3)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def hydrogen(self, releaseHydrogen: 'Callable[[], None]') -> None:
+        self.hydrogen_semaphore.acquire()
+        self.barrier.wait()
+        # releaseHydrogen() outputs "H". Do not change or remove this line.
+        releaseHydrogen()
+        self.hydrogen_semaphore.release()
 
+    def oxygen(self, releaseOxygen: 'Callable[[], None]') -> None:
+        self.oxygen_semaphore.acquire()
+        self.barrier.wait()
+        # releaseOxygen() outputs "O". Do not change or remove this line.
+        releaseOxygen()
+        self.oxygen_semaphore.release()
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_solution():
+    return H2O
+
+Solution = create_solution

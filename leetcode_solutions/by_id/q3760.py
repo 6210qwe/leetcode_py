@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的最小下标，然后遍历每个组，找到符合条件的最小下标的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表，记录每个元素的最小下标。
+2. 遍历每个组，检查每个元素是否能整除该组的大小，如果能则记录该元素的下标。
+3. 如果有多个元素满足条件，选择最小下标的元素。
+4. 如果没有元素满足条件，分配 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个元素的最小下标，避免重复计算。
+- 通过遍历每个组，找到符合条件的最小下标的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 groups 的长度，m 是 elements 的长度。
+空间复杂度: O(m)，用于存储每个元素的最小下标。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def assign_elements_to_groups(groups: List[int], elements: List[int]) -> List[int]:
+    # 记录每个元素的最小下标
+    element_indices = {element: index for index, element in enumerate(elements)}
+    
+    # 初始化结果数组
+    assigned = [-1] * len(groups)
+    
+    # 遍历每个组，找到符合条件的最小下标的元素
+    for i, group in enumerate(groups):
+        for element in elements:
+            if group % element == 0:
+                if assigned[i] == -1 or element_indices[element] < element_indices[elements[assigned[i]]]:
+                    assigned[i] = element_indices[element]
+    
+    return assigned
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(assign_elements_to_groups)

@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个项目的员工平均工作年限。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 Project 表和 Employee 表通过 employee_id 进行连接。
+2. 按照 project_id 分组，计算每个项目的员工平均工作年限。
+3. 使用 ROUND 函数将结果保留两位小数。
 
 关键点:
-- [TODO]
+- 使用 INNER JOIN 进行表连接。
+- 使用 GROUP BY 对项目进行分组。
+- 使用 AVG 函数计算平均值。
+- 使用 ROUND 函数保留两位小数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log n)，其中 n 是表中的记录数。JOIN 操作的时间复杂度通常是 O(n * log n)。
+空间复杂度: O(1)，查询操作的空间复杂度通常与输入大小无关。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 SQL 查询语句
     """
-    # TODO: 实现最优解法
-    pass
+    sql_query = """
+    SELECT p.project_id, ROUND(AVG(e.experience_years), 2) AS average_years
+    FROM Project p
+    INNER JOIN Employee e ON p.employee_id = e.employee_id
+    GROUP BY p.project_id;
+    """
+    return sql_query
 
 
 Solution = create_solution(solution_function_name)

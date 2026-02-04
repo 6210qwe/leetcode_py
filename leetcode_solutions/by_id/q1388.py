@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 3 的数组 dp，其中 dp[i] 表示当前和对 3 取模为 i 的最大和。
+2. 遍历数组 nums，对于每个数 num，更新 dp 数组。
+3. 最后返回 dp[0]，即和对 3 取模为 0 的最大和。
 
 关键点:
-- [TODO]
+- 使用动态规划来维护当前和对 3 取模为 0, 1, 2 的最大和。
+- 通过遍历数组不断更新 dp 数组，确保最终结果是最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [0, 0, 0]
+    
+    for num in nums:
+        # 保存当前 dp 数组的状态
+        new_dp = list(dp)
+        
+        for i in range(3):
+            # 更新 dp 数组
+            new_dp[(i + num) % 3] = max(new_dp[(i + num) % 3], dp[i] + num)
+        
+        dp = new_dp
+    
+    return dp[0]
 
 
 Solution = create_solution(solution_function_name)

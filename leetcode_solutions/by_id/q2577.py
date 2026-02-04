@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来统计长度为5的回文子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][k] 表示从 i 到 j 的子串中，以 k 为中间字符的回文子序列数目。
+2. 遍历字符串 s，对于每个字符 s[i]，更新 dp 数组。
+3. 最后，累加 dp 数组中所有长度为5的回文子序列数目。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过预处理前缀和来快速计算子串中的字符出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_palindromic_subsequences(s: str) -> int:
+    MOD = 10**9 + 7
+    n = len(s)
+    if n < 5:
+        return 0
+
+    # 前缀和数组，prefix_count[i][d] 表示从 0 到 i-1 的子串中字符 d 出现的次数
+    prefix_count = [[0] * 10 for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for d in range(10):
+            prefix_count[i][d] = prefix_count[i - 1][d]
+        prefix_count[i][int(s[i - 1])] += 1
+
+    # dp[i][j][k] 表示从 i 到 j 的子串中，以 k 为中间字符的回文子序列数目
+    dp = [[[0] * 10 for _ in range(n)] for _ in range(n)]
+
+    # 初始化 dp 数组
+    for i in range(n):
+        dp[i][i][int(s[i])] = 1
+
+    # 动态规划填表
+    for length in range(2, 6):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            for k in range(10):
+                if s[i] == str(k):
+                    dp[i][j][k] = (dp[i][j][k] + prefix_count[j + 1][k] - prefix_count[i + 1][k]) % MOD
+                if s[j] == str(k):
+                    dp[i][j][k] = (dp[i][j][k] + prefix_count[j][k] - prefix_count[i][k]) % MOD
+                if s[i] == s[j] == str(k):
+                    dp[i][j][k] = (dp[i][j][k] - (prefix_count[j + 1][k] - prefix_count[i + 1][k])) % MOD
+                dp[i][j][k] = (dp[i][j][k] + dp[i + 1][j - 1][k]) % MOD
+
+    # 计算结果
+    result = 0
+    for i in range(n - 4):
+        for k in range(10):
+            result = (result + dp[i][i + 4][k]) % MOD
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_palindromic_subsequences)

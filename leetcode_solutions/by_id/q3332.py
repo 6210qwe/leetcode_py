@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前数组中的最小元素，并在每次操作中取出最小的两个元素，计算新的元素并将其重新插入堆中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，并将数组中的所有元素加入堆中。
+2. 初始化操作次数为 0。
+3. 当堆中最小的元素小于 k 时，执行以下操作：
+   - 从堆中取出最小的两个元素 x 和 y。
+   - 计算新的元素 z = min(x, y) * 2 + max(x, y)。
+   - 将 z 重新插入堆中。
+   - 增加操作次数。
+4. 返回操作次数。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取和更新最小元素。
+- 每次操作后，堆会自动调整以保持最小堆的性质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次操作的时间复杂度是 O(log n)，总共最多需要 n 次操作。
+空间复杂度: O(n)，使用了一个最小堆来存储数组中的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_operations_to_exceed_threshold(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使数组中所有元素都大于等于 k 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最小堆
+    heap = []
+    for num in nums:
+        heapq.heappush(heap, num)
+    
+    operations = 0
+    
+    while heap[0] < k:
+        # 取出最小的两个元素
+        x = heapq.heappop(heap)
+        y = heapq.heappop(heap)
+        
+        # 计算新的元素
+        new_element = min(x, y) * 2 + max(x, y)
+        
+        # 将新元素插入堆中
+        heapq.heappush(heap, new_element)
+        
+        # 增加操作次数
+        operations += 1
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_exceed_threshold)

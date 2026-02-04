@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 遍历每一个 3x3 的子网格，检查是否满足区域条件。
+2. 对于每个满足条件的区域，计算其平均强度，并记录每个像素所属的区域及其平均强度。
+3. 最后，根据每个像素所属的区域及其平均强度，计算结果网格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果网格 `result`，初始值与 `image` 相同。
+2. 使用双重循环遍历每一个 3x3 的子网格。
+3. 对于每个子网格，检查是否满足区域条件（相邻像素的绝对差小于等于阈值）。
+4. 如果满足条件，计算该区域的平均强度，并更新每个像素所属的区域及其平均强度。
+5. 最后，根据每个像素所属的区域及其平均强度，计算结果网格。
 
 关键点:
-- [TODO]
+- 使用集合来记录每个像素所属的区域及其平均强度。
+- 使用双重循环遍历每一个 3x3 的子网格。
+- 计算每个区域的平均强度并更新结果网格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_region_average(image: List[List[int]], threshold: int) -> List[List[int]]:
+    m, n = len(image), len(image[0])
+    result = [[image[i][j] for j in range(n)] for i in range(m)]
+    region_averages = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def is_valid_region(x, y):
+        for dx in range(3):
+            for dy in range(3):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    for dx2 in range(-1, 2):
+                        for dy2 in range(-1, 2):
+                            if abs(dx2) + abs(dy2) == 1:
+                                nx2, ny2 = nx + dx2, ny + dy2
+                                if 0 <= nx2 < m and 0 <= ny2 < n:
+                                    if abs(image[nx][ny] - image[nx2][ny2]) > threshold:
+                                        return False
+        return True
 
+    def calculate_average(x, y):
+        total = 0
+        count = 0
+        for dx in range(3):
+            for dy in range(3):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    total += image[nx][ny]
+                    count += 1
+        return total // count
 
-Solution = create_solution(solution_function_name)
+    for i in range(m - 2):
+        for j in range(n - 2):
+            if is_valid_region(i, j):
+                avg = calculate_average(i, j)
+                for dx in range(3):
+                    for dy in range(3):
+                        x, y = i + dx, j + dy
+                        if 0 <= x < m and 0 <= y < n:
+                            if (x, y) not in region_averages:
+                                region_averages[(x, y)] = []
+                            region_averages[(x, y)].append(avg)
+
+    for (x, y), avgs in region_averages.items():
+        result[x][y] = sum(avgs) // len(avgs)
+
+    return result
+
+Solution = create_solution(find_region_average)

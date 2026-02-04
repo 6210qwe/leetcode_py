@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+- 由于蚂蚁相遇后会交换方向，但实际上这对结果没有影响，因为它们仍然会在相同的时间内到达木板的两端。因此，我们只需要考虑每只蚂蚁到达木板边缘的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有向左移动的蚂蚁到达左端的时间，即 `max(left)`。
+2. 计算所有向右移动的蚂蚁到达右端的时间，即 `max(n - x for x in right)`。
+3. 返回这两个时间的最大值。
 
 关键点:
-- [TODO]
+- 蚂蚁相遇后交换方向对最终结果没有影响。
+- 只需计算每只蚂蚁到达木板边缘的时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_last_moment(n: int, left: List[int], right: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最后一只蚂蚁从木板上掉下来的时刻
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算所有向左移动的蚂蚁到达左端的时间
+    max_left_time = max(left) if left else 0
+    
+    # 计算所有向右移动的蚂蚁到达右端的时间
+    max_right_time = max(n - x for x in right) if right else 0
+    
+    # 返回这两个时间的最大值
+    return max(max_left_time, max_right_time)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_last_moment)

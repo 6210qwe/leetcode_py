@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来计算最少删除次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串中每个字符的频率。
+2. 如果不同的字符数不超过 k，则不需要删除任何字符。
+3. 否则，按频率从小到大排序字符，并删除频率最低的字符，直到不同的字符数不超过 k。
 
 关键点:
-- [TODO]
+- 使用哈希表统计字符频率。
+- 按频率排序并删除频率最低的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。主要消耗在排序操作上。
+空间复杂度: O(n)，用于存储字符频率。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_deletions_for_at_most_k_distinct_characters(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少删除次数以使字符串中的不同字符数量最多为 k
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+
+    # 统计每个字符的频率
+    char_count = Counter(s)
+    
+    # 如果不同的字符数不超过 k，则不需要删除任何字符
+    if len(char_count) <= k:
+        return 0
+    
+    # 按频率从小到大排序字符
+    sorted_counts = sorted(char_count.values())
+    
+    # 删除频率最低的字符，直到不同的字符数不超过 k
+    deletions = sum(sorted_counts[:len(char_count) - k])
+    
+    return deletions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_deletions_for_at_most_k_distinct_characters)

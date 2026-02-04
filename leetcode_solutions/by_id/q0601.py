@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数和条件筛选来找到连续的符合条件的记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 选择所有 `people` 大于等于 100 的记录。
+2. 使用窗口函数计算每个记录的前一行和后一行的 `id` 差值。
+3. 筛选出前一行和后一行的 `id` 差值都为 1 的记录。
+4. 选择这些记录的 `id`, `visit_date`, `people` 字段并按 `visit_date` 排序。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `LAG` 和 `LEAD` 来获取前一行和后一行的 `id`。
+- 通过条件筛选来找到连续的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的记录数。窗口函数和排序操作的时间复杂度都是线性的。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(stadium: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出每行的人数大于或等于 100 且 id 连续的三行或更多行记录
     """
-    # TODO: 实现最优解法
-    pass
+    if not stadium:
+        return []
+
+    # 将输入数据转换为 DataFrame
+    import pandas as pd
+    df = pd.DataFrame(stadium, columns=['id', 'visit_date', 'people'])
+
+    # 选择所有 `people` 大于等于 100 的记录
+    df = df[df['people'] >= 100]
+
+    # 使用窗口函数计算前一行和后一行的 `id` 差值
+    df['prev_id_diff'] = df['id'].diff().fillna(1)
+    df['next_id_diff'] = df['id'].diff(periods=-1).fillna(1)
+
+    # 筛选出前一行和后一行的 `id` 差值都为 1 的记录
+    df = df[(df['prev_id_diff'] == 1) & (df['next_id_diff'] == 1)]
+
+    # 选择这些记录的 `id`, `visit_date`, `people` 字段并按 `visit_date` 排序
+    result = df[['id', 'visit_date', 'people']].sort_values(by='visit_date').values.tolist()
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

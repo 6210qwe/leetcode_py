@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来找到两个不重叠活动的最大价值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按结束时间对活动进行排序。
+2. 使用一个数组 `dp` 来记录到当前活动为止的最大价值。
+3. 对于每个活动，使用二分查找找到其之前结束的最后一个活动，并更新 `dp` 数组。
+4. 计算最大价值。
 
 关键点:
-- [TODO]
+- 通过排序和二分查找来优化查找过程。
+- 使用动态规划来记录中间结果，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 events 的长度。排序操作的时间复杂度是 O(n log n)，二分查找的时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxTwoEvents(events: List[List[int]]) -> int:
+    # 按结束时间排序
+    events.sort(key=lambda x: x[1])
+    
+    n = len(events)
+    dp = [0] * n
+    dp[0] = events[0][2]
+    
+    for i in range(1, n):
+        dp[i] = max(dp[i-1], events[i][2])
+    
+    def binary_search(start, end, target):
+        while start < end:
+            mid = (start + end) // 2
+            if events[mid][1] < target:
+                start = mid + 1
+            else:
+                end = mid
+        return start - 1
+    
+    max_value = 0
+    for i in range(n):
+        start, end, value = events[i]
+        if start > 1:
+            idx = binary_search(0, i, start)
+            if idx >= 0:
+                max_value = max(max_value, dp[idx] + value)
+        max_value = max(max_value, value)
+    
+    return max_value
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxTwoEvents)

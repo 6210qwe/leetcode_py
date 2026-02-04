@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[r][c] 表示从 (r, c) 出发到达第一行的路径数。我们从最后一行开始，逐行向上计算 dp 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[n-1][c] 为 1 如果 grid[n-1][c] 是 '.'，否则为 0。
+2. 从倒数第二行开始，逐行向上计算 dp 值。
+3. 对于每个单元格 (r, c)，如果它是 '.'，则计算从 (r, c) 到达 (r-1, c') 的所有合法路径数，并更新 dp[r-1][c']。
+4. 最后，将 dp[0][c] 的值累加起来即为结果。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算。
+- 通过预处理合法移动位置来优化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * d^2)，其中 n 是行数，m 是列数，d 是最大移动距离。
+空间复杂度: O(n * m)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_routes_to_climb(grid: List[str], d: int) -> int:
+    MOD = 10**9 + 7
+    n, m = len(grid), len(grid[0])
+    
+    # 初始化 dp 数组
+    dp = [[0] * m for _ in range(n)]
+    for c in range(m):
+        if grid[n-1][c] == '.':
+            dp[n-1][c] = 1
+    
+    # 预处理合法移动位置
+    moves = []
+    for dr in range(-d, d+1):
+        for dc in range(-d, d+1):
+            if dr * dr + dc * dc <= d * d and (dr != 0 or dc != 0):
+                moves.append((dr, dc))
+    
+    # 动态规划计算 dp 值
+    for r in range(n-2, -1, -1):
+        new_dp = [0] * m
+        for c in range(m):
+            if grid[r][c] == '.':
+                for dr, dc in moves:
+                    nr, nc = r + dr, c + dc
+                    if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] == '.':
+                        new_dp[c] += dp[nr][nc]
+                        new_dp[c] %= MOD
+        dp = new_dp
+    
+    return sum(dp[0]) % MOD
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_routes_to_climb)

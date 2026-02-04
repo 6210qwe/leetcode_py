@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用堆（优先队列）来选择和最大的 k 个元素，并保持它们在原数组中的相对顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组元素及其索引存入一个列表中。
+2. 对该列表按元素值降序排序。
+3. 从排序后的列表中选择前 k 个元素，并按其在原数组中的索引顺序返回。
 
 关键点:
-- [TODO]
+- 使用堆来高效地选择和最大的 k 个元素。
+- 保持选出的 k 个元素在原数组中的相对顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，存储元素及其索引的列表需要 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_largest_subsequence(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到和最大的长度为 k 的子序列
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数组元素及其索引存入一个列表中
+    indexed_nums = [(num, i) for i, num in enumerate(nums)]
+    
+    # 按元素值降序排序
+    indexed_nums.sort(key=lambda x: -x[0])
+    
+    # 从排序后的列表中选择前 k 个元素
+    largest_k_elements = indexed_nums[:k]
+    
+    # 按其在原数组中的索引顺序返回
+    largest_k_elements.sort(key=lambda x: x[1])
+    
+    return [num for num, _ in largest_k_elements]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_largest_subsequence)

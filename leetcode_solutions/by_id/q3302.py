@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计观众变为主播的用户数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `viewers` 表中选择所有用户，并标记为观众。
+2. 从 `streamers` 表中选择所有用户，并标记为主播。
+3. 使用 UNION ALL 将两个表合并，并计算每个用户的观众和主播状态。
+4. 统计那些既是观众又是主播的用户数量。
 
 关键点:
-- [TODO]
+- 使用 UNION ALL 合并两个表。
+- 使用 COUNT 和 GROUP BY 来统计用户的状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 viewers 表的行数，m 是 streamers 表的行数。
+空间复杂度: O(n + m)，用于存储合并后的表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询
+    query = """
+    SELECT COUNT(*) 
+    FROM (
+        SELECT user_id, 'viewer' AS role FROM viewers
+        UNION ALL
+        SELECT user_id, 'streamer' AS role FROM streamers
+    ) AS combined
+    GROUP BY user_id
+    HAVING COUNT(DISTINCT role) = 2;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个三维数组 dp 来记录每个状态的最大幸福感。状态由当前行的状态、剩余内向人数和剩余外向人数组成。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j][k] 表示前 i 行，剩余 j 个内向人，剩余 k 个外向人的最大幸福感。
+2. 定义一个函数 `get_happiness` 来计算给定两行状态之间的幸福感变化。
+3. 使用递归和记忆化搜索来填充 dp 数组。
+4. 返回 dp 数组的最终结果。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示每一行的状态。
+- 使用递归和记忆化搜索来优化动态规划过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^N * N * M * I * E)，其中 N 是列数，M 是行数，I 是内向人数，E 是外向人数。
+空间复杂度: O(3^N * I * E)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -47,14 +50,53 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
+def get_happiness(state1: int, state2: int) -> int:
+    happiness = 0
+    for i in range(3):
+        if state1 & (1 << i):
+            if state2 & (1 << i):
+                happiness += 60
+            else:
+                happiness -= 30
+        elif state2 & (1 << i):
+            happiness += 40
+    return happiness
 
-def solution_function_name(params):
+@lru_cache(None)
+def dfs(row: int, state: int, intro_count: int, extro_count: int) -> int:
+    if row == m or (intro_count == 0 and extro_count == 0):
+        return 0
+    
+    max_happiness = dfs(row + 1, 0, intro_count, extro_count)
+    
+    for next_state in range(3 ** n):
+        next_intro_count = intro_count
+        next_extro_count = extro_count
+        current_happiness = 0
+        
+        for i in range(n):
+            if next_state & (1 << i):
+                if (next_state >> i) & 1:
+                    next_intro_count -= 1
+                    current_happiness += 120
+                else:
+                    next_extro_count -= 1
+                    current_happiness += 40
+        
+        if next_intro_count >= 0 and next_extro_count >= 0:
+            current_happiness += get_happiness(state, next_state)
+            max_happiness = max(max_happiness, current_happiness + dfs(row + 1, next_state, next_intro_count, next_extro_count))
+    
+    return max_happiness
+
+def solution_function_name(m: int, n: int, introvertsCount: int, extrovertsCount: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划和状态压缩来最大化网格幸福感
     """
-    # TODO: 实现最优解法
-    pass
-
+    global m, n
+    m, n = m, n
+    return dfs(0, 0, introvertsCount, extrovertsCount)
 
 Solution = create_solution(solution_function_name)

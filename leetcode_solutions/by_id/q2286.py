@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为移除前 i 个字符中的所有 '1' 所需的最小时间。我们需要考虑从左边移除、从右边移除和从中间移除的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 left 和 right，分别记录从左边和右边移除 '1' 的最小时间。
+2. 计算 left 数组，left[i] 表示移除 s[:i+1] 中所有 '1' 的最小时间。
+3. 计算 right 数组，right[i] 表示移除 s[i:] 中所有 '1' 的最小时间。
+4. 遍历每个可能的分割点，计算从左边移除、从右边移除和从中间移除的最小时间，并更新结果。
 
 关键点:
-- [TODO]
+- 动态规划的思想，通过预处理 left 和 right 数组来简化计算。
+- 通过遍历每个可能的分割点，找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串三次，分别是计算 left 数组、right 数组和最终的结果。
+空间复杂度: O(n)，需要额外的 left 和 right 数组来存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time_to_remove_cars(s: str) -> int:
+    n = len(s)
+    left = [0] * n
+    right = [0] * n
+
+    # 计算 left 数组
+    count = 0
+    for i in range(n):
+        if s[i] == '1':
+            count += 1
+        left[i] = min(i + 1, 2 * count)
+
+    # 计算 right 数组
+    count = 0
+    for i in range(n - 1, -1, -1):
+        if s[i] == '1':
+            count += 1
+        right[i] = min(n - i, 2 * count)
+
+    # 计算最终结果
+    result = float('inf')
+    for i in range(n):
+        result = min(result, left[i] + right[i + 1] if i < n - 1 else left[i])
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_remove_cars)

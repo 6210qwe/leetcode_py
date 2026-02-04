@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 将 ProductPurchases 和 ProductInfo 表进行连接，获取每个用户的购买记录及其对应的类别。
+2. 使用自连接的方式，生成所有可能的类别对 (category1, category2)，并计算每个类别对中同时购买两个类别的不同用户数量。
+3. 过滤出至少有 3 个不同用户购买的类别对。
+4. 按照 customer_count 降序、category1 和 category2 升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 ProductPurchases 和 ProductInfo 表进行连接，获取每个用户的购买记录及其对应的类别。
+2. 使用自连接的方式，生成所有可能的类别对 (category1, category2)，并计算每个类别对中同时购买两个类别的不同用户数量。
+3. 过滤出至少有 3 个不同用户购买的类别对。
+4. 按照 customer_count 降序、category1 和 category2 升序排序。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来高效地处理数据连接和过滤操作。
+- 使用自连接和聚合函数来计算每个类别对的用户数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 ProductPurchases 表中的行数。主要的时间消耗在于自连接操作。
+空间复杂度: O(n)，存储中间结果和最终结果所需的空间。
 """
 
 # ============================================================================
@@ -51,10 +58,27 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH UserCategory AS (
+        SELECT pp.user_id, pi.category
+        FROM ProductPurchases pp
+        JOIN ProductInfo pi ON pp.product_id = pi.product_id
+    ),
+    CategoryPairs AS (
+        SELECT uc1.category AS category1, uc2.category AS category2, COUNT(DISTINCT uc1.user_id) AS customer_count
+        FROM UserCategory uc1
+        JOIN UserCategory uc2 ON uc1.user_id = uc2.user_id AND uc1.category < uc2.category
+        GROUP BY uc1.category, uc2.category
+    )
+    SELECT category1, category2, customer_count
+    FROM CategoryPairs
+    WHERE customer_count >= 3
+    ORDER BY customer_count DESC, category1 ASC, category2 ASC
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

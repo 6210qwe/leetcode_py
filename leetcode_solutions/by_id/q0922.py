@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 或广度优先搜索 (BFS) 对图进行二分染色，判断是否可以将图分成两个集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化颜色数组，用于记录每个节点的颜色（未访问、红色、蓝色）。
+3. 遍历每个节点，如果该节点未被访问过，则从该节点开始进行 DFS 或 BFS，尝试对其进行染色。
+4. 在染色过程中，如果发现相邻节点已经染了相同的颜色，则说明无法进行二分染色，返回 False。
+5. 如果所有节点都能成功染色，则返回 True。
 
 关键点:
-- [TODO]
+- 使用邻接表表示图，方便进行遍历。
+- 使用颜色数组记录每个节点的状态，避免重复访问和冲突。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。我们需要遍历所有节点和边。
+空间复杂度: O(V + E)，存储图的邻接表和颜色数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def possible_bipartition(n: int, dislikes: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以将给定的 n 个人分成两组，使得每对不喜欢的人不在同一组。
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建图的邻接表
+    graph = [[] for _ in range(n + 1)]
+    for u, v in dislikes:
+        graph[u].append(v)
+        graph[v].append(u)
 
+    # 定义颜色数组
+    colors = [0] * (n + 1)  # 0: 未访问, 1: 红色, -1: 蓝色
 
-Solution = create_solution(solution_function_name)
+    def dfs(node: int, color: int) -> bool:
+        if colors[node] != 0:
+            return colors[node] == color
+        colors[node] = color
+        for neighbor in graph[node]:
+            if not dfs(neighbor, -color):
+                return False
+        return True
+
+    for i in range(1, n + 1):
+        if colors[i] == 0 and not dfs(i, 1):
+            return False
+
+    return True
+
+Solution = create_solution(possible_bipartition)

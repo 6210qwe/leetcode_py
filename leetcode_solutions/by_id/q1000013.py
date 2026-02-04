@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历调整数组，使其满足峰与谷的交替顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，从第二个元素开始，检查当前元素是否满足峰与谷的交替顺序。
+2. 如果不满足，则交换当前元素和前一个元素，使其满足交替顺序。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可完成调整，时间复杂度为 O(n)。
+- 空间复杂度为 O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> None:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组按峰与谷的交替顺序排序
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, len(nums)):
+        if (i % 2 == 0 and nums[i] > nums[i - 1]) or (i % 2 == 1 and nums[i] < nums[i - 1]):
+            nums[i], nums[i - 1] = nums[i - 1], nums[i]
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个变量来记录当前的最大翻转位置，并在每一步检查是否所有的翻转位置都在当前最大翻转位置之内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_flip` 为 0，用于记录当前的最大翻转位置。
+2. 初始化一个变量 `count` 为 0，用于记录前缀一致的次数。
+3. 遍历 `flips` 数组：
+   - 更新 `max_flip` 为当前翻转位置和 `max_flip` 的最大值。
+   - 如果当前步数等于 `max_flip`，则说明前缀一致，增加 `count`。
+4. 返回 `count`。
 
 关键点:
-- [TODO]
+- 使用 `max_flip` 来跟踪当前的最大翻转位置。
+- 每一步检查当前步数是否等于 `max_flip`，以判断前缀是否一致。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `flips` 的长度。我们只需要遍历一次 `flips` 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(flips: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算二进制字符串前缀一致的次数
     """
-    # TODO: 实现最优解法
-    pass
+    max_flip = 0
+    count = 0
+    for i, flip in enumerate(flips):
+        max_flip = max(max_flip, flip)
+        if i + 1 == max_flip:
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和来简化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或和数组。
+2. 使用哈希表记录每个前缀异或和出现的位置。
+3. 遍历数组，对于每个位置 k，计算所有可能的 (i, j) 对，使得 a == b。
 
 关键点:
-- [TODO]
+- 前缀异或和可以快速计算任意子数组的异或值。
+- 使用哈希表记录前缀异或和出现的位置，可以快速找到满足条件的 (i, j) 对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_triplets(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算能够令 a == b 成立的三元组 (i, j, k) 的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    prefix_xor = [0] * (n + 1)
+    
+    # 计算前缀异或和
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ arr[i]
+    
+    # 使用哈希表记录前缀异或和出现的位置
+    xor_count = {}
+    for i, xor in enumerate(prefix_xor):
+        if xor not in xor_count:
+            xor_count[xor] = []
+        xor_count[xor].append(i)
+    
+    result = 0
+    # 遍历数组，计算所有可能的 (i, j) 对
+    for k in range(1, n + 1):
+        for i in xor_count[prefix_xor[k]]:
+            if i < k:
+                result += k - i - 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_triplets)

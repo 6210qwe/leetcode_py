@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到最少操作次数，并通过贪心算法确保结果字典序最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示将前 i 个字符变成 j 的最少操作次数。
+2. 遍历字符串，更新 dp 数组。
+3. 通过回溯 dp 数组，找到最优解并构建结果字符串。
 
 关键点:
-- [TODO]
+- 动态规划状态转移方程：dp[i][j] = min(dp[i-1][k] + cost(caption[i-1], j))，其中 k 是前一个字符，cost 是转换成本。
+- 贪心算法确保结果字典序最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26^2)，其中 n 是字符串长度，26 是字母表大小。
+空间复杂度: O(n * 26)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,48 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(caption: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(caption)
+    if n < 3:
+        return ""
+
+    # 定义转换成本
+    def cost(char1: str, char2: str) -> int:
+        return abs(ord(char1) - ord(char2))
+
+    # 初始化 dp 数组
+    dp = [[float('inf')] * 26 for _ in range(n + 1)]
+    dp[0] = [0] * 26
+
+    # 更新 dp 数组
+    for i in range(1, n + 1):
+        for j in range(26):
+            for k in range(26):
+                dp[i][j] = min(dp[i][j], dp[i - 1][k] + cost(chr(k + ord('a')), chr(j + ord('a'))))
+
+    # 回溯 dp 数组，找到最优解
+    result = []
+    for i in range(n, 0, -1):
+        min_cost = float('inf')
+        best_char = ''
+        for j in range(26):
+            if dp[i][j] < min_cost:
+                min_cost = dp[i][j]
+                best_char = chr(j + ord('a'))
+        result.append(best_char)
+
+    # 确保每个字符至少出现 3 次
+    final_result = []
+    for i in range(n):
+        if i < n - 2 and result[i] == result[i + 1] == result[i + 2]:
+            final_result.append(result[i])
+        else:
+            return ""
+    
+    return ''.join(final_result[::-1])
 
 
 Solution = create_solution(solution_function_name)

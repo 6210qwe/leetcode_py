@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查原始数组长度是否等于 m * n，然后按行填充二维数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 original 的长度是否等于 m * n，如果不等则返回空数组。
+2. 初始化一个 m 行 n 列的二维数组。
+3. 使用切片将 original 分割成每 n 个元素一组，并填入二维数组中。
 
 关键点:
-- [TODO]
+- 检查原始数组长度是否符合要求。
+- 使用切片和列表推导式来构建二维数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def convert_to_2d_array(original: List[int], m: int, n: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    将一维数组转换为二维数组
+    :param original: 一维整数数组
+    :param m: 二维数组的行数
+    :param n: 二维数组的列数
+    :return: 二维数组
     """
-    # TODO: 实现最优解法
-    pass
+    if len(original) != m * n:
+        return []
+
+    # 初始化二维数组
+    result = []
+    for i in range(m):
+        result.append(original[i * n:(i + 1) * n])
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_to_2d_array)

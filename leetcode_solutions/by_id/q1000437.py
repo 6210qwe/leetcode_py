@@ -21,22 +21,24 @@ LCP 54. 夺回据点 - 欢迎各位勇者来到力扣城，本次试炼主题为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过 Tarjan 算法找到所有的双连通分量 (BCC)，然后选择每个 BCC 中代价最小的据点进行夺回。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Tarjan 算法找到所有的双连通分量 (BCC)。
+2. 对于每个 BCC，选择其中代价最小的据点进行夺回。
+3. 计算总的最小代价。
 
 关键点:
-- [TODO]
+- 使用 Tarjan 算法高效地找到所有的双连通分量。
+- 选择每个 BCC 中代价最小的据点以最小化总代价。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是顶点数，E 是边数。
+空间复杂度: O(V + E)，用于存储图和辅助数据结构。
 """
 
 # ============================================================================
@@ -49,12 +51,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(cost: List[int], roads: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过 Tarjan 算法找到所有的双连通分量 (BCC)，然后选择每个 BCC 中代价最小的据点进行夺回。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(cost)
+    graph = [[] for _ in range(n)]
+    for u, v in roads:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    def tarjan(u: int, parent: int):
+        nonlocal time
+        dfn[u] = low[u] = time
+        time += 1
+        for v in graph[u]:
+            if v == parent:
+                continue
+            if dfn[v] == -1:
+                tarjan(v, u)
+                low[u] = min(low[u], low[v])
+                if low[v] >= dfn[u]:
+                    bcc.append(u)
+            else:
+                low[u] = min(low[u], dfn[v])
+
+    time = 0
+    dfn = [-1] * n
+    low = [-1] * n
+    bccs = []
+    for i in range(n):
+        if dfn[i] == -1:
+            bcc = []
+            tarjan(i, -1)
+            bccs.append(bcc)
+
+    # 选择每个 BCC 中代价最小的据点
+    min_cost = 0
+    for bcc in bccs:
+        min_cost += min(cost[u] for u in bcc)
+
+    return min_cost
 
 
 Solution = create_solution(solution_function_name)

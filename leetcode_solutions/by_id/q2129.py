@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个宽高比出现的次数，并计算可互换矩形的对数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个宽高比出现的次数。
+2. 遍历所有矩形，计算每个矩形的宽高比，并将其加入哈希表。
+3. 遍历哈希表，对于每个宽高比，计算其对应的可互换矩形对数。
 
 关键点:
-- [TODO]
+- 使用最大公约数 (GCD) 来简化宽高比，以避免浮点数比较的问题。
+- 使用组合公式 C(n, 2) = n * (n - 1) / 2 来计算每种宽高比的可互换矩形对数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(width, height)))，其中 n 是矩形的数量，log(max(width, height)) 是计算 GCD 的时间复杂度。
+空间复杂度: O(n)，哈希表的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
 
-
-def solution_function_name(params):
+def solution_function_name(rectangles: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可互换矩形的对数
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 哈希表记录每个宽高比出现的次数
+    ratio_count = {}
+    
+    for width, height in rectangles:
+        # 计算宽高比的最简形式
+        common_divisor = gcd(width, height)
+        simplified_ratio = (width // common_divisor, height // common_divisor)
+        
+        if simplified_ratio in ratio_count:
+            ratio_count[simplified_ratio] += 1
+        else:
+            ratio_count[simplified_ratio] = 1
+    
+    # 计算可互换矩形的对数
+    interchangeable_pairs = 0
+    for count in ratio_count.values():
+        if count > 1:
+            interchangeable_pairs += count * (count - 1) // 2
+    
+    return interchangeable_pairs
 
 Solution = create_solution(solution_function_name)

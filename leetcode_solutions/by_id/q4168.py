@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将整数 n 转换为字符串，然后反转字符串得到 reverse(n)，最后计算它们的差值的绝对值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为字符串。
+2. 反转该字符串。
+3. 将反转后的字符串转换回整数。
+4. 计算 n 和反转后的整数的差值的绝对值。
 
 关键点:
-- [TODO]
+- 使用字符串操作来反转整数，这样可以避免处理进位和溢出问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是整数 n 的位数。因为字符串反转和整数转换的操作都是线性的。
+空间复杂度: O(d)，因为我们需要存储反转后的字符串。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def mirror_distance_of_an_integer(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算整数 n 的镜像距离
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数 n 转换为字符串
+    str_n = str(n)
+    
+    # 反转字符串
+    reversed_str_n = str_n[::-1]
+    
+    # 将反转后的字符串转换回整数
+    reversed_n = int(reversed_str_n)
+    
+    # 计算 n 和反转后的整数的差值的绝对值
+    distance = abs(n - reversed_n)
+    
+    return distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(mirror_distance_of_an_integer)

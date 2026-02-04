@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先考虑代价最小的操作。首先处理可以通过翻转或交叉操作直接匹配的字符，然后处理需要交换的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总成本 cost 为 0。
+2. 遍历字符串 s 和 t，记录不同字符的位置。
+3. 对于每个不同的字符，计算翻转和交叉操作的成本，选择较小的。
+4. 如果有多个不同的字符，考虑交换操作的成本，选择最优解。
 
 关键点:
-- [TODO]
+- 优先考虑翻转和交叉操作，因为它们的成本通常较低。
+- 交换操作的成本较高，只在必要时使用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_to_equalize(s: str, t: str, flipCost: int, swapCost: int, crossCost: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使两个二进制字符串相等的最小成本
     """
-    # TODO: 实现最优解法
-    pass
+    cost = 0
+    diff_indices = []
+    
+    # 找出所有不同的字符位置
+    for i in range(len(s)):
+        if s[i] != t[i]:
+            diff_indices.append(i)
+    
+    # 处理不同的字符
+    while diff_indices:
+        i = diff_indices.pop()
+        if not diff_indices:
+            # 只有一个不同的字符，只能通过翻转或交叉操作
+            cost += min(flipCost, crossCost)
+        else:
+            j = diff_indices.pop()
+            # 有两个不同的字符，考虑交换操作
+            if s[i] == t[j] and s[j] == t[i]:
+                # 交换操作
+                cost += min(swapCost, 2 * crossCost, 2 * flipCost)
+            else:
+                # 无法通过交换操作匹配，只能通过翻转或交叉操作
+                cost += min(2 * flipCost, 2 * crossCost)
+    
+    return cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_equalize)

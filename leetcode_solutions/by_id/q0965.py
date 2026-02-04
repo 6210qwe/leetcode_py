@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储处理后的唯一电子邮件地址。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合 `unique_emails` 用于存储唯一的电子邮件地址。
+2. 遍历每个电子邮件地址：
+   - 分割本地名和域名。
+   - 处理本地名：去掉所有 '.' 并忽略第一个 '+' 及其后面的部分。
+   - 将处理后的本地名和域名重新组合，并加入集合 `unique_emails`。
+3. 返回集合 `unique_emails` 的大小。
 
 关键点:
-- [TODO]
+- 使用集合来自动去重。
+- 本地名处理时，需要去掉 '.' 并忽略 '+' 后面的部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 emails 的长度，m 是每个 email 的平均长度。
+空间复杂度: O(n * m)，用于存储处理后的电子邮件地址。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def unique_email_addresses(emails: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回实际收到邮件的不同地址数目
     """
-    # TODO: 实现最优解法
-    pass
+    unique_emails = set()
+
+    for email in emails:
+        local_name, domain_name = email.split('@')
+        local_name = local_name.split('+')[0].replace('.', '')
+        unique_emails.add(local_name + '@' + domain_name)
+
+    return len(unique_emails)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(unique_email_addresses)

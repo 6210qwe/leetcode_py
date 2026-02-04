@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录 Bob 的糖果数量，并通过数学公式找到需要交换的糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 Alice 和 Bob 的糖果总数。
+2. 计算两者的糖果总数之差的一半。
+3. 将 Bob 的糖果数量存入集合中。
+4. 遍历 Alice 的糖果，检查是否存在一个 Bob 的糖果使得两者交换后糖果总数相等。
 
 关键点:
-- [TODO]
+- 使用集合来存储 Bob 的糖果数量，以便快速查找。
+- 通过数学公式 (Alice 总数 + Bob 总数) / 2 来计算目标糖果总数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 aliceSizes 的长度，m 是 bobSizes 的长度。
+空间复杂度: O(m)，用于存储 Bob 的糖果数量集合。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def fair_candy_swap(aliceSizes: List[int], bobSizes: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现公平的糖果交换
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 Alice 和 Bob 的糖果总数
+    sum_alice = sum(aliceSizes)
+    sum_bob = sum(bobSizes)
+    
+    # 计算两者的糖果总数之差的一半
+    diff = (sum_alice - sum_bob) // 2
+    
+    # 将 Bob 的糖果数量存入集合中
+    bob_set = set(bobSizes)
+    
+    # 遍历 Alice 的糖果，检查是否存在一个 Bob 的糖果使得两者交换后糖果总数相等
+    for a in aliceSizes:
+        if a - diff in bob_set:
+            return [a, a - diff]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(fair_candy_swap)

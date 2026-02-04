@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来验证第二天的记录是否存在。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 选择表中的所有记录。
+2. 过滤出满足条件的记录：第二天的记录存在。
 
 关键点:
-- [TODO]
+- 使用日期函数和子查询来检查第二天的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是表中的记录数。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    query = """
+    SELECT 
+        id, 
+        record_date, 
+        value
+    FROM 
+        records r1
+    WHERE 
+        EXISTS (
+            SELECT 1 
+            FROM records r2 
+            WHERE r2.record_date = DATE_ADD(r1.record_date, INTERVAL 1 DAY)
+        )
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

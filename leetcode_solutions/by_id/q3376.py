@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储 wordsContainer 中的字符串，并在 Trie 中进行查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建 Trie 树，将 wordsContainer 中的每个字符串反向插入到 Trie 中。
+2. 对于每个 wordsQuery 中的字符串，反向遍历 Trie 树，找到最长公共后缀。
+3. 如果有多个字符串具有相同的最长公共后缀，则选择最短的那个；如果长度相同，则选择最早出现的那个。
 
 关键点:
-- [TODO]
+- 反向插入字符串以方便查找最长公共后缀。
+- 在 Trie 节点中存储最短的字符串及其索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m + q * k)，其中 n 是 wordsContainer 的长度，m 是 wordsContainer 中字符串的平均长度，q 是 wordsQuery 的长度，k 是 wordsQuery 中字符串的平均长度。
+空间复杂度: O(n * m)，用于存储 Trie 树。
 """
 
 # ============================================================================
@@ -48,13 +50,43 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.index = -1
+        self.length = float('inf')
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word, index):
+        node = self.root
+        for char in reversed(word):
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+            if len(word) < node.length:
+                node.length = len(word)
+                node.index = index
 
-Solution = create_solution(solution_function_name)
+    def search(self, word):
+        node = self.root
+        for char in reversed(word):
+            if char not in node.children:
+                break
+            node = node.children[char]
+        return node.index if node.index != -1 else 0
+
+def longest_common_suffix_queries(wordsContainer: List[str], wordsQuery: List[str]) -> List[int]:
+    trie = Trie()
+    for i, word in enumerate(wordsContainer):
+        trie.insert(word, i)
+
+    result = []
+    for query in wordsQuery:
+        result.append(trie.search(query))
+
+    return result
+
+Solution = create_solution(longest_common_suffix_queries)

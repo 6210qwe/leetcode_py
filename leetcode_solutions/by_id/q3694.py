@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择当前最小的操作数进行合并。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器数组 `count`，用于记录每个数字的出现次数。
+2. 遍历输入数组 `nums`，更新 `count` 数组。
+3. 计算需要的操作数，通过不断合并最小的两个非零元素，直到只剩下一个元素。
 
 关键点:
-- [TODO]
+- 使用贪心策略，每次选择当前最小的两个非零元素进行合并。
+- 通过计数器数组来优化查找和合并过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)，其中 n 是输入数组的长度，k 是不同数字的数量。
+空间复杂度: O(k)，其中 k 是不同数字的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个数字的出现次数
+    count = Counter(nums)
+    
+    # 将计数器中的值转换为列表
+    counts = list(count.values())
+    
+    # 计算需要的操作数
+    operations = 0
+    while len(counts) > 1:
+        # 按升序排序
+        counts.sort()
+        # 合并最小的两个非零元素
+        min1 = counts.pop(0)
+        min2 = counts.pop(0)
+        operations += min1
+        if min1 + min2 > 0:
+            counts.append(min1 + min2)
+    
+    return operations
 
 Solution = create_solution(solution_function_name)

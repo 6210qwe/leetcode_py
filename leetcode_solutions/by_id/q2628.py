@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到满足条件的最大值的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_valid` 来检查给定的最大值是否可以满足条件。
+2. 使用二分查找来找到最小的最大值。
+3. 在每次迭代中，计算中间值并使用 `is_valid` 函数来验证。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 计算不能被 divisor1 或 divisor2 整除的数的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(divisor1, divisor2) * (uniqueCnt1 + uniqueCnt2)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_valid(max_val, divisor1, divisor2, unique_cnt1, unique_cnt2):
     """
-    函数式接口 - [TODO] 实现
+    检查给定的最大值是否可以满足条件。
     """
-    # TODO: 实现最优解法
-    pass
+    count1 = max_val - max_val // divisor1
+    count2 = max_val - max_val // divisor2
+    common_count = max_val - max_val // (divisor1 * divisor2 // gcd(divisor1, divisor2))
+    return count1 + count2 - common_count >= unique_cnt1 + unique_cnt2
+
+
+def gcd(a, b):
+    """
+    计算两个数的最大公约数。
+    """
+    while b:
+        a, b = b, a % b
+    return a
+
+
+def solution_function_name(divisor1, divisor2, unique_cnt1, unique_cnt2):
+    """
+    函数式接口 - 使用二分查找来找到满足条件的最大值的最小值。
+    """
+    left, right = 1, 10 ** 9
+    while left < right:
+        mid = (left + right) // 2
+        if is_valid(mid, divisor1, divisor2, unique_cnt1, unique_cnt2):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
 Solution = create_solution(solution_function_name)

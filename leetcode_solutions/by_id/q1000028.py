@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个堆（最大堆和最小堆）来维护数据流中的中位数。
+- 最大堆存储较小的一半数据，最小堆存储较大的一半数据。
+- 保证两个堆的大小差不超过1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个堆：最大堆和最小堆。
+2. 添加新数时，根据当前两个堆的大小关系，决定将新数添加到哪个堆中。
+3. 调整堆以保持平衡，并确保最大堆的所有元素都小于最小堆的所有元素。
+4. 查找中位数时，根据两个堆的大小关系返回中位数。
 
 关键点:
-- [TODO]
+- 使用堆来高效地维护中位数。
+- 保持两个堆的平衡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 每次插入和查找中位数的时间复杂度。
+空间复杂度: O(n) - 存储所有数据的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
+
+class MedianFinder:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.max_heap = []  # 最大堆，存储较小的一半数据
+        self.min_heap = []  # 最小堆，存储较大的一半数据
+
+    def addNum(self, num: int) -> None:
+        if not self.max_heap or num <= -self.max_heap[0]:
+            heapq.heappush(self.max_heap, -num)
+        else:
+            heapq.heappush(self.min_heap, num)
+
+        # 平衡两个堆
+        if len(self.max_heap) > len(self.min_heap) + 1:
+            heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))
+        elif len(self.min_heap) > len(self.max_heap):
+            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))
+
+    def findMedian(self) -> float:
+        if len(self.max_heap) == len(self.min_heap):
+            return (-self.max_heap[0] + self.min_heap[0]) / 2
+        else:
+            return -self.max_heap[0]
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 示例用法
+if __name__ == "__main__":
+    mf = MedianFinder()
+    mf.addNum(1)
+    mf.addNum(2)
+    print(mf.findMedian())  # 输出 1.5
+    mf.addNum(3)
+    print(mf.findMedian())  # 输出 2.0

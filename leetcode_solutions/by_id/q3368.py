@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针找到链表的中间节点，然后根据规则判断获胜者。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 slow 和 fast，分别指向链表的头节点。
+2. 快指针每次移动两步，慢指针每次移动一步，当快指针到达链表末尾时，慢指针正好在链表的中间位置。
+3. 根据题目规则判断获胜者：
+   - 如果链表长度为奇数，慢指针指向的节点为获胜者。
+   - 如果链表长度为偶数，慢指针的下一个节点为获胜者。
 
 关键点:
-- [TODO]
+- 使用快慢指针找到链表的中间节点。
+- 根据链表长度的奇偶性判断获胜者。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需要遍历链表一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_winner(head: Optional[ListNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    找到链表游戏的获胜者。
+    
+    :param head: 链表的头节点
+    :return: 获胜者的值
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or not head.next:
+        return head.val if head else None
+    
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    
+    # 如果链表长度为奇数，慢指针指向的节点为获胜者
+    # 如果链表长度为偶数，慢指针的下一个节点为获胜者
+    return slow.val if fast else slow.next.val
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_winner)

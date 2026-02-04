@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和分治法将字符串分解成多个特殊子串，然后对这些子串进行排序以获得字典序最大的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `split_into_special_substrings`，用于将字符串分解成多个特殊子串。
+2. 对每个特殊子串递归调用自身，获取其字典序最大的结果。
+3. 将处理后的子串按字典序从大到小排序。
+4. 拼接排序后的子串，返回最终结果。
 
 关键点:
-- [TODO]
+- 通过递归和分治法将问题分解成更小的子问题。
+- 对每个子串进行递归处理，确保每个子串都是字典序最大的。
+- 对子串进行排序以获得整体字典序最大的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。递归调用的时间复杂度为 O(n)，排序的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，递归调用栈和存储子串的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def split_into_special_substrings(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    将字符串 s 分解成多个特殊子串。
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    start = 0
+    result = []
+    for i, char in enumerate(s):
+        if char == '1':
+            count += 1
+        else:
+            count -= 1
+        if count == 0:
+            result.append(s[start:i+1])
+            start = i + 1
+    return result
 
 
-Solution = create_solution(solution_function_name)
+def make_largest_special(s: str) -> str:
+    """
+    返回在字符串上应用任意次操作后可能得到的字典序最大的字符串。
+    """
+    if not s:
+        return ""
+    
+    # 将字符串分解成多个特殊子串
+    substrings = split_into_special_substrings(s)
+    
+    # 对每个特殊子串递归调用自身，获取其字典序最大的结果
+    for i in range(len(substrings)):
+        substrings[i] = '1' + make_largest_special(substrings[i][1:-1]) + '0'
+    
+    # 将处理后的子串按字典序从大到小排序
+    substrings.sort(reverse=True)
+    
+    # 拼接排序后的子串，返回最终结果
+    return ''.join(substrings)
+
+
+Solution = create_solution(make_largest_special)

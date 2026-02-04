@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][m] 表示从第 i 堆石子开始，当前 M 为 m 时，当前玩家可以获得的最大石子数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，方便快速计算任意区间的石子总数。
+2. 初始化 dp 数组，dp[i][m] 表示从第 i 堆石子开始，当前 M 为 m 时，当前玩家可以获得的最大石子数。
+3. 从后向前遍历每一堆石子，对于每一个可能的 M 值，计算当前玩家可以获得的最大石子数。
+4. 返回 dp[0][1]，即从第 0 堆石子开始，初始 M 为 1 时，Alice 可以获得的最大石子数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组优化区间求和操作。
+- 动态规划的状态转移方程为 dp[i][m] = max(dp[i][m], prefix_sum[i] - dp[j][max(m, x)] for x in range(1, 2 * m + 1))。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是 piles 的长度。因为我们需要遍历所有可能的 (i, m) 对，并且在每个 (i, m) 对中需要遍历最多 2 * m 次。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def stone_game_ii(piles: List[int]) -> int:
+    n = len(piles)
+    if n == 0:
+        return 0
+
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + piles[i]
+
+    # 初始化 dp 数组
+    dp = [[0] * (n + 1) for _ in range(n)]
+
+    # 从后向前遍历每一堆石子
+    for i in range(n - 1, -1, -1):
+        for m in range(1, n + 1):
+            for x in range(1, min(2 * m, n - i) + 1):
+                j = i + x
+                dp[i][m] = max(dp[i][m], prefix_sum[j] - prefix_sum[i] - dp[j][max(m, x)])
+
+    return dp[0][1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stone_game_ii)

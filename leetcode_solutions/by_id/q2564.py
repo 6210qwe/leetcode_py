@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索（DFS）。第一次 DFS 用于找到 Bob 到达根节点的路径，并记录每个节点的访问时间。第二次 DFS 用于计算 Alice 的最大净得分，同时考虑 Bob 的路径和访问时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 找到 Bob 到达根节点的路径，并记录每个节点的访问时间。
+3. 使用 DFS 计算 Alice 的最大净得分，同时考虑 Bob 的路径和访问时间。
 
 关键点:
-- [TODO]
+- 使用两次 DFS 来处理 Bob 和 Alice 的路径。
+- 在第二次 DFS 中，根据 Bob 的访问时间调整 Alice 的得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。构建邻接表和两次 DFS 都是线性时间复杂度。
+空间复杂度: O(n)，存储邻接表和递归栈的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,57 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def most_profitable_path(edges: List[List[int]], bob: int, amount: List[int]) -> int:
+    def build_graph(edges: List[List[int]]) -> dict:
+        graph = {}
+        for u, v in edges:
+            if u not in graph:
+                graph[u] = []
+            if v not in graph:
+                graph[v] = []
+            graph[u].append(v)
+            graph[v].append(u)
+        return graph
+
+    def find_bob_path(graph: dict, bob: int) -> dict:
+        visited = {bob: 0}
+        stack = [(bob, 0)]
+        while stack:
+            node, time = stack.pop()
+            if node == 0:
+                break
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited[neighbor] = time + 1
+                    stack.append((neighbor, time + 1))
+        return visited
+
+    def dfs(node: int, parent: int, time: int, alice_score: int) -> int:
+        nonlocal max_score
+        if node in bob_time:
+            if bob_time[node] < time:
+                alice_score += 0
+            elif bob_time[node] == time:
+                alice_score += amount[node] // 2
+            else:
+                alice_score += amount[node]
+        else:
+            alice_score += amount[node]
+
+        is_leaf = True
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                is_leaf = False
+                dfs(neighbor, node, time + 1, alice_score)
+
+        if is_leaf:
+            max_score = max(max_score, alice_score)
+
+    graph = build_graph(edges)
+    bob_time = find_bob_path(graph, bob)
+    max_score = float('-inf')
+    dfs(0, -1, 0, 0)
+    return max_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_profitable_path)

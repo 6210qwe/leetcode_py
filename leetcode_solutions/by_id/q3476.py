@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个元素，计算将其变为能被 3 整除所需的最小操作数。对于每个元素，它要么是 3 的倍数，要么可以通过增加或减少 1 或 2 变成 3 的倍数。我们只需要统计所有这些操作的总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `operations` 为 0，用于记录总操作数。
+2. 遍历数组 `nums` 中的每个元素 `num`。
+3. 计算 `num % 3`，如果结果不为 0，则需要进行操作：
+   - 如果 `num % 3 == 1`，则需要 1 次操作。
+   - 如果 `num % 3 == 2`，则需要 2 次操作。
+4. 将所需的操作数累加到 `operations` 中。
+5. 返回 `operations` 作为结果。
 
 关键点:
-- [TODO]
+- 通过取模运算快速判断每个元素是否需要操作，并计算所需操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_divisible_by_three(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将数组中所有元素都变成可以被 3 整除的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    for num in nums:
+        if num % 3 != 0:
+            operations += min(num % 3, 3 - (num % 3))
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_divisible_by_three)

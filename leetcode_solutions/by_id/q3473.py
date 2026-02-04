@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个用户的停车费用和时长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表来存储每个用户的停车记录，并计算每条记录的停车时长。
+2. 使用 CASE WHEN 语句来根据停车时长计算停车费用。
+3. 对每个用户进行分组，计算总停车费用和总停车时长。
 
 关键点:
-- [TODO]
+- 使用 DATEDIFF 函数来计算停车时长。
+- 使用 CASE WHEN 语句来处理不同时间段的停车费用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是停车记录的数量。每个记录都需要计算一次停车时长和费用。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -58,3 +60,36 @@ def solution_function_name(params):
 
 
 Solution = create_solution(solution_function_name)
+
+# SQL 查询实现
+def calculate_parking_fees_and_duration():
+    query = """
+    WITH parking_records AS (
+        SELECT 
+            user_id,
+            start_time,
+            end_time,
+            DATEDIFF(end_time, start_time) AS duration
+        FROM parking
+    ),
+    fees AS (
+        SELECT 
+            user_id,
+            SUM(
+                CASE 
+                    WHEN duration <= 1 THEN 2
+                    WHEN duration <= 2 THEN 3
+                    WHEN duration <= 3 THEN 5
+                    ELSE 7
+                END
+            ) AS total_fee,
+            SUM(duration) AS total_duration
+        FROM parking_records
+        GROUP BY user_id
+    )
+    SELECT * FROM fees;
+    """
+    return query
+
+# 使用工厂函数创建解决方案
+Solution = create_solution(calculate_parking_fees_and_duration)

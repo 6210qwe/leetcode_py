@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个图像中 1 的坐标，并计算所有可能的平移向量及其重叠数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 记录 img1 和 img2 中所有 1 的坐标。
+2. 计算所有可能的平移向量及其对应的重叠数。
+3. 返回最大重叠数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录坐标，提高查找效率。
+- 通过平移向量计算重叠数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def largestOverlap(img1: List[List[int]], img2: List[List[int]]) -> int:
+    n = len(img1)
+    
+    def get_ones_coordinates(image):
+        return [(i, j) for i in range(n) for j in range(n) if image[i][j] == 1]
+    
+    img1_ones = get_ones_coordinates(img1)
+    img2_ones = get_ones_coordinates(img2)
+    
+    from collections import defaultdict
+    overlap_count = defaultdict(int)
+    
+    for (x1, y1) in img1_ones:
+        for (x2, y2) in img2_ones:
+            vector = (x2 - x1, y2 - y1)
+            overlap_count[vector] += 1
+    
+    return max(overlap_count.values() or [0])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largestOverlap)

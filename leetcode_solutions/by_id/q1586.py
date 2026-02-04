@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的包含最多一个 0 的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，以及一个计数器 zero_count 来记录当前窗口内的 0 的数量。
+2. 移动右指针扩展窗口，如果遇到 0，则增加 zero_count。
+3. 如果 zero_count 大于 1，则移动左指针收缩窗口，直到 zero_count 小于等于 1。
+4. 记录窗口的最大长度，即为所求结果减去 1（因为需要删除一个元素）。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护一个最多包含一个 0 的子数组。
+- 窗口的最大长度即为所求结果减去 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def longest_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删掉一个元素后的最长全 1 子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    left, right, zero_count, max_length = 0, 0, 0, 0
+    
+    while right < len(nums):
+        if nums[right] == 0:
+            zero_count += 1
+        
+        while zero_count > 1:
+            if nums[left] == 0:
+                zero_count -= 1
+            left += 1
+        
+        max_length = max(max_length, right - left)
+        right += 1
+    
+    return max_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subarray)

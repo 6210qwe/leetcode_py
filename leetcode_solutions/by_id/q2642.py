@@ -21,40 +21,90 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（堆）来管理工人和箱子的状态，确保每次过桥的工人是最优选择。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化四个优先队列：left_queue, right_queue, picking_queue, putting_queue。
+2. 将所有工人放入 left_queue，按效率排序。
+3. 使用一个时间戳变量 current_time 来跟踪当前时间。
+4. 在箱子数量 n 大于 0 或者还有工人在右边时，进行以下操作：
+   - 从 right_queue 中取出效率最低的工人，如果该工人已经完成捡箱子任务，则将其加入 putting_queue。
+   - 从 left_queue 中取出效率最低的工人，如果需要更多的工人去捡箱子，则将其加入 picking_queue。
+   - 从 picking_queue 中取出效率最低的工人，更新时间并将其加入 right_queue。
+   - 从 putting_queue 中取出效率最低的工人，更新时间并将其加入 left_queue。
+5. 返回当前时间减去最后一个工人过桥的时间。
 
 关键点:
-- [TODO]
+- 使用优先队列确保每次过桥的工人是最优选择。
+- 通过维护多个队列来跟踪工人的状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + k) log k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def find_crossing_time(n: int, k: int, time: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最后一个箱子到达桥左侧的时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义优先队列
+    left_queue = []
+    right_queue = []
+    picking_queue = []
+    putting_queue = []
 
+    # 初始化 left_queue
+    for i in range(k):
+        heapq.heappush(left_queue, (time[i][0] + time[i][2], i))
 
-Solution = create_solution(solution_function_name)
+    current_time = 0
+
+    while n > 0 or right_queue or picking_queue:
+        # 从 right_queue 中取出效率最低的工人
+        while right_queue and right_queue[0][0] <= current_time:
+            _, worker_id = heapq.heappop(right_queue)
+            heapq.heappush(putting_queue, (time[worker_id][3], worker_id))
+
+        # 从 left_queue 中取出效率最低的工人
+        while left_queue and (n > 0 or picking_queue):
+            _, worker_id = heapq.heappop(left_queue)
+            if n > 0:
+                n -= 1
+                heapq.heappush(picking_queue, (current_time + time[worker_id][1], worker_id))
+            else:
+                heapq.heappush(left_queue, (time[worker_id][0] + time[worker_id][2], worker_id))
+                break
+
+        # 从 picking_queue 中取出效率最低的工人
+        if picking_queue:
+            next_time, worker_id = heapq.heappop(picking_queue)
+            current_time = max(current_time, next_time)
+            heapq.heappush(right_queue, (current_time + time[worker_id][2], worker_id))
+
+        # 从 putting_queue 中取出效率最低的工人
+        elif putting_queue:
+            next_time, worker_id = heapq.heappop(putting_queue)
+            current_time = max(current_time, next_time)
+            heapq.heappush(left_queue, (time[worker_id][0] + time[worker_id][2], worker_id))
+
+        # 更新时间
+        if not right_queue and not picking_queue:
+            if left_queue:
+                current_time = min(current_time, left_queue[0][0])
+            if putting_queue:
+                current_time = min(current_time, putting_queue[0][0])
+
+    return current_time
+
+Solution = create_solution(find_crossing_time)

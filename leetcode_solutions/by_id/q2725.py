@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最优解。首先计算每块奶酪由第一只老鼠吃掉比第二只老鼠吃掉多出来的得分差值，然后选择差值最大的前 k 块奶酪给第一只老鼠吃。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每块奶酪的得分差值。
+2. 将这些差值按降序排序。
+3. 选择前 k 个差值对应的奶酪给第一只老鼠吃，其余给第二只老鼠吃。
+4. 计算总得分。
 
 关键点:
-- [TODO]
+- 通过差值排序来确定哪些奶酪应该由第一只老鼠吃掉。
+- 使用贪心算法确保总得分最大化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是奶酪的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储差值和排序结果需要 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def mice_and_cheese(reward1: List[int], reward2: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回第一只老鼠恰好吃掉 k 块奶酪的情况下，最大得分为多少。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(reward1)
+    # 计算每块奶酪的得分差值
+    diff = [reward1[i] - reward2[i] for i in range(n)]
+    # 按差值降序排序，并获取前 k 个差值的索引
+    top_k_indices = sorted(range(n), key=lambda i: diff[i], reverse=True)[:k]
+    
+    # 计算总得分
+    total_score = sum(reward1[i] if i in top_k_indices else reward2[i] for i in range(n))
+    
+    return total_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(mice_and_cheese)

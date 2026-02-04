@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理和筛选
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取Employees表并过滤出薪水小于30000美元的员工
+2. 找出所有有效的manager_id，并将不在有效manager_id列表中的员工筛选出来
+3. 按照employee_id排序并返回结果
 
 关键点:
-- [TODO]
+- 使用Pandas库进行高效的数据处理
+- 通过集合操作来快速查找无效的manager_id
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def find_employees_with_left_managers(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找上级经理已离职且薪水少于30000美元的员工
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出薪水小于30000美元的员工
+    low_salary_employees = employees[employees['salary'] < 30000]
+    
+    # 找出所有有效的manager_id
+    valid_managers = set(employees['employee_id'])
+    
+    # 筛选出manager_id不在有效manager_id列表中的员工
+    result = low_salary_employees[~low_salary_employees['manager_id'].isin(valid_managers)]
+    
+    # 按照employee_id排序并返回结果
+    return result[['employee_id']].sort_values(by='employee_id')
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_employees_with_left_managers)

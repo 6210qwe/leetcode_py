@@ -21,22 +21,28 @@ LCP 76. 魔法棋盘 - 在大小为 `n * m` 的棋盘中，有两种不同的棋
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来尝试所有可能的填充方案，并检查每种方案是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录有效方案的数量。
+2. 定义一个递归函数 `backtrack`，该函数接受当前处理的行索引 `row` 和当前棋盘状态 `board`。
+3. 如果 `row` 达到棋盘的高度 `n`，则检查当前棋盘是否满足条件，如果满足则增加计数器 `count`。
+4. 否则，遍历当前行的所有列，对于每个列：
+   - 如果当前格子是 `?`，则尝试填入 `B` 和 `R`，并递归调用 `backtrack` 处理下一行。
+   - 如果当前格子不是 `?`，则直接递归调用 `backtrack` 处理下一行。
+5. 在递归过程中，使用辅助函数 `is_valid` 检查当前棋盘是否满足条件。
 
 关键点:
-- [TODO]
+- 使用回溯法穷举所有可能的填充方案。
+- 在每次递归调用后恢复棋盘状态，以避免影响后续的递归调用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^(n*m))，其中 n 是棋盘的高度，m 是棋盘的宽度。最坏情况下，每个问号位置都有三种选择（留空、放黑棋、放红棋）。
+空间复杂度: O(n*m)，递归调用栈的深度最多为 n*m。
 """
 
 # ============================================================================
@@ -49,12 +55,48 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(n: int, m: int, chessboard: List[str]) -> int:
+    def is_valid(board: List[str]) -> bool:
+        for i in range(n):
+            for j in range(m):
+                if board[i][j] == 'B':
+                    # 检查同一行和同一列
+                    for k in range(j + 1, m):
+                        if board[i][k] == 'R' and (k - j == 2 or all(board[i][l] == '.' for l in range(j + 1, k))):
+                            return False
+                    for k in range(i + 1, n):
+                        if board[k][j] == 'R' and (k - i == 2 or all(board[l][j] == '.' for l in range(i + 1, k))):
+                            return False
+                elif board[i][j] == 'R':
+                    # 检查同一行和同一列
+                    for k in range(j + 1, m):
+                        if board[i][k] == 'B' and (k - j == 2 or all(board[i][l] == '.' for l in range(j + 1, k))):
+                            return False
+                    for k in range(i + 1, n):
+                        if board[k][j] == 'B' and (k - i == 2 or all(board[l][j] == '.' for l in range(i + 1, k))):
+                            return False
+        return True
+
+    def backtrack(row: int, board: List[str]):
+        nonlocal count
+        if row == n:
+            if is_valid(board):
+                count += 1
+            return
+        for col in range(m):
+            if board[row][col] == '?':
+                board[row] = board[row][:col] + 'B' + board[row][col + 1:]
+                backtrack(row + 1, board)
+                board[row] = board[row][:col] + 'R' + board[row][col + 1:]
+                backtrack(row + 1, board)
+                board[row] = board[row][:col] + '.' + board[row][col + 1:]
+                backtrack(row + 1, board)
+            else:
+                backtrack(row + 1, board)
+
+    count = 0
+    backtrack(0, chessboard)
+    return count
 
 
 Solution = create_solution(solution_function_name)

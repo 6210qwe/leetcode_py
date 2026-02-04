@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来判断数组是否可以划分为 k 个连续数字的集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数字出现的次数。
+2. 将数组排序。
+3. 遍历排序后的数组，对于每个数字，检查它是否可以作为某个连续子数组的起始点。
+4. 如果可以，则从哈希表中减去该连续子数组中的所有数字的计数。
+5. 如果在任何时候无法找到足够的连续数字，则返回 False。
+6. 如果遍历完整个数组后没有问题，则返回 True。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个数字的出现次数。
+- 每次找到一个连续子数组时，更新哈希表中的计数。
+- 确保每次选择的起始点是当前最小且未被使用过的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度是 O(n log n)，后续遍历操作是 O(n)。
+空间复杂度: O(n)，哈希表的空间复杂度是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_divide_array(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以把数组划分成一些由 k 个连续数字组成的集合。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) % k != 0:
+        return False
+    
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    nums.sort()
+    
+    for num in nums:
+        if count[num] == 0:
+            continue
+        for i in range(k):
+            if count.get(num + i, 0) < count[num]:
+                return False
+            count[num + i] -= count[num]
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_divide_array)

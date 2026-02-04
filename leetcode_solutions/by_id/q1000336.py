@@ -21,22 +21,28 @@ LCR 072. x 的平方根 - 给定一个非负整数 x ，计算并返回 x 的平
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到 x 的平方根。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，分别指向 0 和 x。
+2. 进行二分查找：
+   - 计算中间值 mid。
+   - 检查 mid 的平方是否等于 x，如果是则返回 mid。
+   - 如果 mid 的平方小于 x，则将 left 移动到 mid + 1。
+   - 如果 mid 的平方大于 x，则将 right 移动到 mid - 1。
+3. 返回 right，因为当 left > right 时，right 是最大的满足条件的值。
 
 关键点:
-- [TODO]
+- 使用二分查找可以有效地缩小搜索范围。
+- 通过检查 mid 的平方与 x 的关系来调整左右指针。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log x)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +55,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 x 的平方根
     """
-    # TODO: 实现最优解法
-    pass
+    if x == 0 or x == 1:
+        return x
+    
+    left, right = 0, x
+    while left <= right:
+        mid = (left + right) // 2
+        mid_squared = mid * mid
+        
+        if mid_squared == x:
+            return mid
+        elif mid_squared < x:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return right
 
 
 Solution = create_solution(solution_function_name)

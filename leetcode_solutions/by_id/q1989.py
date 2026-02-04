@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们用一个二进制掩码来表示 nums2 中哪些元素已经被使用过。通过递归和记忆化搜索，我们可以找到最小的异或值之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp` 来存储中间结果。
+2. 定义一个递归函数 `dfs(i, mask)`，其中 `i` 表示当前处理到 nums1 的第 i 个元素，`mask` 表示 nums2 中已被使用的元素。
+3. 如果 `i` 等于 `n`，说明所有元素都已处理完，返回 0。
+4. 如果 `(i, mask)` 已经在 `dp` 中，直接返回 `dp[(i, mask)]`。
+5. 否则，遍历 nums2 中未被使用的元素，计算当前的异或值，并递归调用 `dfs`。
+6. 更新 `dp[(i, mask)]` 为最小的异或值之和。
+7. 返回 `dp[(i, mask)]`。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示哪些元素已经被使用过。
+- 通过记忆化搜索来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^n)，其中 n 是数组的长度。每个状态有 2^n 种可能，每种状态需要 O(n) 时间来处理。
+空间复杂度: O(n * 2^n)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -49,12 +55,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_xor_sum(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个数组最小的异或值之和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    dp = {}
+
+    def dfs(i: int, mask: int) -> int:
+        if i == n:
+            return 0
+        if (i, mask) in dp:
+            return dp[(i, mask)]
+        
+        res = float('inf')
+        for j in range(n):
+            if not (mask & (1 << j)):
+                res = min(res, (nums1[i] ^ nums2[j]) + dfs(i + 1, mask | (1 << j)))
+        
+        dp[(i, mask)] = res
+        return res
+
+    return dfs(0, 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_xor_sum)

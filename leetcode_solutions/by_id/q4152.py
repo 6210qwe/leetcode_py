@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的最小子数组长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个集合 seen 来存储当前窗口内的不同元素。
+3. 使用一个变量 current_sum 来存储当前窗口内不同元素的和。
+4. 移动右指针扩展窗口，直到 current_sum >= k。
+5. 当 current_sum >= k 时，尝试移动左指针缩小窗口，更新最小长度。
+6. 重复上述步骤，直到右指针遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术可以在 O(n) 时间复杂度内解决问题。
+- 使用集合来存储不同元素，确保每个元素只计算一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_subarray_length(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个子数组的最小长度，使得该子数组中出现的不同值之和至少为 k。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return -1
+
+    left = 0
+    current_sum = 0
+    seen = set()
+    min_length = float('inf')
+
+    for right in range(n):
+        # 添加新的元素到窗口
+        if nums[right] not in seen:
+            seen.add(nums[right])
+            current_sum += nums[right]
+
+        # 尝试收缩窗口
+        while current_sum >= k:
+            min_length = min(min_length, right - left + 1)
+            if nums[left] in seen:
+                seen.remove(nums[left])
+                current_sum -= nums[left]
+            left += 1
+
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_subarray_length)

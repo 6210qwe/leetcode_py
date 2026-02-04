@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的排列
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表和当前路径列表
+2. 定义回溯函数，参数为当前路径和剩余元素
+3. 在回溯函数中，如果剩余元素为空，则将当前路径加入结果列表
+4. 否则，遍历剩余元素，选择一个元素加入当前路径，并递归调用回溯函数
+5. 递归返回后，从当前路径中移除该元素（回溯）
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有排列
+- 通过递归和回溯来构建所有可能的路径
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def permute(nums: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    生成数组 nums 的所有排列
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(path, remaining):
+        if not remaining:
+            result.append(path[:])
+            return
+        for i in range(len(remaining)):
+            path.append(remaining[i])
+            backtrack(path, remaining[:i] + remaining[i+1:])
+            path.pop()
 
+    result = []
+    backtrack([], nums)
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(permute)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护一个三维数组 dp，其中 dp[i][j][k] 表示到达 (i, j) 位置时，最后一步是 k（0 表示等待，1 表示向右或向下移动）的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][1] = 1，因为从 (0, 0) 开始，第一步是进入。
+2. 遍历每个单元格 (i, j)，更新 dp 数组：
+   - 如果当前步是等待，则 dp[i][j][0] = min(dp[i][j-1][1], dp[i-1][j][1]) + waitCost[i][j]。
+   - 如果当前步是移动，则 dp[i][j][1] = min(dp[i][j-1][0], dp[i-1][j][0]) + (i + 1) * (j + 1)。
+3. 返回 dp[m-1][n-1][1]，即到达 (m-1, n-1) 且最后一步是移动的最小成本。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_cost_path(m: int, n: int, waitCost: List[List[int]]) -> int:
+    # 初始化 dp 数组
+    dp = [[[float('inf')] * 2 for _ in range(n)] for _ in range(m)]
+    dp[0][0][1] = 1  # 从 (0, 0) 开始，第一步是进入
+    
+    # 遍历每个单元格
+    for i in range(m):
+        for j in range(n):
+            if i > 0:
+                dp[i][j][0] = min(dp[i][j][0], dp[i-1][j][1] + waitCost[i][j])
+                dp[i][j][1] = min(dp[i][j][1], dp[i-1][j][0] + (i + 1) * (j + 1))
+            if j > 0:
+                dp[i][j][0] = min(dp[i][j][0], dp[i][j-1][1] + waitCost[i][j])
+                dp[i][j][1] = min(dp[i][j][1], dp[i][j-1][0] + (i + 1) * (j + 1))
+    
+    return dp[m-1][n-1][1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_path)

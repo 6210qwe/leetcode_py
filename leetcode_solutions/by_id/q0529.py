@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来揭露空白方块及其相邻方块。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查点击的位置是否是地雷，如果是则直接将其标记为 'X' 并返回。
+2. 如果点击的位置是空白方块 ('E')，则使用 DFS 揭露该方块及其相邻方块。
+3. 在 DFS 过程中，计算当前方块周围的地雷数量。如果周围没有地雷，则继续递归揭露相邻的空白方块；否则，将当前方块标记为地雷数量。
 
 关键点:
-- [TODO]
+- 使用方向数组来简化相邻方块的遍历。
+- 使用 DFS 递归揭露空白方块及其相邻方块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个方块最多只会被访问一次。
+空间复杂度: O(m * n)，递归调用栈的深度最多为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def update_board(board: List[List[str]], click: List[int]) -> List[List[str]]:
+    if not board or not board[0]:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(board), len(board[0])
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
+    def dfs(x: int, y: int):
+        if board[x][y] != 'E':
+            return
 
-Solution = create_solution(solution_function_name)
+        # 计算周围地雷数量
+        mine_count = sum((board[nx][ny] == 'M' for dx, dy in directions if 0 <= (nx := x + dx) < m and 0 <= (ny := y + dy) < n))
+
+        if mine_count > 0:
+            board[x][y] = str(mine_count)
+        else:
+            board[x][y] = 'B'
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    dfs(nx, ny)
+
+    x, y = click
+    if board[x][y] == 'M':
+        board[x][y] = 'X'
+    else:
+        dfs(x, y)
+
+    return board
+
+Solution = create_solution(update_board)

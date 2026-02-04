@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口技术来解决这个问题。我们需要找到恰好有 k 个不同整数的子数组数量。可以通过计算最多有 k 个不同整数的子数组数量减去最多有 k-1 个不同整数的子数组数量来得到结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `at_most_k_distinct` 来计算最多有 k 个不同整数的子数组数量。
+2. 使用两个指针 left 和 right 来表示当前窗口的左右边界。
+3. 使用一个哈希表来记录当前窗口内每个整数的出现次数。
+4. 当窗口内的不同整数数量超过 k 时，移动左指针并更新哈希表。
+5. 计算最多有 k 个不同整数的子数组数量。
+6. 返回 `at_most_k_distinct(nums, k) - at_most_k_distinct(nums, k-1)`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来维护当前窗口内的不同整数数量。
+- 通过两次调用 `at_most_k_distinct` 函数来计算结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被处理两次（一次作为右指针，一次作为左指针）。
+空间复杂度: O(k)，哈希表的大小最多为 k。
 """
 
 # ============================================================================
@@ -49,12 +54,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def at_most_k_distinct(nums: List[int], k: int) -> int:
+    count = {}
+    left = 0
+    result = 0
+    
+    for right in range(len(nums)):
+        if nums[right] not in count:
+            count[nums[right]] = 0
+        count[nums[right]] += 1
+        
+        while len(count) > k:
+            count[nums[left]] -= 1
+            if count[nums[left]] == 0:
+                del count[nums[left]]
+            left += 1
+        
+        result += right - left + 1
+    
+    return result
+
+
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算恰好有 k 个不同整数的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    return at_most_k_distinct(nums, k) - at_most_k_distinct(nums, k-1)
 
 
 Solution = create_solution(solution_function_name)

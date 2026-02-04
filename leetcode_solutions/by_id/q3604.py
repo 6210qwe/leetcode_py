@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和快速幂来计算总的活动方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个表演者可以被分配到的节目数量，即 x。
+2. 计算每个有表演者的节目可以得到的分数数量，即 y。
+3. 使用组合数学公式计算总的活动方案数，并使用快速幂进行取模运算。
 
 关键点:
-- [TODO]
+- 使用快速幂来高效计算大数的幂次取模。
+- 使用组合数学公式来计算总的活动方案数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n * x * y)) - 快速幂的时间复杂度。
+空间复杂度: O(1) - 常数级额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,23 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def quick_pow(base: int, exp: int, mod: int) -> int:
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
 
+def solution_function_name(n: int, x: int, y: int) -> int:
+    """
+    函数式接口 - 计算总的活动方案数
+    """
+    # 计算总的活动方案数
+    total_ways = quick_pow(x + y, n, MOD)
+    return total_ways
 
 Solution = create_solution(solution_function_name)

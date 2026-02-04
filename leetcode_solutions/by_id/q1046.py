@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的子数组，其中包含最多 k 个 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，表示滑动窗口的左右边界。
+2. 遍历数组，右指针 right 向右移动，同时记录窗口内的 0 的数量。
+3. 如果窗口内的 0 的数量超过 k，则左指针 left 向右移动，直到窗口内的 0 的数量不超过 k。
+4. 记录每次窗口的长度，并更新最大长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护一个包含最多 k 个 0 的子数组。
+- 右指针向右扩展窗口，左指针在窗口内 0 的数量超过 k 时收缩窗口。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_consecutive_ones(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行操作后数组中连续 1 的最大个数
     """
-    # TODO: 实现最优解法
-    pass
+    left = 0
+    zero_count = 0
+    max_length = 0
+    
+    for right in range(len(nums)):
+        if nums[right] == 0:
+            zero_count += 1
+        
+        while zero_count > k:
+            if nums[left] == 0:
+                zero_count -= 1
+            left += 1
+        
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_consecutive_ones)

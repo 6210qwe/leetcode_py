@@ -21,22 +21,26 @@ LCR 173. 点名 - 某班级 n 位同学的学号为 0 ~ n-1。点名结果记录
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到缺失的学号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 records[mid] == mid，则说明缺失的学号在右半部分，移动左指针。
+   - 否则，缺失的学号在左半部分，移动右指针。
+3. 当 left > right 时，left 即为缺失的学号。
 
 关键点:
-- [TODO]
+- 通过二分查找将时间复杂度降低到 O(log n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(records: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到缺失的学号
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(records) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if records[mid] == mid:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return left
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过观察可以发现，Alice 和 Bob 的最优策略是分别选择最小和最大的元素进行删除。最终剩下的元素将是数组中的次小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小值。
+2. 找到数组中次小值。
+3. 返回次小值作为最终结果。
 
 关键点:
-- [TODO]
+- 通过两次遍历找到最小值和次小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    min_val = float('inf')
+    second_min_val = float('inf')
+
+    for num in nums:
+        if num < min_val:
+            second_min_val = min_val
+            min_val = num
+        elif min_val < num < second_min_val:
+            second_min_val = num
+
+    return second_min_val
 
 
 Solution = create_solution(solution_function_name)

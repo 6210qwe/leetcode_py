@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储所有的小字符串，然后遍历大字符串，查找每个子串在大字符串中的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树，将所有小字符串插入到字典树中。
+2. 遍历大字符串，对于每个起始位置，使用字典树查找该位置开始的所有子串。
+3. 记录每个小字符串在大字符串中的位置。
 
 关键点:
-- [TODO]
+- 使用字典树可以高效地查找多个子串。
+- 通过一次遍历大字符串，避免了多次重复扫描。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * k)，其中 n 是 big 的长度，m 是 smalls 的长度，k 是 smalls 中最长字符串的长度。
+空间复杂度: O(m * k)，字典树的空间复杂度取决于 smalls 的总字符数。
 """
 
 # ============================================================================
@@ -48,13 +50,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.index = -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str, index: int):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.index = index
 
-Solution = create_solution(solution_function_name)
+def multi_search(big: str, smalls: List[str]) -> List[List[int]]:
+    trie = Trie()
+    for i, small in enumerate(smalls):
+        trie.insert(small, i)
+
+    result = [[] for _ in range(len(smalls))]
+    for i in range(len(big)):
+        node = trie.root
+        for j in range(i, len(big)):
+            if big[j] not in node.children:
+                break
+            node = node.children[big[j]]
+            if node.index != -1:
+                result[node.index].append(i)
+    return result
+
+Solution = create_solution(multi_search)

@@ -21,40 +21,49 @@ LCR 102. 目标和 - 给定一个正整数数组 nums 和一个整数 target 。
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。将问题转化为一个子集和问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和 `total_sum`。
+2. 如果 `(total_sum + target) % 2 != 0` 或 `total_sum < abs(target)`，则返回 0，因为无法找到满足条件的子集。
+3. 将问题转化为求解子集和问题，新的目标和为 `(total_sum + target) // 2`。
+4. 使用动态规划数组 `dp`，其中 `dp[j]` 表示可以组成和为 `j` 的子集数量。
+5. 初始化 `dp[0] = 1`，表示和为 0 的子集有一个（空集）。
+6. 遍历数组 `nums`，对于每个元素 `num`，从后向前更新 `dp` 数组。
+7. 最终返回 `dp[(total_sum + target) // 2]`。
 
 关键点:
-- [TODO]
+- 将问题转化为子集和问题，使用动态规划求解。
+- 动态规划数组 `dp` 的初始化和更新顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * S)，其中 n 是数组长度，S 是目标和的一半。
+空间复杂度: O(S)，其中 S 是目标和的一半。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def findTargetSumWays(nums: List[int], target: int) -> int:
+    total_sum = sum(nums)
+    if (total_sum + target) % 2 != 0 or total_sum < abs(target):
+        return 0
+    
+    new_target = (total_sum + target) // 2
+    dp = [0] * (new_target + 1)
+    dp[0] = 1
+    
+    for num in nums:
+        for j in range(new_target, num - 1, -1):
+            dp[j] += dp[j - num]
+    
+    return dp[new_target]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findTargetSumWays)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到数组中的最小元素，然后计算其各数位之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小元素。
+2. 将该最小元素转换为字符串形式。
+3. 遍历字符串中的每个字符，将其转换为整数并累加。
 
 关键点:
-- [TODO]
+- 使用内置函数 `min` 来找到数组中的最小元素。
+- 将整数转换为字符串以便逐位处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + d)，其中 n 是数组的长度，d 是最小元素的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中最小元素的各数位之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到数组中的最小元素
+    min_num = min(nums)
+    
+    # 将最小元素转换为字符串
+    min_str = str(min_num)
+    
+    # 计算各数位之和
+    digit_sum = sum(int(digit) for digit in min_str)
+    
+    return digit_sum
 
 
 Solution = create_solution(solution_function_name)

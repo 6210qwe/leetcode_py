@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用堆（优先队列）来维护每个下标 i 的最大 k 个 nums2[j] 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums1 和 nums2 按照 nums1 的值进行排序。
+2. 使用一个最小堆来维护当前下标 i 的前 k 个最大 nums2[j] 值。
+3. 遍历排序后的数组，对于每个下标 i，将所有满足 nums1[j] < nums1[i] 的 nums2[j] 值加入堆中。
+4. 如果堆的大小超过 k，则弹出堆顶元素。
+5. 计算堆中元素的总和作为结果。
 
 关键点:
-- [TODO]
+- 使用堆来高效地维护前 k 个最大值。
+- 通过排序和二分查找来快速找到满足条件的下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n log k) - 排序的时间复杂度是 O(n log n)，堆操作的时间复杂度是 O(log k)。
+空间复杂度: O(n + k) - 存储排序后的数组和堆的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_sum_k_elements(nums1: List[int], nums2: List[int], k: int) -> List[int]:
+    n = len(nums1)
+    indices = list(range(n))
+    indices.sort(key=lambda x: nums1[x])
+    
+    result = [0] * n
+    min_heap = []
+    
+    for i in range(n):
+        while min_heap and nums1[indices[i]] > nums1[min_heap[0][1]]:
+            _, j = heapq.heappop(min_heap)
+            if len(min_heap) < k:
+                heapq.heappush(min_heap, (nums2[j], j))
+        
+        heapq.heappush(min_heap, (nums2[indices[i]], indices[i]))
+        if len(min_heap) > k:
+            heapq.heappop(min_heap)
+        
+        result[indices[i]] = sum(val for val, _ in min_heap)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_k_elements)

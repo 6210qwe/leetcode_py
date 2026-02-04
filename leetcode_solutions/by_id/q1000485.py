@@ -21,22 +21,25 @@ LCP 70. 沙地治理 - 在力扣城的沙漠分会场展示了一种沙柳树，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过在每行的特定位置种植沙柳树，使得整个三角形区域被完全覆盖。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `result` 用于存储需要种植沙柳树的位置。
+2. 对于每一行 `i`，计算该行的起始位置 `start` 和结束位置 `end`。
+3. 将 `(i, start)` 和 `(i, end)` 添加到 `result` 中。
+4. 返回 `result`。
 
 关键点:
-- [TODO]
+- 每一行的起始位置是 `1 + 2 * (i - 1)`，结束位置是 `2 * i - 1`。
+- 通过这种方式，可以确保每行的两端都有沙柳树，从而保证整个三角形区域被覆盖。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是三角形的边长。我们需要遍历每一行并计算起始和结束位置。
+空间复杂度: O(1)，除了返回的结果列表外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(size: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(1, size + 1):
+        start = 1 + 2 * (i - 1)
+        end = 2 * i - 1
+        result.append([i, start])
+        if start != end:
+            result.append([i, end])
+    return result
 
 
 Solution = create_solution(solution_function_name)

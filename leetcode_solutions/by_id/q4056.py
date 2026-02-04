@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的平衡子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个计数器 count 来记录当前窗口内每个字符的出现次数。
+3. 移动右指针扩展窗口，更新计数器。
+4. 检查当前窗口是否平衡，如果平衡则更新最长长度。
+5. 如果窗口不平衡，移动左指针缩小窗口，直到窗口再次平衡。
+6. 重复步骤 3-5，直到右指针遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态调整窗口大小，确保窗口内的字符出现次数相同。
+- 通过计数器来高效地检查和更新窗口内的字符出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，计数器的大小固定为 3（'a'、'b' 和 'c'）。
 """
 
 # ============================================================================
@@ -49,12 +54,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_balanced_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长的平衡子串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    def is_balanced(count):
+        values = [count['a'], count['b'], count['c']]
+        return len(set(values)) == 1 or (len(set(values)) == 2 and 0 in set(values))
+
+    left, right = 0, 0
+    count = {'a': 0, 'b': 0, 'c': 0}
+    max_length = 0
+
+    while right < len(s):
+        count[s[right]] += 1
+        right += 1
+
+        while not is_balanced(count):
+            count[s[left]] -= 1
+            left += 1
+
+        max_length = max(max_length, right - left)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_balanced_substring)

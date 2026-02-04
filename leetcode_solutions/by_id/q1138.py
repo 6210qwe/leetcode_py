@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到使用秘密技巧的最佳时间段。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算不使用秘密技巧时的满意顾客总数。
+2. 使用滑动窗口计算在每个可能的时间段内使用秘密技巧可以增加的满意顾客数。
+3. 选择使总满意顾客数最大的时间段。
 
 关键点:
-- [TODO]
+- 通过滑动窗口技术，可以在 O(n) 时间内找到最佳时间段。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maxSatisfied(customers: List[int], grumpy: List[int], X: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最多有多少客户能够感到满意
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(customers)
+    total_satisfied = 0
+    max_additional_satisfied = 0
+    current_additional_satisfied = 0
+    
+    # 计算不使用秘密技巧时的满意顾客总数
+    for i in range(n):
+        if grumpy[i] == 0:
+            total_satisfied += customers[i]
+    
+    # 使用滑动窗口计算在每个可能的时间段内使用秘密技巧可以增加的满意顾客数
+    for i in range(n):
+        if i < X:
+            if grumpy[i] == 1:
+                current_additional_satisfied += customers[i]
+        else:
+            if grumpy[i] == 1:
+                current_additional_satisfied += customers[i]
+            if grumpy[i - X] == 1:
+                current_additional_satisfied -= customers[i - X]
+        
+        max_additional_satisfied = max(max_additional_satisfied, current_additional_satisfied)
+    
+    return total_satisfied + max_additional_satisfied
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxSatisfied)

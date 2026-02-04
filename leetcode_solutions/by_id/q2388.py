@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的新值，并在最后更新数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表 `value_map` 来记录每个元素的新值。
+2. 遍历 `operations`，对于每个操作，更新 `value_map`。
+3. 遍历 `nums`，使用 `value_map` 更新每个元素的值。
+4. 返回更新后的 `nums`。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内查找和更新元素的新值。
+- 最后一次性更新 `nums`，避免多次修改数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `nums` 的长度，m 是 `operations` 的长度。
+空间复杂度: O(n)，需要额外的空间来存储 `value_map`。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def replace_elements(nums: List[int], operations: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换数组中的元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希表来记录每个元素的新值
+    value_map = {num: num for num in nums}
+    
+    # 遍历 operations，更新 value_map
+    for old_val, new_val in operations:
+        value_map[old_val] = new_val
+    
+    # 更新 nums
+    for i in range(len(nums)):
+        nums[i] = value_map[nums[i]]
+    
+    return nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(replace_elements)

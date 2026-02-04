@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i] 表示以第 i 个字符结尾的子字符串的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，长度为 n+1，dp[0] = 1。
+2. 从左到右遍历字符串 s，对于每个位置 i，检查从 i-1 到 i-l 之间的子字符串是否在 [1, k] 之间。
+3. 如果在范围内，则将 dp[i] 加上 dp[i-l]。
+4. 最终结果是 dp[n] % (10^9 + 7)。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来检查子字符串是否在 [1, k] 之间。
+- 动态规划的状态转移方程为 dp[i] += dp[i-l]。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log k)，其中 n 是字符串 s 的长度，log k 是每次检查子字符串是否在 [1, k] 之间的复杂度。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(s)
+    dp = [0] * (n + 1)
+    dp[0] = 1
+
+    for i in range(1, n + 1):
+        for l in range(1, min(i + 1, 11)):  # 最多检查 10 位数
+            if i - l == 0 or (i - l > 0 and s[i - l - 1] != '0'):
+                num = int(s[i - l:i])
+                if 1 <= num <= k:
+                    dp[i] = (dp[i] + dp[i - l]) % MOD
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

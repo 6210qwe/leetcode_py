@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划计算错位排列数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个数组 dp，其中 dp[i] 表示 i 个元素的错位排列数。
+2. 初始化 dp[0] = 1 和 dp[1] = 0。
+3. 使用递推公式 dp[i] = (i - 1) * (dp[i - 1] + dp[i - 2]) 计算 dp[n]。
 
 关键点:
-- [TODO]
+- 错位排列的递推公式为 D(n) = (n - 1) * (D(n - 1) + D(n - 2))
+- 使用模运算防止整数溢出
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_derangement(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 个元素的错位排列数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 1
+    if n == 1:
+        return 0
+
+    MOD = 10**9 + 7
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    dp[1] = 0
+
+    for i in range(2, n + 1):
+        dp[i] = (i - 1) * (dp[i - 1] + dp[i - 2]) % MOD
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_derangement)

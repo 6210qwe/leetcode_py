@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举可能的数值平衡数，并找到第一个大于 n 的数值平衡数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `is_balanced` 来判断一个数是否是数值平衡数。
+2. 从 n+1 开始逐个检查每个数，直到找到一个数值平衡数。
 
 关键点:
-- [TODO]
+- 使用字符串操作来统计每个数位的出现次数。
+- 通过枚举和检查来找到最小的数值平衡数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)（实际上是在有限范围内枚举，可以认为是常数时间）
+空间复杂度: O(1)（使用了常数级的额外空间）
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_balanced(num: int) -> bool:
+    num_str = str(num)
+    count = [0] * 10
+    for digit in num_str:
+        count[int(digit)] += 1
+    for i in range(10):
+        if count[i] > 0 and count[i] != i:
+            return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+def next_beautiful_number(n: int) -> int:
+    """
+    返回严格大于 n 的最小数值平衡数。
+    """
+    num = n + 1
+    while not is_balanced(num):
+        num += 1
+    return num
+
+
+Solution = create_solution(next_beautiful_number)

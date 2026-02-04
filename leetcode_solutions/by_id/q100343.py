@@ -21,22 +21,23 @@ LCR 187. 破冰游戏 - 社团共有 num 位成员参与破冰游戏，编号为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用约瑟夫环问题的数学解法
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 f(n, m)，表示 n 个人玩游戏，每次删除第 m 个人，最后剩下的那个人的编号。
+2. 递归终止条件：当 n 为 1 时，返回 0。
+3. 递归公式：f(n, m) = (f(n-1, m) + m) % n。
 
 关键点:
-- [TODO]
+- 递归公式推导：假设 f(n-1, m) 的结果是 x，则对于 n 个人的情况，x 会移动 m 个位置，再对 n 取模。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用约瑟夫环问题的数学解法
     """
-    # TODO: 实现最优解法
-    pass
+    def f(n: int, m: int) -> int:
+        if n == 1:
+            return 0
+        return (f(n - 1, m) + m) % n
+
+    return f(num, target)
 
 
 Solution = create_solution(solution_function_name)

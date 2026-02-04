@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和优先队列来找到最大的四个乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示在 b 的前 i 个元素中选择 j 个元素的最大乘积。
+2. 使用优先队列（堆）来维护当前的最大值。
+3. 遍历数组 b，更新 dp 数组和优先队列。
+4. 最后返回 dp[n][4]，即在 b 的所有元素中选择 4 个元素的最大乘积。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 使用优先队列来高效地找到最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组 b 的长度。因为我们需要对每个元素进行插入和删除操作，这些操作的时间复杂度是 O(log n)。
+空间复杂度: O(n)，因为我们需要存储 dp 数组和优先队列。
 """
 
 # ============================================================================
@@ -47,14 +50,26 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(a: List[int], b: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(b)
+    dp = [[float('-inf')] * 5 for _ in range(n + 1)]
+    dp[0][0] = 0
+    max_heap = []
+    
+    for i in range(1, n + 1):
+        for j in range(1, 5):
+            dp[i][j] = dp[i - 1][j]
+            if j > 0:
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + a[j - 1] * b[i - 1])
+        
+        # 使用优先队列维护当前的最大值
+        heapq.heappush(max_heap, -dp[i][4])
+    
+    return -max_heap[0]
 
 Solution = create_solution(solution_function_name)

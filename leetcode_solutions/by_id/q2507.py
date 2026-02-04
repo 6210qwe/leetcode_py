@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举从 1 到 min(a, b) 的所有整数，检查它们是否是 a 和 b 的公因子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 枚举从 1 到 min(a, b) 的所有整数 i。
+3. 检查 i 是否同时是 a 和 b 的因子，如果是，则增加计数器 count。
+4. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 通过枚举从 1 到 min(a, b) 的所有整数，可以确保找到所有的公因子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(min(a, b)) - 我们最多需要检查 min(a, b) 个数。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 a 和 b 的公因子的数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for i in range(1, min(a, b) + 1):
+        if a % i == 0 and b % i == 0:
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

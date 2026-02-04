@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每一行和每一列的最大值，然后对于每一个建筑物，其最大可增加的高度是该行和该列最大值中的较小值减去当前高度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `row_maxes` 和 `col_maxes` 分别存储每一行和每一列的最大值。
+2. 遍历整个矩阵，更新 `row_maxes` 和 `col_maxes`。
+3. 再次遍历矩阵，对于每个建筑物，计算其最大可增加的高度，并累加到总增量中。
 
 关键点:
-- [TODO]
+- 通过两次遍历矩阵来计算最大增量，时间复杂度为 O(n^2)。
+- 空间复杂度为 O(n)，因为需要存储每一行和每一列的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_increase_keeping_skyline(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在不改变天际线的前提下，建筑物可以增加的最大高度增量总和。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    row_maxes = [max(row) for row in grid]
+    col_maxes = [max(grid[row][col] for row in range(n)) for col in range(n)]
+    
+    total_increase = 0
+    for i in range(n):
+        for j in range(n):
+            max_possible_height = min(row_maxes[i], col_maxes[j])
+            total_increase += max_possible_height - grid[i][j]
+    
+    return total_increase
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_increase_keeping_skyline)

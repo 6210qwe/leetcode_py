@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每对相邻珠子的权重和，然后选择前 k-1 个最小和最大的和来确定最小和最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每对相邻珠子的权重和。
+2. 对这些和进行排序。
+3. 选择前 k-1 个最小和最大的和来计算最小和最大分数。
+4. 返回最大分数和最小分数的差值。
 
 关键点:
-- [TODO]
+- 通过贪心算法选择前 k-1 个最小和最大的和来确定最小和最大分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 weights 的长度。主要的时间消耗在于排序操作。
+空间复杂度: O(n)，存储每对相邻珠子的权重和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def put_marbles(weights: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大分数与最小分数的差值
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 1 or len(weights) == k:
+        return 0
+    
+    # 计算每对相邻珠子的权重和
+    pairs = [weights[i] + weights[i + 1] for i in range(len(weights) - 1)]
+    
+    # 对这些和进行排序
+    pairs.sort()
+    
+    # 选择前 k-1 个最小和最大的和来计算最小和最大分数
+    min_sum = sum(pairs[:k-1])
+    max_sum = sum(pairs[-(k-1):])
+    
+    # 返回最大分数和最小分数的差值
+    return max_sum - min_sum
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(put_marbles)

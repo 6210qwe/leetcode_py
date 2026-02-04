@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组和前缀和来计算每个时间点的花的数量，然后使用二分查找来确定每个人到达时的花的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有花的开始时间和结束时间分别存储在两个列表中。
+2. 对这两个列表进行排序。
+3. 使用二分查找来确定每个人到达时的花的数量。
 
 关键点:
-- [TODO]
+- 使用差分数组来记录每个时间点的花的变化。
+- 使用前缀和来计算每个时间点的花的总数。
+- 使用二分查找来高效地确定每个人到达时的花的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) log m)，其中 m 是 flowers 的长度，n 是 people 的长度。
+空间复杂度: O(m + n)，用于存储开始时间和结束时间的列表以及结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def full_bloom_flowers(flowers: List[List[int]], persons: List[int]) -> List[int]:
+    start_times = []
+    end_times = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for start, end in flowers:
+        start_times.append(start)
+        end_times.append(end + 1)  # 结束时间加1，表示花期结束后的第一个时间点
 
+    start_times.sort()
+    end_times.sort()
 
-Solution = create_solution(solution_function_name)
+    def count_flowers_at_time(time: int) -> int:
+        started = bisect.bisect_right(start_times, time)
+        ended = bisect.bisect_left(end_times, time)
+        return started - ended
+
+    return [count_flowers_at_time(time) for time in persons]
+
+Solution = create_solution(full_bloom_flowers)

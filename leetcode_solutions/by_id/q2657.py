@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来最小化电脑运行时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按任务的结束时间对任务进行排序。
+2. 使用一个优先队列来记录当前正在运行的任务，并维护一个计数器来记录已运行的时间点。
+3. 遍历每个任务，尝试将其安排在已有任务的空闲时间段内。
+4. 如果无法安排在空闲时间段内，则延长电脑的运行时间以满足任务需求。
 
 关键点:
-- [TODO]
+- 通过优先队列来高效管理任务的开始和结束时间。
+- 通过贪心策略尽可能地利用已有的运行时间点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是任务的数量。排序操作的时间复杂度为 O(n log n)，而后续遍历和优先队列操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，优先队列的空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minimum_time_to_complete_tasks(tasks: List[List[int]]) -> int:
+    # 按任务的结束时间排序
+    tasks.sort(key=lambda x: x[1])
+    
+    # 优先队列，存储任务的结束时间和持续时间
+    pq = []
+    total_time = 0
+    
+    for start, end, duration in tasks:
+        while pq and start > pq[0][0]:
+            _, d = heapq.heappop(pq)
+            duration -= min(d, start - pq[0][0])
+        
+        if duration > 0:
+            heapq.heappush(pq, (end, duration))
+            total_time += duration
+    
+    return total_time
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_complete_tasks)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法计算从最后一个节点到其他所有节点的最短路径，然后使用动态规划计算从第一个节点到最后一个节点的受限路径数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法计算从最后一个节点到其他所有节点的最短路径。
+3. 使用动态规划计算从第一个节点到最后一个节点的受限路径数，确保路径上的节点满足受限路径的条件。
 
 关键点:
-- [TODO]
+- 使用优先队列优化 Dijkstra 算法的时间复杂度。
+- 动态规划时，使用记忆化搜索避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是节点的数量。Dijkstra 算法的时间复杂度是 O((E + V) log V)，动态规划的时间复杂度是 O(E + V)。
+空间复杂度: O(E + V)，存储图的邻接表、最短路径和动态规划的状态。
 """
 
 # ============================================================================
@@ -44,17 +46,49 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from heapq import heappop, heappush
 
+def countRestrictedPaths(n: int, edges: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    graph = [[] for _ in range(n + 1)]
+    
+    # 构建图的邻接表
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+    
+    # 使用 Dijkstra 算法计算从最后一个节点到其他所有节点的最短路径
+    dist = [float('inf')] * (n + 1)
+    dist[n] = 0
+    pq = [(0, n)]
+    
+    while pq:
+        d, node = heappop(pq)
+        if d > dist[node]:
+            continue
+        for neighbor, weight in graph[node]:
+            if dist[neighbor] > d + weight:
+                dist[neighbor] = d + weight
+                heappush(pq, (dist[neighbor], neighbor))
+    
+    # 动态规划计算从第一个节点到最后一个节点的受限路径数
+    dp = [-1] * (n + 1)
+    
+    def dfs(node: int) -> int:
+        if node == n:
+            return 1
+        if dp[node] != -1:
+            return dp[node]
+        
+        count = 0
+        for neighbor, _ in graph[node]:
+            if dist[neighbor] < dist[node]:
+                count += dfs(neighbor)
+                count %= MOD
+        
+        dp[node] = count
+        return count
+    
+    return dfs(1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(countRestrictedPaths)

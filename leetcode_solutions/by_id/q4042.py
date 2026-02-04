@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过计算每个元素的差值来确定最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数为 0。
+2. 遍历 nums1 和 nums2 的前 n 个元素，计算每个元素的差值并累加到操作次数中。
+3. 计算最后一个元素的差值并累加到操作次数中。
+4. 返回总的操作次数。
 
 关键点:
-- [TODO]
+- 通过计算每个元素的差值来确定最小操作次数。
+- 最后一个元素的处理需要单独考虑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums1 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_transform_array(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 nums1 转换为 nums2 所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    operations = 0
+    
+    # 计算前 n 个元素的差值
+    for i in range(n):
+        operations += abs(nums1[i] - nums2[i])
+    
+    # 计算最后一个元素的差值
+    operations += abs(nums1[-1] - nums2[-1])
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_transform_array)

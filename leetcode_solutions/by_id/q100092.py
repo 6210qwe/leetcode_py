@@ -21,40 +21,49 @@ LCP 02. 分式化简 - 有一个同学在学习分式。他需要将一个连分
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从后向前逐步计算连分数的值，并使用辗转相除法求最大公约数来简化分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从后向前遍历系数列表，逐步计算连分数的值。
+2. 使用辗转相除法求分子和分母的最大公约数，并简化分数。
+3. 返回最终的分子和分母。
 
 关键点:
-- [TODO]
+- 从后向前计算可以避免嵌套过多的括号。
+- 使用辗转相除法确保分子和分母互质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是系数列表的长度。每个系数只处理一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
 
-
-def solution_function_name(params):
+def solution_function_name(cont: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将连分数化简为最简分数
     """
-    # TODO: 实现最优解法
-    pass
+    if not cont:
+        return [0, 1]
 
+    # 从后向前计算连分数的值
+    numerator = cont[-1]
+    denominator = 1
+
+    for i in range(len(cont) - 2, -1, -1):
+        numerator, denominator = cont[i] * numerator + denominator, numerator
+
+    # 求最大公约数并简化分数
+    common_divisor = gcd(numerator, denominator)
+    return [numerator // common_divisor, denominator // common_divisor]
 
 Solution = create_solution(solution_function_name)

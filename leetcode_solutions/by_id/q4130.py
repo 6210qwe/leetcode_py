@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，尽可能将较大的数值与 '1' 对应起来。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 和 s 中的 '1' 位置及其对应的数值存储在一个列表中。
+2. 对这个列表按数值从大到小排序。
+3. 从左到右遍历 s，将 '1' 依次移动到最左边，同时更新分数。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每次交换都能最大化分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储 '1' 位置及其对应数值的列表。
 """
 
 # ============================================================================
@@ -49,12 +50,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算二进制交换后的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 存储 '1' 位置及其对应数值
+    ones_with_values = [(i, nums[i]) for i in range(len(s)) if s[i] == '1']
+    
+    # 按数值从大到小排序
+    ones_with_values.sort(key=lambda x: -x[1])
+    
+    # 从左到右遍历 s，将 '1' 依次移动到最左边
+    score = 0
+    zero_count = 0
+    for i in range(len(s)):
+        if s[i] == '0':
+            zero_count += 1
+        elif s[i] == '1':
+            if zero_count > 0:
+                score += ones_with_values[zero_count - 1][1]
+            else:
+                score += ones_with_values[zero_count][1]
+    
+    return score
 
 
 Solution = create_solution(solution_function_name)

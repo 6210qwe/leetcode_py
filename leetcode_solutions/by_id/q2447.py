@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个价值对应的总重量，然后将结果按价值升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `weight_map` 来存储每个价值对应的总重量。
+2. 遍历 `items1` 和 `items2`，将每个价值的重量累加到 `weight_map` 中。
+3. 将 `weight_map` 转换为列表，并按价值升序排序。
+4. 返回排序后的列表。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地存储和累加重量。
+- 最后对结果进行排序以满足题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 items1 和 items2 的长度之和。主要的时间开销在于最后的排序操作。
+空间复杂度: O(n)，用于存储哈希表中的键值对。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def merge_similar_items(items1: List[List[int]], items2: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 合并相似的物品
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表
+    weight_map = {}
+    
+    # 遍历 items1 并累加重量
+    for value, weight in items1:
+        if value in weight_map:
+            weight_map[value] += weight
+        else:
+            weight_map[value] = weight
+    
+    # 遍历 items2 并累加重量
+    for value, weight in items2:
+        if value in weight_map:
+            weight_map[value] += weight
+        else:
+            weight_map[value] = weight
+    
+    # 将哈希表转换为列表并按价值升序排序
+    result = sorted([[value, weight] for value, weight in weight_map.items()])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_similar_items)

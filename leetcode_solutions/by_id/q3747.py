@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算相邻元素之间的最大绝对差值，包括首尾元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大差值为0。
+2. 遍历数组，计算每对相邻元素之间的绝对差值，并更新最大差值。
+3. 特别处理首尾元素之间的绝对差值，并更新最大差值。
 
 关键点:
-- [TODO]
+- 使用一次遍历即可完成计算。
+- 处理首尾元素时，需要特别考虑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_adjacent_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算循环数组中相邻元素之间的最大绝对差值。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 2:
+        raise ValueError("数组长度必须大于等于2")
+
+    max_diff = 0
+
+    # 遍历数组，计算每对相邻元素之间的绝对差值
+    for i in range(1, n):
+        max_diff = max(max_diff, abs(nums[i] - nums[i - 1]))
+
+    # 特别处理首尾元素之间的绝对差值
+    max_diff = max(max_diff, abs(nums[0] - nums[n - 1]))
+
+    return max_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_adjacent_difference)

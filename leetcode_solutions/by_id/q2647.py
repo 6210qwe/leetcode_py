@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托色尼筛法预处理所有数的质因数，并使用前缀和与后缀和来快速计算前缀和后缀的质因数集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理所有数的质因数。
+2. 计算前缀和后缀的质因数集合。
+3. 遍历数组，找到第一个使得前缀和后缀的质因数集合不相交的下标。
 
 关键点:
-- [TODO]
+- 使用埃拉托色尼筛法预处理质因数。
+- 使用前缀和后缀的质因数集合来快速判断是否互质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log M)，其中 n 是数组长度，M 是数组中的最大值。
+空间复杂度: O(M)，用于存储每个数的质因数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def prime_factors(n):
+        factors = set()
+        while n % 2 == 0:
+            factors.add(2)
+            n //= 2
+        for i in range(3, int(math.sqrt(n)) + 1, 2):
+            while n % i == 0:
+                factors.add(i)
+                n //= i
+        if n > 2:
+            factors.add(n)
+        return factors
 
+    n = len(nums)
+    max_num = max(nums)
+    primes = [prime_factors(i) for i in range(1, max_num + 1)]
+
+    prefix_factors = [set() for _ in range(n)]
+    suffix_factors = [set() for _ in range(n)]
+
+    for i in range(n):
+        prefix_factors[i] = (prefix_factors[i-1].copy() if i > 0 else set()) | primes[nums[i]-1]
+        suffix_factors[n-i-1] = (suffix_factors[n-i].copy() if i < n-1 else set()) | primes[nums[n-i-1]-1]
+
+    for i in range(n - 1):
+        if not (prefix_factors[i] & suffix_factors[i+1]):
+            return i
+
+    return -1
 
 Solution = create_solution(solution_function_name)

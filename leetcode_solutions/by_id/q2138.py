@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个辅助数组来记录每个位置左侧的最大值和右侧的最小值，从而可以在 O(1) 时间内判断 nums[i] 是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个辅助数组 left_max 和 right_min。
+2. 填充 left_max 数组，使其在每个位置 i 处存储从 0 到 i-1 的最大值。
+3. 填充 right_min 数组，使其在每个位置 i 处存储从 i+1 到 n-1 的最小值。
+4. 遍历 nums 数组，根据 left_max 和 right_min 数组计算每个位置 i 的美丽值，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用两个辅助数组来快速判断 nums[i] 是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_beauty(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组的美丽值总和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return 0
+
+    # 辅助数组，left_max[i] 存储从 0 到 i-1 的最大值
+    left_max = [0] * n
+    left_max[0] = nums[0]
+    for i in range(1, n):
+        left_max[i] = max(left_max[i - 1], nums[i])
+
+    # 辅助数组，right_min[i] 存储从 i+1 到 n-1 的最小值
+    right_min = [0] * n
+    right_min[n - 1] = nums[n - 1]
+    for i in range(n - 2, -1, -1):
+        right_min[i] = min(right_min[i + 1], nums[i])
+
+    # 计算美丽值总和
+    beauty_sum = 0
+    for i in range(1, n - 1):
+        if left_max[i - 1] < nums[i] < right_min[i + 1]:
+            beauty_sum += 2
+        elif nums[i - 1] < nums[i] < nums[i + 1]:
+            beauty_sum += 1
+
+    return beauty_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_beauty)

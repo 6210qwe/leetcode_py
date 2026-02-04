@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法分别从 src1, src2 和 dest 出发计算最短路径，然后枚举所有可能的交点，找到最小的路径和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法从 src1, src2 和 dest 出发分别计算最短路径。
+3. 枚举所有可能的交点，计算从 src1 和 src2 到 dest 的路径和，找到最小的路径和。
 
 关键点:
-- [TODO]
+- 使用优先队列（堆）来实现 Dijkstra 算法。
+- 通过枚举所有可能的交点来找到最小的路径和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是节点的数量。Dijkstra 算法的时间复杂度是 O((E + V) log V)。
+空间复杂度: O(E + V)，存储图的邻接表和最短路径的结果。
 """
 
 # ============================================================================
@@ -44,17 +46,48 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
+from collections import defaultdict
 
-
-def solution_function_name(params):
+def dijkstra(n: int, graph: List[List[int]], start: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    使用 Dijkstra 算法计算从 start 到其他节点的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    dist = [float('inf')] * n
+    dist[start] = 0
+    pq = [(0, start)]
+    
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist[u]:
+            continue
+        for v, w in graph[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(pq, (dist[v], v))
+    
+    return dist
 
+def minimum_weighted_subgraph(n: int, edges: List[List[int]], src1: int, src2: int, dest: int) -> int:
+    # 构建图的邻接表表示
+    forward_graph = defaultdict(list)
+    reverse_graph = defaultdict(list)
+    
+    for u, v, w in edges:
+        forward_graph[u].append((v, w))
+        reverse_graph[v].append((u, w))
+    
+    # 计算从 src1, src2 和 dest 出发的最短路径
+    dist_src1 = dijkstra(n, forward_graph, src1)
+    dist_src2 = dijkstra(n, forward_graph, src2)
+    dist_dest = dijkstra(n, reverse_graph, dest)
+    
+    # 找到最小的路径和
+    min_cost = float('inf')
+    for i in range(n):
+        if dist_src1[i] != float('inf') and dist_src2[i] != float('inf') and dist_dest[i] != float('inf'):
+            min_cost = min(min_cost, dist_src1[i] + dist_src2[i] + dist_dest[i])
+    
+    return min_cost if min_cost != float('inf') else -1
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_weighted_subgraph)

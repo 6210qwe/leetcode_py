@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和动态规划来计算方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理质因数分解和组合数。
+2. 对于每个查询，计算所有可能的方案数。
 
 关键点:
-- [TODO]
+- 使用预处理的质因数分解和组合数来加速计算。
+- 动态规划用于计算每个质因数的分配方案。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(k) + q * n * log(n))
+空间复杂度: O(n * log(k) + n)
 """
 
 # ============================================================================
@@ -47,14 +48,62 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def precompute_factorials_and_inverses(max_n: int):
+    factorials = [1] * (max_n + 1)
+    inverses = [1] * (max_n + 1)
+    
+    for i in range(2, max_n + 1):
+        factorials[i] = factorials[i - 1] * i % MOD
+        inverses[i] = pow(factorials[i], -1, MOD)
+    
+    return factorials, inverses
+
+def comb(n: int, k: int, factorials, inverses):
+    if k > n:
+        return 0
+    return factorials[n] * inverses[k] * inverses[n - k] % MOD
+
+def solution_function_name(queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算生成乘积数组的方案数
     """
-    # TODO: 实现最优解法
-    pass
-
+    max_n = max(ni for ni, _ in queries)
+    max_k = max(ki for _, ki in queries)
+    
+    # 预处理阶乘和逆元
+    factorials, inverses = precompute_factorials_and_inverses(max_n)
+    
+    def count_ways(n: int, k: int) -> int:
+        if k == 1:
+            return 1
+        
+        factors = []
+        for i in range(2, int(math.sqrt(k)) + 1):
+            count = 0
+            while k % i == 0:
+                k //= i
+                count += 1
+            if count > 0:
+                factors.append(count)
+        
+        if k > 1:
+            factors.append(1)
+        
+        dp = [1]
+        for f in factors:
+            new_dp = [0] * (n + 1)
+            for j in range(n + 1):
+                for x in range(f + 1):
+                    if j - x >= 0:
+                        new_dp[j] = (new_dp[j] + dp[j - x] * comb(j, x, factorials, inverses)) % MOD
+            dp = new_dp
+        
+        return dp[n]
+    
+    return [count_ways(ni, ki) for ni, ki in queries]
 
 Solution = create_solution(solution_function_name)

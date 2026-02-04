@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符需要切换的次数，并检查是否能在 k 次操作内完成。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 s 和 t 的长度是否相同，如果不同直接返回 False。
+2. 初始化一个哈希表，记录每个字符需要切换的次数。
+3. 遍历 s 和 t，计算每个字符需要切换的次数，并更新哈希表。
+4. 检查哈希表中的每个切换次数是否能在 k 次操作内完成。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个字符需要切换的次数。
+- 计算每个字符需要切换的次数时，使用模运算处理环状字母表。
+- 检查每个切换次数是否能在 k 次操作内完成。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 和 t 的长度。
+空间复杂度: O(1)，哈希表的大小最多为 26。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_convert_string(s: str, t: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否能在 k 次操作内将字符串 s 转变成 t
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) != len(t):
+        return False
+    
+    # 记录每个字符需要切换的次数
+    needed_moves = [0] * 26
+    
+    for char_s, char_t in zip(s, t):
+        diff = (ord(char_t) - ord(char_s)) % 26
+        if diff > 0:
+            needed_moves[diff] += 1
+    
+    # 检查每个切换次数是否能在 k 次操作内完成
+    for i in range(1, 26):
+        if needed_moves[i] > 0:
+            max_move = i + 26 * (needed_moves[i] - 1)
+            if max_move > k:
+                return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_convert_string)

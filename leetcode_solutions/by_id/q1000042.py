@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数出现的次数，然后遍历数组，找到所有满足条件的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个数出现的次数。
+2. 初始化一个结果列表 `result`。
+3. 遍历数组 `nums`，对于每个数 `num`：
+   - 计算 `complement = target - num`。
+   - 如果 `complement` 在哈希表中且其计数大于 0，则将 `[num, complement]` 添加到结果列表中，并减少 `complement` 和 `num` 的计数。
+4. 返回结果列表 `result`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数的出现次数，可以在 O(1) 时间内查找和更新。
+- 确保每个数只能属于一个数对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `count` 最多存储 n 个不同的数。
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], target: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中两数之和为指定值的所有整数对
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    result = []
+
+    # 记录每个数出现的次数
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+
+    # 遍历数组，找到所有满足条件的数对
+    for num in nums:
+        complement = target - num
+        if complement in count and count[complement] > 0 and count[num] > 0:
+            if num == complement and count[num] < 2:
+                continue
+            result.append([num, complement])
+            count[complement] -= 1
+            count[num] -= 1
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

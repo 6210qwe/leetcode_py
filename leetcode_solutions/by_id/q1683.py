@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，每次选择三堆硬币中第二多的那一堆，以最大化你的硬币数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对硬币堆进行降序排序。
+2. 从索引 1 开始，每隔两个元素选择一次，累加这些元素的值。
 
 关键点:
-- [TODO]
+- 通过对硬币堆进行排序，确保每次选择的都是当前剩余堆中第二多的硬币。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 piles 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_coins(piles: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算你可以获得的最大硬币数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 对硬币堆进行降序排序
+    piles.sort(reverse=True)
+    
+    # 从索引 1 开始，每隔两个元素选择一次
+    return sum(piles[i] for i in range(1, len(piles) * 2 // 3, 2))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_coins)

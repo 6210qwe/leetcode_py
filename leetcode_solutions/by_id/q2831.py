@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历所有可能的下标对 (i, j)，并检查 nums[i] 的第一个数字和 nums[j] 的最后一个数字是否互质。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `gcd` 来计算两个数的最大公约数。
+2. 遍历所有可能的下标对 (i, j)，其中 0 ≤ i < j < len(nums)。
+3. 对于每个下标对 (i, j)，获取 nums[i] 的第一个数字和 nums[j] 的最后一个数字。
+4. 使用 `gcd` 函数检查这两个数字是否互质。
+5. 如果互质，则计数器加一。
+6. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用字符串操作来提取数字的第一个和最后一个字符。
+- 使用 `gcd` 函数来判断两个数字是否互质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log(max(num)))，其中 n 是数组长度，log(max(num)) 是计算最大公约数的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def count_beautiful_pairs(nums: List[int]) -> int:
+    def get_first_digit(num: int) -> int:
+        return int(str(num)[0])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def get_last_digit(num: int) -> int:
+        return num % 10
 
+    count = 0
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            first_digit = get_first_digit(nums[i])
+            last_digit = get_last_digit(nums[j])
+            if math.gcd(first_digit, last_digit) == 1:
+                count += 1
+    return count
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_pairs)

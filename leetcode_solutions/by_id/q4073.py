@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较反转前 k 个字符和反转后 k 个字符的结果，找到字典序最小的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `reverse_substring` 来反转字符串的一部分。
+2. 遍历所有可能的 k 值，分别计算反转前 k 个字符和反转后 k 个字符的结果。
+3. 比较这些结果，返回字典序最小的字符串。
 
 关键点:
-- [TODO]
+- 使用双指针方法来高效地反转字符串的一部分。
+- 通过遍历所有可能的 k 值来确保找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。需要遍历所有可能的 k 值，并且每次反转操作的时间复杂度是 O(k)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reverse_substring(s: str, start: int, end: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    辅助函数：反转字符串 s 从 start 到 end 的部分。
     """
-    # TODO: 实现最优解法
-    pass
+    return s[:start] + s[start:end+1][::-1] + s[end+1:]
+
+
+def solution_function_name(s: str) -> str:
+    """
+    函数式接口 - 反转后字典序最小的字符串
+    """
+    n = len(s)
+    min_string = s
+    
+    for k in range(1, n + 1):
+        # 反转前 k 个字符
+        reversed_prefix = reverse_substring(s, 0, k - 1)
+        if reversed_prefix < min_string:
+            min_string = reversed_prefix
+        
+        # 反转后 k 个字符
+        reversed_suffix = reverse_substring(s, n - k, n - 1)
+        if reversed_suffix < min_string:
+            min_string = reversed_suffix
+    
+    return min_string
 
 
 Solution = create_solution(solution_function_name)

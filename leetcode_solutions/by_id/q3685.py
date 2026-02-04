@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组来检查每个长度为 3 的子数组是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 遍历数组，对于每个可能的子数组 [i, i+1, i+2]，检查 nums[i] + nums[i+2] 是否等于 nums[i+1] 的一半。
+3. 如果满足条件，则将计数器 count 增加 1。
+4. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 通过一次遍历来检查所有可能的子数组，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计符合条件长度为 3 的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    n = len(nums)
+    for i in range(n - 2):
+        if (nums[i] + nums[i + 2]) == 2 * nums[i + 1]:
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护前 k 大的元素。每次插入新元素时，如果堆的大小超过 k，则弹出堆顶元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将初始数组 `nums` 中的前 k 大元素放入最小堆。
+2. 每次调用 `add` 方法时，将新元素插入堆中，并在堆的大小超过 k 时弹出堆顶元素。
+3. 堆顶元素即为当前数据流中的第 k 大元素。
 
 关键点:
-- [TODO]
+- 使用 Python 的 `heapq` 模块来实现最小堆。
+- 通过维护一个大小为 k 的最小堆来确保堆顶元素始终是第 k 大的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k) - 每次插入和删除操作的时间复杂度为 O(log k)。
+空间复杂度: O(k) - 维护一个大小为 k 的最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
+from typing import List
 
+class KthLargest:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, k: int, nums: List[int]):
+        self.k = k
+        self.min_heap = []
+        for num in nums:
+            self.add(num)
 
+    def add(self, val: int) -> int:
+        heapq.heappush(self.min_heap, val)
+        if len(self.min_heap) > self.k:
+            heapq.heappop(self.min_heap)
+        return self.min_heap[0]
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_kth_largest(k: int, nums: List[int]) -> KthLargest:
+    return KthLargest(k, nums)
+
+# 示例
+if __name__ == "__main__":
+    kth_largest = create_kth_largest(3, [4, 5, 8, 2])
+    print(kth_largest.add(3))  # 输出 4
+    print(kth_largest.add(5))  # 输出 5
+    print(kth_largest.add(10))  # 输出 5
+    print(kth_largest.add(9))  # 输出 8
+    print(kth_largest.add(4))  # 输出 8

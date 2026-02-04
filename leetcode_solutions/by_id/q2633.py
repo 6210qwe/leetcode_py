@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和滑动窗口来计算每个子数组的最小代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 dp 数组，dp[i] 表示将 nums[:i] 拆分的最小代价。
+2. 使用滑动窗口来计算每个子数组的 trimmed 长度。
+3. 对于每个位置 i，尝试将其与前面的某个位置 j 拆分成两个子数组，并更新 dp[i]。
+4. 最终返回 dp[n]，即整个数组的最小代价。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效计算 trimmed 长度。
+- 动态规划状态转移方程：dp[i] = min(dp[j] + cost(j+1, i))，其中 cost(j+1, i) 是子数组 nums[j+1:i+1] 的重要性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。我们需要遍历每个子数组的起点和终点。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_cost_to_split_array(nums: List[int], k: int) -> int:
+    n = len(nums)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, n + 1):
+        freq = {}
+        unique_count = 0
+        trimmed_length = 0
 
+        for j in range(i - 1, -1, -1):
+            if nums[j] in freq:
+                freq[nums[j]] += 1
+                if freq[nums[j]] == 2:
+                    unique_count -= 1
+                    trimmed_length += 2
+                elif freq[nums[j]] > 2:
+                    trimmed_length += 1
+            else:
+                freq[nums[j]] = 1
+                unique_count += 1
 
-Solution = create_solution(solution_function_name)
+            cost = k + trimmed_length
+            dp[i] = min(dp[i], dp[j] + cost)
+
+    return dp[n]
+
+Solution = create_solution(min_cost_to_split_array)

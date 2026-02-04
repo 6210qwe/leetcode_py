@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来避免重复计算，并通过递归的方式找到最小天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `min_days`，使用 `@lru_cache` 进行记忆化。
+2. 对于每个 `n`，考虑三种情况：
+   - 吃掉一个橘子，剩余 `n-1` 个橘子。
+   - 如果 `n` 能被 2 整除，吃掉 `n/2` 个橘子，剩余 `n/2` 个橘子。
+   - 如果 `n` 能被 3 整除，吃掉 `2*(n/3)` 个橘子，剩余 `n/3` 个橘子。
+3. 返回这三种情况中的最小值加 1（表示当前天数）。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算。
+- 递归地处理每种情况，找到最小天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(log n)
 """
 
 # ============================================================================
@@ -47,14 +52,28 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回吃掉 n 个橘子的最少天数
     """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(None)
+    def min_days(n: int) -> int:
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        # 吃掉一个橘子
+        days = 1 + min_days(n - 1)
+        # 如果 n 能被 2 整除，吃掉 n/2 个橘子
+        if n % 2 == 0:
+            days = min(days, 1 + min_days(n // 2))
+        # 如果 n 能被 3 整除，吃掉 2*(n/3) 个橘子
+        if n % 3 == 0:
+            days = min(days, 1 + min_days(n // 3))
+        return days
 
+    return min_days(n)
 
 Solution = create_solution(solution_function_name)

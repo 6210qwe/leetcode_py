@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的成本，并找到最接近目标价格的成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数来生成所有可能的成本。
+2. 对于每种基料，递归地添加配料的成本（0份、1份或2份）。
+3. 记录所有生成的成本，并找到最接近目标价格的成本。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的成本。
+- 通过比较绝对差值找到最接近目标价格的成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^m * n)，其中 m 是配料的数量，n 是基料的数量。每种配料有 3 种选择（0份、1份或2份），总共需要遍历 n 种基料。
+空间复杂度: O(3^m * n)，递归调用栈的深度最多为 m，且每种基料都会生成 3^m 个成本。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def closest_dessert_cost(base_costs: List[int], topping_costs: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(index: int, current_cost: int):
+        nonlocal min_diff, result
+        if index == len(topping_costs):
+            diff = abs(current_cost - target)
+            if diff < min_diff or (diff == min_diff and current_cost < result):
+                min_diff = diff
+                result = current_cost
+            return
+        # 不加当前配料
+        backtrack(index + 1, current_cost)
+        # 加一份当前配料
+        backtrack(index + 1, current_cost + topping_costs[index])
+        # 加两份当前配料
+        backtrack(index + 1, current_cost + 2 * topping_costs[index])
+
+    min_diff = float('inf')
+    result = 0
+    for base in base_costs:
+        backtrack(0, base)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closest_dessert_cost)

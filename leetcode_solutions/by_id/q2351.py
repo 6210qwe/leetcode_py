@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举购买钢笔的数量，计算剩余的钱可以购买多少支铅笔，从而得到总的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化方案数为 0。
+2. 枚举购买钢笔的数量 i，从 0 到 total // cost1。
+3. 对于每个 i，计算剩余的钱数 remaining = total - i * cost1。
+4. 计算可以购买铅笔的最大数量 j = remaining // cost2。
+5. 将 j + 1（包括不买铅笔的情况）加到方案数中。
+6. 返回总方案数。
 
 关键点:
-- [TODO]
+- 通过枚举钢笔的数量，避免了双重循环，提高了效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(total // cost1)，其中 total 是总钱数，cost1 是钢笔的价格。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(total: int, cost1: int, cost2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算购买钢笔和铅笔的不同方案数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化方案数
+    ways = 0
+    
+    # 枚举购买钢笔的数量
+    for i in range(total // cost1 + 1):
+        remaining = total - i * cost1
+        # 计算可以购买铅笔的最大数量
+        j = remaining // cost2
+        # 将 j + 1 加到方案数中
+        ways += j + 1
+    
+    return ways
 
 
 Solution = create_solution(solution_function_name)

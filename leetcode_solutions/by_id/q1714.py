@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算总空格数和单词数，然后重新分配空格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 去除首尾空格，分割出单词列表。
+2. 计算总空格数和单词数。
+3. 计算每对相邻单词之间的空格数和剩余空格数。
+4. 重新构建字符串，确保每对相邻单词之间的空格数相等，并将多余空格放在字符串末尾。
 
 关键点:
-- [TODO]
+- 使用 `split` 方法去除首尾空格并分割单词。
+- 计算每对相邻单词之间的空格数和剩余空格数。
+- 重新构建字符串时注意处理边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 text 的长度。我们需要遍历字符串来计算空格数和单词数，然后再遍历一次来构建结果字符串。
+空间复杂度: O(n)，因为我们需要存储分割后的单词列表和结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def rearrange_spaces(text: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    重新排列单词间的空格
     """
-    # TODO: 实现最优解法
-    pass
+    # 去除首尾空格并分割出单词列表
+    words = text.strip().split()
+    
+    # 计算总空格数
+    total_spaces = text.count(' ')
+    
+    # 计算单词数
+    num_words = len(words)
+    
+    # 如果只有一个单词，直接返回该单词加上所有空格
+    if num_words == 1:
+        return words[0] + ' ' * total_spaces
+    
+    # 计算每对相邻单词之间的空格数和剩余空格数
+    spaces_between_words = total_spaces // (num_words - 1)
+    extra_spaces = total_spaces % (num_words - 1)
+    
+    # 重新构建字符串
+    result = (' ' * spaces_between_words).join(words) + ' ' * extra_spaces
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_spaces)

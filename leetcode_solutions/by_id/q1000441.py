@@ -21,40 +21,53 @@ LCP 59. 搭桥过河 - 欢迎各位勇者来到力扣城，本次试炼主题为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每块浮木按起始位置排序。
+2. 使用动态规划数组 dp，其中 dp[i] 表示前 i+1 块浮木的最小花费。
+3. 对于每块浮木，计算将其移动到与前一块浮木重叠所需的最小花费。
+4. 更新 dp 数组，选择最小的花费。
 
 关键点:
-- [TODO]
+- 通过排序和动态规划，确保每块浮木都能与前一块浮木重叠。
+- 通过维护一个累积最小花费，确保最终结果是最小的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 wood 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储动态规划数组 dp。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_cost_to_cross_river(num: int, wood: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算跨越河流所需的最小自然之力
     """
-    # TODO: 实现最优解法
-    pass
+    # 按起始位置排序
+    wood.sort(key=lambda x: x[0])
+    
+    n = len(wood)
+    dp = [0] * n
+    
+    for i in range(1, n):
+        # 计算将当前浮木移动到与前一块浮木重叠所需的最小花费
+        left = max(wood[i-1][1], wood[i][0])
+        right = min(wood[i-1][1], wood[i][1])
+        
+        if left > right:
+            dp[i] = dp[i-1] + abs(wood[i-1][1] - wood[i][0])
+        else:
+            dp[i] = dp[i-1]
+    
+    return dp[-1]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_cross_river)

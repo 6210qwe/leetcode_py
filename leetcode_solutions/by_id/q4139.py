@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字及其反转后的值出现的位置，然后遍历数组找到最小的绝对距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `reverse` 用于反转整数。
+2. 初始化一个字典 `seen` 用于存储每个数字及其反转后的值出现的位置。
+3. 遍历数组 `nums`，对于每个元素 `num`，计算其反转值 `rev_num`。
+4. 如果 `rev_num` 已经在 `seen` 中，则更新最小绝对距离。
+5. 将 `num` 及其位置存入 `seen` 中。
+6. 如果找到了镜像对，返回最小绝对距离；否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字及其反转后的值出现的位置，可以快速查找并更新最小绝对距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_absolute_distance(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算镜像对之间的最小绝对距离
     """
-    # TODO: 实现最优解法
-    pass
+    def reverse(num: int) -> int:
+        """反转整数"""
+        return int(str(num)[::-1])
+
+    seen = {}
+    min_distance = float('inf')
+
+    for i, num in enumerate(nums):
+        rev_num = reverse(num)
+        if rev_num in seen:
+            min_distance = min(min_distance, i - seen[rev_num])
+        seen[num] = i
+
+    return min_distance if min_distance != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_absolute_distance)

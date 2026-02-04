@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i] 表示以第 i 列结尾的最大非递减子序列的长度。我们需要找到最长的非递减子序列，然后用总列数减去这个长度即可。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i] 表示以第 i 列结尾的最大非递减子序列的长度。
+2. 遍历每一列，检查当前列是否可以接在之前的某列后面形成非递减子序列。
+3. 更新 dp 数组。
+4. 最后，用总列数减去 dp 数组中的最大值，即为需要删除的最少列数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[j] = max(dp[j], dp[i] + 1) 如果 strs[k][j] >= strs[k][i] 对于所有 k 成立。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m^2 * n)，其中 m 是字符串的长度，n 是字符串的数量。
+空间复杂度: O(m)，因为 dp 数组的长度为 m。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_deletion_size(strs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回需要删除的最少列数
     """
-    # TODO: 实现最优解法
-    pass
+    if not strs:
+        return 0
+
+    m, n = len(strs), len(strs[0])
+    dp = [1] * n
+
+    for j in range(1, n):
+        for i in range(j):
+            if all(strs[k][j] >= strs[k][i] for k in range(m)):
+                dp[j] = max(dp[j], dp[i] + 1)
+
+    return n - max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletion_size)

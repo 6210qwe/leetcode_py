@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀和来计算每个字符的出现频次，并在滑动窗口中找到满足条件的最大差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个前缀和数组，用于记录每个字符的出现频次。
+2. 使用滑动窗口遍历字符串，维护当前窗口内每个字符的出现频次。
+3. 对于每个窗口，找到出现奇数次的字符和出现偶数次的字符，并计算它们的频次差值。
+4. 更新最大差值。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算字符的出现频次。
+- 滑动窗口技术可以高效地处理子字符串的频次问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为字符集大小固定为 5）
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_diff_between_even_and_odd_freq(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 s 的子字符串 subs 中两个字符的出现频次之间的最大差值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    prefix_sum = [[0] * 5 for _ in range(n + 1)]
+    
+    # 计算前缀和
+    for i in range(n):
+        for j in range(5):
+            prefix_sum[i + 1][j] = prefix_sum[i][j]
+        prefix_sum[i + 1][int(s[i])] += 1
+    
+    def get_freq(left: int, right: int, char: int) -> int:
+        return prefix_sum[right + 1][char] - prefix_sum[left][char]
+    
+    max_diff = -float('inf')
+    
+    for left in range(n - k + 1):
+        right = left + k - 1
+        odd_freq = [get_freq(left, right, c) for c in range(5) if get_freq(left, right, c) % 2 == 1]
+        even_freq = [get_freq(left, right, c) for c in range(5) if get_freq(left, right, c) % 2 == 0 and get_freq(left, right, c) > 0]
+        
+        if not odd_freq or not even_freq:
+            continue
+        
+        for o in odd_freq:
+            for e in even_freq:
+                max_diff = max(max_diff, o - e)
+    
+    return max_diff if max_diff != -float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_diff_between_even_and_odd_freq)

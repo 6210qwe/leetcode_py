@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个轮胎在不同圈数下的最小耗时，并结合换胎策略找到最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个轮胎在连续使用下的最小耗时。
+2. 使用动态规划计算每个圈数下的最小耗时。
+3. 结合换胎策略，更新每个圈数下的最小耗时。
 
 关键点:
-- [TODO]
+- 计算每个轮胎在连续使用下的最小耗时，避免超出合理范围。
+- 动态规划计算每个圈数下的最小耗时，结合换胎策略。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是轮胎数量，m 是圈数。
+空间复杂度: O(m)，用于存储每个圈数下的最小耗时。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimumFinishTime(tires: List[List[int]], changeTime: int, numLaps: int) -> int:
+    # 计算每个轮胎在连续使用下的最小耗时
+    max_laps = 17  # 通过实验确定的最大连续使用圈数
+    min_time_per_lap = [float('inf')] * (max_laps + 1)
+    
+    for f, r in tires:
+        time = f
+        total_time = f
+        for lap in range(1, max_laps + 1):
+            if total_time < min_time_per_lap[lap]:
+                min_time_per_lap[lap] = total_time
+            time *= r
+            if time >= f + changeTime:
+                break
+            total_time += time
+    
+    # 动态规划计算每个圈数下的最小耗时
+    dp = [float('inf')] * (numLaps + 1)
+    dp[0] = 0
+    
+    for i in range(1, numLaps + 1):
+        for j in range(1, min(i, max_laps) + 1):
+            dp[i] = min(dp[i], dp[i - j] + min_time_per_lap[j] + (changeTime if i != j else 0))
+    
+    return dp[numLaps]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimumFinishTime)

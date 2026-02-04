@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到所有被 '0' 包围的 '1' 区块和被 '1' 包围的 '0' 区块，并计算在进行一次操作后的最大活跃区段数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在字符串 s 的两侧加上 '1'，形成新的字符串 t。
+2. 遍历字符串 t，记录每个 '1' 区块和 '0' 区块的起始和结束位置。
+3. 对于每个被 '0' 包围的 '1' 区块，计算将其转换为 '0' 并将相邻的 '0' 区块转换为 '1' 后的最大活跃区段数。
+4. 返回最大活跃区段数。
 
 关键点:
-- [TODO]
+- 通过一次遍历记录所有区块的位置。
+- 计算每个可能的操作后的最大活跃区段数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 在字符串 s 的两侧加上 '1'，形成新的字符串 t
+    t = '1' + s + '1'
+    n = len(t)
+    
+    # 初始化变量
+    max_active = 0
+    active_count = 0
+    start = 0
+    
+    for i in range(n):
+        if t[i] == '1':
+            if t[start] == '0':
+                # 计算将当前 '0' 区块转换为 '1' 后的最大活跃区段数
+                max_active = max(max_active, active_count + (i - start))
+            else:
+                # 当前 '1' 区块的长度
+                active_count += (i - start)
+            start = i
+        elif i == n - 1 and t[start] == '1':
+            # 计算最后一个 '1' 区块的长度
+            active_count += (i - start + 1)
+    
+    return max_active + active_count
 
 
 Solution = create_solution(solution_function_name)

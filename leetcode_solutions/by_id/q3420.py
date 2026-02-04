@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的位置，然后通过二分查找来快速定位第 k 个元素的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 `nums` 数组，使用哈希表记录每个元素 `x` 出现的所有位置。
+2. 对于每个查询 `queries[i]`，使用二分查找在哈希表中找到第 `queries[i]` 个 `x` 的位置。
+3. 如果 `x` 的出现次数少于 `queries[i]`，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个元素的位置，方便快速查找。
+- 使用二分查找来快速定位第 k 个元素的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log k)，其中 n 是 `nums` 的长度，m 是 `queries` 的长度，k 是 `x` 在 `nums` 中的最大出现次数。
+空间复杂度: O(n)，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_occurrences(nums: List[int], queries: List[int], x: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找数组中元素的出现位置
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个元素 x 出现的所有位置
+    positions = {}
+    for i, num in enumerate(nums):
+        if num == x:
+            if num not in positions:
+                positions[num] = []
+            positions[num].append(i)
+
+    def binary_search(arr, target):
+        """二分查找第 target 个元素的位置"""
+        if target > len(arr):
+            return -1
+        return arr[target - 1]
+
+    # 处理每个查询
+    result = []
+    for query in queries:
+        if x in positions:
+            result.append(binary_search(positions[x], query))
+        else:
+            result.append(-1)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_occurrences)

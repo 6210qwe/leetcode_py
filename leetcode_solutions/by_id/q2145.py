@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算第二个机器人可以收集的最大点数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算第一行的前缀和。
+2. 计算第二行的后缀和。
+3. 遍历每一个可能的分割点，计算第一个机器人选择该分割点时，第二个机器人可以收集的最大点数。
+4. 返回最小的最大点数。
 
 关键点:
-- [TODO]
+- 使用前缀和和后缀和来快速计算路径上的点数。
+- 通过遍历所有可能的分割点来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def grid_game(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算第二个机器人可以收集的最大点数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid[0])
+    top_prefix_sum = [0] * n
+    bottom_suffix_sum = [0] * n
+    
+    # 计算第一行的前缀和
+    top_prefix_sum[0] = grid[0][0]
+    for i in range(1, n):
+        top_prefix_sum[i] = top_prefix_sum[i - 1] + grid[0][i]
+    
+    # 计算第二行的后缀和
+    bottom_suffix_sum[n - 1] = grid[1][n - 1]
+    for i in range(n - 2, -1, -1):
+        bottom_suffix_sum[i] = bottom_suffix_sum[i + 1] + grid[1][i]
+    
+    # 初始化结果为一个很大的数
+    result = float('inf')
+    
+    # 遍历每一个可能的分割点
+    for i in range(n):
+        top_sum = top_prefix_sum[-1] - top_prefix_sum[i]
+        bottom_sum = bottom_suffix_sum[0] if i == n - 1 else bottom_suffix_sum[i + 1]
+        result = min(result, max(top_sum, bottom_sum))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(grid_game)

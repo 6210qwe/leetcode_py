@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个字符之间的最短移动距离，并累加这些距离和键入字符的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前指针位置为 'a'，总时间为 0。
+2. 遍历字符串中的每个字符，计算从当前指针位置到目标字符的最短移动距离。
+3. 更新总时间，包括移动时间和键入时间。
+4. 更新当前指针位置为目标字符。
 
 关键点:
-- [TODO]
+- 计算两个字符之间的最短移动距离时，考虑顺时针和逆时针两种情况。
+- 总时间包括移动时间和键入时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 word 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_time_to_type(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算键入单词所需的最少秒数
     """
-    # TODO: 实现最优解法
-    pass
+    def min_distance(from_char: str, to_char: str) -> int:
+        from_index = ord(from_char) - ord('a')
+        to_index = ord(to_char) - ord('a')
+        direct_distance = abs(to_index - from_index)
+        return min(direct_distance, 26 - direct_distance)
+
+    current_char = 'a'
+    total_time = 0
+
+    for char in word:
+        total_time += min_distance(current_char, char) + 1  # 移动时间 + 键入时间
+        current_char = char
+
+    return total_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_type)

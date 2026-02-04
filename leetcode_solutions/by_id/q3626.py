@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从 n 开始逐个检查每个整数，直到找到一个其数位乘积能被 t 整除的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `digit_product` 来计算一个整数的数位乘积。
+2. 从 n 开始逐个检查每个整数，使用 `digit_product` 函数计算其数位乘积。
+3. 如果数位乘积能被 t 整除，则返回该整数。
+4. 否则，继续检查下一个整数。
 
 关键点:
-- [TODO]
+- 使用一个简单的循环来逐个检查整数。
+- 使用一个辅助函数来计算数位乘积，提高代码的可读性和复用性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 在最坏情况下，可能需要检查从 n 到 100 的所有整数。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def digit_product(num: int) -> int:
+    """计算一个整数的数位乘积"""
+    product = 1
+    while num > 0:
+        product *= num % 10
+        num //= 10
+    return product
+
+
+def solution_function_name(n: int, t: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回大于等于 n 的最小整数，且该整数的各数位之积能被 t 整除。
     """
-    # TODO: 实现最优解法
-    pass
+    # 从 n 开始逐个检查每个整数
+    current = n
+    while True:
+        if digit_product(current) % t == 0:
+            return current
+        current += 1
 
 
 Solution = create_solution(solution_function_name)

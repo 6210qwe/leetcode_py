@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符串的出现次数，然后遍历数组找到第 k 个独一无二的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表来统计每个字符串的出现次数。
+2. 遍历数组，找到第 k 个出现次数为 1 的字符串。
 
 关键点:
-- [TODO]
+- 使用哈希表进行频率统计。
+- 按照原数组顺序查找第 k 个独一无二的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，一次用于统计频率，一次用于查找第 k 个独一无二的字符串。
+空间复杂度: O(n)，哈希表的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def kth_distinct_string(arr: List[str], k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回数组中第 k 个独一无二的字符串。
+    
+    :param arr: 字符串数组
+    :param k: 第 k 个独一无二的字符串
+    :return: 第 k 个独一无二的字符串，如果少于 k 个独一无二的字符串则返回空字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符串的出现次数
+    count = {}
+    for s in arr:
+        if s in count:
+            count[s] += 1
+        else:
+            count[s] = 1
+    
+    # 找到第 k 个独一无二的字符串
+    unique_count = 0
+    for s in arr:
+        if count[s] == 1:
+            unique_count += 1
+            if unique_count == k:
+                return s
+    
+    return ""
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_distinct_string)

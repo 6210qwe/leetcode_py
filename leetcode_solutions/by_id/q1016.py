@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录前缀和的余数出现的次数，从而快速找到满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_sum_count` 来记录前缀和的余数出现的次数，并将 `prefix_sum_count[0]` 设为 1。
+2. 遍历数组 `nums`，计算当前前缀和 `current_sum`，并计算 `current_sum % k` 的余数 `mod`。
+3. 如果 `mod` 已经在 `prefix_sum_count` 中，则说明存在一个或多个子数组的和可以被 `k` 整除，将 `prefix_sum_count[mod]` 加到结果中。
+4. 更新 `prefix_sum_count[mod]` 的计数。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀和的余数出现的次数，避免重复计算。
+- 通过前缀和的余数来判断子数组的和是否能被 `k` 整除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(k)，哈希表 `prefix_sum_count` 最多存储 k 个不同的余数。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def subarraysDivByK(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算和可被 K 整除的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum_count = {0: 1}
+    current_sum = 0
+    count = 0
+    
+    for num in nums:
+        current_sum += num
+        mod = current_sum % k
+        if mod < 0:
+            mod += k
+        
+        if mod in prefix_sum_count:
+            count += prefix_sum_count[mod]
+        
+        if mod in prefix_sum_count:
+            prefix_sum_count[mod] += 1
+        else:
+            prefix_sum_count[mod] = 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(subarraysDivByK)

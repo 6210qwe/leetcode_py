@@ -56,25 +56,59 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def design_twitter(params):
+class Twitter:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> design_twitter([待实现])
-        [待实现]
+    简化版推特设计：支持发推、关注/取关、获取最近 10 条推文。
+
+    使用全局时间戳记录推文时间，用堆按时间戳合并多路有序流。
     """
-    # TODO: 实现最优解法
-    pass
+
+    def __init__(self):
+        import collections
+
+        self.time = 0
+        self.tweets = collections.defaultdict(list)   # userId -> [(time, tweetId), ...]
+        self.followees = collections.defaultdict(set)  # userId -> set(followeeId)
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        self.time += 1
+        self.tweets[userId].append((self.time, tweetId))
+
+    def getNewsFeed(self, userId: int) -> List[int]:
+        import heapq
+
+        self.followees[userId].add(userId)
+        heap: list[tuple[int, int, int]] = []  # (-time, userId, idx)
+        for uid in self.followees[userId]:
+            if self.tweets[uid]:
+                t, tid = self.tweets[uid][-1]
+                heapq.heappush(heap, (-t, uid, len(self.tweets[uid]) - 1))
+
+        res: List[int] = []
+        while heap and len(res) < 10:
+            neg_t, uid, idx = heapq.heappop(heap)
+            res.append(self.tweets[uid][idx][1])
+            if idx > 0:
+                t, tid = self.tweets[uid][idx - 1]
+                heapq.heappush(heap, (-t, uid, idx - 1))
+        return res
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        if followerId == followeeId:
+            return
+        self.followees[followerId].add(followeeId)
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        if followerId == followeeId:
+            return
+        self.followees[followerId].discard(followeeId)
+
+
+def design_twitter() -> Twitter:
+    """
+    函数式接口 - 返回 Twitter 实例，便于在测试中进行方法调用。
+    """
+    return Twitter()
 
 
 # 自动生成Solution类（无需手动编写）

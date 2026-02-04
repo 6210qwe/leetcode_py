@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符串及其反转字符串的出现情况，从而快速查找匹配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `seen` 和一个计数器 `count`。
+2. 遍历 `words` 数组，对于每个字符串 `word`：
+   - 计算其反转字符串 `reversed_word`。
+   - 如果 `reversed_word` 在 `seen` 中，则增加计数器 `count`。
+   - 将 `word` 添加到 `seen` 中。
+3. 返回计数器 `count` 的值。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储已遍历过的字符串，以便快速查找其反转字符串。
+- 每个字符串最多匹配一次，因此只需在找到匹配时增加计数器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `words` 的长度。每个字符串的处理时间是常数级别的。
+空间复杂度: O(n)，最坏情况下，哈希表 `seen` 需要存储所有的字符串。
 """
 
 # ============================================================================
@@ -49,12 +54,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组 words 中的最大匹配数目
     """
-    # TODO: 实现最优解法
-    pass
+    seen = set()
+    count = 0
+    
+    for word in words:
+        reversed_word = word[::-1]
+        if reversed_word in seen:
+            count += 1
+        seen.add(word)
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理字符串中的特殊字符，并根据规则更新结果字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果字符串 `result`。
+2. 遍历输入字符串 `s` 的每个字符：
+   - 如果字符是小写字母，将其添加到 `result` 中。
+   - 如果字符是 `*`，删除 `result` 的最后一个字符（如果存在）。
+   - 如果字符是 `#`，将当前 `result` 复制并追加到其自身后面。
+   - 如果字符是 `%`，反转当前 `result`。
+3. 返回最终的 `result`。
 
 关键点:
-- [TODO]
+- 使用栈的思想来处理字符串中的特殊字符。
+- 根据不同的特殊字符执行相应的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(n)，最坏情况下，结果字符串 `result` 的长度可能与输入字符串 `s` 的长度相同。
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def process_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 处理包含特殊操作的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    
+    for char in s:
+        if char.islower():
+            result.append(char)
+        elif char == '*':
+            if result:
+                result.pop()
+        elif char == '#':
+            result.extend(result)
+        elif char == '%':
+            result.reverse()
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(process_string)

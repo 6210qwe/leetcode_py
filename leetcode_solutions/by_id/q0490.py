@@ -21,56 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用广度优先搜索（BFS）来找到从起点到终点的最短路径。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化一个队列，将起点加入队列。
+2. 使用一个集合来记录已经访问过的节点，避免重复访问。
+3. 当队列不为空时，进行以下操作：
+   - 从队列中取出一个节点。
+   - 如果该节点是终点，返回True。
+   - 否则，向四个方向滚动小球，直到遇到墙壁或边界。
+   - 将新的位置加入队列，并标记为已访问。
+4. 如果队列为空且未找到终点，返回False。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用BFS可以保证找到最短路径。
+- 通过滚动小球来处理迷宫中的移动。
+- 使用集合来记录已访问的节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(m * n) - 其中m和n分别是迷宫的高度和宽度。每个节点最多访问一次。
+空间复杂度: O(m * n) - 需要额外的空间来存储队列和已访问的节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from collections import deque
 
-
-def the_maze(params):
+def the_maze(maze: List[List[int]], start: List[int], destination: List[int]) -> bool:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 判断小球是否能从起点滚动到终点。
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用广度优先搜索（BFS）来找到从起点到终点的最短路径。
     
     Args:
-        params: [待实现] 参数说明
+        maze: 二维数组表示的迷宫，0表示空地，1表示墙壁。
+        start: 起点坐标 [x, y]。
+        destination: 终点坐标 [x, y]。
         
     Returns:
-        [待实现] 返回值说明
+        如果小球能从起点滚动到终点，返回True；否则返回False。
         
     Example:
-        >>> the_maze([待实现])
-        [待实现]
+        >>> the_maze([[0, 0, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 1, 0], [1, 1, 0, 1, 1], [0, 0, 0, 0, 0]], [0, 4], [4, 4])
+        True
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not maze or not maze[0]:
+        return False
+    
+    m, n = len(maze), len(maze[0])
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    visited = set()
+    queue = deque([tuple(start)])
+    visited.add(tuple(start))
+    
+    while queue:
+        x, y = queue.popleft()
+        if [x, y] == destination:
+            return True
+        
+        for dx, dy in directions:
+            nx, ny = x, y
+            # 滚动小球直到遇到墙壁或边界
+            while 0 <= nx + dx < m and 0 <= ny + dy < n and maze[nx + dx][ny + dy] == 0:
+                nx += dx
+                ny += dy
+            if (nx, ny) not in visited:
+                visited.add((nx, ny))
+                queue.append((nx, ny))
+    
+    return False
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(the_maze)

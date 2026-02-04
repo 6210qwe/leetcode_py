@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法来最小化调整数组的代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 arr 和 brr 进行排序。
+2. 初始化总代价 total_cost 为 0。
+3. 遍历排序后的数组，计算每个位置上需要调整的值的绝对差值，并累加到 total_cost。
+4. 如果 total_cost 大于 k，则使用 k 作为分割和重排的代价，否则直接使用 total_cost。
 
 关键点:
-- [TODO]
+- 通过排序和贪心算法确保每次调整的代价最小。
+- 通过比较 total_cost 和 k 来决定是否使用分割和重排操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_cost_to_make_arrays_identical(arr: List[int], brr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 arr 变为 brr 的最小总代价
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 arr 和 brr 进行排序
+    arr.sort()
+    brr.sort()
+
+    # 初始化总代价
+    total_cost = 0
+
+    # 计算每个位置上需要调整的值的绝对差值
+    for a, b in zip(arr, brr):
+        total_cost += abs(a - b)
+
+    # 如果总代价大于 k，则使用 k 作为分割和重排的代价
+    if total_cost > k:
+        return k
+    else:
+        return total_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_to_make_arrays_identical)

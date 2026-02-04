@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）和哈希表来克隆二叉树。哈希表用于存储原节点和新节点的映射关系，以避免重复创建节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `clone_tree`，该函数接受一个节点作为参数，并返回该节点的克隆。
+2. 如果节点为空，返回 None。
+3. 如果节点已经在哈希表中，直接返回哈希表中对应的克隆节点。
+4. 否则，创建一个新的节点，并将其添加到哈希表中。
+5. 递归克隆左子节点、右子节点和随机指针，并将它们赋值给新节点的相应属性。
+6. 返回新节点。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储原节点和新节点的映射关系，以避免重复创建节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树中的节点数。每个节点只被访问一次。
+空间复杂度: O(n)，哈希表需要存储 n 个节点的映射关系。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class Node:
+    def __init__(self, val=0, left=None, right=None, random=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.random = random
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def clone_tree(root: 'Node') -> 'Node':
+    if not root:
+        return None
+    
+    # 哈希表用于存储原节点和新节点的映射关系
+    node_map = {}
+    
+    def dfs(node: 'Node') -> 'Node':
+        if not node:
+            return None
+        if node in node_map:
+            return node_map[node]
+        
+        # 创建新节点
+        new_node = Node(node.val)
+        node_map[node] = new_node
+        
+        # 递归克隆左子节点、右子节点和随机指针
+        new_node.left = dfs(node.left)
+        new_node.right = dfs(node.right)
+        new_node.random = dfs(node.random)
+        
+        return new_node
+    
+    return dfs(root)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(clone_tree)

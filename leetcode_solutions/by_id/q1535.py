@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j][k] 表示长度为 i 的数组，最大值为 j，且 search_cost 为 k 的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][j][0] = 1，表示空数组的 search_cost 为 0。
+2. 遍历长度 i 从 1 到 n，遍历最大值 j 从 1 到 m，遍历 search_cost k 从 0 到 K。
+3. 对于每个状态 dp[i][j][k]，有两种情况：
+   - 当前位置的值小于 j，那么 dp[i][j][k] += dp[i-1][j][k] * j。
+   - 当前位置的值等于 j，那么 dp[i][j][k] += sum(dp[i-1][x][k-1]) for x in range(1, j)。
+4. 最终结果是 sum(dp[n][j][K]) for j in range(1, m+1)。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 优化空间复杂度，使用滚动数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * k * m)
+空间复杂度: O(n * m * k)
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, m: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
+    
+    # 初始化
+    for j in range(1, m + 1):
+        dp[0][j][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            for cost in range(k + 1):
+                # 当前位置的值小于 j
+                dp[i][j][cost] += dp[i - 1][j][cost] * j
+                dp[i][j][cost] %= MOD
+                
+                # 当前位置的值等于 j
+                if cost > 0:
+                    for x in range(1, j):
+                        dp[i][j][cost] += dp[i - 1][x][cost - 1]
+                        dp[i][j][cost] %= MOD
+    
+    return sum(dp[n][j][k] for j in range(1, m + 1)) % MOD
 
 
 Solution = create_solution(solution_function_name)

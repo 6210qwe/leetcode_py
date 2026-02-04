@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将前 i 个字符分成 j 段的完美分割方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 遍历字符串 s，对于每个位置 i，检查是否可以作为某个子字符串的结尾。
+3. 如果 s[i] 是非质数且 s[i - minLength + 1] 是质数，则更新 dp 数组。
+4. 最终结果保存在 dp[n][k] 中，其中 n 是字符串 s 的长度。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每一步的状态。
+- 通过前缀和优化状态转移。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是字符串 s 的长度，k 是分割段数。
+空间复杂度: O(n * k)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -48,13 +51,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(ch: str) -> bool:
+    return ch in {'2', '3', '5', '7'}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def number_of_beautiful_partitions(s: str, k: int, min_length: int) -> int:
+    MOD = 10**9 + 7
+    n = len(s)
+    
+    if not is_prime(s[0]) or is_prime(s[-1]):
+        return 0
+    
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(1, k + 1):
+            if i >= min_length and is_prime(s[i - min_length]) and not is_prime(s[i - 1]):
+                dp[i][j] = (dp[i][j] + dp[i - min_length][j - 1]) % MOD
+    
+    return dp[n][k]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_beautiful_partitions)

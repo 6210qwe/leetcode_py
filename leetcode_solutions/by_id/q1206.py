@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来高效地处理区间更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的差分数组 diff。
+2. 对于每个预订记录 [firsti, lasti, seatsi]，在 diff[firsti-1] 增加 seatsi，在 diff[lasti] 减少 seatsi。
+3. 通过累加 diff 数组得到最终的预订座位数数组。
 
 关键点:
-- [TODO]
+- 差分数组可以高效地处理区间更新，时间复杂度为 O(1)。
+- 通过累加差分数组，可以在 O(n) 时间内得到最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是航班数量，m 是预订记录的数量。
+空间复杂度: O(n)，需要一个长度为 n+1 的差分数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(bookings: List[List[int]], n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用差分数组来高效地处理区间更新。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化差分数组
+    diff = [0] * (n + 1)
+    
+    # 处理每个预订记录
+    for first, last, seats in bookings:
+        diff[first - 1] += seats
+        if last < n:
+            diff[last] -= seats
+    
+    # 通过累加差分数组得到最终的预订座位数数组
+    result = [0] * n
+    current_sum = 0
+    for i in range(n):
+        current_sum += diff[i]
+        result[i] = current_sum
+    
+    return result
 
 Solution = create_solution(solution_function_name)

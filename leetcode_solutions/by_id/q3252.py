@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和枚举来找到所有可能的移除递增子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向数组的起始和末尾。
+2. 从左到右移动 left 指针，直到找到第一个不满足严格递增的位置。
+3. 从右到左移动 right 指针，直到找到第一个不满足严格递增的位置。
+4. 枚举所有可能的移除子数组，检查移除后的数组是否严格递增。
+5. 计算并返回移除递增子数组的总数目。
 
 关键点:
-- [TODO]
+- 使用双指针找到不满足严格递增的位置。
+- 通过枚举和检查来确定移除子数组后的数组是否严格递增。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。最坏情况下需要枚举所有子数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_incremovable_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计移除递增子数组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    count = 0
+
+    # 找到第一个不满足严格递增的位置
+    left = 0
+    while left < n - 1 and nums[left] < nums[left + 1]:
+        left += 1
+
+    # 如果整个数组已经是严格递增的
+    if left == n - 1:
+        return (n * (n + 1)) // 2
+
+    # 找到最后一个不满足严格递增的位置
+    right = n - 1
+    while right > 0 and nums[right] > nums[right - 1]:
+        right -= 1
+
+    # 枚举所有可能的移除子数组
+    for i in range(left + 1):
+        for j in range(right, n):
+            if i >= j:
+                count += 1
+            else:
+                if all(nums[k] < nums[k + 1] for k in range(i, j - 1)):
+                    count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_incremovable_subarrays)

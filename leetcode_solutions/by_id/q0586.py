@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典统计每个客户的订单数量，然后找到订单数量最多的客户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典来统计每个客户的订单数量。
+2. 遍历订单表，更新字典中的订单数量。
+3. 找到订单数量最多的客户。
 
 关键点:
-- [TODO]
+- 使用字典进行高效的计数。
+- 一次遍历即可完成统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是订单表的长度。我们需要遍历整个订单表一次。
+空间复杂度: O(m)，其中 m 是不同客户的数量。我们需要存储每个客户的订单数量。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(orders: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找订单最多的客户
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个客户的订单数量
+    order_count = {}
+    for _, customer_number in orders:
+        if customer_number in order_count:
+            order_count[customer_number] += 1
+        else:
+            order_count[customer_number] = 1
+    
+    # 找到订单数量最多的客户
+    max_orders = max(order_count.values())
+    for customer, count in order_count.items():
+        if count == max_orders:
+            return customer
 
 Solution = create_solution(solution_function_name)

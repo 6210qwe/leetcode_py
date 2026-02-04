@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储单词对，并逐个比较句子中的单词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 pairs 转换为一个哈希表，记录每个单词的相似词。
+2. 比较两个句子中的每个单词，如果单词相同则继续比较下一个单词，否则检查它们是否在哈希表中互为相似词。
+3. 如果所有单词都匹配，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希表存储相似词对，便于快速查找。
+- 逐个比较句子中的单词，确保每个单词都匹配或互为相似词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 sentence1 和 sentence2 的长度，m 是 pairs 的长度。
+空间复杂度: O(m)，用于存储哈希表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def are_sentences_similar(sentence1: List[str], sentence2: List[str], similar_pairs: List[List[str]]) -> bool:
+    if len(sentence1) != len(sentence2):
+        return False
+    
+    # 构建相似词哈希表
+    similar_dict = {}
+    for pair in similar_pairs:
+        if pair[0] not in similar_dict:
+            similar_dict[pair[0]] = set()
+        if pair[1] not in similar_dict:
+            similar_dict[pair[1]] = set()
+        similar_dict[pair[0]].add(pair[1])
+        similar_dict[pair[1]].add(pair[0])
+    
+    # 比较句子中的每个单词
+    for word1, word2 in zip(sentence1, sentence2):
+        if word1 != word2 and (word1 not in similar_dict or word2 not in similar_dict[word1]):
+            return False
+    
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = are_sentences_similar

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个回答的数量，然后计算每种回答对应的最小兔子数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个回答的数量。
+2. 对于每个回答，计算其对应的最小兔子数量，并累加到总数量中。
 
 关键点:
-- [TODO]
+- 同一种回答的最大组数为 (count + answer) // (answer + 1)，其中 count 是该回答的数量。
+- 每组兔子的数量为 answer + 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 answers 的长度。我们需要遍历数组并进行哈希表操作。
+空间复杂度: O(n)，哈希表的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(answers: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算森林中兔子的最少数量
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+    
+    # 统计每个回答的数量
+    count = Counter(answers)
+    
+    # 计算最小兔子数量
+    total_rabbits = 0
+    for answer, cnt in count.items():
+        # 计算每种回答对应的最小兔子数量
+        groups = (cnt + answer) // (answer + 1)
+        total_rabbits += groups * (answer + 1)
+    
+    return total_rabbits
 
 
 Solution = create_solution(solution_function_name)

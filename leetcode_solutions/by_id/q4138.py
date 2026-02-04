@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个字符，计算将其保留为唯一字符所需的最小删除代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典来记录每个字符的总成本和出现次数。
+2. 遍历字符串 s，更新字典中的总成本和出现次数。
+3. 对于每个字符，计算将其保留为唯一字符所需的删除代价。
+4. 返回所有字符中最小的删除代价。
 
 关键点:
-- [TODO]
+- 使用字典来存储每个字符的成本和出现次数。
+- 计算每个字符的最小删除代价时，需要考虑其总成本和出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串一次。
+空间复杂度: O(1)，因为字母表的大小是固定的（26 个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_to_make_characters_equal(s: str, cost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使所有字符相等的最小删除代价
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化字典来记录每个字符的总成本和出现次数
+    char_cost = {}
+    for i, char in enumerate(s):
+        if char not in char_cost:
+            char_cost[char] = [cost[i], 1]
+        else:
+            char_cost[char][0] += cost[i]
+            char_cost[char][1] += 1
+
+    # 计算每个字符的最小删除代价
+    total_cost = sum(cost)
+    min_deletion_cost = float('inf')
+    for char, (total_char_cost, count) in char_cost.items():
+        deletion_cost = total_cost - total_char_cost
+        min_deletion_cost = min(min_deletion_cost, deletion_cost)
+
+    return min_deletion_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_make_characters_equal)

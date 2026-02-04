@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，检查每一对相邻元素的奇偶性是否不同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，从第一个元素到倒数第二个元素。
+2. 对于每一对相邻元素，检查它们的奇偶性是否不同。
+3. 如果发现任何一对相邻元素的奇偶性相同，则返回 False。
+4. 如果遍历完整个数组都没有发现奇偶性相同的相邻元素，则返回 True。
 
 关键点:
-- [TODO]
+- 使用异或运算来判断两个数的奇偶性是否不同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_special_array(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断数组是否为特殊数组
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(nums) - 1):
+        if (nums[i] % 2) == (nums[i + 1] % 2):
+            return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_special_array)

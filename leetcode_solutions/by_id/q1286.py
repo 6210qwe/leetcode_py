@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调队列来维护一个长度为 k 的滑动窗口，以实现 O(n) 时间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个单调队列，用于存储当前窗口内的最大值。
+2. 遍历数组，对于每个元素，计算其与前 k 个元素中的最大值之和，并更新结果。
+3. 更新单调队列，确保队列中的元素是递减的，并且移除超出窗口范围的元素。
 
 关键点:
-- [TODO]
+- 使用单调队列来维护滑动窗口内的最大值。
+- 动态规划的思想，利用前 k 个元素的最大值来更新当前元素的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现带限制的子序列和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    dp = nums[:]
+    deque = []
+
+    for i in range(n):
+        # 移除超出窗口范围的元素
+        while deque and deque[0] < i - k:
+            deque.pop(0)
+
+        # 计算当前元素的最大值
+        if deque:
+            dp[i] += dp[deque[0]]
+
+        # 更新结果
+        result = max(result, dp[i])
+
+        # 维护单调队列
+        while deque and dp[deque[-1]] < dp[i]:
+            deque.pop()
+        deque.append(i)
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

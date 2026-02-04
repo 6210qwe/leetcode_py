@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和有序集合来高效地找到和删除最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用有序集合（如SortedList）存储数组元素及其索引。
+2. 初始化操作计数器为0。
+3. 当有序集合不为空时，执行以下操作：
+   - 找到当前最小值及其索引。
+   - 如果最小值在数组的第一个位置，则直接删除。
+   - 否则，将第一个元素移动到数组末尾，并更新有序集合。
+4. 返回操作计数器的值。
 
 关键点:
-- [TODO]
+- 使用有序集合可以高效地找到和删除最小值。
+- 通过维护元素及其索引，可以在O(log n)时间内完成插入和删除操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是数组长度。每次插入和删除操作的时间复杂度为O(log n)。
+空间复杂度: O(n)，使用有序集合存储数组元素及其索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def make_array_empty(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使数组为空所需的操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用有序集合存储数组元素及其索引
+    sorted_list = SortedList((num, i) for i, num in enumerate(nums))
+    operations = 0
+    n = len(nums)
+    
+    while sorted_list:
+        min_val, min_index = sorted_list[0]
+        
+        if min_index == 0:
+            # 如果最小值在数组的第一个位置，直接删除
+            sorted_list.pop(0)
+            nums.pop(0)
+        else:
+            # 否则，将第一个元素移动到数组末尾
+            first_val = nums.pop(0)
+            nums.append(first_val)
+            sorted_list.remove((min_val, min_index))
+            sorted_list.add((first_val, n - 1))
+        
+        operations += 1
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(make_array_empty)

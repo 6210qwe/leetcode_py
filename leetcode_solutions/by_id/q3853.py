@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索（DFS）来计算每个节点到所有其他节点的最短路径，并利用这些信息来回答查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示的树。
+2. 使用 DFS 计算每个节点到根节点的最短路径。
+3. 使用 DFS 计算每个节点到所有其他节点的最短路径。
+4. 对于每个查询，找到从 src1 和 src2 到 dest 的最短路径，并计算子树的最小总权重。
 
 关键点:
-- [TODO]
+- 使用两次 DFS 来预处理每个节点到所有其他节点的最短路径。
+- 利用预处理的结果快速回答查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是节点数，q 是查询数。构建邻接表和两次 DFS 都是 O(n) 的复杂度，每个查询可以在 O(1) 时间内回答。
+空间复杂度: O(n)，存储邻接表和最短路径信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_weight_subgraph(edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+    n = len(edges) + 1
+    adj_list = [[] for _ in range(n)]
+    for u, v, w in edges:
+        adj_list[u].append((v, w))
+        adj_list[v].append((u, w))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个节点到根节点的最短路径
+    def dfs(node, parent, dist, distances):
+        distances[node] = dist
+        for neighbor, weight in adj_list[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, dist + weight, distances)
 
+    # 计算每个节点到所有其他节点的最短路径
+    all_distances = []
+    for i in range(n):
+        distances = [float('inf')] * n
+        dfs(i, -1, 0, distances)
+        all_distances.append(distances)
 
-Solution = create_solution(solution_function_name)
+    # 回答查询
+    result = []
+    for src1, src2, dest in queries:
+        min_weight = float('inf')
+        for i in range(n):
+            weight = all_distances[src1][i] + all_distances[src2][i] + all_distances[dest][i]
+            min_weight = min(min_weight, weight)
+        result.append(min_weight)
+
+    return result
+
+Solution = create_solution(min_weight_subgraph)

@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法构建比赛匹配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个列表，包含从 1 到 2^n 的所有选手编号。
+2. 递归地将当前列表中的每两个相邻选手合并成一个新的字符串，并将这些新字符串放入新的列表中。
+3. 重复步骤 2，直到列表中只剩下一个字符串，即最终的比赛匹配对。
 
 关键点:
-- [TODO]
+- 使用递归方法可以简洁地实现比赛匹配对的构建。
+- 每次递归时，将当前列表中的每两个相邻选手合并成一个新的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是选手的数量。每次递归调用处理一半的选手，总共需要 log n 层递归。
+空间复杂度: O(n log n)，递归调用栈的深度为 log n，每层递归需要存储当前列表中的所有选手。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def find_contest_match(n: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    生成比赛匹配对
+    :param n: 选手数量
+    :return: 最终的比赛匹配对字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化选手列表
+    teams = [str(i) for i in range(1, n + 1)]
+
+    def merge_teams(teams: List[str]) -> List[str]:
+        if len(teams) == 1:
+            return teams
+        new_teams = []
+        for i in range(0, len(teams), 2):
+            new_team = f"({teams[i]},{teams[i + 1]})"
+            new_teams.append(new_team)
+        return merge_teams(new_teams)
+
+    return merge_teams(teams)[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_contest_match)

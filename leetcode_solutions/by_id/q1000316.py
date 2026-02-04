@@ -21,40 +21,52 @@ LCR 055. 二叉搜索树迭代器 - 实现一个二叉搜索树迭代器类BSTIt
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来模拟中序遍历的过程，每次调用 next() 时，从栈中弹出当前节点，并将其右子树的所有左子节点依次入栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将根节点及其所有左子节点依次入栈。
+2. 调用 next() 时，从栈中弹出当前节点，并将其右子树的所有左子节点依次入栈。
+3. 调用 hasNext() 时，检查栈是否为空。
 
 关键点:
-- [TODO]
+- 使用栈来存储节点，确保每次调用 next() 时都能得到中序遍历的下一个节点。
+- 通过递归地将右子树的左子节点入栈，保证了中序遍历的顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) 均摊时间复杂度
+空间复杂度: O(h) 其中 h 是树的高度
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+
+class BSTIterator:
+
+    def __init__(self, root: Optional[TreeNode]):
+        self.stack = []
+        self._leftmost_inorder(root)
+
+    def _leftmost_inorder(self, root: Optional[TreeNode]):
+        while root:
+            self.stack.append(root)
+            root = root.left
+
+    def next(self) -> int:
+        topmost_node = self.stack.pop()
+        if topmost_node.right:
+            self._leftmost_inorder(topmost_node.right)
+        return topmost_node.val
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = BSTIterator

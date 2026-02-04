@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来找到从 (0, 0) 到 (m-1, n-1) 的所有路径，并记录每个格子在这些路径中出现的次数。如果某个格子在所有路径中都出现过，则翻转该格子可以使得路径不连通。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 找到从 (0, 0) 到 (m-1, n-1) 的所有路径，并记录每个格子在这些路径中出现的次数。
+2. 检查是否有某个格子在所有路径中都出现过，如果有则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用一个二维数组 `path_count` 来记录每个格子在路径中出现的次数。
+- 通过 DFS 递归地遍历所有可能的路径。
+- 如果某个格子在所有路径中都出现过，则翻转该格子可以使得路径不连通。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个格子最多被访问一次。
+空间复杂度: O(m * n)，用于存储路径计数和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_possible_to_cut_path(grid: List[List[int]]) -> bool:
+    m, n = len(grid), len(grid[0])
+    path_count = [[0] * n for _ in range(m)]
+    
+    def dfs(x: int, y: int) -> bool:
+        if x == m - 1 and y == n - 1:
+            path_count[x][y] += 1
+            return True
+        if x < 0 or x >= m or y < 0 or y >= n or grid[x][y] == 0:
+            return False
+        grid[x][y] = 0  # Mark as visited
+        if dfs(x + 1, y) or dfs(x, y + 1):
+            path_count[x][y] += 1
+        grid[x][y] = 1  # Unmark
+        return path_count[x][y] > 0
+    
+    if not dfs(0, 0):
+        return True  # No path from (0, 0) to (m-1, n-1)
+    
+    grid[0][0] = 1  # Unmark the start point
+    if not dfs(0, 0):
+        return True  # No path after unmarking the start point
+    
+    for i in range(1, m - 1):
+        for j in range(1, n - 1):
+            if path_count[i][j] == 2:
+                return True  # Found a critical cell
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_possible_to_cut_path)

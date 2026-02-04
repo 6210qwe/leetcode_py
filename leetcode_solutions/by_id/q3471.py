@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和双指针方法找到每一步的最小和最大元素，并计算它们的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针从两端向中间遍历，每次取最小和最大元素，计算它们的平均值并加入结果数组。
+3. 返回结果数组中的最小值。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以高效地找到每一步的最小和最大元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)，而后续的遍历操作是 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_average(nums: List[int]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小元素和最大元素的最小平均值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化结果数组
+    averages = []
+    
+    # 使用双指针从两端向中间遍历
+    left, right = 0, len(nums) - 1
+    while left < right:
+        min_element = nums[left]
+        max_element = nums[right]
+        average = (min_element + max_element) / 2
+        averages.append(average)
+        left += 1
+        right -= 1
+    
+    # 返回结果数组中的最小值
+    return min(averages)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_average)

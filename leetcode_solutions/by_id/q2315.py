@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数和自连接来计算排名变化
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用窗口函数 `RANK()` 计算每个国家在两个不同年份的排名。
+2. 通过自连接将两个年份的排名表连接起来，计算排名变化。
+3. 过滤出排名变化大于或等于上升位数的国家。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `RANK()` 来计算排名。
+- 使用自连接来比较不同年份的排名。
+- 过滤出符合条件的国家。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数据表中的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储中间结果所需的空间。
 """
 
 # ============================================================================
@@ -51,10 +54,26 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    WITH Rank2019 AS (
+        SELECT country, RANK() OVER (ORDER BY score DESC) as rank
+        FROM World
+        WHERE year = 2019
+    ),
+    Rank2020 AS (
+        SELECT country, RANK() OVER (ORDER BY score DESC) as rank
+        FROM World
+        WHERE year = 2020
+    )
+    SELECT r2020.country, r2020.rank - r2019.rank as rank_change
+    FROM Rank2019 r2019
+    JOIN Rank2020 r2020 ON r2019.country = r2020.country
+    WHERE r2020.rank - r2019.rank >= :rank_change
+    ORDER BY rank_change DESC, r2020.country
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的排列，并通过哈希集合去重。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入字符串转换为字符列表。
+2. 使用回溯法生成所有可能的排列。
+3. 使用哈希集合去重，记录所有不同的排列。
+4. 返回哈希集合的大小，即不同排列的数量。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的排列。
+- 使用哈希集合去重，确保每个排列只被计算一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)
+  - n 是输入字符串的长度，最坏情况下需要生成所有可能的排列。
+空间复杂度: O(n!)
+  - 用于存储所有可能的排列。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_tile_possibilities(tiles: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以印出的不同字母序列的数量
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(path, used):
+        if path:
+            seen.add(''.join(path))
+        for i in range(len(tiles)):
+            if not used[i]:
+                used[i] = True
+                path.append(tiles[i])
+                backtrack(path, used)
+                path.pop()
+                used[i] = False
+
+    tiles = list(tiles)
+    seen = set()
+    used = [False] * len(tiles)
+    backtrack([], used)
+    return len(seen)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_tile_possibilities)

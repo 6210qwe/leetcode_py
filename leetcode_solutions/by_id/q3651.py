@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用模运算处理循环数组，并根据 nums[i] 的正负情况决定移动方向。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与 nums 大小相同的结果数组 result。
+2. 遍历 nums 数组，对于每个元素 nums[i]：
+   - 如果 nums[i] > 0，计算新的下标 (i + nums[i]) % len(nums) 并将对应值赋给 result[i]。
+   - 如果 nums[i] < 0，计算新的下标 (i + nums[i]) % len(nums) 并将对应值赋给 result[i]。
+   - 如果 nums[i] == 0，直接将 nums[i] 的值赋给 result[i]。
+3. 返回结果数组 result。
 
 关键点:
-- [TODO]
+- 使用模运算处理循环数组。
+- 根据 nums[i] 的正负情况决定移动方向。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(n)，因为我们需要一个与 nums 大小相同的结果数组 result。
 """
 
 # ============================================================================
@@ -49,12 +54,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def transformed_array(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现转换数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = [0] * n
+    for i in range(n):
+        if nums[i] > 0:
+            result[i] = nums[(i + nums[i]) % n]
+        elif nums[i] < 0:
+            result[i] = nums[(i + nums[i]) % n]
+        else:
+            result[i] = nums[i]
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(transformed_array)

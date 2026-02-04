@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法计算所需的最少训练时间。首先计算所需的总精力，然后逐个检查每个对手的经验要求，并在必要时增加经验。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算击败所有对手所需的总精力。
+2. 初始化当前精力和经验。
+3. 逐个检查每个对手：
+   - 如果当前精力不足以击败对手，则增加训练时间以满足精力要求。
+   - 如果当前经验不足以击败对手，则增加训练时间以满足经验要求。
+   - 更新当前精力和经验。
+4. 返回所需的训练时间。
 
 关键点:
-- [TODO]
+- 通过一次遍历计算所需的总精力。
+- 通过逐个检查每个对手的经验要求，确保每次都能击败对手。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是对手的数量。我们只需要遍历一次对手列表。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_hours(initial_energy: int, initial_experience: int, energy: List[int], experience: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算击败所有对手所需的最少训练时间。
+    
+    :param initial_energy: 初始精力
+    :param initial_experience: 初始经验
+    :param energy: 对手的精力列表
+    :param experience: 对手的经验列表
+    :return: 所需的最少训练时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算所需的总精力
+    total_energy = sum(energy)
+    current_energy = initial_energy
+    current_experience = initial_experience
+    training_hours = 0
+    
+    for i in range(len(energy)):
+        # 如果当前精力不足以击败对手
+        if current_energy <= energy[i]:
+            training_hours += (energy[i] - current_energy + 1)
+            current_energy = energy[i] + 1
+        
+        # 如果当前经验不足以击败对手
+        if current_experience <= experience[i]:
+            training_hours += (experience[i] - current_experience + 1)
+            current_experience = experience[i] + 1
+        
+        # 更新当前精力和经验
+        current_energy -= energy[i]
+        current_experience += experience[i]
+    
+    return training_hours
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_hours)

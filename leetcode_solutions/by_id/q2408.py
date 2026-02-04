@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来跟踪每一天知道秘密的人数，并且使用滑动窗口来处理延迟和遗忘的天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 `n+1` 的数组 `dp`，其中 `dp[i]` 表示第 `i` 天知道秘密的人数。
+2. 初始化 `dp[1]` 为 1，因为第一天只有一个人知道秘密。
+3. 使用两个指针 `start` 和 `end` 来表示当前可以分享秘密的人的范围。
+4. 遍历从第 2 天到第 `n` 天，更新 `dp[i]` 为 `dp[start:end]` 的和。
+5. 更新 `start` 和 `end` 指针，确保它们在有效范围内。
+6. 返回 `dp[n] % (10**9 + 7)`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来处理延迟和遗忘的天数。
+- 动态规划数组 `dp` 用于存储每一天知道秘密的人数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_people_aware_of_secret(n: int, delay: int, forget: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在第 n 天结束时，知道秘密的人数。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10 ** 9 + 7
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    start, end = 1, 1
+
+    for i in range(2, n + 1):
+        if i - delay >= 1:
+            dp[i] += sum(dp[max(start, i - delay):min(end, i)])
+            dp[i] %= MOD
+        if i - forget >= 1:
+            start = max(start, i - forget + 1)
+        end = i
+
+    return sum(dp[start:n + 1]) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_people_aware_of_secret)

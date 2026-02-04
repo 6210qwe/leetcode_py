@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个员工的最新薪水记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每个员工的最新薪水记录的时间戳。
+2. 在主查询中，使用内连接将员工表和最新薪水时间戳表连接起来，获取最新的薪水记录。
 
 关键点:
-- [TODO]
+- 使用 `MAX` 函数和 `GROUP BY` 子句来找到每个员工的最新薪水时间戳。
+- 使用内连接 (`INNER JOIN`) 来获取最新的薪水记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是员工表的行数，m 是薪水表的行数。
+空间复杂度: O(1)，不考虑查询结果所占用的空间。
 """
 
 # ============================================================================
@@ -51,10 +52,20 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询员工的最新薪水
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT e.employee_id, s.salary
+    FROM Employees e
+    INNER JOIN (
+        SELECT employee_id, MAX(salary_date) AS max_salary_date
+        FROM Salaries
+        GROUP BY employee_id
+    ) s1 ON e.employee_id = s1.employee_id
+    INNER JOIN Salaries s ON s1.employee_id = s.employee_id AND s1.max_salary_date = s.salary_date
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

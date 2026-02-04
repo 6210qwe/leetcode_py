@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先使用大面额的钞票进行找零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `five` 和 `ten` 分别记录 5 美元和 10 美元的数量。
+2. 遍历账单数组 `bills`：
+   - 如果账单是 5 美元，增加 `five` 计数器。
+   - 如果账单是 10 美元，检查是否有 5 美元进行找零，如果有则减少 `five` 计数器并增加 `ten` 计数器，否则返回 `False`。
+   - 如果账单是 20 美元，优先使用 10 美元和 5 美元进行找零，如果没有 10 美元则尝试使用 3 张 5 美元进行找零，否则返回 `False`。
+3. 如果遍历完所有账单且都能正确找零，返回 `True`。
 
 关键点:
-- [TODO]
+- 优先使用大面额的钞票进行找零，以保证尽可能多的小面额钞票用于后续找零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是账单数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def lemonade_change(bills: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以正确找零
     """
-    # TODO: 实现最优解法
-    pass
+    five, ten = 0, 0
+    for bill in bills:
+        if bill == 5:
+            five += 1
+        elif bill == 10:
+            if five == 0:
+                return False
+            five -= 1
+            ten += 1
+        elif bill == 20:
+            if ten > 0 and five > 0:
+                ten -= 1
+                five -= 1
+            elif five >= 3:
+                five -= 3
+            else:
+                return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(lemonade_change)

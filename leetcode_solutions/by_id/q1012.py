@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字符串表示的有理数转换为分数形式，然后比较两个分数是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 解析字符串，提取整数部分、小数非重复部分和小数重复部分。
+2. 将这些部分转换为分数形式。
+3. 比较两个分数是否相等。
 
 关键点:
-- [TODO]
+- 使用数学公式将有理数转换为分数。
+- 使用最大公约数简化分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Tuple
+import math
 
-
-def solution_function_name(params):
+def parse_rational_number(s: str) -> Tuple[int, int]:
     """
-    函数式接口 - [TODO] 实现
+    解析有理数字符串，返回分子和分母。
     """
-    # TODO: 实现最优解法
-    pass
+    if '.' not in s:
+        return int(s), 1
+    
+    integer_part, fractional_part = s.split('.')
+    non_repeating, repeating = '', ''
+    
+    if '(' in fractional_part:
+        non_repeating, repeating = fractional_part.split('(')
+        repeating = repeating.rstrip(')')
+    else:
+        non_repeating = fractional_part
+    
+    numerator = int(integer_part + non_repeating + repeating) - int(integer_part + non_repeating)
+    denominator = 10 ** (len(non_repeating) + len(repeating)) - 10 ** len(non_repeating)
+    
+    if non_repeating:
+        numerator += int(integer_part + non_repeating) * denominator
+        denominator *= 10 ** len(non_repeating)
+    
+    gcd = math.gcd(numerator, denominator)
+    return numerator // gcd, denominator // gcd
 
+def is_rational_equal(s: str, t: str) -> bool:
+    """
+    判断两个有理数字符串是否表示相同的数值。
+    """
+    s_num, s_den = parse_rational_number(s)
+    t_num, t_den = parse_rational_number(t)
+    
+    return s_num * t_den == t_num * s_den
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_rational_equal)

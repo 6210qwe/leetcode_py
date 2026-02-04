@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滚动哈希来计算子串的哈希值，并通过滑动窗口技术来高效地找到符合条件的子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始子串（从索引 0 到 k-1）的哈希值。
+2. 使用滑动窗口技术，逐个移动窗口，更新哈希值。
+3. 如果当前窗口的哈希值等于目标哈希值，则返回该子串。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来高效计算子串的哈希值。
+- 通过滑动窗口技术减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_substring_with_given_hash_value(s: str, power: int, modulo: int, k: int, hash_value: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到给定哈希值的子串
     """
-    # TODO: 实现最优解法
-    pass
+    def val(c: str) -> int:
+        return ord(c) - ord('a') + 1
+
+    # 计算初始子串的哈希值
+    current_hash = 0
+    for i in range(k):
+        current_hash = (current_hash * power + val(s[i])) % modulo
+
+    if current_hash == hash_value:
+        return s[:k]
+
+    # 计算 power^(k-1) % modulo
+    power_k_1 = pow(power, k - 1, modulo)
+
+    # 滑动窗口
+    for i in range(k, len(s)):
+        current_hash = (current_hash - val(s[i - k]) * power_k_1) % modulo
+        current_hash = (current_hash * power + val(s[i])) % modulo
+        if current_hash == hash_value:
+            return s[i - k + 1:i + 1]
+
+    return ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_substring_with_given_hash_value)

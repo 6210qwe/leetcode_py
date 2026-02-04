@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过分解每个数的质因数，并使用集合来存储不同的质因数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合 `prime_factors` 来存储不同的质因数。
+2. 遍历数组中的每个数，对其进行质因数分解。
+3. 将分解得到的质因数加入集合 `prime_factors`。
+4. 返回集合 `prime_factors` 的大小。
 
 关键点:
-- [TODO]
+- 使用集合来存储不同的质因数，确保每个质因数只被记录一次。
+- 通过遍历每个数的质因数分解，确保所有质因数都被找到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是数组的长度，m 是数组中的最大值。每个数的质因数分解的时间复杂度为 O(sqrt(m))。
+空间复杂度: O(k)，其中 k 是不同的质因数的数量。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distinct_prime_factors(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组乘积中的不同质因数数目
     """
-    # TODO: 实现最优解法
-    pass
+    def prime_factors(n: int) -> set:
+        """返回 n 的所有质因数"""
+        factors = set()
+        # 分解出所有的 2
+        while n % 2 == 0:
+            factors.add(2)
+            n //= 2
+        # 分解出所有的奇数质因数
+        for i in range(3, int(n**0.5) + 1, 2):
+            while n % i == 0:
+                factors.add(i)
+                n //= i
+        # 如果 n 是一个大于 2 的质数
+        if n > 2:
+            factors.add(n)
+        return factors
+
+    # 使用集合来存储不同的质因数
+    prime_factors_set = set()
+    for num in nums:
+        prime_factors_set.update(prime_factors(num))
+    
+    return len(prime_factors_set)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_prime_factors)

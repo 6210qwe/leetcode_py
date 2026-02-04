@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法和位运算来最小化剩余元素的或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `result` 为 0，用于存储最终结果。
+2. 从高位到低位（从第 29 位到第 0 位）遍历每一位。
+3. 对于每一位，尝试将当前位设置为 0，并检查是否可以通过至多 k 次操作使得该位为 0。
+4. 如果可以，则将 `result` 的当前位设为 0；否则，保持为 1。
+5. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用位运算来逐位处理，确保在至多 k 次操作内尽可能减少或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(30 * n) = O(n)，其中 n 是 nums 的长度。因为我们需要检查每一位（最多 30 位），并且每次检查需要遍历整个数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_or_of_remaining_elements(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    for bit in range(29, -1, -1):
+        count = 0
+        new_nums = []
+        for num in nums:
+            if num & (1 << bit):
+                count += 1
+            else:
+                if new_nums and count > 0:
+                    new_nums[-1] &= num
+                    count -= 1
+                else:
+                    new_nums.append(num)
+        if count > 0:
+            new_nums.extend([0] * count)
+        if len(new_nums) > k + 1:
+            result |= (1 << bit)
+        nums = new_nums
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_or_of_remaining_elements)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来快速查找链表中的节点值是否在 nums 中，并通过遍历链表来计算组件的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 转换为哈希集合，以便 O(1) 时间复杂度进行查找。
+2. 初始化计数器 `count` 和标志变量 `in_component`。
+3. 遍历链表：
+   - 如果当前节点的值在哈希集合中且 `in_component` 为 False，则找到一个新的组件，将 `count` 加 1 并将 `in_component` 置为 True。
+   - 如果当前节点的值不在哈希集合中且 `in_component` 为 True，则结束当前组件，将 `in_component` 置为 False。
+4. 返回 `count`。
 
 关键点:
-- [TODO]
+- 使用哈希集合来快速查找节点值是否在 nums 中。
+- 通过标志变量 `in_component` 来跟踪当前是否在一个组件中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需遍历链表一次。
+空间复杂度: O(m)，其中 m 是 nums 的长度。我们需要存储 nums 中的所有值以进行 O(1) 时间复杂度的查找。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(head: ListNode, nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算链表组件的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums 转换为哈希集合
+    num_set = set(nums)
+    
+    count = 0
+    in_component = False
+    
+    # 遍历链表
+    current = head
+    while current:
+        if current.val in num_set:
+            if not in_component:
+                count += 1
+                in_component = True
+        else:
+            in_component = False
+        current = current.next
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来找到最少的移动次数。我们首先找到所有多余的石头和空缺的位置，然后通过递归尝试将多余的石头移动到空缺的位置，记录每次移动的总步数，并更新最小步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找出所有有多余石头的格子和空缺的格子。
+2. 使用回溯法尝试将多余的石头移动到空缺的位置，记录每次移动的总步数。
+3. 更新最小移动次数。
 
 关键点:
-- [TODO]
+- 使用曼哈顿距离来计算移动步数。
+- 通过递归和回溯来尝试所有可能的移动方案。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(9!) - 因为最多有 9 个位置需要排列。
+空间复杂度: O(9!) - 递归调用栈的最大深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_moves_to_spread_stones(grid: List[List[int]]) -> int:
+    def manhattan_distance(p1, p2):
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(extra, empty, moves, current_move):
+        nonlocal min_moves
+        if not extra:
+            min_moves = min(min_moves, current_move)
+            return
+        for i in range(len(extra)):
+            for j in range(len(empty)):
+                next_extra = extra[:i] + extra[i+1:]
+                next_empty = empty[:j] + empty[j+1:]
+                next_move = current_move + manhattan_distance(extra[i], empty[j])
+                if next_move < min_moves:
+                    backtrack(next_extra, next_empty, moves, next_move)
 
+    extra = []
+    empty = []
+    for i in range(3):
+        for j in range(3):
+            if grid[i][j] > 1:
+                extra.extend([(i, j)] * (grid[i][j] - 1))
+            elif grid[i][j] == 0:
+                empty.append((i, j))
 
-Solution = create_solution(solution_function_name)
+    min_moves = float('inf')
+    backtrack(extra, empty, 0, 0)
+    return min_moves
+
+Solution = create_solution(minimum_moves_to_spread_stones)

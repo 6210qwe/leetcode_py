@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大甜蜜度，并通过贪心算法验证是否可以选出 k 个糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对价格数组进行排序。
+2. 使用二分查找来确定最大甜蜜度的范围。
+3. 在每次二分查找的过程中，使用贪心算法验证是否可以选出 k 个糖果，使得任意两个糖果的价格差至少为当前的甜蜜度。
 
 关键点:
-- [TODO]
+- 二分查找的范围是从 0 到 (max(price) - min(price)) // (k - 1)。
+- 贪心算法用于验证当前甜蜜度是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_price_diff))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_tastiness(price: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算礼盒的最大甜蜜度
     """
-    # TODO: 实现最优解法
-    pass
+    def can_select(tastiness: int) -> bool:
+        count = 1
+        last_selected = price[0]
+        for p in price[1:]:
+            if p - last_selected >= tastiness:
+                count += 1
+                last_selected = p
+                if count == k:
+                    return True
+        return False
+
+    price.sort()
+    left, right = 0, (price[-1] - price[0]) // (k - 1)
+
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_select(mid):
+            left = mid
+        else:
+            right = mid - 1
+
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_tastiness)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Hierholzer 算法找到欧拉路径，生成最短的密码序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `visited` 来记录已经访问过的边。
+2. 定义一个递归函数 `dfs`，用于深度优先搜索构建欧拉路径。
+3. 从初始节点开始进行深度优先搜索，直到所有边都被访问过。
+4. 将结果反转并去掉前缀部分，得到最终的最短密码序列。
 
 关键点:
-- [TODO]
+- 使用 Hierholzer 算法可以有效地找到欧拉路径。
+- 通过递归的方式构建路径，确保所有边都被访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k^n)，其中 k 是密码每一位的可能取值，n 是密码的长度。
+空间复杂度: O(k^n)，存储已访问的边和递归调用栈。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def crack_safe(n: int, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Hierholzer 算法找到欧拉路径，生成最短的密码序列。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化变量
+    visited = set()
+    result = []
+
+    def dfs(node: str):
+        for x in range(k):
+            edge = node + str(x)
+            if edge not in visited:
+                visited.add(edge)
+                dfs(edge[1:])
+                result.append(str(x))
+
+    # 从初始节点开始进行深度优先搜索
+    start_node = "0" * (n - 1)
+    dfs(start_node)
+
+    # 将结果反转并去掉前缀部分
+    return start_node + "".join(reversed(result))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(crack_safe)

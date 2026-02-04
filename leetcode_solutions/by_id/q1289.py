@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Zeller 公式计算给定日期是星期几。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义月份和星期的映射关系。
+2. 将月份转换为 Zeller 公式的月份格式（即 3 月视为 1 月，4 月视为 2 月，依此类推）。
+3. 如果月份是 1 或 2，则将年份减 1，并将月份加上 12。
+4. 使用 Zeller 公式计算星期几。
+5. 返回对应的星期名称。
 
 关键点:
-- [TODO]
+- Zeller 公式是一种计算给定日期是星期几的公式，适用于格里高利历。
+- 通过调整月份和年份，可以简化公式的应用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def day_of_the_week(day: int, month: int, year: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    计算给定日期是星期几。
+    
+    :param day: 日
+    :param month: 月
+    :param year: 年
+    :return: 星期几
     """
-    # TODO: 实现最优解法
-    pass
+    # 月份和星期的映射关系
+    days_of_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    
+    # 将月份转换为 Zeller 公式的月份格式
+    if month < 3:
+        month += 12
+        year -= 1
+    
+    # Zeller 公式
+    h = (day + 13 * (month + 1) // 5 + year + year // 4 - year // 100 + year // 400) % 7
+    
+    # 返回对应的星期名称
+    return days_of_week[h]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(day_of_the_week)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过三重循环生成所有可能的三位数，并检查其是否为偶数且不包含前导零。使用集合去重并排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用三重循环遍历 digits 数组，生成所有可能的三位数。
+2. 检查生成的三位数是否为偶数且不包含前导零。
+3. 使用集合去重，并将结果转换为列表并排序。
 
 关键点:
-- [TODO]
+- 三重循环生成所有可能的三位数。
+- 使用集合去重。
+- 检查生成的三位数是否为偶数且不包含前导零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 log n)，其中 n 是 digits 的长度。三重循环的时间复杂度是 O(n^3)，排序的时间复杂度是 O(n^3 log n)。
+空间复杂度: O(n^3)，存储所有可能的三位数。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_3_digit_even_numbers(digits: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出所有满足条件的三位偶数
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成所有可能的三位数
+    three_digit_numbers = set()
+    for i in range(len(digits)):
+        if digits[i] == 0:
+            continue
+        for j in range(len(digits)):
+            if i == j:
+                continue
+            for k in range(len(digits)):
+                if j == k or k == i:
+                    continue
+                num = digits[i] * 100 + digits[j] * 10 + digits[k]
+                if num % 2 == 0:
+                    three_digit_numbers.add(num)
+    
+    # 转换为列表并排序
+    return sorted(list(three_digit_numbers))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_3_digit_even_numbers)

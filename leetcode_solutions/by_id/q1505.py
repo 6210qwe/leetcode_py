@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表的 insert 方法按给定顺序插入元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的目标数组 `target`。
+2. 遍历 `nums` 和 `index` 数组，对于每个 `i`，在 `target` 的 `index[i]` 位置插入 `nums[i]`。
+3. 返回最终的 `target` 数组。
 
 关键点:
-- [TODO]
+- 利用 Python 列表的 `insert` 方法来实现插入操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。每次插入操作的时间复杂度为 O(n)。
+空间复杂度: O(n)，目标数组 `target` 的空间消耗。
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def create_target_array(nums: List[int], index: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按既定顺序创建目标数组
     """
-    # TODO: 实现最优解法
-    pass
+    target = []
+    for i in range(len(nums)):
+        target.insert(index[i], nums[i])
+    return target
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(create_target_array)

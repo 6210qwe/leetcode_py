@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的出现次数，然后遍历数组找到最大的唯一数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典记录每个数字的出现次数。
+2. 再次遍历数组，找到出现次数为1的最大数字。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字的出现次数。
+- 两次遍历数组，一次统计频率，一次查找最大唯一数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_unique_number(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中最大的唯一数
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个数字的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 找到出现次数为1的最大数字
+    max_unique = -1
+    for num in nums:
+        if count[num] == 1:
+            max_unique = max(max_unique, num)
+    
+    return max_unique
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_unique_number)

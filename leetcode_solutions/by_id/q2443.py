@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来判断数组是否存在有效划分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的 dp 数组，dp[i] 表示前 i 个元素是否可以有效划分。
+2. 设置 dp[0] = True，因为空数组是有效的。
+3. 遍历数组，对于每个位置 i，检查以下三种情况：
+   - 如果 nums[i-1] == nums[i-2]，则 dp[i] |= dp[i-2]。
+   - 如果 nums[i-1] == nums[i-2] == nums[i-3]，则 dp[i] |= dp[i-3]。
+   - 如果 nums[i-1] == nums[i-2] + 1 == nums[i-3] + 2，则 dp[i] |= dp[i-3]。
+4. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(n)，使用了一个长度为 n+1 的 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_partition_array(nums: List[int]) -> bool:
+    n = len(nums)
+    dp = [False] * (n + 1)
+    dp[0] = True
+
+    for i in range(2, n + 1):
+        if nums[i - 1] == nums[i - 2]:
+            dp[i] |= dp[i - 2]
+        if i >= 3 and nums[i - 1] == nums[i - 2] == nums[i - 3]:
+            dp[i] |= dp[i - 3]
+        if i >= 3 and nums[i - 1] == nums[i - 2] + 1 == nums[i - 3] + 2:
+            dp[i] |= dp[i - 3]
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = can_partition_array

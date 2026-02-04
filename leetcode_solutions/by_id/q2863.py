@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用类来实现计算器的功能，并通过方法链来支持连续操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 Calculator 类，设置初始值 result。
+2. 实现 add 方法，将给定的值加到 result 上，并返回 self。
+3. 实现 subtract 方法，从 result 中减去给定的值，并返回 self。
+4. 实现 multiply 方法，将 result 乘以给定的值，并返回 self。
+5. 实现 divide 方法，将 result 除以给定的值（如果值为 0，则抛出异常），并返回 self。
+6. 实现 power 方法，计算 result 的幂，并返回 self。
+7. 实现 getResult 方法，返回 result 的值。
 
 关键点:
-- [TODO]
+- 每个方法都返回 self，以便支持方法链。
+- 在 divide 方法中处理除以零的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每个操作都是常数时间复杂度。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,64 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class Calculator:
+    def __init__(self, value: float):
+        self.result = value
+
+    def add(self, value: float) -> 'Calculator':
+        self.result += value
+        return self
+
+    def subtract(self, value: float) -> 'Calculator':
+        self.result -= value
+        return self
+
+    def multiply(self, value: float) -> 'Calculator':
+        self.result *= value
+        return self
+
+    def divide(self, value: float) -> 'Calculator':
+        if value == 0:
+            raise ValueError("Division by zero is not allowed")
+        self.result /= value
+        return self
+
+    def power(self, value: float) -> 'Calculator':
+        self.result **= value
+        return self
+
+    def getResult(self) -> float:
+        return self.result
+
+
+def solution_function_name(actions: List[str], values: List[float]) -> Optional[float]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据给定的操作和值序列执行计算器操作。
     """
-    # TODO: 实现最优解法
-    pass
+    if actions[0] != "Calculator":
+        raise ValueError("First action must be 'Calculator'")
+    if actions[-1] != "getResult":
+        raise ValueError("Last action must be 'getResult'")
+
+    calc = Calculator(values[0])
+    for i in range(1, len(actions) - 1):
+        action = actions[i]
+        value = values[i]
+        if action == "add":
+            calc.add(value)
+        elif action == "subtract":
+            calc.subtract(value)
+        elif action == "multiply":
+            calc.multiply(value)
+        elif action == "divide":
+            try:
+                calc.divide(value)
+            except ValueError as e:
+                return str(e)
+        elif action == "power":
+            calc.power(value)
+
+    return calc.getResult()
 
 
 Solution = create_solution(solution_function_name)

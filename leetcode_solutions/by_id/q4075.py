@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来统计以 target 为主要元素的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向子数组的起始和结束位置。
+2. 使用一个计数器 count 来记录当前子数组中 target 的数量。
+3. 移动 right 指针扩展子数组，并更新 count。
+4. 当 count 大于 (right - left + 1) / 2 时，说明当前子数组是以 target 为主要元素的，将结果加一。
+5. 如果 count 不满足条件，移动 left 指针缩小子数组，并更新 count。
+6. 重复步骤 3-5 直到 right 到达数组末尾。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术可以高效地统计以 target 为主要元素的子数组数量。
+- 通过维护一个计数器来判断当前子数组是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_subarrays_with_majority_element(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计以 target 为主要元素的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    count = 0
+    result = 0
+    left = 0
+    
+    for right in range(n):
+        if nums[right] == target:
+            count += 1
+        
+        while (right - left + 1) // 2 < count:
+            result += 1
+            if nums[left] == target:
+                count -= 1
+            left += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_subarrays_with_majority_element)

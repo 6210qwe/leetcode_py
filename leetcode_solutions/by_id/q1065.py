@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合存储所有可能的子串，并检查 [1, n] 范围内的每个整数的二进制表示是否在集合中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合来存储所有可能的子串。
+2. 遍历字符串 s 的所有长度为 1 到 30 的子串（因为 2^30 > 10^9），并将它们加入集合。
+3. 遍历 [1, n] 范围内的每个整数，检查其二进制表示是否在集合中。
+4. 如果所有整数的二进制表示都在集合中，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用集合存储子串以快速查找。
+- 限制子串长度为 1 到 30，因为 2^30 > 10^9。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * min(m, 30))，其中 m 是字符串 s 的长度。遍历字符串 s 的所有长度为 1 到 30 的子串。
+空间复杂度: O(m * min(m, 30))，存储所有可能的子串。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def query_string(s: str, n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查给定的二进制字符串 s 是否包含 [1, n] 范围内所有整数的二进制表示。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化集合来存储所有可能的子串
+    substrings = set()
+    
+    # 遍历字符串 s 的所有长度为 1 到 30 的子串
+    for i in range(len(s)):
+        for j in range(i + 1, min(i + 31, len(s) + 1)):
+            substrings.add(s[i:j])
+    
+    # 检查 [1, n] 范围内的每个整数的二进制表示是否在集合中
+    for i in range(1, n + 1):
+        if bin(i)[2:] not in substrings:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(query_string)

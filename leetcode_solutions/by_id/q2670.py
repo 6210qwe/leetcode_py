@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数组分成 k 个组，每组的元素索引相差 k。对于每一组，找到其中位数，然后将所有元素变成该中位数所需的最小操作次数即为答案。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典，用于存储每个组的元素。
+2. 遍历数组，将每个元素放入对应的组中。
+3. 对于每个组，找到其中位数，并计算将所有元素变成该中位数所需的操作次数。
+4. 累加所有组的操作次数，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用中位数来最小化操作次数。
+- 通过字典来存储每个组的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储每个组的元素。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使子数组元素和相等
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个字典，用于存储每个组的元素
+    groups = {}
+    
+    # 遍历数组，将每个元素放入对应的组中
+    for i in range(len(arr)):
+        group_index = i % k
+        if group_index not in groups:
+            groups[group_index] = []
+        groups[group_index].append(arr[i])
+    
+    # 计算总的操作次数
+    total_operations = 0
+    
+    # 对于每个组，找到其中位数，并计算将所有元素变成该中位数所需的操作次数
+    for group in groups.values():
+        group.sort()
+        median = group[len(group) // 2]
+        operations = sum(abs(num - median) for num in group)
+        total_operations += operations
+    
+    return total_operations
 
 
 Solution = create_solution(solution_function_name)

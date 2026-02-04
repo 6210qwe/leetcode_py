@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，我们只需要关注未匹配的右括号数量。每次遇到一个左括号时，如果之前有未匹配的右括号，则进行一次交换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `balance` 来记录未匹配的右括号数量。
+2. 初始化一个计数器 `swaps` 来记录交换次数。
+3. 遍历字符串 `s`：
+   - 如果当前字符是 `[`，则增加 `balance`。
+   - 如果当前字符是 `]`，则减少 `balance`。
+   - 如果 `balance` 小于 0，说明当前右括号没有匹配的左括号，需要进行一次交换，并将 `balance` 增加 2（因为交换后会多一个左括号）。
+4. 返回 `swaps`。
 
 关键点:
-- [TODO]
+- 通过维护 `balance` 来判断是否需要交换。
+- 交换次数可以通过 `balance` 的变化来计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使字符串平衡的最小交换次数
     """
-    # TODO: 实现最优解法
-    pass
+    balance = 0
+    swaps = 0
+    
+    for char in s:
+        if char == '[':
+            balance += 1
+        else:
+            balance -= 1
+        if balance < 0:
+            swaps += 1
+            balance += 2
+    
+    return swaps
 
 
 Solution = create_solution(solution_function_name)

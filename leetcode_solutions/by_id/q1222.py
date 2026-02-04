@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法来移除被覆盖的区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按起点升序排序，如果起点相同则按终点降序排序。
+2. 遍历排序后的区间，维护当前的最大终点。
+3. 如果当前区间的终点小于等于最大终点，则该区间被覆盖，跳过；否则更新最大终点，并计数。
 
 关键点:
-- [TODO]
+- 通过排序确保起点小的区间先处理。
+- 通过维护最大终点来判断是否被覆盖。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是区间的数量。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_covered_intervals(intervals: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除被覆盖的区间
     """
-    # TODO: 实现最优解法
-    pass
+    # 按起点升序排序，如果起点相同则按终点降序排序
+    intervals.sort(key=lambda x: (x[0], -x[1]))
+    
+    count = 0
+    max_end = 0
+    
+    for _, end in intervals:
+        if end > max_end:
+            count += 1
+            max_end = end
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_covered_intervals)

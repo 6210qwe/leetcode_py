@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 dp[i][j] 表示访问到第 i 个房子且最后一步从 j 房子来的最小时间。
+2. 初始化 dp[0][0] = 0，其他 dp[0][j] = float('inf')。
+3. 状态转移方程：dp[i][j] = min(dp[i-1][k] + cost[i-1][k][j]) for k in range(n)。
+4. 最终结果是 min(dp[n-1][j]) for j in range(n)。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过状态转移方程来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是房子的数量。因为每次状态转移需要遍历 n 个房子。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_time_to_visit_all_houses(cost: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算访问所有房屋的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(cost)
+    dp = [[float('inf')] * n for _ in range(n)]
+    dp[0][0] = 0
+    
+    for i in range(1, n):
+        for j in range(n):
+            for k in range(n):
+                if i > 0:
+                    dp[i][j] = min(dp[i][j], dp[i-1][k] + cost[i-1][k][j])
+    
+    return min(dp[n-1])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_visit_all_houses)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过调整数组中的负数使其变为正数，并确保数组的前缀和始终为正。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 遍历数组，如果当前元素为负数且前缀和加上该元素后变为负数，则将该元素调整为正数。
+3. 更新前缀和。
 
 关键点:
-- [TODO]
+- 通过调整负数为正数，确保前缀和始终为正。
+- 选择最小的调整量以保持数组的总和尽可能小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    prefix_sum = 0
+    total_adjustment = 0
+
+    for i in range(n):
+        if arr[i] < 0 and prefix_sum + arr[i] < 0:
+            # 计算需要调整的值
+            adjustment = -(prefix_sum + arr[i]) + 1
+            total_adjustment += adjustment
+            arr[i] += adjustment
+        prefix_sum += arr[i]
+
+    return total_adjustment
 
 
 Solution = create_solution(solution_function_name)

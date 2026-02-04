@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到包含 k 个连续黑色块所需的最少涂色次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个滑动窗口，窗口大小为 k。
+2. 计算初始窗口内的白色块数量。
+3. 滑动窗口从左到右遍历整个字符串，每次移动一格，更新窗口内的白色块数量。
+4. 记录最小的白色块数量，即为最少的涂色次数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，可以高效地找到每个窗口内的白色块数量。
+- 通过维护一个计数器来记录当前窗口内的白色块数量，可以在 O(1) 时间内更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_recolors(blocks: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回得到 k 个连续黑色块的最少涂色次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化窗口内的白色块数量
+    white_count = blocks[:k].count('W')
+    min_operations = white_count
+
+    # 滑动窗口从左到右遍历
+    for i in range(k, len(blocks)):
+        if blocks[i - k] == 'W':
+            white_count -= 1
+        if blocks[i] == 'W':
+            white_count += 1
+        min_operations = min(min_operations, white_count)
+
+    return min_operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_recolors)

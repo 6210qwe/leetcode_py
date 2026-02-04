@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算计算每个数的二进制表示中1的个数，并检查该个数是否为质数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `is_prime` 来判断一个数是否为质数。
+2. 遍历从 `left` 到 `right` 的所有整数，计算每个数的二进制表示中1的个数。
+3. 使用 `is_prime` 函数检查该个数是否为质数，如果是则计数器加一。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用位运算高效地计算二进制表示中1的个数。
+- 预先定义一个小范围内的质数列表，以提高 `is_prime` 函数的效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(left, right)))，其中 n = right - left + 1，log(max(left, right)) 是计算二进制表示中1的个数的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +51,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(num: int) -> bool:
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
+def count_prime_set_bits(left: int, right: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计闭区间 [left, right] 内计算置位位数为质数的整数个数
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for num in range(left, right + 1):
+        bit_count = bin(num).count('1')
+        if is_prime(bit_count):
+            count += 1
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_prime_set_bits)

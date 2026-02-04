@@ -21,22 +21,25 @@ LCP 80. 生物进化录 - 在永恒之森中，存在着一本生物进化录，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来构建字典序最小的01字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构，使用邻接表表示。
+2. 定义一个递归函数进行DFS，从根节点开始。
+3. 在DFS过程中，优先处理子节点较少的子树，以确保字典序最小。
+4. 每次进入子节点时记录'0'，退出子节点时记录'1'。
 
 关键点:
-- [TODO]
+- 使用堆来存储子节点，以确保每次先处理子节点较少的子树。
+- 通过递归调用DFS来构建字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是节点数。每个节点最多被处理一次，且每次处理的时间复杂度为O(log n)（堆操作）。
+空间复杂度: O(n)，用于存储树结构和递归调用栈。
 """
 
 # ============================================================================
@@ -47,14 +50,36 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(parents: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字典序最小的01字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def build_tree(parents: List[int]) -> dict:
+        tree = {}
+        for i in range(len(parents)):
+            if i not in tree:
+                tree[i] = []
+            if parents[i] != -1:
+                if parents[i] not in tree:
+                    tree[parents[i]] = []
+                tree[parents[i]].append(i)
+        return tree
 
+    def dfs(node: int) -> str:
+        result = ""
+        if node in tree:
+            children = tree[node]
+            # 使用堆来确保优先处理子节点较少的子树
+            heapq.heapify(children)
+            while children:
+                child = heapq.heappop(children)
+                result += "0" + dfs(child) + "1"
+        return result
+
+    tree = build_tree(parents)
+    root = parents.index(-1)
+    return "0" + dfs(root)
 
 Solution = create_solution(solution_function_name)

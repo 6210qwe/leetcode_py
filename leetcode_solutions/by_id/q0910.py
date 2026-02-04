@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和数学方法来找到第 n 个神奇数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 a 和 b 的最小公倍数 (LCM)。
+2. 使用二分查找来确定第 n 个神奇数字的位置。
+3. 在二分查找过程中，计算当前中间值 mid 能被 a 或 b 整除的次数。
+4. 根据次数调整二分查找的范围，直到找到第 n 个神奇数字。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地找到第 n 个神奇数字。
+- 计算 a 和 b 的最小公倍数以避免重复计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(a, b) * n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +51,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def gcd(x: int, y: int) -> int:
+    """计算最大公约数"""
+    while y:
+        x, y = y, x % y
+    return x
 
-def solution_function_name(params):
+def lcm(x: int, y: int) -> int:
+    """计算最小公倍数"""
+    return x * y // gcd(x, y)
+
+def nthMagicalNumber(n: int, a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回第 n 个神奇数字
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    l, r = 1, n * min(a, b)
+    
+    # 二分查找
+    while l < r:
+        mid = (l + r) // 2
+        if mid // a + mid // b - mid // lcm(a, b) < n:
+            l = mid + 1
+        else:
+            r = mid
+    
+    return l % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(nthMagicalNumber)

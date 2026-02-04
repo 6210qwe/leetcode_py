@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历，记录从左到右和从右到左的碰撞情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从左到右遍历，记录第一个不是 'L' 的位置。
+2. 从右到左遍历，记录第一个不是 'R' 的位置。
+3. 计算碰撞次数：总的碰撞次数等于方向为 'L' 和 'R' 的车辆数减去没有参与碰撞的车辆数。
 
 关键点:
-- [TODO]
+- 通过两次遍历，分别找到从左到右和从右到左的第一个非 'L' 和非 'R' 的位置。
+- 计算总的碰撞次数时，需要排除没有参与碰撞的车辆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_collisions(directions: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算道路上的碰撞次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(directions)
+    left, right = 0, n - 1
+    
+    # 从左到右找到第一个不是 'L' 的位置
+    while left < n and directions[left] == 'L':
+        left += 1
+    
+    # 从右到左找到第一个不是 'R' 的位置
+    while right >= 0 and directions[right] == 'R':
+        right -= 1
+    
+    # 计算总的碰撞次数
+    total_collisions = 0
+    for i in range(left, right + 1):
+        if directions[i] != 'S':
+            total_collisions += 1
+    
+    return total_collisions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_collisions)

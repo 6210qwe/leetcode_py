@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的频次，然后检查这些频次是否为质数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Counter 统计数组中每个元素的频次。
+2. 定义一个函数来检查一个数是否为质数。
+3. 遍历频次字典，检查每个频次是否为质数，如果是则返回 True。
+4. 如果所有频次都不是质数，则返回 False。
 
 关键点:
-- [TODO]
+- 使用 Counter 进行频次统计。
+- 定义一个高效的质数检查函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))
+  - n 是数组的长度。
+  - m 是频次的最大值，质数检查的时间复杂度为 O(sqrt(m))。
+空间复杂度: O(n)
+  - 哈希表存储频次需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def is_prime(n: int) -> bool:
+    """检查一个数是否为质数"""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查元素频次是否为质数
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个元素的频次
+    freq = Counter(nums)
+    
+    # 检查每个频次是否为质数
+    for count in freq.values():
+        if is_prime(count):
+            return True
+    return False
 
 Solution = create_solution(solution_function_name)

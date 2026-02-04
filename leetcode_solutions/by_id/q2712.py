@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来最大化标记的下标数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 将数组分成两部分，前半部分和后半部分。
+3. 使用双指针分别遍历前半部分和后半部分，找到满足 2 * nums[i] <= nums[j] 的最大匹配对数。
 
 关键点:
-- [TODO]
+- 排序后，前半部分的元素较小，后半部分的元素较大，这样可以最大化匹配对数。
+- 使用双指针可以高效地找到满足条件的匹配对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)，双指针遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现求出最多标记下标的算法
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化双指针
+    left, right = 0, (len(nums) + 1) // 2
+    count = 0
+    
+    # 使用双指针遍历数组
+    while left < right and right < len(nums):
+        if 2 * nums[left] <= nums[right]:
+            count += 2
+            left += 1
+        right += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

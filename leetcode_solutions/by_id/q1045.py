@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来检查字符串的有效性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串中的每个字符：
+   - 如果字符是 'a' 或 'b'，将其压入栈中。
+   - 如果字符是 'c'，检查栈顶是否有 'b' 和 'a'，如果有则弹出 'b' 和 'a'，否则返回 False。
+3. 最后检查栈是否为空，如果为空则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用栈来匹配 "abc" 子序列。
+- 每次遇到 'c' 时，确保栈顶有 'b' 和 'a'。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会存储所有字符。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_valid(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串 s 是否有效
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if char == 'a':
+            stack.append(char)
+        elif char == 'b':
+            if not stack or stack[-1] != 'a':
+                return False
+            stack.append(char)
+        elif char == 'c':
+            if len(stack) < 2 or stack[-1] != 'b' or stack[-2] != 'a':
+                return False
+            stack.pop()  # 弹出 'b'
+            stack.pop()  # 弹出 'a'
+    
+    return len(stack) == 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_valid)

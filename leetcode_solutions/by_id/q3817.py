@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算可以装载的最大集装箱数量，确保总重量不超过最大承载重量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算甲板上的总单元格数。
+2. 计算在不超重的情况下可以装载的最大集装箱数量。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用整数除法和取整操作来确保结果是整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只涉及基本的算术运算。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, w: int, maxWeight: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算船上可以装载的最大集装箱数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算甲板上的总单元格数
+    total_cells = n * n
+    
+    # 计算在不超重的情况下可以装载的最大集装箱数量
+    max_containers = min(total_cells, maxWeight // w)
+    
+    return max_containers
 
 
 Solution = create_solution(solution_function_name)

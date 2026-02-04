@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用迭代法进行后序遍历。后序遍历的顺序是左-右-根，可以利用栈来实现。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，并将根节点压入栈。
+2. 初始化一个结果列表，用于存储后序遍历的结果。
+3. 当栈不为空时，弹出栈顶节点，并将其值插入结果列表的开头。
+4. 将该节点的所有子节点依次压入栈。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用栈来模拟递归的过程。
+- 将节点值插入结果列表的开头，以实现后序遍历的顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点的数量。每个节点都被访问一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会包含所有的节点。
 """
 
 # ============================================================================
@@ -44,17 +48,24 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from leetcode_solutions.utils.tree import Node
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def postorder(root: 'Node') -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 N 叉树的后序遍历
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
 
+    stack, result = [root], []
+    
+    while stack:
+        node = stack.pop()
+        result.insert(0, node.val)
+        for child in node.children:
+            stack.append(child)
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(postorder)

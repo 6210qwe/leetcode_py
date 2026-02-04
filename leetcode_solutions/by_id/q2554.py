@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个工厂修理前 j 个机器人的最小总距离。通过递推关系更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对机器人和工厂的位置进行排序。
+2. 初始化 dp 数组，dp[i][j] 表示前 i 个工厂修理前 j 个机器人的最小总距离。
+3. 通过遍历每个工厂和每个机器人，更新 dp 数组。
+4. 返回 dp 数组的最后一个值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理工厂的容量限制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * k)，其中 n 是工厂的数量，m 是机器人的数量，k 是工厂的最大容量。
+空间复杂度: O(n * m)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_total_distance(robot: List[int], factory: List[List[int]]) -> int:
+    # 对机器人和工厂的位置进行排序
+    robot.sort()
+    factory.sort()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(factory), len(robot)
+    dp = [float('inf')] * (m + 1)
+    dp[0] = 0
 
+    for i in range(n):
+        pos, limit = factory[i]
+        for j in range(m, -1, -1):
+            for k in range(1, min(limit, j) + 1):
+                dp[j] = min(dp[j], dp[j - k] + abs(pos - robot[j - k]))
 
-Solution = create_solution(solution_function_name)
+    return dp[m]
+
+Solution = create_solution(minimum_total_distance)

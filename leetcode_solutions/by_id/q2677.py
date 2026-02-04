@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用层次遍历（广度优先搜索）来计算每一层的总和，并记录每个节点的父节点。然后更新每个节点的值为其堂兄弟节点值的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用队列进行层次遍历，记录每一层的节点及其父节点。
+2. 计算每一层的总和。
+3. 更新每个节点的值为其堂兄弟节点值的和（即当前层的总和减去其兄弟节点的值）。
 
 关键点:
-- [TODO]
+- 使用字典记录每个节点的父节点。
+- 使用队列进行层次遍历。
+- 计算每一层的总和并更新节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(n)，队列和字典的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def replace_value_in_tree(root: Optional[TreeNode]) -> Optional[TreeNode]:
+    if not root:
+        return None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化队列和父节点字典
+    queue = [(root, None)]
+    parent_map = {root: None}
 
+    while queue:
+        next_level = []
+        level_sum = 0
+        for node, parent in queue:
+            if node.left:
+                next_level.append((node.left, node))
+                parent_map[node.left] = node
+                level_sum += node.left.val
+            if node.right:
+                next_level.append((node.right, node))
+                parent_map[node.right] = node
+                level_sum += node.right.val
+        queue = next_level
 
-Solution = create_solution(solution_function_name)
+        for node, parent in queue:
+            if parent:
+                sibling_val = (parent.left.val if parent.left != node else 0) + \
+                              (parent.right.val if parent.right != node else 0)
+                node.val = level_sum - sibling_val
+            else:
+                node.val = 0
+
+    return root
+
+Solution = create_solution(replace_value_in_tree)

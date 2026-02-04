@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的中序遍历特性，中序遍历会得到一个递增的序列，相邻节点的差值最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个全局变量 `prev` 用于记录前一个节点。
+2. 定义一个全局变量 `min_diff` 用于记录最小差值。
+3. 进行中序遍历：
+   - 递归遍历左子树。
+   - 计算当前节点与前一个节点的差值，并更新 `min_diff`。
+   - 更新 `prev` 为当前节点。
+   - 递归遍历右子树。
 
 关键点:
-- [TODO]
+- 中序遍历保证了节点值的有序性。
+- 通过记录前一个节点，可以方便地计算相邻节点的差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量，因为每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度，这是由于递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+prev: Optional[TreeNode] = None
+min_diff: int = float('inf')
 
-def solution_function_name(params):
+def min_distance_bst(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回二叉搜索树中任意两不同节点值之间的最小差值
     """
-    # TODO: 实现最优解法
-    pass
+    global prev, min_diff
 
+    def inorder_traversal(node: Optional[TreeNode]):
+        nonlocal prev, min_diff
+        if not node:
+            return
+        inorder_traversal(node.left)
+        if prev:
+            min_diff = min(min_diff, node.val - prev.val)
+        prev = node
+        inorder_traversal(node.right)
 
-Solution = create_solution(solution_function_name)
+    inorder_traversal(root)
+    return min_diff
+
+Solution = create_solution(min_distance_bst)

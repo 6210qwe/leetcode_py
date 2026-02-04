@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储所有字符串的所有子字符串，并通过遍历字典树找到每个字符串的最短非公共子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树，将所有字符串的所有子字符串插入字典树中。
+2. 遍历每个字符串的所有子字符串，检查其是否在字典树中只出现一次。
+3. 找到每个字符串的最短非公共子字符串，并选择字典序最小的一个。
 
 关键点:
-- [TODO]
+- 使用字典树高效地存储和查找子字符串。
+- 通过遍历字典树找到每个字符串的最短非公共子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m^2)，其中 n 是数组的长度，m 是字符串的最大长度。构建字典树的时间复杂度为 O(n * m^2)，查找每个字符串的最短非公共子字符串的时间复杂度为 O(m^2)。
+空间复杂度: O(n * m^2)，字典树的空间复杂度。
 """
 
 # ============================================================================
@@ -48,13 +50,48 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.count = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+            node.count += 1
 
-Solution = create_solution(solution_function_name)
+    def search(self, word: str) -> int:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return 0
+            node = node.children[char]
+        return node.count
+
+def find_shortest_uncommon_substring(arr: List[str]) -> List[str]:
+    trie = Trie()
+    for s in arr:
+        for i in range(len(s)):
+            for j in range(i + 1, len(s) + 1):
+                trie.insert(s[i:j])
+
+    result = []
+    for s in arr:
+        shortest = ""
+        for i in range(len(s)):
+            for j in range(i + 1, len(s) + 1):
+                sub = s[i:j]
+                if trie.search(sub) == 1:
+                    if shortest == "" or len(sub) < len(shortest) or (len(sub) == len(shortest) and sub < shortest):
+                        shortest = sub
+        result.append(shortest)
+    return result
+
+Solution = create_solution(find_shortest_uncommon_substring)

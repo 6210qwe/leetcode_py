@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个字符串的哈希值，并使用滚动哈希来快速计算前缀和后缀的哈希值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_suffix_count` 来存储每个字符串的哈希值及其出现次数。
+2. 遍历每个字符串，计算其所有前缀和后缀的哈希值，并更新哈希表。
+3. 对于每个字符串，检查其所有前缀和后缀是否已经在哈希表中存在，如果存在则累加计数。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来快速计算前缀和后缀的哈希值。
+- 使用哈希表来存储和查找哈希值，以实现高效的计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是字符串的平均长度。
+空间复杂度: O(n * m)，用于存储哈希表中的哈希值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_prefix_suffix_pairs(words: List[str]) -> int:
+    MOD = 10**9 + 7
+    BASE = 31
+    prefix_suffix_count = {}
+    result = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for word in words:
+        n = len(word)
+        hash_value = 0
+        power = 1
+        for i in range(n):
+            hash_value = (hash_value * BASE + ord(word[i])) % MOD
+            power = (power * BASE) % MOD
 
+        suffix_hash = 0
+        for i in range(n - 1, -1, -1):
+            suffix_hash = (suffix_hash * BASE + ord(word[i])) % MOD
+            if i > 0:
+                prefix_hash = (hash_value - (ord(word[i - 1]) * power) % MOD + MOD) % MOD
+                if (prefix_hash, suffix_hash) in prefix_suffix_count:
+                    result += prefix_suffix_count[(prefix_hash, suffix_hash)]
+        
+        if (hash_value, suffix_hash) not in prefix_suffix_count:
+            prefix_suffix_count[(hash_value, suffix_hash)] = 0
+        prefix_suffix_count[(hash_value, suffix_hash)] += 1
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = count_prefix_suffix_pairs

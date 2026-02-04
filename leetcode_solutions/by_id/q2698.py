@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，从数组的两端向中间遍历，每次将首尾元素串联并累加到结果中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `concatenation_value` 为 0。
+2. 使用双指针 `left` 和 `right` 分别指向数组的起始和末尾。
+3. 当 `left` 小于 `right` 时：
+   - 将 `nums[left]` 和 `nums[right]` 串联成一个新数字，并加到 `concatenation_value` 上。
+   - 移动 `left` 指针向右，移动 `right` 指针向左。
+4. 如果 `left` 等于 `right`，说明数组长度为奇数，直接将 `nums[left]` 加到 `concatenation_value` 上。
+5. 返回 `concatenation_value`。
 
 关键点:
-- [TODO]
+- 使用字符串拼接来实现数字的串联。
+- 双指针方法可以高效地处理数组的两端。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_array_concatenation_value(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组的串联值
     """
-    # TODO: 实现最优解法
-    pass
+    concatenation_value = 0
+    left, right = 0, len(nums) - 1
+    
+    while left < right:
+        # 串联首尾元素并累加
+        concatenated_value = int(str(nums[left]) + str(nums[right]))
+        concatenation_value += concatenated_value
+        left += 1
+        right -= 1
+    
+    # 如果数组长度为奇数，处理中间的单个元素
+    if left == right:
+        concatenation_value += nums[left]
+    
+    return concatenation_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_array_concatenation_value)

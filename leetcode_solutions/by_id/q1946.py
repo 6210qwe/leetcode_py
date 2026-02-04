@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找找到最接近 nums2[i] 的元素，从而最小化绝对差值和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始的绝对差值和。
+2. 对 nums1 进行排序，并使用二分查找找到最接近 nums2[i] 的元素。
+3. 计算替换后的绝对差值和，更新最小值。
+4. 返回最小绝对差值和并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用二分查找提高查找效率。
+- 通过排序和二分查找确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_absolute_sum_diff(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小绝对差值和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    mod = 10**9 + 7
+    sorted_nums1 = sorted(nums1)
+    total_diff = sum(abs(nums1[i] - nums2[i]) for i in range(n))
+    max_reduction = 0
+
+    for i in range(n):
+        diff = abs(nums1[i] - nums2[i])
+        # 使用二分查找找到最接近 nums2[i] 的元素
+        idx = binary_search(sorted_nums1, nums2[i])
+        if idx < n:
+            max_reduction = max(max_reduction, diff - abs(sorted_nums1[idx] - nums2[i]))
+        if idx > 0:
+            max_reduction = max(max_reduction, diff - abs(sorted_nums1[idx - 1] - nums2[i]))
+
+    return (total_diff - max_reduction) % mod
 
 
-Solution = create_solution(solution_function_name)
+def binary_search(arr: List[int], target: int) -> int:
+    """
+    二分查找 - 找到大于等于 target 的最小索引
+    """
+    left, right = 0, len(arr)
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+
+Solution = create_solution(min_absolute_sum_diff)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的时间组合，并计算每个组合的代价，选择最小代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将目标秒数转换为分钟和秒。
+2. 枚举所有可能的分钟和秒组合，确保分钟和秒都在合法范围内。
+3. 对于每个组合，计算其输入代价。
+4. 返回最小代价。
 
 关键点:
-- [TODO]
+- 通过枚举所有可能的时间组合，确保找到最小代价。
+- 通过合理的边界检查，确保时间组合合法。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定数量的枚举操作。
+空间复杂度: O(1) - 使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_cost_set_time(startAt: int, moveCost: int, pushCost: int, targetSeconds: int) -> int:
+    def calculate_cost(minutes: int, seconds: int) -> int:
+        time_str = f"{minutes:02d}{seconds:02d}".lstrip("0")
+        cost = 0
+        current_digit = str(startAt)
+        
+        for digit in time_str:
+            if digit != current_digit:
+                cost += moveCost
+                current_digit = digit
+            cost += pushCost
+        
+        return cost
+
+    min_cost = float('inf')
+    
+    for m in range(100):
+        s = targetSeconds - m * 60
+        if 0 <= s < 100:
+            min_cost = min(min_cost, calculate_cost(m, s))
+    
+    return min_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_set_time)

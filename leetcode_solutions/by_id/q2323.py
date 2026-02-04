@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算 start 和 goal 二进制表示中不同位的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用异或操作计算 start 和 goal 的不同位。
+2. 计算异或结果中 1 的数量，即为需要翻转的位数。
 
 关键点:
-- [TODO]
+- 异或操作可以找出两个数的不同位。
+- 计算 1 的数量可以使用 Python 内置函数 bin() 和 count()。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为整数的位数是固定的，最多为 32 位。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_bit_flips(start: int, goal: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 start 转变成 goal 的最少位翻转次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 start 和 goal 的不同位
+    xor_result = start ^ goal
+    # 计算异或结果中 1 的数量
+    flip_count = bin(xor_result).count('1')
+    return flip_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_bit_flips)

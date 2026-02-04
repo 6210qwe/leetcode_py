@@ -21,40 +21,68 @@ LCP 04. 覆盖 - 你有一块棋盘，棋盘上有一些格子已经坏掉了。
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们将棋盘的每一行的状态用一个整数表示，然后使用动态规划来计算每种状态下的最大骨牌数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，dp[i][state] 表示前 i 行在第 i 行状态为 state 时的最大骨牌数。
+2. 枚举每一行的状态，并计算当前状态下的最大骨牌数。
+3. 更新 dp 数组，最终结果保存在 dp[n][0] 中。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示每一行的状态。
+- 动态规划转移方程需要考虑当前状态和前一行状态的兼容性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^(m*n) * n * m)
+空间复杂度: O(2^m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_domino(n: int, m: int, broken: List[List[int]]) -> int:
+    # 将 broken 数组转换为集合，方便快速查找
+    broken_set = set(tuple(b) for b in broken)
+    
+    # 计算所有可能的状态数
+    all_states = 1 << m
+    
+    # 初始化 dp 数组
+    dp = [[-1] * all_states for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    def is_valid(state: int, row: int) -> bool:
+        """检查当前状态是否有效"""
+        for col in range(m):
+            if (state >> col) & 1 and (row, col) in broken_set:
+                return False
+        return True
+    
+    def count_bits(x: int) -> int:
+        """计算二进制中 1 的个数"""
+        count = 0
+        while x:
+            count += x & 1
+            x >>= 1
+        return count
+    
+    for row in range(1, n + 1):
+        for cur_state in range(all_states):
+            if not is_valid(cur_state, row - 1):
+                continue
+            for prev_state in range(all_states):
+                if dp[row - 1][prev_state] == -1:
+                    continue
+                if cur_state & prev_state == 0:
+                    dp[row][cur_state] = max(dp[row][cur_state], dp[row - 1][prev_state] + count_bits(cur_state) // 2)
+    
+    return max(dp[n])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_domino)

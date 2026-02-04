@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，在指定深度插入新节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 depth 为 1，则创建一个新节点作为新的根节点，并将原树作为其左子树。
+2. 否则，使用 DFS 遍历树，直到达到 depth - 1 的深度。
+3. 对于每个到达 depth - 1 的节点，创建两个新节点作为其左子树和右子树的根节点，并将原来的左子树和右子树分别作为新节点的左子树和右子树。
 
 关键点:
-- [TODO]
+- 使用递归实现 DFS。
+- 在指定深度插入新节点时，需要处理好原有子树的连接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。因为我们需要遍历每个节点一次。
+空间复杂度: O(h)，其中 h 是树的高度。这是由于递归调用栈的空间消耗。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def add_one_row(root: Optional[TreeNode], val: int, depth: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    在二叉树中增加一行
     """
-    # TODO: 实现最优解法
-    pass
+    if depth == 1:
+        new_root = TreeNode(val)
+        new_root.left = root
+        return new_root
+
+    def dfs(node: Optional[TreeNode], current_depth: int):
+        if not node:
+            return
+        if current_depth == depth - 1:
+            left_child = TreeNode(val)
+            right_child = TreeNode(val)
+            left_child.left = node.left
+            right_child.right = node.right
+            node.left = left_child
+            node.right = right_child
+        else:
+            dfs(node.left, current_depth + 1)
+            dfs(node.right, current_depth + 1)
+
+    dfs(root, 1)
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_one_row)

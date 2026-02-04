@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，一边遍历字符串一边在指定位置插入空格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果字符串 `result`。
+2. 使用两个指针 `i` 和 `j`，其中 `i` 用于遍历字符串 `s`，`j` 用于遍历 `spaces` 数组。
+3. 遍历字符串 `s`：
+   - 如果 `i` 等于 `spaces[j]`，则在 `result` 中添加一个空格，并将 `j` 增加 1。
+   - 将当前字符 `s[i]` 添加到 `result` 中。
+   - 将 `i` 增加 1。
+4. 返回结果字符串 `result`。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在 O(n) 时间复杂度内完成任务。
+- 在遍历过程中动态插入空格，避免多次字符串拼接操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(n)，结果字符串 `result` 的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def add_spaces(s: str, spaces: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    在字符串 s 的指定位置插入空格，并返回修改后的字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    j = 0
+    for i in range(len(s)):
+        if j < len(spaces) and i == spaces[j]:
+            result.append(' ')
+            j += 1
+        result.append(s[i])
+    return ''.join(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_spaces)

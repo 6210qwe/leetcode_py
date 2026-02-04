@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，选择尽可能小的数来构建美丽数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算可以使用的最大数 `max_num`，即 `target // 2`。
+2. 从 1 开始，依次选择不超过 `max_num` 的数，直到选择了 `min(n, max_num)` 个数。
+3. 如果还需要更多的数，则从 `target` 开始，依次选择更大的数，直到选择了 `n` 个数。
+4. 计算这些数的总和，并对结果进行取模 109 + 7。
 
 关键点:
-- [TODO]
+- 通过选择尽可能小的数来构建美丽数组，确保总和最小。
+- 使用取模操作防止结果溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_min_beautiful_array_sum(n: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出美丽数组的最小和
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    max_num = min(n, (target - 1) // 2)
+    sum_first_part = (1 + max_num) * max_num // 2
+    remaining = n - max_num
+    start = target
+    sum_second_part = (start + (start + remaining - 1)) * remaining // 2 if remaining > 0 else 0
+    total_sum = (sum_first_part + sum_second_part) % MOD
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_beautiful_array_sum)

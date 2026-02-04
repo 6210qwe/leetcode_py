@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示到达下标 i 的最大得分。对于每个下标 i，我们可以从任意一个小于 i 的下标 j 跳过来，计算 (i - j) * nums[j] 并更新 dp[i]。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0。
+2. 遍历数组，对于每个下标 i，计算从所有小于 i 的下标 j 跳过来的最大得分，并更新 dp[i]。
+3. 返回 dp[n-1] 作为结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程是 dp[i] = max(dp[i], dp[j] + (i - j) * nums[j])。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算到达数组末尾的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return 0
+
+    dp = [0] * n
+
+    for i in range(1, n):
+        for j in range(i):
+            dp[i] = max(dp[i], dp[j] + (i - j) * nums[j])
+
+    return dp[n - 1]
 
 
 Solution = create_solution(solution_function_name)

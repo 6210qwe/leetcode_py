@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的总时间，使得两架无人机能够在该时间内完成所有送货任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 0，right 为 d1 + d2。
+2. 在每次迭代中，计算中间值 mid。
+3. 检查在 mid 时间内，两架无人机是否能够完成所有送货任务。
+4. 如果可以，则将 right 更新为 mid；否则，将 left 更新为 mid + 1。
+5. 最终返回 left 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 计算在给定时间内，每架无人机能够完成的送货次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(d1 + d2))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_time_to_complete_deliveries(d: List[int], r: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找来找到完成所有送货任务的最小总时间。
     """
-    # TODO: 实现最优解法
-    pass
+    def can_complete_in_time(mid: int) -> bool:
+        # 计算在 mid 时间内，每架无人机能够完成的送货次数
+        deliveries = 0
+        for i in range(2):
+            deliveries += (mid // r[i])
+        return deliveries >= sum(d)
+
+    left, right = 0, sum(d)
+    while left < right:
+        mid = (left + right) // 2
+        if can_complete_in_time(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_complete_deliveries)

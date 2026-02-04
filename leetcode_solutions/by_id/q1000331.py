@@ -21,22 +21,24 @@ LCR 067. 数组中两个数的最大异或值 - 给定一个整数数组 nums �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储二进制表示的数字，并在查询时尽量选择与当前位不同的路径以最大化异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典树，将每个数字的二进制表示插入到字典树中。
+2. 对于每个数字，从字典树中查找与其异或值最大的另一个数字。
+3. 在查找过程中，尽量选择与当前位不同的路径以最大化异或值。
 
 关键点:
-- [TODO]
+- 使用字典树存储二进制表示的数字。
+- 在查找过程中，优先选择与当前位不同的路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,49 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
 
 
-Solution = create_solution(solution_function_name)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, num: int):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+
+    def find_max_xor(self, num: int) -> int:
+        node = self.root
+        max_xor = 0
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            toggle_bit = 1 - bit
+            if toggle_bit in node.children:
+                max_xor |= (1 << i)
+                node = node.children[toggle_bit]
+            else:
+                node = node.children[bit]
+        return max_xor
+
+
+def findMaximumXOR(nums: List[int]) -> int:
+    """
+    函数式接口 - 返回数组中两个数的最大异或值
+    """
+    trie = Trie()
+    for num in nums:
+        trie.insert(num)
+
+    max_xor = 0
+    for num in nums:
+        max_xor = max(max_xor, trie.find_max_xor(num))
+    return max_xor
+
+
+Solution = create_solution(findMaximumXOR)

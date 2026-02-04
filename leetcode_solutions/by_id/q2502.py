@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典将名字和身高关联起来，然后根据身高对名字进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，将每个名字与其对应的身高关联起来。
+2. 根据身高的降序对字典进行排序。
+3. 提取排序后的名字列表。
 
 关键点:
-- [TODO]
+- 使用字典来存储名字和身高的对应关系。
+- 使用 Python 的 sorted 函数进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(n) - 存储字典的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_people(names: List[str], heights: List[int]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按身高降序排序名字
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个字典，将每个名字与其对应的身高关联起来
+    name_height_map = {heights[i]: names[i] for i in range(len(names))}
+    
+    # 根据身高的降序对字典进行排序
+    sorted_names = [name_height_map[height] for height in sorted(name_height_map.keys(), reverse=True)]
+    
+    return sorted_names
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_people)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个可能的模式，并验证其是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，从每个可能的起始位置开始，检查长度为 m 的子数组。
+2. 对于每个子数组，使用滑动窗口检查其是否连续重复 k 次。
+3. 如果找到满足条件的模式，返回 True。
+4. 如果遍历完所有可能的起始位置仍未找到满足条件的模式，返回 False。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地检查模式的重复次数。
+- 确保模式的重复是连续且不重叠的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * k)，其中 n 是数组的长度，m 是模式的长度，k 是重复次数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def contains_pattern(arr: List[int], m: int, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查数组中是否存在长度为 m 且至少重复 k 次的模式。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    for i in range(n - m * k + 1):
+        pattern = arr[i:i + m]
+        if all(pattern == arr[i + j * m:i + (j + 1) * m] for j in range(k)):
+            return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(contains_pattern)

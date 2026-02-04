@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来生成所有满足条件的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将 1 到 9 的数字加入队列。
+2. 对于每一层（即每一位），从队列中取出当前数字，并生成下一层的所有可能数字。
+3. 检查新生成的数字是否满足条件（即与前一位的差的绝对值为 k），如果满足则加入队列。
+4. 重复上述过程直到生成 n 位数。
+5. 如果 n 为 1，则单独处理，返回 0 到 9 的数字。
 
 关键点:
-- [TODO]
+- 使用 BFS 逐层生成数字，确保每一步都满足条件。
+- 处理 n 为 1 的特殊情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n) - 每个数字最多有两个选择（加 k 或减 k），总共 n 层。
+空间复杂度: O(2^n) - 队列中最多存储 2^n 个数字。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def nums_same_consec_diff(n: int, k: int) -> List[int]:
+    if n == 1:
+        return [i for i in range(10)]
+    
+    queue = [i for i in range(1, 10)]
+    
+    for _ in range(n - 1):
+        next_queue = []
+        for num in queue:
+            last_digit = num % 10
+            if last_digit + k < 10:
+                next_queue.append(num * 10 + (last_digit + k))
+            if k != 0 and last_digit - k >= 0:
+                next_queue.append(num * 10 + (last_digit - k))
+        queue = next_queue
+    
+    return queue
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(nums_same_consec_diff)

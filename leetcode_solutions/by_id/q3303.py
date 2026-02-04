@@ -21,40 +21,82 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 KMP 算法找到所有匹配 a 和 b 的子串位置，然后通过双指针找到满足条件的美丽下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 KMP 算法找到字符串 s 中所有匹配 a 和 b 的子串位置。
+2. 使用双指针遍历匹配 a 和 b 的位置，找到满足 |j - i| <= k 的美丽下标。
 
 关键点:
-- [TODO]
+- KMP 算法用于高效地找到所有匹配子串的位置。
+- 双指针用于高效地找到满足条件的美丽下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是字符串 a 和 b 的总长度。
+空间复杂度: O(m)，其中 m 是字符串 a 和 b 的总长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def compute_kmp_table(pattern: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算 KMP 算法的前缀表。
     """
-    # TODO: 实现最优解法
-    pass
+    table = [0] * len(pattern)
+    j = 0
+    for i in range(1, len(pattern)):
+        while j > 0 and pattern[i] != pattern[j]:
+            j = table[j - 1]
+        if pattern[i] == pattern[j]:
+            j += 1
+        table[i] = j
+    return table
 
+def find_matches(text: str, pattern: str) -> List[int]:
+    """
+    使用 KMP 算法找到所有匹配 pattern 的子串位置。
+    """
+    table = compute_kmp_table(pattern)
+    matches = []
+    j = 0
+    for i in range(len(text)):
+        while j > 0 and text[i] != pattern[j]:
+            j = table[j - 1]
+        if text[i] == pattern[j]:
+            j += 1
+        if j == len(pattern):
+            matches.append(i - len(pattern) + 1)
+            j = table[j - 1]
+    return matches
+
+def solution_function_name(s: str, a: str, b: str, k: int) -> List[int]:
+    """
+    函数式接口 - 找出数组中的美丽下标 II
+    """
+    # 使用 KMP 算法找到所有匹配 a 和 b 的子串位置
+    a_matches = find_matches(s, a)
+    b_matches = find_matches(s, b)
+
+    # 使用双指针找到满足条件的美丽下标
+    beautiful_indices = []
+    i, j = 0, 0
+    while i < len(a_matches) and j < len(b_matches):
+        if abs(a_matches[i] - b_matches[j]) <= k:
+            beautiful_indices.append(a_matches[i])
+            i += 1
+        elif a_matches[i] < b_matches[j]:
+            i += 1
+        else:
+            j += 1
+
+    return beautiful_indices
 
 Solution = create_solution(solution_function_name)

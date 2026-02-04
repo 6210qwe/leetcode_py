@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计满足条件的子串出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个子串的出现次数。
+2. 使用滑动窗口遍历字符串，窗口大小为 minSize。
+3. 对于每个窗口内的子串，检查其不同字符数是否小于等于 maxLetters。
+4. 如果满足条件，将该子串的出现次数加一。
+5. 最后返回哈希表中出现次数最多的子串的出现次数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以高效地遍历所有可能的子串。
+- 使用哈希表记录子串的出现次数，便于快速查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * minSize)，其中 n 是字符串 s 的长度，minSize 是子串的最小长度。
+空间复杂度: O(n * minSize)，最坏情况下，哈希表中存储了所有可能的子串。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, maxLetters: int, minSize: int, maxSize: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足条件且出现次数最大的子串的出现次数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+    
+    # 初始化计数器
+    counter = Counter()
+    
+    # 使用滑动窗口遍历字符串
+    for i in range(len(s) - minSize + 1):
+        substring = s[i:i + minSize]
+        if len(set(substring)) <= maxLetters:
+            counter[substring] += 1
+    
+    # 返回出现次数最多的子串的出现次数
+    return max(counter.values()) if counter else 0
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和与哈希表来记录每个前缀状态的出现次数，从而高效地计算出所有最美子字符串的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_count`，用于记录每个前缀状态的出现次数。初始时将 `0` 状态的出现次数设为 1。
+2. 遍历字符串 `word`，使用一个变量 `state` 来表示当前前缀的奇偶状态。
+3. 对于每个字符，更新 `state`，并计算当前状态和所有可能的单个字母翻转后的状态在哈希表中的出现次数。
+4. 更新结果 `res`，将当前状态和所有可能的单个字母翻转后的状态的出现次数累加到 `res` 中。
+5. 更新哈希表 `prefix_count`，增加当前状态的出现次数。
 
 关键点:
-- [TODO]
+- 使用位运算来表示前缀的奇偶状态。
+- 使用哈希表来记录每个前缀状态的出现次数，从而高效地计算出所有最美子字符串的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `word` 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，哈希表的大小最多为 2^10 = 1024，因此可以视为常数空间。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_wonderful_substrings(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算最美子字符串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_count = [0] * 1024
+    prefix_count[0] = 1
+    state = 0
+    res = 0
+    
+    for char in word:
+        # 更新当前前缀的奇偶状态
+        state ^= 1 << (ord(char) - ord('a'))
+        
+        # 计算当前状态的出现次数
+        res += prefix_count[state]
+        
+        # 计算所有可能的单个字母翻转后的状态的出现次数
+        for i in range(10):
+            res += prefix_count[state ^ (1 << i)]
+        
+        # 更新哈希表
+        prefix_count[state] += 1
+    
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_wonderful_substrings)

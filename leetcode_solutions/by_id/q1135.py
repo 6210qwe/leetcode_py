@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合操作来找出购买了所有产品的客户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 Product 表中获取所有产品的产品键。
+2. 从 Customer 表中按 customer_id 分组，并统计每个客户购买的产品键。
+3. 检查每个客户的购买记录是否包含所有产品键。
+4. 返回满足条件的客户 ID。
 
 关键点:
-- [TODO]
+- 使用集合操作来高效地检查每个客户的购买记录是否包含所有产品键。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Customer 表的行数，m 是 Product 表的行数。
+空间复杂度: O(k + p)，其中 k 是不同客户 ID 的数量，p 是不同产品键的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(customer: List[List[int]], product: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 获取所有产品的产品键
+    all_products = set(product)
+    
+    # 从 Customer 表中按 customer_id 分组，并统计每个客户购买的产品键
+    customer_purchases = {}
+    for cust_id, prod_key in customer:
+        if cust_id not in customer_purchases:
+            customer_purchases[cust_id] = set()
+        customer_purchases[cust_id].add(prod_key)
+    
+    # 检查每个客户的购买记录是否包含所有产品键
+    result = []
+    for cust_id, purchases in customer_purchases.items():
+        if all_products.issubset(purchases):
+            result.append(cust_id)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

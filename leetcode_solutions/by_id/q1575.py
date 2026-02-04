@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序找到相邻切口之间的最大距离，从而计算出最大面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将水平和竖直切口分别排序。
+2. 计算相邻水平切口之间的最大距离（包括边界）。
+3. 计算相邻竖直切口之间的最大距离（包括边界）。
+4. 计算最大面积并取模 10^9 + 7。
 
 关键点:
-- [TODO]
+- 排序以找到相邻切口之间的最大距离。
+- 处理边界情况，确保包含从 0 到第一个切口以及最后一个切口到边界的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是 horizontalCuts 的长度，m 是 verticalCuts 的长度。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_area_of_cake(h: int, w: int, horizontalCuts: List[int], verticalCuts: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算切割后面积最大的蛋糕。
+    
+    :param h: 蛋糕的高度
+    :param w: 蛋糕的宽度
+    :param horizontalCuts: 水平切口的位置
+    :param verticalCuts: 竖直切口的位置
+    :return: 最大面积对 10^9 + 7 取余后的结果
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    
+    # 添加边界切口
+    horizontalCuts = [0] + sorted(horizontalCuts) + [h]
+    verticalCuts = [0] + sorted(verticalCuts) + [w]
+    
+    # 计算相邻水平切口之间的最大距离
+    max_h_dist = max(horizontalCuts[i+1] - horizontalCuts[i] for i in range(len(horizontalCuts) - 1))
+    
+    # 计算相邻竖直切口之间的最大距离
+    max_v_dist = max(verticalCuts[i+1] - verticalCuts[i] for i in range(len(verticalCuts) - 1))
+    
+    # 计算最大面积并取模
+    return (max_h_dist * max_v_dist) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_area_of_cake)

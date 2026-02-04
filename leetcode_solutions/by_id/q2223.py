@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计财富大于等于 50000 的客户数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Customers` 表中选择所有财富大于等于 50000 的记录。
+2. 计算这些记录的数量。
 
 关键点:
-- [TODO]
+- 使用 `COUNT` 函数来统计符合条件的记录数。
+- 使用 `WHERE` 子句来过滤财富大于等于 50000 的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `Customers` 表中的记录数。我们需要遍历整个表来过滤和计数。
+空间复杂度: O(1)，我们只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回财富大于等于 50000 的客户数量
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT COUNT(*) AS rich_customers_count
+    FROM Customers
+    WHERE wealth >= 50000;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

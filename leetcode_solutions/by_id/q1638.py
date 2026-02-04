@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用梯度下降法来找到最优的中心位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化中心位置为所有点的平均值。
+2. 计算当前中心位置到所有点的欧几里得距离的总和。
+3. 使用梯度下降法更新中心位置，直到收敛或达到最大迭代次数。
 
 关键点:
-- [TODO]
+- 使用梯度下降法来优化中心位置。
+- 设置合适的步长和停止条件以确保算法收敛。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是 positions 的长度，k 是最大迭代次数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +49,45 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
 
-def solution_function_name(params):
+def get_distance_sum(positions: List[List[int]], x_center: float, y_center: float) -> float:
     """
-    函数式接口 - [TODO] 实现
+    计算给定中心位置到所有点的欧几里得距离的总和。
     """
-    # TODO: 实现最优解法
-    pass
+    return sum(math.sqrt((x - x_center) ** 2 + (y - y_center) ** 2) for x, y in positions)
+
+
+def solution_function_name(positions: List[List[int]]) -> float:
+    """
+    函数式接口 - 使用梯度下降法找到最优的中心位置。
+    """
+    # 初始化中心位置为所有点的平均值
+    x_center = sum(x for x, y in positions) / len(positions)
+    y_center = sum(y for x, y in positions) / len(positions)
+
+    # 设置梯度下降参数
+    learning_rate = 0.01
+    max_iterations = 1000
+    tolerance = 1e-6
+
+    for _ in range(max_iterations):
+        # 计算梯度
+        gradient_x = sum((x - x_center) / math.sqrt((x - x_center) ** 2 + (y - y_center) ** 2) for x, y in positions)
+        gradient_y = sum((y - y_center) / math.sqrt((x - x_center) ** 2 + (y - y_center) ** 2) for x, y in positions)
+
+        # 更新中心位置
+        new_x_center = x_center - learning_rate * gradient_x
+        new_y_center = y_center - learning_rate * gradient_y
+
+        # 检查是否收敛
+        if abs(new_x_center - x_center) < tolerance and abs(new_y_center - y_center) < tolerance:
+            break
+
+        x_center, y_center = new_x_center, new_y_center
+
+    return get_distance_sum(positions, x_center, y_center)
 
 
 Solution = create_solution(solution_function_name)

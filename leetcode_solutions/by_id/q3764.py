@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择每行中最大的元素，直到达到 k 个元素或无法再选择为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每行的元素按降序排序。
+2. 使用一个最小堆来维护当前选择的 k 个最大元素。
+3. 遍历每一行，尽可能多地选择该行中的最大元素，同时更新堆。
+4. 计算堆中所有元素的总和。
 
 关键点:
-- [TODO]
+- 使用最小堆来动态维护当前选择的 k 个最大元素。
+- 每次选择元素时，确保不超过 limits 的限制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log m + k * log k)
+- n * m * log m 用于对每行进行排序。
+- k * log k 用于维护最小堆。
+
+空间复杂度: O(k)
+- 最小堆的空间复杂度为 O(k)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def max_sum_with_at_most_k_elements(grid: List[List[int]], limits: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从矩阵 grid 中提取出至多 k 个元素，并计算这些元素的最大总和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最小堆
+    min_heap = []
+    total_sum = 0
+    
+    # 对每行进行降序排序
+    for i, row in enumerate(grid):
+        row.sort(reverse=True)
+    
+    # 遍历每一行
+    for i, row in enumerate(grid):
+        count = 0
+        for num in row:
+            if count < limits[i] and len(min_heap) < k:
+                heapq.heappush(min_heap, num)
+                total_sum += num
+                count += 1
+            elif count < limits[i] and num > min_heap[0]:
+                total_sum += num - min_heap[0]
+                heapq.heapreplace(min_heap, num)
+                count += 1
+            else:
+                break
+    
+    return total_sum
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_with_at_most_k_elements)

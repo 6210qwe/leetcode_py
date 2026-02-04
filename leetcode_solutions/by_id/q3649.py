@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维数组 dp 来记录每种状态下的最小时间。dp[mask][i] 表示已经打开了 mask 中表示的锁，并且最后一个打开的锁是 i 时的最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，大小为 (1 << n) x n，初始值为无穷大。
+2. 设置初始状态 dp[0][0] = 0。
+3. 遍历所有可能的状态 mask 和每个锁 i。
+4. 对于每个状态 mask 和锁 i，遍历所有之前的锁 j，更新 dp[mask][i]。
+5. 最后，找到 dp[(1 << n) - 1][i] 中的最小值作为结果。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示已经打开的锁。
+- 动态规划来记录每种状态下的最小时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^n)
+空间复杂度: O(n * 2^n)
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time_to_break_locks(strength: List[int], k: int) -> int:
+    n = len(strength)
+    max_value = float('inf')
+    dp = [[max_value] * n for _ in range(1 << n)]
+    
+    # Initialize the dp array
+    for i in range(n):
+        dp[1 << i][i] = (strength[i] + k - 1) // k
+    
+    # Fill the dp array
+    for mask in range(1, 1 << n):
+        for i in range(n):
+            if mask & (1 << i):
+                for j in range(n):
+                    if i != j and mask & (1 << j):
+                        prev_mask = mask ^ (1 << i)
+                        time_to_open_i = (strength[i] + (k * (dp[prev_mask][j] + 1)) - 1) // (k * (dp[prev_mask][j] + 1))
+                        dp[mask][i] = min(dp[mask][i], dp[prev_mask][j] + time_to_open_i)
+    
+    # Find the minimum time to open all locks
+    return min(dp[(1 << n) - 1])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_break_locks)

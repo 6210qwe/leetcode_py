@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个问题的回答率，并选择回答率最高的问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个问题的总回答数和总提问数。
+2. 计算每个问题的回答率。
+3. 选择回答率最高的问题。
 
 关键点:
-- [TODO]
+- 使用子查询来计算每个问题的总回答数和总提问数。
+- 使用窗口函数来计算回答率并排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数据表中的行数。主要的时间开销在于排序操作。
+空间复杂度: O(1)，查询过程中使用的额外空间是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回回答率最高的问题
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现最优解法
+    query = """
+    SELECT q.id, q.question, (COUNT(a.id) * 1.0 / COUNT(q.id)) AS answer_rate
+    FROM Questions q
+    LEFT JOIN Answers a ON q.id = a.question_id
+    GROUP BY q.id, q.question
+    ORDER BY answer_rate DESC, q.id ASC
+    LIMIT 1;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

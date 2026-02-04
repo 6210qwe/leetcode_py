@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算以 0, 1, 2 结尾的特殊子序列的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个变量 end_0, end_1, end_2 分别表示以 0, 1, 2 结尾的特殊子序列的数量。
+2. 遍历数组 nums，根据当前数字更新 end_0, end_1, end_2 的值。
+3. 最终结果为 end_2。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：
+  - end_0 = (end_0 * 2 + count(0)) % MOD
+  - end_1 = (end_1 * 2 + end_0) % MOD
+  - end_2 = (end_2 * 2 + end_1) % MOD
+- 使用模运算防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_special_subsequences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算特殊子序列的数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    end_0, end_1, end_2 = 0, 0, 0
+
+    for num in nums:
+        if num == 0:
+            end_0 = (end_0 * 2 + 1) % MOD
+        elif num == 1:
+            end_1 = (end_1 * 2 + end_0) % MOD
+        elif num == 2:
+            end_2 = (end_2 * 2 + end_1) % MOD
+
+    return end_2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_special_subsequences)

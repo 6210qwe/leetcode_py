@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法反转字符串的前 k 个字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串 s 转换为列表，以便进行原地修改。
+2. 使用双指针方法反转前 k 个字符。
+3. 将列表转换回字符串并返回。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在 O(k) 时间内完成反转操作。
+- 字符串是不可变的，因此需要先将其转换为列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)，其中 k 是需要反转的字符数。
+空间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要将字符串转换为列表。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reverse_string_prefix(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 反转字符串 s 的前 k 个字符，并返回结果字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串转换为列表
+    s_list = list(s)
+    
+    # 使用双指针方法反转前 k 个字符
+    left, right = 0, k - 1
+    while left < right:
+        s_list[left], s_list[right] = s_list[right], s_list[left]
+        left += 1
+        right -= 1
+    
+    # 将列表转换回字符串并返回
+    return ''.join(s_list)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reverse_string_prefix)

@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储遍历过的节点值，并在遍历过程中检查是否存在目标值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希集合。
+2. 递归遍历二叉搜索树。
+3. 对于每个节点，检查 `k - node.val` 是否在哈希集合中。
+4. 如果存在，则返回 `True`。
+5. 否则，将当前节点的值加入哈希集合。
+6. 继续遍历左右子树。
+7. 如果遍历完整棵树未找到满足条件的节点对，则返回 `False`。
 
 关键点:
-- [TODO]
+- 利用哈希集合进行快速查找。
+- 递归遍历二叉树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉搜索树的节点数。每个节点仅被访问一次。
+空间复杂度: O(n)，最坏情况下，哈希集合需要存储所有节点的值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_target(root: Optional[TreeNode], k: int) -> bool:
+    def dfs(node: Optional[TreeNode], seen: set) -> bool:
+        if not node:
+            return False
+        if k - node.val in seen:
+            return True
+        seen.add(node.val)
+        return dfs(node.left, seen) or dfs(node.right, seen)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    return dfs(root, set())
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_target)

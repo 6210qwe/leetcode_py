@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的排列，并在每一步检查当前排列是否满足平方数组的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_squareful` 来检查两个数的和是否为完全平方数。
+2. 使用回溯法生成所有可能的排列。
+3. 在每一步中，检查当前排列是否满足平方数组的条件。
+4. 如果满足条件且排列长度等于输入数组的长度，则计数加一。
 
 关键点:
-- [TODO]
+- 使用集合来避免重复计算。
+- 通过剪枝优化回溯过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n! * n) - 其中 n 是数组的长度，n! 是排列的数量，每个排列需要 O(n) 的时间来检查是否满足条件。
+空间复杂度: O(n) - 递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_squareful(x: int, y: int) -> bool:
+    """检查 x + y 是否是完全平方数"""
+    s = (x + y) ** 0.5
+    return s == int(s)
+
+
+def backtrack(nums: List[int], used: List[bool], path: List[int]) -> int:
+    if len(path) == len(nums):
+        return 1
+    count = 0
+    for i in range(len(nums)):
+        if used[i]:
+            continue
+        if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+            continue
+        if len(path) == 0 or is_squareful(path[-1], nums[i]):
+            used[i] = True
+            path.append(nums[i])
+            count += backtrack(nums, used, path)
+            path.pop()
+            used[i] = False
+    return count
+
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算平方数组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()
+    used = [False] * len(nums)
+    return backtrack(nums, used, [])
 
 
 Solution = create_solution(solution_function_name)

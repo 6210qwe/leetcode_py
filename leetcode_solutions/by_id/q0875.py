@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法，一次遍历数组来找到最长的山脉。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，以及一个变量 `max_length` 来记录最长山脉的长度。
+2. 遍历数组，使用 `i` 指针找到上升段的终点。
+3. 如果 `i` 到达数组末尾或 `A[i] == A[i+1]`，则跳过该段。
+4. 使用 `j` 指针从 `i` 开始找到下降段的终点。
+5. 更新 `max_length` 为当前山脉长度和 `max_length` 的最大值。
+6. 将 `i` 移动到 `j` 的位置，继续寻找下一个山脉。
 
 关键点:
-- [TODO]
+- 只有在找到上升段后才开始寻找下降段。
+- 通过一次遍历实现，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_mountain(A: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中最长的山脉子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(A)
+    max_length = 0
+    i = 0
+    
+    while i < n - 1:
+        # 找到上升段的终点
+        while i < n - 1 and A[i] == A[i + 1]:
+            i += 1
+        up_start = i
+        while i < n - 1 and A[i] < A[i + 1]:
+            i += 1
+        up_end = i
+        
+        # 如果没有上升段，则跳过
+        if up_start == up_end:
+            continue
+        
+        # 找到下降段的终点
+        down_start = i
+        while i < n - 1 and A[i] > A[i + 1]:
+            i += 1
+        down_end = i
+        
+        # 如果没有下降段，则跳过
+        if down_start == down_end:
+            continue
+        
+        # 更新最长山脉的长度
+        current_length = down_end - up_start + 1
+        max_length = max(max_length, current_length)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_mountain)

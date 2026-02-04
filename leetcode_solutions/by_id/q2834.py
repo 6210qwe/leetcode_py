@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个位置的石块数量，并在每次移动时更新哈希表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `positions` 来记录每个位置的石块数量。
+2. 将 `nums` 中的每个位置加入哈希表。
+3. 遍历 `moveFrom` 和 `moveTo`，对于每一对 (from, to)，将 `positions[from]` 的值减 1，将 `positions[to]` 的值加 1。
+4. 最后，从哈希表中提取所有有石块的位置，并按升序返回。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和更新每个位置的石块数量。
+- 只保留有石块的位置，避免不必要的存储。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)
+- n 是 `nums` 的长度，m 是 `moveFrom` 和 `moveTo` 的长度。
+- 初始化哈希表的时间复杂度是 O(n)。
+- 更新哈希表的时间复杂度是 O(m)。
+- 排序的时间复杂度是 O(m log m)。
+
+空间复杂度: O(n + m)
+- 哈希表的空间复杂度是 O(n + m)。
+- 结果列表的空间复杂度是 O(m)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def relocate_marbles(nums: List[int], move_from: List[int], move_to: List[int]) -> List[int]:
+    # 初始化哈希表记录每个位置的石块数量
+    positions = {}
+    for num in nums:
+        positions[num] = positions.get(num, 0) + 1
+    
+    # 更新哈希表
+    for from_pos, to_pos in zip(move_from, move_to):
+        positions[from_pos] -= 1
+        if positions[from_pos] == 0:
+            del positions[from_pos]
+        positions[to_pos] = positions.get(to_pos, 0) + 1
+    
+    # 提取所有有石块的位置并按升序返回
+    return sorted(positions.keys())
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(relocate_marbles)

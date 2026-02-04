@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索（DFS）来计算每个节点到其他所有节点的距离之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 第一次DFS：从根节点开始，计算每个子树的大小和根节点到该子树的距离之和。
+3. 第二次DFS：利用第一次DFS的结果，通过换根DP的方法，计算每个节点到其他所有节点的距离之和。
 
 关键点:
-- [TODO]
+- 第一次DFS用于计算以某个节点为根的子树的大小和距离之和。
+- 第二次DFS用于更新每个节点的距离之和，通过换根的方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def sumOfDistancesInTree(n: int, edges: List[List[int]]) -> List[int]:
+    if n == 1:
+        return [0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
+    # 第一次DFS，计算子树大小和根节点到子树的距离之和
+    size = [1] * n
+    dp = [0] * n
 
-Solution = create_solution(solution_function_name)
+    def dfs(node: int, parent: int):
+        for child in tree[node]:
+            if child == parent:
+                continue
+            dfs(child, node)
+            size[node] += size[child]
+            dp[node] += dp[child] + size[child]
+
+    # 第二次DFS，计算每个节点到其他所有节点的距离之和
+    ans = [0] * n
+
+    def dfs2(node: int, parent: int):
+        ans[node] = dp[node]
+        for child in tree[node]:
+            if child == parent:
+                continue
+            prev_dp_node = dp[node]
+            prev_dp_child = dp[child]
+
+            dp[node] -= dp[child] + size[child]
+            size[child] += size[node] - size[child]
+            dp[child] += dp[node] + size[node] - size[child]
+
+            dfs2(child, node)
+
+            dp[node] = prev_dp_node
+            dp[child] = prev_dp_child
+            size[child] = n - size[node]
+
+    dfs(0, -1)
+    dfs2(0, -1)
+
+    return ans
+
+Solution = sumOfDistancesInTree

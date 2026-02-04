@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来检查是否存在合法括号路径。使用一个三维数组 dp[i][j][k] 表示从 (0, 0) 到 (i, j) 时，当前未匹配的左括号数量为 k 的路径是否存在。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][1] = True，因为起点 (0, 0) 必须有一个左括号。
+2. 遍历每个格子 (i, j)，更新 dp 数组：
+   - 如果 grid[i][j] 是 '(', 则 dp[i][j][k] = dp[i-1][j][k-1] or dp[i][j-1][k-1]
+   - 如果 grid[i][j] 是 ')', 则 dp[i][j][k] = dp[i-1][j][k+1] or dp[i][j-1][k+1]
+3. 最后检查 dp[m-1][n-1][0] 是否为 True，即在终点 (m-1, n-1) 时，未匹配的左括号数量为 0。
 
 关键点:
-- [TODO]
+- 使用三维 dp 数组来记录状态。
+- 通过遍历和状态转移方程来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))，其中 m 和 n 分别是 grid 的行数和列数。
+空间复杂度: O(m * n * (m + n))，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def hasValidPath(grid: List[List[str]]) -> bool:
+    m, n = len(grid), len(grid[0])
+    if (m + n - 1) % 2 != 0 or grid[0][0] == ')' or grid[m-1][n-1] == '(':
+        return False
+    
+    max_open = (m + n - 1) // 2
+    dp = [[[False] * (max_open + 1) for _ in range(n)] for _ in range(m)]
+    
+    dp[0][0][1] = True
+    
+    for i in range(m):
+        for j in range(n):
+            for k in range(max_open + 1):
+                if i > 0 and k > 0:
+                    dp[i][j][k] |= dp[i-1][j][k-1] if grid[i][j] == '(' else dp[i-1][j][k+1]
+                if j > 0 and k > 0:
+                    dp[i][j][k] |= dp[i][j-1][k-1] if grid[i][j] == '(' else dp[i][j-1][k+1]
+    
+    return dp[m-1][n-1][0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(hasValidPath)

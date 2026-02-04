@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过动态规划生成数组，并在生成过程中记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n + 1 的数组 nums，其中 nums[0] = 0, nums[1] = 1。
+2. 从 2 到 n 遍历，根据规则填充 nums 数组。
+3. 在填充过程中，维护一个变量 max_value 来记录当前的最大值。
+4. 返回 max_value。
 
 关键点:
-- [TODO]
+- 动态规划生成数组并记录最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_maximum_generated(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 获取生成数组中的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+
+    nums = [0] * (n + 1)
+    nums[1] = 1
+    max_value = 1
+
+    for i in range(2, n + 1):
+        if i % 2 == 0:
+            nums[i] = nums[i // 2]
+        else:
+            nums[i] = nums[i // 2] + nums[i // 2 + 1]
+        max_value = max(max_value, nums[i])
+
+    return max_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_maximum_generated)

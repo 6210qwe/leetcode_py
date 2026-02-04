@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中恰好有 j 个逆序对的排列数目。通过递推关系，我们可以逐步计算出所有可能的排列数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1，表示没有元素时，逆序对数目为 0 的排列数目为 1。
+2. 对于每个位置 i，遍历从 0 到 i-1 的所有位置 k，更新 dp[i][j]。
+3. 根据 requirements 更新 dp 数组。
+4. 最终结果为 dp[n][cnti]，其中 cnti 是 requirements 中最后一个元素的逆序对数目。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理 requirements 的更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * max(cnti))，其中 n 是数组长度，max(cnti) 是 requirements 中的最大逆序对数目。
+空间复杂度: O(n * max(cnti))，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_inversions(n: int, requirements: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    max_cnt = max(cnt for _, cnt in requirements)
+    dp = [[0] * (max_cnt + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(i):
+            for k in range(max_cnt + 1):
+                if k + (i - 1 - j) <= max_cnt:
+                    dp[i][k + (i - 1 - j)] = (dp[i][k + (i - 1 - j)] + dp[i - 1][k]) % MOD
+
+    for end, cnt in requirements:
+        dp[end + 1][:] = [0] * (max_cnt + 1)
+        dp[end + 1][cnt] = dp[end][cnt]
+
+    return dp[n][requirements[-1][1]]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_inversions)

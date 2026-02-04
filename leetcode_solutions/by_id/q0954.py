@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Kadane's 算法分别找到最大子数组和最小子数组，然后通过总和减去最小子数组来处理环形情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和。
+2. 使用 Kadane's 算法找到最大子数组和。
+3. 使用 Kadane's 算法找到最小子数组和。
+4. 如果最小子数组和等于总和，说明所有元素都是负数，直接返回最大子数组和。
+5. 否则，返回最大子数组和和（总和 - 最小子数组和）中的较大值。
 
 关键点:
-- [TODO]
+- 处理环形子数组时，需要考虑总和减去最小子数组的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_subarray_sum_circular(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回环形子数组的最大和
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(nums)
+    max_sum = current_max = min_sum = current_min = nums[0]
+
+    for num in nums[1:]:
+        current_max = max(num, current_max + num)
+        max_sum = max(max_sum, current_max)
+
+        current_min = min(num, current_min + num)
+        min_sum = min(min_sum, current_min)
+
+    if min_sum == total_sum:
+        return max_sum
+    else:
+        return max(max_sum, total_sum - min_sum)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_subarray_sum_circular)

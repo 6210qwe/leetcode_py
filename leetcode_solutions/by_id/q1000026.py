@@ -21,40 +21,98 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双向链表和哈希表来实现 LRU 缓存。双向链表用于维护元素的顺序，哈希表用于快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化缓存，设置最大容量，并创建一个双向链表和一个哈希表。
+2. 在 `get` 操作中，如果键存在，则将对应的节点移到链表头部，并返回节点的值；否则返回 -1。
+3. 在 `put` 操作中，如果键已存在，则更新节点的值并将其移到链表头部；如果键不存在且缓存已满，则移除链表尾部的节点，然后在链表头部插入新节点。
 
 关键点:
-- [TODO]
+- 双向链表用于维护元素的顺序，最近使用的元素在头部，最久未使用的元素在尾部。
+- 哈希表用于快速查找节点。
+- `get` 和 `put` 操作的时间复杂度均为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作（get 和 put）的时间复杂度均为 O(1)。
+空间复杂度: O(capacity) - 空间复杂度取决于缓存的最大容量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
+class DLinkedNode:
+    def __init__(self, key: int = 0, value: int = 0):
+        self.key = key
+        self.value = value
+        self.prev: Optional[DLinkedNode] = None
+        self.next: Optional[DLinkedNode] = None
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache: dict[int, DLinkedNode] = {}
+        self.head = DLinkedNode()
+        self.tail = DLinkedNode()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _add_node_to_head(self, node: DLinkedNode):
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _remove_node(self, node: DLinkedNode):
+        prev = node.prev
+        next = node.next
+        prev.next = next
+        next.prev = prev
+
+    def _move_to_head(self, node: DLinkedNode):
+        self._remove_node(node)
+        self._add_node_to_head(node)
+
+    def get(self, key: int) -> int:
+        if key in self.cache:
+            node = self.cache[key]
+            self._move_to_head(node)
+            return node.value
+        return -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            self._move_to_head(node)
+        else:
+            if len(self.cache) >= self.capacity:
+                lru_node = self.tail.prev
+                self._remove_node(lru_node)
+                del self.cache[lru_node.key]
+            new_node = DLinkedNode(key, value)
+            self.cache[key] = new_node
+            self._add_node_to_head(new_node)
+
+
+def create_solution():
     """
-    函数式接口 - [TODO] 实现
+    工厂函数 - 创建并返回 LRUCache 类的实例
     """
-    # TODO: 实现最优解法
-    pass
+    def solution_function_name(params):
+        capacity = params['capacity']
+        return LRUCache(capacity)
+
+    return solution_function_name
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution()

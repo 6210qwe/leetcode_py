@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和二分查找来确定最大组数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 usageLimits 进行排序。
+2. 使用二分查找来确定最大组数 k。
+3. 检查是否可以形成 k 组，如果可以则增加 k，否则减少 k。
 
 关键点:
-- [TODO]
+- 通过二分查找来优化查找最大组数的过程。
+- 通过贪心算法来验证当前 k 是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 usageLimits 的长度。排序的时间复杂度是 O(n log n)，二分查找的时间复杂度是 O(log n)，每次检查的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxIncreasingGroups(usageLimits: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以创建的最大组数
     """
-    # TODO: 实现最优解法
-    pass
+    def can_form_groups(k: int) -> bool:
+        required = 0
+        for limit in usageLimits:
+            required += limit
+            if required >= (k + 1) * k // 2:
+                return True
+        return False
 
+    usageLimits.sort()
+    left, right = 1, len(usageLimits)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_form_groups(mid):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxIncreasingGroups)

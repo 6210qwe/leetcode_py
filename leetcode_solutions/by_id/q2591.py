@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过跳跃间隔来最小化最大跳跃长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_jump` 为 0，用于记录当前的最大跳跃长度。
+2. 遍历数组 `stones`，计算相邻两个石头之间的跳跃长度，并更新 `max_jump`。
+3. 返回 `max_jump` 作为结果。
 
 关键点:
-- [TODO]
+- 通过跳跃间隔来最小化最大跳跃长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `stones` 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_frog_jump(stones: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算青蛙过河的最小代价
     """
-    # TODO: 实现最优解法
-    pass
+    if len(stones) < 2:
+        return 0
+
+    max_jump = 0
+    for i in range(1, len(stones)):
+        max_jump = max(max_jump, stones[i] - stones[i - 1])
+
+    return max_jump
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_frog_jump)

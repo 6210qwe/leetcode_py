@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数 `ROW_NUMBER()` 来为每条交易记录分配一个行号，然后筛选出行号为3的记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `ROW_NUMBER()` 窗口函数为每个用户的交易记录分配行号。
+2. 筛选出每个用户第三笔交易的记录。
 
 关键点:
-- [TODO]
+- 使用 `PARTITION BY` 对每个用户进行分区。
+- 使用 `ORDER BY` 对每个用户的交易记录按时间排序。
+- 选择行号为3的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(n) - 需要存储中间结果。
 """
 
 # ============================================================================
@@ -51,10 +53,18 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现找到第三笔交易
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT *
+    FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY transaction_time) as row_num
+        FROM transactions
+    ) t
+    WHERE t.row_num = 3
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

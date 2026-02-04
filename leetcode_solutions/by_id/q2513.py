@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合（SortedList）来维护已经处理过的元素，并利用二分查找来高效地计算满足条件的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算差值数组 `diffs`，其中 `diffs[i] = nums1[i] - nums2[i]`。
+2. 初始化有序集合 `sl` 和计数器 `count`。
+3. 从右向左遍历 `diffs` 数组：
+   - 对于每个元素 `diffs[i]`，使用有序集合的 `bisect_left` 方法找到第一个大于等于 `diffs[i] - diff` 的位置。
+   - 将该位置的索引加入计数器 `count`。
+   - 将当前元素 `diffs[i]` 加入有序集合 `sl`。
+4. 返回计数器 `count` 的值。
 
 关键点:
-- [TODO]
+- 使用有序集合来维护已经处理过的元素，可以高效地进行二分查找。
+- 从右向左遍历数组，确保每次处理的元素不会影响后续的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次插入和查找操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，需要额外的空间来存储有序集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def count_pairs(nums1: List[int], nums2: List[int], diff: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算满足条件的数对数目
     """
-    # TODO: 实现最优解法
-    pass
+    diffs = [a - b for a, b in zip(nums1, nums2)]
+    sl = SortedList()
+    count = 0
+    
+    for i in range(len(diffs) - 1, -1, -1):
+        # 找到第一个大于等于 diffs[i] - diff 的位置
+        index = sl.bisect_left(diffs[i] - diff)
+        count += index
+        sl.add(diffs[i])
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs)

@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀和来计算覆盖的最大白色瓷砖数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 tiles 按起始位置进行排序。
+2. 计算前缀和数组 prefix_sum，prefix_sum[i] 表示从第一个瓷砖到第 i 个瓷砖的总长度。
+3. 使用滑动窗口遍历 tiles，维护一个窗口 [left, right]，使得窗口内的瓷砖总长度不超过 carpetLen。
+4. 在每次移动右边界时，更新左边界，确保窗口内的瓷砖总长度不超过 carpetLen。
+5. 计算当前窗口内的最大覆盖瓷砖数量，并更新结果。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算窗口内的瓷砖总长度。
+- 滑动窗口确保了时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 tiles 的长度。排序操作的时间复杂度为 O(n log n)，滑动窗口的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_white_tiles(tiles: List[List[int]], carpetLen: int) -> int:
+    # 按起始位置排序
+    tiles.sort(key=lambda x: x[0])
+    
+    # 计算前缀和数组
+    prefix_sum = [0]
+    for tile in tiles:
+        prefix_sum.append(prefix_sum[-1] + (tile[1] - tile[0] + 1))
+    
+    max_covered = 0
+    left = 0
+    for right in range(len(tiles)):
+        while tiles[right][1] - tiles[left][0] + 1 > carpetLen:
+            left += 1
+        if tiles[right][1] - tiles[left][0] + 1 <= carpetLen:
+            covered = prefix_sum[right + 1] - prefix_sum[left]
+            if tiles[left][0] + carpetLen < tiles[right][1]:
+                covered -= (tiles[right][1] - (tiles[left][0] + carpetLen - 1))
+            max_covered = max(max_covered, covered)
+    
+    return max_covered
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_white_tiles)

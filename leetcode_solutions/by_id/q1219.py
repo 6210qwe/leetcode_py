@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和 + 哈希表来记录前缀和第一次出现的位置，从而快速找到满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `hours` 转换为二进制数组，其中 1 表示劳累的一天，0 表示不劳累的一天。
+2. 计算前缀和，并使用哈希表记录每个前缀和第一次出现的位置。
+3. 遍历前缀和数组，对于每个前缀和，查找哈希表中是否存在满足条件的前缀和（即当前前缀和减去 1 的位置），并更新最大长度。
 
 关键点:
-- [TODO]
+- 使用前缀和来表示累加的劳累天数与不劳累天数的差值。
+- 使用哈希表来记录前缀和第一次出现的位置，以便快速查找满足条件的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_well_performing_interval(hours: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回表现良好时间段的最大长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(hours)
+    prefix_sum = 0
+    max_length = 0
+    first_occurrence = {0: -1}  # 前缀和为0的情况对应初始位置-1
+
+    for i in range(n):
+        if hours[i] > 8:
+            prefix_sum += 1
+        else:
+            prefix_sum -= 1
+
+        if prefix_sum not in first_occurrence:
+            first_occurrence[prefix_sum] = i
+
+        if (prefix_sum - 1) in first_occurrence:
+            max_length = max(max_length, i - first_occurrence[prefix_sum - 1])
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_well_performing_interval)

@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过异或运算的性质来解码数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `arr`，将 `first` 作为第一个元素。
+2. 遍历 `encoded` 数组，对于每个 `encoded[i]`，计算 `arr[i+1] = arr[i] XOR encoded[i]`，并将结果添加到 `arr` 中。
 
 关键点:
-- [TODO]
+- 异或运算的性质：a XOR b = c，则 a XOR c = b。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `encoded` 数组的长度。
+空间复杂度: O(n)，需要存储解码后的数组 `arr`。
 """
 
 # ============================================================================
@@ -49,12 +49,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decode(encoded: List[int], first: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解码异或后的数组
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化结果数组
+    arr = [first]
+    
+    # 遍历 encoded 数组，解码出原数组
+    for enc in encoded:
+        next_element = arr[-1] ^ enc
+        arr.append(next_element)
+    
+    return arr
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decode)

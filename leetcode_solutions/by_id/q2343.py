@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个二维数组来标记每个格子的状态，并通过四个方向遍历每个警卫的视野范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 m x n 的二维数组 `grid`，用于标记每个格子的状态（0 表示未访问，1 表示警卫，2 表示墙，3 表示被保卫）。
+2. 将所有的警卫和墙的位置标记在 `grid` 中。
+3. 对于每个警卫，向四个方向（东、南、西、北）遍历，直到遇到墙或另一个警卫为止，将路径上的格子标记为被保卫。
+4. 最后统计 `grid` 中未被保卫的格子数量。
 
 关键点:
-- [TODO]
+- 使用一个二维数组来标记每个格子的状态。
+- 通过四个方向遍历每个警卫的视野范围，确保每个格子只被访问一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_unguarded_cells(m: int, n: int, guards: List[List[int]], walls: List[List[int]]) -> int:
+    # 初始化网格
+    grid = [[0] * n for _ in range(m)]
+    
+    # 标记警卫和墙
+    for r, c in guards:
+        grid[r][c] = 1
+    for r, c in walls:
+        grid[r][c] = 2
+    
+    # 四个方向
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    
+    # 遍历每个警卫
+    for r, c in guards:
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+            while 0 <= nr < m and 0 <= nc < n and grid[nr][nc] != 2 and grid[nr][nc] != 1:
+                grid[nr][nc] = 3
+                nr += dr
+                nc += dc
+    
+    # 统计未被保卫的格子数量
+    unguarded_count = sum(cell == 0 for row in grid for cell in row)
+    return unguarded_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_unguarded_cells)

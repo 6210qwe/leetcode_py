@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算范围内的所有2的幂次和它们的补码来确定单比特数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 res 为 0。
+2. 计算 n 的二进制长度 bits。
+3. 对于每个 i 从 0 到 bits-1，检查 2^i 是否小于等于 n，并且 2^(i+1) - 1 是否大于 n。如果是，则将 res 加 1。
+4. 返回 res + 1（因为 0 也是一个单比特数）。
 
 关键点:
-- [TODO]
+- 2^i 表示所有位为 1 的数。
+- 2^(i+1) - 1 表示所有位为 0 的数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_monobit_integers(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计单比特整数
     """
-    # TODO: 实现最优解法
-    pass
+    res = 0
+    bits = n.bit_length()
+    
+    for i in range(bits):
+        if (1 << i) <= n and (1 << (i + 1)) - 1 > n:
+            res += 1
+    
+    return res + 1  # 包括 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_monobit_integers)

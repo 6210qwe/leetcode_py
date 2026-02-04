@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来解决这个问题。通过递归地尝试每一种可能的切割方式，并记录每个子问题的最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示高度为 i 和宽度为 j 的木块的最大收益。
+2. 遍历 prices 数组，初始化 dp 数组中对应位置的值。
+3. 使用记忆化搜索递归地计算每个子问题的最优解。
+4. 对于每个子问题，尝试沿垂直和水平方向进行切割，并更新 dp 数组中的值。
+5. 返回 dp[m][n] 作为最终结果。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 递归地尝试每一种可能的切割方式，并记录每个子问题的最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))，其中 m 和 n 分别是木块的高度和宽度。每个子问题最多需要计算 m + n 次。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -47,14 +51,31 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
+def selling_wood(m: int, n: int, prices: List[List[int]]) -> int:
+    # 初始化 dp 数组
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    
+    # 根据 prices 初始化 dp 数组
+    for h, w, price in prices:
+        dp[h][w] = max(dp[h][w], price)
+    
+    @lru_cache(None)
+    def dfs(height: int, width: int) -> int:
+        if height == 0 or width == 0:
+            return 0
+        
+        # 尝试沿垂直方向切割
+        for i in range(1, height // 2 + 1):
+            dp[height][width] = max(dp[height][width], dfs(i, width) + dfs(height - i, width))
+        
+        # 尝试沿水平方向切割
+        for j in range(1, width // 2 + 1):
+            dp[height][width] = max(dp[height][width], dfs(height, j) + dfs(height, width - j))
+        
+        return dp[height][width]
+    
+    return dfs(m, n)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(selling_wood)

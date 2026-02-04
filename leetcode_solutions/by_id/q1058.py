@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理等价字符的合并和查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，每个字符初始时都是自己的根。
+2. 遍历 s1 和 s2，将每对等价字符进行合并。
+3. 对于 baseStr 中的每个字符，找到其在并查集中的根，并用根字符替换。
+4. 返回处理后的 baseStr。
 
 关键点:
-- [TODO]
+- 使用并查集来高效处理等价字符的合并和查找。
+- 在合并时，总是将较小的字符作为根，以保证字典序最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 s1 和 s2 的长度，m 是 baseStr 的长度。初始化并查集的时间复杂度是 O(1)，合并操作的时间复杂度接近 O(1)（使用路径压缩和按秩合并），查找操作的时间复杂度也是接近 O(1)。
+空间复杂度: O(1)，并查集的空间复杂度是常数级别的，因为字符集是固定的 26 个小写字母。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class UnionFind:
+    def __init__(self):
+        self.parent = list(range(26))
+
+    def find(self, x: int) -> int:
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x: int, y: int):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if root_x < root_y:
+                self.parent[root_y] = root_x
+            else:
+                self.parent[root_x] = root_y
 
 
-Solution = create_solution(solution_function_name)
+def smallest_equivalent_string(s1: str, s2: str, base_str: str) -> str:
+    uf = UnionFind()
+    
+    for char1, char2 in zip(s1, s2):
+        uf.union(ord(char1) - ord('a'), ord(char2) - ord('a'))
+    
+    result = []
+    for char in base_str:
+        root = uf.find(ord(char) - ord('a'))
+        result.append(chr(root + ord('a')))
+    
+    return ''.join(result)
+
+
+Solution = create_solution(smallest_equivalent_string)

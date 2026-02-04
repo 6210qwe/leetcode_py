@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逐层旋转来实现矩阵的 90 度旋转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将矩阵分为多个层次，从外层到内层逐层旋转。
+2. 对于每一层，使用四个指针（top, bottom, left, right）来控制旋转范围。
+3. 在每一层中，依次交换四个角的元素，然后向内移动一层继续旋转。
 
 关键点:
-- [TODO]
+- 通过逐层旋转和四角交换，可以在 O(1) 的额外空间内完成旋转。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N^2)，其中 N 是矩阵的边长，因为每个元素都需要访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def rotate_matrix(matrix: List[List[int]]) -> None:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 旋转矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(matrix)
+    for layer in range(n // 2):
+        first, last = layer, n - layer - 1
+        for i in range(first, last):
+            # Save the top element
+            top = matrix[layer][i]
+            
+            # Move left element to top
+            matrix[layer][i] = matrix[-i - 1][layer]
+            
+            # Move bottom element to left
+            matrix[-i - 1][layer] = matrix[-layer - 1][-i - 1]
+            
+            # Move right element to bottom
+            matrix[-layer - 1][-i - 1] = matrix[i][-layer - 1]
+            
+            # Move top element to right
+            matrix[i][-layer - 1] = top
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rotate_matrix)

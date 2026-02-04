@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用曼哈顿距离对所有单元格进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有单元格的坐标。
+2. 计算每个单元格与中心点的曼哈顿距离。
+3. 按照曼哈顿距离对单元格进行排序。
 
 关键点:
-- [TODO]
+- 使用列表推导式生成所有单元格的坐标。
+- 使用 `sorted` 函数并自定义排序键来实现按曼哈顿距离排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(rows * cols * log(rows * cols))
+空间复杂度: O(rows * cols)
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def all_cells_distance_order(rows: int, cols: int, r_center: int, c_center: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    返回矩阵中的所有单元格的坐标，并按与 (rCenter, cCenter) 的 距离 从最小到最大的顺序排。
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成所有单元格的坐标
+    cells = [(r, c) for r in range(rows) for c in range(cols)]
+    
+    # 按照曼哈顿距离对单元格进行排序
+    sorted_cells = sorted(cells, key=lambda cell: abs(cell[0] - r_center) + abs(cell[1] - c_center))
+    
+    return sorted_cells
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(all_cells_distance_order)

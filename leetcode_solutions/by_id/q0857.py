@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历字符串，找到所有长度大于等于3的连续子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向当前分组的起始和结束位置。
+2. 遍历字符串，当遇到不同字符时，检查当前分组的长度是否大于等于3，如果是则记录该分组的起始和结束位置。
+3. 更新指针 i 和 j，继续遍历直到字符串结束。
 
 关键点:
-- [TODO]
+- 使用双指针可以高效地找到所有符合条件的分组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要一次遍历字符串。
+空间复杂度: O(1)，除了存储结果的列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def large_group_positions(s: str) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到字符串中所有长度大于等于3的连续子串，并返回它们的起始和结束位置。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    result = []
+    i = 0
+    
+    while i < n:
+        j = i + 1
+        while j < n and s[j] == s[i]:
+            j += 1
+        
+        if j - i >= 3:
+            result.append([i, j - 1])
+        
+        i = j
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(large_group_positions)

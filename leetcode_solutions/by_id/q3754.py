@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来维护当前可以修改的 k 个字符，并计算最大曼哈顿距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化方向字典，记录每个方向的移动量。
+2. 遍历字符串，计算前缀和，记录当前位置的 x 和 y 坐标。
+3. 使用滑动窗口来维护当前可以修改的 k 个字符，并计算最大曼哈顿距离。
+4. 返回最大曼哈顿距离。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算当前位置。
+- 使用滑动窗口来优化 k 个字符的修改。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_manhattan_distance_after_k_changes(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 k 次修改后的最大曼哈顿距离
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向字典
+    directions = {'N': (0, 1), 'S': (0, -1), 'E': (1, 0), 'W': (-1, 0)}
+    
+    # 前缀和
+    prefix_x, prefix_y = [0], [0]
+    for move in s:
+        dx, dy = directions[move]
+        prefix_x.append(prefix_x[-1] + dx)
+        prefix_y.append(prefix_y[-1] + dy)
+    
+    # 滑动窗口
+    max_distance = 0
+    left = 0
+    for right in range(len(s) + 1):
+        while (prefix_x[right] - prefix_x[left]) + (prefix_y[right] - prefix_y[left]) > k:
+            left += 1
+        max_distance = max(max_distance, abs(prefix_x[right]) + abs(prefix_y[right]))
+    
+    return max_distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_manhattan_distance_after_k_changes)

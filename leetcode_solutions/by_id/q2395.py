@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和位运算来找到最长的二进制子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0。
+2. 从右到左遍历字符串 `s`，使用变量 `current_value` 来记录当前子序列的值。
+3. 如果当前字符是 '0'，直接将其计入结果 `result`。
+4. 如果当前字符是 '1'，检查将其加入 `current_value` 后是否仍然小于等于 `k`。如果是，则将其计入结果 `result` 并更新 `current_value`。
+5. 返回结果 `result`。
 
 关键点:
-- [TODO]
+- 从右到左遍历字符串，确保我们总是先处理低位。
+- 使用位运算来高效地更新 `current_value`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_binary_subsequence(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到小于等于 k 的最长二进制子序列
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    current_value = 0
+    power_of_two = 1
+    
+    for char in reversed(s):
+        if char == '0':
+            result += 1
+        else:
+            if current_value + power_of_two <= k:
+                result += 1
+                current_value += power_of_two
+            power_of_two *= 2
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_binary_subsequence)

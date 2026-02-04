@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义dp[i]为前i个字符的最小未识别字符数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化dp数组，长度为n+1，其中n是sentence的长度。dp[0] = 0，因为前0个字符没有未识别字符。
+2. 遍历sentence的每个位置i，初始化dp[i+1] = dp[i] + 1，表示当前字符未被识别。
+3. 对于每个位置i，检查从0到i的所有子串，如果子串在字典中，则更新dp[i+1] = min(dp[i+1], dp[j])，其中j是子串的起始位置。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录最小未识别字符数。
+- 通过遍历所有可能的子串来更新dp数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中n是sentence的长度。最坏情况下，需要检查所有子串。
+空间复杂度: O(n)，需要一个长度为n+1的dp数组。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def respace(dictionary: List[str], sentence: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回未识别的字符数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(sentence)
+    dp = [0] * (n + 1)
+
+    # 将字典转换为集合，便于快速查找
+    dictionary_set = set(dictionary)
+
+    for i in range(1, n + 1):
+        dp[i] = dp[i - 1] + 1  # 当前字符未被识别
+        for j in range(i):
+            if sentence[j:i] in dictionary_set:
+                dp[i] = min(dp[i], dp[j])
+                break  # 找到匹配的子串后，不需要再检查更短的子串
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(respace)

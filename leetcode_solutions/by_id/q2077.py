@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右遍历字符串，找到第一个可以通过突变变大的位置，然后继续向右遍历，直到不能通过突变变大为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `change` 数组转换为字典，方便查找。
+2. 初始化结果字符串 `result` 和一个标志变量 `mutating` 表示是否正在突变。
+3. 遍历字符串 `num`：
+   - 如果当前字符可以通过突变变大且 `mutating` 为 `False`，则开始突变。
+   - 如果当前字符可以通过突变变大且 `mutating` 为 `True`，则继续突变。
+   - 如果当前字符不能通过突变变大且 `mutating` 为 `True`，则停止突变。
+4. 返回结果字符串 `result`。
 
 关键点:
-- [TODO]
+- 从左到右遍历，确保找到第一个可以突变的位置。
+- 一旦开始突变，就一直突变直到不能再突变为止。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `num` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_number_after_mutating_substring(num: str, change: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出在对 num 的任一子字符串执行突变操作后，可能得到的最大整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 change 数组转换为字典
+    change_dict = {str(i): str(change[i]) for i in range(10)}
+    
+    result = []
+    mutating = False
+    
+    for char in num:
+        if not mutating and change_dict[char] > char:
+            mutating = True
+        if mutating and change_dict[char] >= char:
+            result.append(change_dict[char])
+        else:
+            if mutating:
+                mutating = False
+            result.append(char)
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_number_after_mutating_substring)

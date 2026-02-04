@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在每个节点处计算以该节点为根的最长路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个递归函数 dfs(node)，用于计算以 node 为根的最长路径。
+3. 在每个节点处，计算其子节点中的两条最长路径，并更新全局最长路径。
+4. 返回以当前节点为根的最长路径。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树。
+- 在每个节点处维护两个最长路径，以便计算经过该节点的最长路径。
+- 更新全局最长路径时，确保路径上的相邻节点字符不同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边只访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def longest_path(parent: List[int], s: str) -> int:
+    def build_tree(parent):
+        tree = [[] for _ in range(len(parent))]
+        for i in range(1, len(parent)):
+            tree[parent[i]].append(i)
+        return tree
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node):
+        nonlocal max_length
+        if not tree[node]:
+            return 1
+        
+        longest, second_longest = 0, 0
+        for child in tree[node]:
+            length = dfs(child)
+            if s[child] != s[node]:
+                if length > longest:
+                    second_longest = longest
+                    longest = length
+                elif length > second_longest:
+                    second_longest = length
+        
+        max_length = max(max_length, longest + second_longest + 1)
+        return longest + 1
 
+    tree = build_tree(parent)
+    max_length = 1
+    dfs(0)
+    return max_length
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_path)

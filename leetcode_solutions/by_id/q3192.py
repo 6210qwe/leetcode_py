@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法和位运算来最大化 (a XOR x) * (b XOR x)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 res 为 0。
+2. 从最高位到最低位遍历每一位。
+3. 对于每一位，尝试将该位设置为 1，并计算 (a XOR x) * (b XOR x) 的值。
+4. 如果新值大于当前的最大值，则更新最大值并设置该位为 1。
+5. 返回最终结果并对 10^9 + 7 取模。
 
 关键点:
-- [TODO]
+- 通过位运算逐位优化 x 的值。
+- 保证每次更新 x 时都能最大化 (a XOR x) * (b XOR x)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +52,18 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(a: int, b: int, n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 (a XOR x) * (b XOR x) 的最大值，x 满足 0 <= x < 2^n。
     """
-    # TODO: 实现最优解法
-    pass
-
+    res = 0
+    for i in range(n - 1, -1, -1):
+        # 尝试将第 i 位设置为 1
+        candidate = res | (1 << i)
+        if (a ^ candidate) * (b ^ candidate) > (a ^ res) * (b ^ res):
+            res = candidate
+    return (a ^ res) * (b ^ res) % MOD
 
 Solution = create_solution(solution_function_name)

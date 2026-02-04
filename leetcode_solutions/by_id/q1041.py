@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从车的位置出发，向四个方向（上、下、左、右）进行搜索，直到遇到棋子或边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到车的位置。
+2. 从车的位置开始，分别向四个方向进行搜索。
+3. 如果遇到卒 'p'，计数并停止该方向的搜索。
+4. 如果遇到象 'B' 或边界，停止该方向的搜索。
 
 关键点:
-- [TODO]
+- 从车的位置出发，向四个方向进行搜索。
+- 使用循环控制搜索方向，避免代码重复。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为棋盘大小固定为 8x8，所以搜索的时间复杂度是常数级。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(board: List[List[str]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以被一步捕获的棋子数
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到车的位置
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == 'R':
+                rook_i, rook_j = i, j
+                break
+    
+    # 定义四个方向
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    count = 0
+    
+    # 从车的位置开始，向四个方向进行搜索
+    for di, dj in directions:
+        ni, nj = rook_i + di, rook_j + dj
+        while 0 <= ni < 8 and 0 <= nj < 8:
+            if board[ni][nj] == 'p':
+                count += 1
+                break
+            elif board[ni][nj] == 'B':
+                break
+            ni, nj = ni + di, nj + dj
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

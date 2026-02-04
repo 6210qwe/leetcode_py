@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理等式和不等式的关系。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，用于存储变量之间的连通性。
+2. 遍历所有等式，将相等的变量进行合并。
+3. 遍历所有不等式，检查不等式的两个变量是否在同一个集合中，如果是则返回 False。
+4. 如果所有不等式都满足，则返回 True。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地处理变量之间的连通性。
+- 先处理等式，再处理不等式，确保在处理不等式时，等式已经完全处理完毕。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(nα(n))，其中 n 是 equations 的长度，α 是反阿克曼函数。
+空间复杂度: O(1)，并查集的空间复杂度是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +52,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self):
+        self.parent = list(range(26))
+
+    def find(self, x: int) -> int:
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x: int, y: int) -> None:
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            self.parent[root_x] = root_y
+
+
+def solution_function_name(equations: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定的等式方程是否可满足
     """
-    # TODO: 实现最优解法
-    pass
+    uf = UnionFind()
+    
+    # 处理等式
+    for eq in equations:
+        if eq[1] == "=":
+            x, y = ord(eq[0]) - ord('a'), ord(eq[3]) - ord('a')
+            uf.union(x, y)
+    
+    # 处理不等式
+    for eq in equations:
+        if eq[1] == "!":
+            x, y = ord(eq[0]) - ord('a'), ord(eq[3]) - ord('a')
+            if uf.find(x) == uf.find(y):
+                return False
+    
+    return True
 
 
 Solution = create_solution(solution_function_name)

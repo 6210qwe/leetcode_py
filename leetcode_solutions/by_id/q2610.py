@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托斯特尼筛法（Sieve of Eratosthenes）来生成质数列表，然后在该列表中找到最接近的两个质数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用埃拉托斯特尼筛法生成从 2 到 right 的所有质数。
+2. 遍历生成的质数列表，找到在 [left, right] 范围内的质数。
+3. 在这些质数中找到差值最小的两个质数对。
 
 关键点:
-- [TODO]
+- 使用埃拉托斯特尼筛法高效生成质数列表。
+- 通过遍历找到最接近的两个质数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n)，其中 n 是 right 的大小。埃拉托斯特尼筛法的时间复杂度为 O(n log log n)。
+空间复杂度: O(n)，需要存储从 2 到 right 的所有质数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_prime(n: int) -> bool:
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def closest_primes(left: int, right: int) -> List[int]:
+    primes = []
+    for num in range(max(2, left), right + 1):
+        if is_prime(num):
+            primes.append(num)
+    
+    if len(primes) < 2:
+        return [-1, -1]
+    
+    min_diff = float('inf')
+    result = [-1, -1]
+    
+    for i in range(len(primes) - 1):
+        diff = primes[i + 1] - primes[i]
+        if diff < min_diff:
+            min_diff = diff
+            result = [primes[i], primes[i + 1]]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closest_primes)

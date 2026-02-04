@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间遍历，同时删除相同的前缀和后缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向字符串的开头和结尾。
+2. 当 left < right 且 s[left] == s[right] 时，继续删除相同的前缀和后缀。
+3. 如果 left 和 right 相遇或交错，则返回剩余字符串的长度。
 
 关键点:
-- [TODO]
+- 使用双指针从两端向中间遍历，确保删除相同的前缀和后缀。
+- 注意处理边界情况，如字符串为空或所有字符都被删除的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_length(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删除相同前缀和后缀后的最短字符串长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return 0
+
+    left, right = 0, len(s) - 1
+
+    while left < right and s[left] == s[right]:
+        current_char = s[left]
+        while left <= right and s[left] == current_char:
+            left += 1
+        while left <= right and s[right] == current_char:
+            right -= 1
+
+    return right - left + 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_length)

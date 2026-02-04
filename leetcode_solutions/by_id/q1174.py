@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 筛选出在 2019-01-01 至 2019-03-31 之间的销售记录。
+2. 找出这些销售记录中所有出现的产品 ID。
+3. 筛选出不在其他时间销售的产品 ID。
+4. 返回这些产品 ID 及其名称。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 SQL 查询筛选出 2019-01-01 至 2019-03-31 之间的销售记录。
+2. 使用子查询找出这些销售记录中所有出现的产品 ID。
+3. 再次使用子查询找出不在其他时间销售的产品 ID。
+4. 最后从 Product 表中获取这些产品 ID 对应的产品名称。
 
 关键点:
-- [TODO]
+- 使用子查询和集合操作来筛选出符合条件的产品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +55,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(product: List[List[str]], sales: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入转换为 Pandas DataFrame
+    import pandas as pd
+    product_df = pd.DataFrame(product[1:], columns=product[0])
+    sales_df = pd.DataFrame(sales[1:], columns=sales[0])
+
+    # 转换日期格式
+    sales_df['sale_date'] = pd.to_datetime(sales_df['sale_date'])
+
+    # 筛选出 2019-01-01 至 2019-03-31 之间的销售记录
+    spring_sales = sales_df[(sales_df['sale_date'] >= '2019-01-01') & (sales_df['sale_date'] <= '2019-03-31')]
+
+    # 找出这些销售记录中所有出现的产品 ID
+    spring_product_ids = set(spring_sales['product_id'])
+
+    # 筛选出不在其他时间销售的产品 ID
+    other_sales = sales_df[(sales_df['sale_date'] < '2019-01-01') | (sales_df['sale_date'] > '2019-03-31')]
+    other_product_ids = set(other_sales['product_id'])
+    only_spring_product_ids = spring_product_ids - other_product_ids
+
+    # 从 Product 表中获取这些产品 ID 对应的产品名称
+    result = product_df[product_df['product_id'].isin(only_spring_product_ids)][['product_id', 'product_name']].values.tolist()
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

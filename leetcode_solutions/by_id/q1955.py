@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来管理可预约的座位编号。每次预约时，从堆中取出最小编号；每次取消预约时，将座位编号重新加入堆中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将所有座位编号加入最小堆。
+2. 预约时，从堆中弹出最小编号。
+3. 取消预约时，将座位编号重新加入堆中。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取和管理最小编号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 堆操作的时间复杂度。
+空间复杂度: O(n) - 存储所有座位编号的空间。
 """
 
 # ============================================================================
@@ -47,14 +48,19 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
+
+class SeatManager:
+
+    def __init__(self, n: int):
+        self.available_seats = list(range(1, n + 1))
+        heapq.heapify(self.available_seats)
+
+    def reserve(self) -> int:
+        return heapq.heappop(self.available_seats)
+
+    def unreserve(self, seatNumber: int) -> None:
+        heapq.heappush(self.available_seats, seatNumber)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(SeatManager)

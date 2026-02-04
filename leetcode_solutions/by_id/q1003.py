@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个中点到两个端点的映射，通过遍历所有可能的对角线来找到最小面积矩形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有点转换为复数形式，方便计算中点。
+2. 使用哈希表存储每个中点到两个端点的映射。
+3. 遍历所有可能的对角线，检查是否存在对应的另一条对角线，计算面积并更新最小面积。
 
 关键点:
-- [TODO]
+- 使用复数表示点，方便计算中点。
+- 通过哈希表快速查找中点对应的端点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 points 的长度。
+空间复杂度: O(n^2)，哈希表的大小。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_area_free_rect(points: List[List[int]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算由给定点形成的最小面积矩形
     """
-    # TODO: 实现最优解法
-    pass
+    # 将点转换为复数形式
+    points = [complex(*point) for point in points]
+    seen = {}
+    
+    for i in range(len(points)):
+        for j in range(i + 1, len(points)):
+            p1, p2 = points[i], points[j]
+            center = (p1 + p2) / 2
+            radius = abs(center - p1)
+            
+            if (center, radius) not in seen:
+                seen[(center, radius)] = []
+            seen[(center, radius)].append((p1, p2))
+    
+    min_area = float('inf')
+    
+    for (center, radius), pairs in seen.items():
+        for (p1, p2) in pairs:
+            for (q1, q2) in pairs:
+                if p1 != q1 and p1 != q2 and p2 != q1 and p2 != q2:
+                    area = abs((p1 - q1) * (p2 - q1).conjugate())
+                    if area > 0:
+                        min_area = min(min_area, area)
+    
+    return min_area if min_area < float('inf') else 0.0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_area_free_rect)

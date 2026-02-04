@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历处理数组中的元素，并在遍历过程中将非零元素移动到前面，最后将剩余位置填充为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个指针 `non_zero_pos` 用于记录非零元素的位置。
+2. 遍历数组，对于每个元素：
+   - 如果当前元素和下一个元素相等，则将当前元素的值变成原来的 2 倍，并将下一个元素的值设为 0。
+   - 如果当前元素不为 0，则将其移动到 `non_zero_pos` 位置，并更新 `non_zero_pos`。
+3. 将 `non_zero_pos` 之后的所有位置填充为 0。
 
 关键点:
-- [TODO]
+- 通过一次遍历同时处理数组中的元素和移动非零元素，避免了多次遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def apply_operations(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 对数组执行操作
     """
-    # TODO: 实现最优解法
-    pass
+    non_zero_pos = 0  # 用于记录非零元素的位置
+    
+    for i in range(len(nums)):
+        if i < len(nums) - 1 and nums[i] == nums[i + 1]:
+            nums[i] *= 2
+            nums[i + 1] = 0
+        
+        if nums[i] != 0:
+            nums[non_zero_pos] = nums[i]
+            non_zero_pos += 1
+    
+    for i in range(non_zero_pos, len(nums)):
+        nums[i] = 0
+    
+    return nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(apply_operations)

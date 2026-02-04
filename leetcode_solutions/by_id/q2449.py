@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和双端队列来维护当前窗口内的最大充电时间和运行成本的前缀和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum`，用于存储 `runningCosts` 的前缀和。
+2. 使用双端队列 `deque` 来维护当前窗口内的最大充电时间。
+3. 使用滑动窗口遍历数组，计算当前窗口的总开销，并检查是否超过预算。
+4. 如果当前窗口的总开销不超过预算，更新结果并扩展窗口；否则，收缩窗口。
+5. 返回最大窗口大小。
 
 关键点:
-- [TODO]
+- 使用双端队列来高效地维护当前窗口内的最大充电时间。
+- 使用前缀和数组来快速计算当前窗口的运行成本之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def maximumRobots(chargeTimes: List[int], runningCosts: List[int], budget: int) -> int:
+    n = len(chargeTimes)
+    prefix_sum = [0] * (n + 1)
+    
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + runningCosts[i]
+    
+    def get_running_cost(start, end):
+        return prefix_sum[end + 1] - prefix_sum[start]
+    
+    max_robots = 0
+    left = 0
+    deque_max = deque()
+    
+    for right in range(n):
+        while deque_max and chargeTimes[deque_max[-1]] <= chargeTimes[right]:
+            deque_max.pop()
+        deque_max.append(right)
+        
+        while deque_max and chargeTimes[deque_max[0]] + (right - left + 1) * get_running_cost(left, right) > budget:
+            if deque_max[0] == left:
+                deque_max.popleft()
+            left += 1
+        
+        max_robots = max(max_robots, right - left + 1)
+    
+    return max_robots
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximumRobots)

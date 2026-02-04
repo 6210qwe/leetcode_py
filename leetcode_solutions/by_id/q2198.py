@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理用户之间的关系，并在处理每个请求时检查是否违反了限制条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，每个用户的父节点指向自己。
+2. 对于每个好友请求，找到两个用户所在的集合。
+3. 检查这两个集合中的任意一对用户是否在限制条件中，如果在则拒绝该请求。
+4. 如果没有违反限制条件，则合并这两个集合。
+5. 记录每个请求的结果。
 
 关键点:
-- [TODO]
+- 使用路径压缩和按秩合并来优化并查集的操作。
+- 在处理每个请求时，需要检查两个集合中的所有用户对是否在限制条件中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * α(n))，其中 n 是用户数量，m 是请求数量，α 是反阿克曼函数。
+空间复杂度: O(n + k)，其中 n 是用户数量，k 是限制条件的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def process_friend_requests(n: int, restrictions: List[List[int]], requests: List[List[int]]) -> List[bool]:
+    uf = UnionFind(n)
+    restriction_set = {tuple(sorted(pair)) for pair in restrictions}
+    results = []
+    
+    for u, v in requests:
+        root_u = uf.find(u)
+        root_v = uf.find(v)
+        
+        if root_u == root_v:
+            results.append(True)
+            continue
+        
+        # Check if the union of the two sets would violate any restrictions
+        for i in range(n):
+            if uf.find(i) == root_u:
+                for j in range(n):
+                    if uf.find(j) == root_v and (i, j) in restriction_set:
+                        results.append(False)
+                        break
+                else:
+                    continue
+                break
+        else:
+            uf.union(root_u, root_v)
+            results.append(True)
+    
+    return results
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(process_friend_requests)

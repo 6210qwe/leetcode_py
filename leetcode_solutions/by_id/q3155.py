@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到最高和第二高的薪水，然后计算它们的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到最高薪水。
+2. 使用子查询找到第二高的薪水。
+3. 计算最高薪水和第二高薪水的差值。
 
 关键点:
-- [TODO]
+- 使用 `LIMIT` 和 `OFFSET` 来获取最高和第二高的薪水。
+- 使用 `IFNULL` 来处理可能的空值情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -51,10 +53,16 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来找到最高和第二高的薪水，并计算它们的差值
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询
+    query = """
+    SELECT
+        (MAX(salary) - IFNULL((SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1, 1), 0)) AS salary_difference
+    FROM
+        Employee
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

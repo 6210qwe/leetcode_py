@@ -21,40 +21,55 @@ LCR 106. 判断二分图 - 存在一个 无向图 ，图中有 n 个节点。其
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 或广度优先搜索 (BFS) 对图进行染色，判断是否可以将图染成二分图。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化颜色数组 `colors`，用于记录每个节点的颜色，初始值为 0 表示未染色。
+2. 遍历每个节点，如果该节点未被染色，则使用 DFS 或 BFS 进行染色。
+3. 在染色过程中，如果发现相邻节点已经被染成相同的颜色，则说明图不是二分图，返回 False。
+4. 如果所有节点都能成功染色，则返回 True。
 
 关键点:
-- [TODO]
+- 使用两种颜色（1 和 -1）交替染色，确保相邻节点颜色不同。
+- 处理图中可能存在多个连通分量的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(V)，用于存储颜色数组和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def is_bipartite(graph: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的无向图是否为二分图。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, color: int) -> bool:
+        if colors[node] != 0:
+            return colors[node] == color
+        colors[node] = color
+        for neighbor in graph[node]:
+            if not dfs(neighbor, -color):
+                return False
+        return True
+
+    n = len(graph)
+    colors = [0] * n  # 0: 未染色, 1: 一种颜色, -1: 另一种颜色
+
+    for i in range(n):
+        if colors[i] == 0 and not dfs(i, 1):
+            return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_bipartite)

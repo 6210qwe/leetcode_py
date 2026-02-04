@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个锁来控制 zero 和 even/odd 的交替输出。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个锁，一个用于 zero，一个用于 even/odd。
+2. 在 zero 函数中，先输出 0，然后根据当前计数决定释放 even 或 odd 锁。
+3. 在 even 和 odd 函数中，等待相应的锁，输出对应的数字，然后释放 zero 锁。
 
 关键点:
-- [TODO]
+- 使用锁来控制多线程的交替输出。
+- 确保 zero 和 even/odd 之间的同步。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from threading import Lock, Barrier
+from typing import Callable
 
+class ZeroEvenOdd:
+    def __init__(self, n):
+        self.n = n
+        self.zero_lock = Lock()
+        self.even_odd_lock = Lock()
+        self.even_odd_lock.acquire()
+        self.barrier = Barrier(3)
+
+    def zero(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(1, self.n + 1):
+            self.zero_lock.acquire()
+            printNumber(0)
+            if i % 2 == 0:
+                self.even_odd_lock.release()
+            else:
+                self.even_odd_lock.release()
+            self.barrier.wait()
+
+    def even(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(2, self.n + 1, 2):
+            self.even_odd_lock.acquire()
+            printNumber(i)
+            self.zero_lock.release()
+            self.barrier.wait()
+
+    def odd(self, printNumber: 'Callable[[int], None]') -> None:
+        for i in range(1, self.n + 1, 2):
+            self.even_odd_lock.acquire()
+            printNumber(i)
+            self.zero_lock.release()
+            self.barrier.wait()
+
+def create_solution(solution_function_name):
+    """
+    工厂函数 - 创建并返回 Solution 类的实例
+    """
+    return solution_function_name
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - [待实现]
     """
-    # TODO: 实现最优解法
+    # 待实现: 实现最优解法
     pass
-
 
 Solution = create_solution(solution_function_name)

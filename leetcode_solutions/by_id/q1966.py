@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最大频率的子数组，同时利用前缀和来快速计算增量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用滑动窗口技术，维护一个窗口，使得窗口内的所有元素可以通过最多 k 次操作变成相同的值。
+3. 通过前缀和来快速计算将窗口内所有元素变为窗口右端点值所需的增量。
+4. 如果增量超过 k，则移动左指针缩小窗口，直到增量不超过 k。
+5. 记录窗口的最大长度。
 
 关键点:
-- [TODO]
+- 排序后的数组可以方便地使用滑动窗口技术。
+- 前缀和可以快速计算增量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxFrequency(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中最高频元素的最大可能频数
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()
+    n = len(nums)
+    left = 0
+    max_freq = 0
+    total = 0
+    
+    for right in range(n):
+        total += nums[right]
+        
+        while (right - left + 1) * nums[right] - total > k:
+            total -= nums[left]
+            left += 1
+        
+        max_freq = max(max_freq, right - left + 1)
+    
+    return max_freq
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxFrequency)

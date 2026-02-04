@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的 y 坐标，使得该线以上的正方形总面积等于该线以下的正方形总面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有正方形的总面积。
+2. 使用二分查找来确定最小的 y 坐标。
+3. 在每次二分查找中，计算当前 y 坐标以上的正方形总面积和以下的正方形总面积。
+4. 根据总面积的比较结果调整二分查找的范围，直到找到满足条件的 y 坐标。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地确定 y 坐标。
+- 计算每个正方形在当前 y 坐标以上的面积和以下的面积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_y))，其中 n 是正方形的数量，max_y 是 y 坐标的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(squares: List[List[int]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def calculate_area_above_and_below(y: float) -> (float, float):
+        above_area = 0
+        below_area = 0
+        for x, y_bottom, side in squares:
+            y_top = y_bottom + side
+            if y >= y_top:
+                below_area += side * side
+            elif y < y_bottom:
+                above_area += side * side
+            else:
+                above_area += (y_top - y) * side
+                below_area += (y - y_bottom) * side
+        return above_area, below_area
+
+    total_area = sum(side * side for _, _, side in squares)
+    low, high = 0, max(y + side for _, y, side in squares)
+
+    while high - low > 1e-5:
+        mid = (low + high) / 2
+        above_area, below_area = calculate_area_above_and_below(mid)
+        if above_area < below_area:
+            low = mid
+        else:
+            high = mid
+
+    return (low + high) / 2
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到移除哪个 digit 可以使结果最大。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 number 字符串，记录每个 digit 出现的位置。
+2. 对于每个 digit 的位置，生成移除该 digit 后的新字符串。
+3. 比较所有新字符串，返回最大的一个。
 
 关键点:
-- [TODO]
+- 通过遍历和比较来确保找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是 number 的长度，因为我们需要遍历字符串并进行比较。
+空间复杂度: O(1) - 除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_digit(number: str, digit: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从 number 中恰好移除一个等于 digit 的字符后，返回按十进制表示最大的结果字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    max_result = ""
+    for i in range(len(number)):
+        if number[i] == digit:
+            new_number = number[:i] + number[i+1:]
+            if new_number > max_result:
+                max_result = new_number
+    return max_result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_digit)

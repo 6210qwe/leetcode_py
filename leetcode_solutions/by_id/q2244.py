@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历每一行，计算每行的安全设备数量，并且只考虑那些包含安全设备的行。对于每一对相邻的包含安全设备的行，计算它们之间的激光束数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `prev_devices` 为 0，用于存储前一行的安全设备数量。
+2. 初始化变量 `total_beams` 为 0，用于存储总的激光束数量。
+3. 遍历每一行：
+   - 计算当前行的安全设备数量 `current_devices`。
+   - 如果 `current_devices` 大于 0，则计算当前行与前一行之间的激光束数量，并更新 `total_beams`。
+   - 更新 `prev_devices` 为 `current_devices`。
+4. 返回 `total_beams`。
 
 关键点:
-- [TODO]
+- 只考虑包含安全设备的行。
+- 通过乘法计算每对相邻行之间的激光束数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是银行的行数，n 是每行的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(bank: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算银行中的激光束数量
     """
-    # TODO: 实现最优解法
-    pass
+    prev_devices = 0
+    total_beams = 0
+    
+    for row in bank:
+        current_devices = row.count('1')
+        if current_devices > 0:
+            total_beams += prev_devices * current_devices
+            prev_devices = current_devices
+    
+    return total_beams
 
 
 Solution = create_solution(solution_function_name)

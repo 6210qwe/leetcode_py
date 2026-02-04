@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来存储需要替换的索引和对应的替换信息，然后按索引从小到大进行替换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，键为索引，值为一个元组 (source, target)。
+2. 对索引进行排序，确保替换操作按顺序进行。
+3. 从左到右遍历字符串，根据字典中的信息进行替换。
+4. 构建最终结果字符串。
 
 关键点:
-- [TODO]
+- 使用字典存储替换信息，方便快速查找。
+- 按索引排序，确保替换操作不相互影响。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)
+- n 是字符串 s 的长度。
+- k 是替换操作的数量。
+- 排序操作的时间复杂度是 O(k log k)。
+- 遍历字符串的时间复杂度是 O(n)。
+
+空间复杂度: O(n + k)
+- 存储替换信息的字典的空间复杂度是 O(k)。
+- 最终结果字符串的空间复杂度是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_replace_string(s: str, indices: List[int], sources: List[str], targets: List[str]) -> str:
+    # 创建一个字典，键为索引，值为一个元组 (source, target)
+    replacements = {i: (src, tgt) for i, src, tgt in zip(indices, sources, targets)}
+    
+    # 对索引进行排序
+    sorted_indices = sorted(replacements.keys())
+    
+    result = []
+    last_index = 0
+    
+    for index in sorted_indices:
+        src, tgt = replacements[index]
+        
+        # 将上一个替换结束到当前替换开始之间的部分添加到结果中
+        result.append(s[last_index:index])
+        
+        # 检查是否可以进行替换
+        if s[index:index + len(src)] == src:
+            result.append(tgt)
+            last_index = index + len(src)
+        else:
+            last_index = index
+    
+    # 添加剩余的部分
+    result.append(s[last_index:])
+    
+    return ''.join(result)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_replace_string)

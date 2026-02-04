@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用行和列的计数来计算直角三角形的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每一行和每一列中 1 的数量。
+2. 遍历矩阵中的每个 1，对于每个 1，计算其所在行和列中 1 的数量。
+3. 对于每个 1，计算以该 1 为直角顶点的直角三角形数量，即 (行中 1 的数量 - 1) * (列中 1 的数量 - 1)。
 
 关键点:
-- [TODO]
+- 使用两个字典分别记录每一行和每一列中 1 的数量。
+- 遍历矩阵时，直接利用预先计算好的行和列的 1 的数量来计算直角三角形的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是矩阵的行数，m 是矩阵的列数。
+空间复杂度: O(n + m)，用于存储每一行和每一列中 1 的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_right_triangles(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定矩阵中可以构建的直角三角形的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    n, m = len(grid), len(grid[0])
+    row_counts = [0] * n
+    col_counts = [0] * m
+
+    # 计算每一行和每一列中 1 的数量
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                row_counts[i] += 1
+                col_counts[j] += 1
+
+    # 计算直角三角形的数量
+    count = 0
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 1:
+                count += (row_counts[i] - 1) * (col_counts[j] - 1)
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_right_triangles)

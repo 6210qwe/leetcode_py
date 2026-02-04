@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到在 k 次操作后的最大堆顶元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 k 为 0，直接返回堆顶元素。
+2. 如果 k 为 1 且堆长度为 1，返回 -1。
+3. 如果 k 大于 1，遍历前 k 个元素（除了最后一个），找到最大值。
+4. 如果 k 大于堆长度，返回整个堆中的最大值。
+5. 如果 k 小于等于堆长度，返回前 k 个元素中的最大值。
 
 关键点:
-- [TODO]
+- 通过遍历前 k 个元素找到最大值。
+- 特殊情况处理：k 为 0 或 1 且堆长度为 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(min(k, n))，其中 n 是堆的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 k 次操作后堆顶元素的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 0:
+        return nums[0]
+    if k == 1 and len(nums) == 1:
+        return -1
+    
+    max_element = -1
+    for i in range(min(k, len(nums))):
+        if i < len(nums) - 1 or k > len(nums):
+            max_element = max(max_element, nums[i])
+    
+    return max_element
 
 
 Solution = create_solution(solution_function_name)

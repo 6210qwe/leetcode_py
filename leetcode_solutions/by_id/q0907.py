@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的吃香蕉速度 k，使得珂珂能在 h 小时内吃完所有香蕉。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 1，right 为 piles 中的最大值。
+2. 在每次迭代中，计算中间值 mid，并计算以速度 mid 吃完所有香蕉所需的总时间。
+3. 如果总时间小于等于 h，则说明速度可以更慢，更新 right 为 mid。
+4. 否则，更新 left 为 mid + 1。
+5. 当 left 等于 right 时，返回 left 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小搜索范围，从而找到最小的吃香蕉速度。
+- 计算以某个速度吃香蕉所需的时间时，使用 (pile - 1) // speed + 1 来计算每堆香蕉所需的时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是 piles 的长度，m 是 piles 中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minEatingSpeed(piles: List[int], h: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回珂珂在 h 小时内吃掉所有香蕉的最小速度 k
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化二分查找的左右边界
+    left, right = 1, max(piles)
+    
+    while left < right:
+        mid = (left + right) // 2
+        total_hours = sum((pile - 1) // mid + 1 for pile in piles)
+        
+        if total_hours <= h:
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minEatingSpeed)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个 '1' 出现的位置，然后根据这些位置计算分割方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串中 '1' 的总数。
+2. 如果 '1' 的总数不是 3 的倍数，直接返回 0。
+3. 找到每一段 '1' 的起始和结束位置。
+4. 根据这些位置计算可以分割的方案数。
 
 关键点:
-- [TODO]
+- 通过计算 '1' 的位置来确定分割点。
+- 使用组合数学公式计算分割方案数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算分割字符串的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(s)
+    ones = [i for i, c in enumerate(s) if c == '1']
+    m = len(ones)
+    
+    if m % 3 != 0:
+        return 0
+    
+    if m == 0:
+        return (n - 1) * (n - 2) // 2 % MOD
+    
+    ways = 1
+    for i in range(m // 3, 2 * m // 3):
+        ways *= (ones[i + 1] - ones[i])
+        ways %= MOD
+    
+    return ways
 
 
 Solution = create_solution(solution_function_name)

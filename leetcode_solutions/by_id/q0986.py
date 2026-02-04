@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的时间组合，并找到最大的有效时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有可能的 4 个数字的排列。
+2. 检查每个排列是否形成有效的时间（小时在 00 到 23 之间，分钟在 00 到 59 之间）。
+3. 从所有有效的时间中选择最大的时间。
 
 关键点:
-- [TODO]
+- 使用 itertools.permutations 生成所有排列。
+- 通过条件判断检查时间的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -47,14 +49,26 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import itertools
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回给定数字能组成的最大时间
     """
-    # TODO: 实现最优解法
-    pass
-
+    max_time = ""
+    
+    # 生成所有可能的排列
+    for perm in itertools.permutations(arr):
+        hours, minutes = perm[:2], perm[2:]
+        hour = hours[0] * 10 + hours[1]
+        minute = minutes[0] * 10 + minutes[1]
+        
+        # 检查是否形成有效的时间
+        if 0 <= hour < 24 and 0 <= minute < 60:
+            time = f"{hour:02d}:{minute:02d}"
+            if time > max_time:
+                max_time = time
+    
+    return max_time
 
 Solution = create_solution(solution_function_name)

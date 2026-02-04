@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，依次为每个花园选择一种未被相邻花园使用的花。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化一个结果数组，长度为 n，初始值为 0。
+3. 遍历每个花园，选择一种未被相邻花园使用的花。
+4. 更新结果数组。
 
 关键点:
-- [TODO]
+- 使用集合来记录每个花园相邻的花的种类。
+- 由于每个花园最多有 3 条路径，所以总能找到一种可用的花。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是花园的数量，m 是路径的数量。
+空间复杂度: O(n + m)，存储邻接表和结果数组所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def gardenNoAdj(n: int, paths: List[List[int]]) -> List[int]:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for x, y in paths:
+        graph[x - 1].append(y - 1)
+        graph[y - 1].append(x - 1)
+    
+    # 初始化结果数组
+    result = [0] * n
+    
+    # 为每个花园选择一种未被相邻花园使用的花
+    for i in range(n):
+        used_flowers = {result[neighbor] for neighbor in graph[i]}
+        for flower in range(1, 5):
+            if flower not in used_flowers:
+                result[i] = flower
+                break
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(gardenNoAdj)

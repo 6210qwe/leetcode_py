@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，左边界为0，右边界为加油站之间的最大距离。
+2. 在每次迭代中，计算中间值mid，表示当前尝试的最大距离。
+3. 检查在当前最大距离mid下，是否可以放置所有的加油站。如果可以，则缩小右边界；否则，增大左边界。
+4. 当左右边界收敛时，返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 二分查找的边界条件和检查函数的设计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log D)，其中n是加油站的数量，D是加油站之间的最大距离。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_place_stations(stations: List[int], k: int, max_dist: float) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查在最大距离max_dist下，是否可以放置所有的加油站。
     """
-    # TODO: 实现最优解法
-    pass
+    added = 0
+    for i in range(1, len(stations)):
+        dist = stations[i] - stations[i - 1]
+        if dist > max_dist:
+            return False
+        added += (dist // max_dist) - 1
+        if added > k:
+            return False
+    return True
 
+def min_max_distance(stations: List[int], k: int) -> float:
+    """
+    计算最小的最大距离。
+    """
+    left, right = 0, max(stations[i] - stations[i - 1] for i in range(1, len(stations)))
+    
+    while right - left > 1e-6:
+        mid = (left + right) / 2
+        if can_place_stations(stations, k, mid):
+            right = mid
+        else:
+            left = mid
+    
+    return right
 
-Solution = create_solution(solution_function_name)
+Solution = min_max_distance

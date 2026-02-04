@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）从每个节点开始，找到最近的标记节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有标记节点加入队列。
+2. 使用一个字典记录每个节点到最近标记节点的距离。
+3. 从队列中取出节点，更新其邻居节点的距离，并将未访问过的邻居节点加入队列。
+4. 重复步骤3直到队列为空。
+5. 返回距离字典。
 
 关键点:
-- [TODO]
+- 使用BFS可以确保找到的路径是最短的。
+- 使用字典记录距离可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中n是节点数，m是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(n + m)，队列和距离字典的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest_marked_node(n: int, edges: List[List[int]], marked: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到每个节点到最近标记节点的距离
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import deque, defaultdict
+
+    # 构建图
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    # 初始化队列和距离字典
+    queue = deque(marked)
+    distances = {i: float('inf') for i in range(n)}
+    for node in marked:
+        distances[node] = 0
+
+    # BFS
+    while queue:
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            if distances[neighbor] == float('inf'):
+                distances[neighbor] = distances[current] + 1
+                queue.append(neighbor)
+
+    return [distances[i] for i in range(n)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_marked_node)

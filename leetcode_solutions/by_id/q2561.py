@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和集合来记录不同的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针，一个指向数组的开头，一个指向数组的末尾。
+3. 计算每对最小值和最大值的平均值，并将其加入集合中。
+4. 移动指针，直到遍历完整个数组。
+5. 返回集合的大小，即不同平均值的数量。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以高效地找到每对最小值和最大值。
+- 使用集合来存储不同的平均值，避免重复。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)，而后续的遍历操作是 O(n)。
+空间复杂度: O(n)，用于存储不同的平均值集合。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distinct_averages(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同的平均值数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 使用集合来存储不同的平均值
+    averages = set()
+    
+    # 使用双指针
+    left, right = 0, len(nums) - 1
+    while left < right:
+        # 计算每对最小值和最大值的平均值
+        average = (nums[left] + nums[right]) / 2
+        averages.add(average)
+        
+        # 移动指针
+        left += 1
+        right -= 1
+    
+    # 返回不同平均值的数量
+    return len(averages)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_averages)

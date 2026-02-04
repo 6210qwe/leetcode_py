@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的中序遍历特性，中序遍历的结果是一个有序数组。在遍历过程中，我们可以逐个比较相邻节点的差值，找到最小的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用中序遍历（递归或迭代）遍历二叉搜索树。
+2. 在遍历过程中，记录前一个节点的值，并计算当前节点与前一个节点的差值。
+3. 更新最小差值。
 
 关键点:
-- [TODO]
+- 中序遍历二叉搜索树会得到一个有序序列。
+- 通过比较相邻节点的差值，可以找到最小的绝对差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
+        self.prev = None
+        self.min_diff = float('inf')
+        
+        def inorder(node: Optional[TreeNode]):
+            if not node:
+                return
+            
+            inorder(node.left)
+            
+            if self.prev is not None:
+                self.min_diff = min(self.min_diff, node.val - self.prev)
+            self.prev = node.val
+            
+            inorder(node.right)
+        
+        inorder(root)
+        return self.min_diff
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

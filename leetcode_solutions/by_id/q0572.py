@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法来检查子树是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_same_tree` 来检查两棵树是否完全相同。
+2. 在主函数 `is_subtree` 中，递归地检查当前节点的子树是否与 `subRoot` 相同。
+3. 如果当前节点的子树与 `subRoot` 相同，则返回 `True`。
+4. 否则，递归地检查左子树和右子树。
 
 关键点:
-- [TODO]
+- 使用递归方法可以简化代码逻辑。
+- 通过 `is_same_tree` 辅助函数来判断两棵树是否相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是 root 树的节点数，n 是 subRoot 树的节点数。在最坏情况下，每个节点都需要与 subRoot 进行比较。
+空间复杂度: O(h)，其中 h 是 root 树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_same_tree(s: Optional[TreeNode], t: Optional[TreeNode]) -> bool:
+    if not s and not t:
+        return True
+    if not s or not t:
+        return False
+    return s.val == t.val and is_same_tree(s.left, t.left) and is_same_tree(s.right, t.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_subtree(root: Optional[TreeNode], sub_root: Optional[TreeNode]) -> bool:
+    if not root:
+        return False
+    if is_same_tree(root, sub_root):
+        return True
+    return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_subtree)

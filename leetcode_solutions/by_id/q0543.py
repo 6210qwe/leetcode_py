@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过深度优先搜索（DFS）遍历每个节点，计算每个节点的最大深度，并更新全局最大直径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算从当前节点到叶子节点的最大深度。
+2. 在 `dfs` 函数中，递归计算左子树和右子树的最大深度。
+3. 更新全局最大直径为左子树深度 + 右子树深度。
+4. 返回当前节点的最大深度（即左子树深度和右子树深度中的较大值 + 1）。
+5. 在主函数中调用 `dfs` 函数，并返回全局最大直径。
 
 关键点:
-- [TODO]
+- 使用一个全局变量 `max_diameter` 来记录最大直径。
+- 每个节点的直径等于其左子树深度 + 右子树深度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        self.max_diameter = 0
+        
+        def dfs(node: Optional[TreeNode]) -> int:
+            if not node:
+                return 0
+            
+            left_depth = dfs(node.left)
+            right_depth = dfs(node.right)
+            
+            # 更新最大直径
+            self.max_diameter = max(self.max_diameter, left_depth + right_depth)
+            
+            # 返回当前节点的最大深度
+            return max(left_depth, right_depth) + 1
+        
+        dfs(root)
+        return self.max_diameter
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

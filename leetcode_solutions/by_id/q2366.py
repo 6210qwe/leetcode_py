@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先填充需要最少石头就能装满的背包。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个背包还需要多少石头才能装满。
+2. 将这些差值从小到大排序。
+3. 依次填充背包，直到用完所有额外的石头或所有背包都装满。
 
 关键点:
-- [TODO]
+- 通过排序来确保优先填充需要最少石头的背包。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是背包的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储每个背包还需要的石头数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximum_bags(capacity: List[int], rocks: List[int], additional_rocks: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回放置后装满石头的背包的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个背包还需要多少石头才能装满
+    remaining_rocks = [c - r for c, r in zip(capacity, rocks)]
+    
+    # 将这些差值从小到大排序
+    remaining_rocks.sort()
+    
+    # 依次填充背包，直到用完所有额外的石头或所有背包都装满
+    full_bags = 0
+    for needed_rocks in remaining_rocks:
+        if additional_rocks >= needed_rocks:
+            full_bags += 1
+            additional_rocks -= needed_rocks
+        else:
+            break
+    
+    return full_bags
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_bags)

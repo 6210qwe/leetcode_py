@@ -21,40 +21,53 @@ LCP 18. 早餐组合 - 小扣在秋日市集选择了一家早餐摊位，一维
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来解决这个问题。首先对主食和饮料价格进行排序，然后使用两个指针分别指向主食和饮料数组的起始位置。通过移动指针来找到所有满足条件的组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对主食和饮料数组进行排序。
+2. 初始化两个指针，一个指向主食数组的起始位置，另一个指向饮料数组的末尾。
+3. 遍历主食数组，对于每个主食，找到所有满足条件的饮料组合。
+4. 计算满足条件的组合数，并累加到结果中。
+5. 返回结果并对结果取模。
 
 关键点:
-- [TODO]
+- 通过排序和双指针法，可以高效地找到所有满足条件的组合。
+- 取模操作确保结果不会溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 和 m 分别是主食和饮料数组的长度，排序的时间复杂度为 O(n log n) 和 O(m log m)，遍历的时间复杂度为 O(n + m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def breakfast_combinations(staple: List[int], drinks: List[int], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的早餐组合数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对主食和饮料数组进行排序
+    staple.sort()
+    drinks.sort()
 
+    n, m = len(staple), len(drinks)
+    j = m - 1
+    result = 0
 
-Solution = create_solution(solution_function_name)
+    for i in range(n):
+        while j >= 0 and staple[i] + drinks[j] > x:
+            j -= 1
+        if j < 0:
+            break
+        result += j + 1
+
+    return result % 1000000007
+
+Solution = create_solution(breakfast_combinations)

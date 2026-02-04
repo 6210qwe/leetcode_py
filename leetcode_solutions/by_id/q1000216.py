@@ -21,22 +21,23 @@ LCP 29. 乐团站位 - 某乐团的演出场地可视作 `num * num` 的二维�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算目标位置在螺旋矩阵中的相对位置，确定其对应的乐器编号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算目标位置所在的层数。
+2. 根据层数计算目标位置在当前层的相对位置。
+3. 根据相对位置计算出最终的乐器编号。
 
 关键点:
-- [TODO]
+- 通过数学公式直接计算目标位置的乐器编号，避免了模拟整个螺旋矩阵的构建。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def orchestra_layout(num: int, xPos: int, yPos: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算位于 (xPos, yPos) 位置的乐器编号
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算目标位置所在的层数
+    layer = min(min(xPos, num - 1 - xPos), min(yPos, num - 1 - yPos))
+    
+    # 计算当前层的边长
+    side_length = num - 2 * layer
+    
+    # 计算当前层的总元素数
+    total_elements_in_layer = 4 * (side_length - 1)
+    
+    # 计算目标位置在当前层的相对位置
+    if xPos == layer:
+        position = yPos - layer
+    elif yPos == num - 1 - layer:
+        position = side_length - 1 + (xPos - layer)
+    elif xPos == num - 1 - layer:
+        position = 2 * (side_length - 1) + (num - 1 - layer - yPos)
+    else:
+        position = 3 * (side_length - 1) + (num - 1 - layer - xPos)
+    
+    # 计算最终的乐器编号
+    instrument_number = (position + 1) % 9
+    return 1 if instrument_number == 0 else instrument_number
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(orchestra_layout)

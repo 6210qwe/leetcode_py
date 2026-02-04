@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算数组中特殊等间距元素的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个动态规划表 dp，其中 dp[i][j] 表示以第 i 个元素为起点，间隔为 j 的子序列的和。
+2. 遍历数组，对于每个元素 nums[i]，更新 dp 表。
+3. 最终结果是 dp 表中的最大值。
 
 关键点:
-- [TODO]
+- 动态规划表 dp 的初始化和更新。
+- 通过遍历数组来更新 dp 表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_special_evenly_spaced_elements(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算数组中特殊等间距元素的和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 表
+    dp = [[0] * n for _ in range(n)]
+
+    # 更新 dp 表
+    for i in range(n):
+        for j in range(1, (n - i) // 2 + 1):
+            if i + 2 * j < n:
+                dp[i][j] = nums[i] + dp[i + j][j]
+
+    # 找到 dp 表中的最大值
+    max_sum = 0
+    for i in range(n):
+        for j in range(1, (n - i) // 2 + 1):
+            max_sum = max(max_sum, dp[i][j])
+
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_special_evenly_spaced_elements)

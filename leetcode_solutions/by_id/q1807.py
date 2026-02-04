@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 最少的十-二进制数的数量等于字符串 n 中的最大数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串 n，找到其中的最大数字。
+2. 返回最大数字作为结果。
 
 关键点:
-- [TODO]
+- 十-二进制数的每一位只能是 0 或 1，因此要达到目标和 n，需要的最少十-二进制数的数量就是 n 中的最大数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 n 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_partitions(n: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回和为 n 的十-二进制数的最少数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到字符串 n 中的最大数字
+    max_digit = 0
+    for digit in n:
+        max_digit = max(max_digit, int(digit))
+    
+    return max_digit
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_partitions)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个前缀和后缀的出现次数，然后通过枚举每个可能的中心位置来计算满足条件的子字符串对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表 `prefix` 和 `suffix` 来记录前缀和后缀的出现次数。
+2. 遍历字符串 `s` 和 `t` 的每个字符，对于每个字符，计算从当前字符到字符串末尾的所有子字符串，并更新 `prefix` 和 `suffix`。
+3. 再次遍历字符串 `s` 和 `t` 的每个字符，对于每个字符，计算从字符串开头到当前字符的所有子字符串，并更新 `prefix` 和 `suffix`。
+4. 对于每个字符，如果 `s[i]` 不等于 `t[i]`，则计算以 `i` 为中心的满足条件的子字符串对的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录前缀和后缀的出现次数，可以高效地计算满足条件的子字符串对。
+- 通过两次遍历字符串，分别处理前缀和后缀，可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。需要遍历字符串并计算所有子字符串。
+空间复杂度: O(n^2)，使用了两个哈希表来记录前缀和后缀的出现次数。
 """
 
 # ============================================================================
@@ -49,12 +52,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_substrings_that_differ_by_one_character(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个字符串中恰好只有一个字符不同的子字符串对的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    m = len(t)
+    prefix = {}
+    suffix = {}
+    count = 0
+
+    # 计算后缀
+    for i in range(n):
+        for j in range(m):
+            if s[i] != t[j]:
+                suffix[(i, j)] = 1
+            else:
+                suffix[(i, j)] = suffix.get((i + 1, j + 1), 0) + 1
+
+    # 计算前缀
+    for i in range(n - 1, -1, -1):
+        for j in range(m - 1, -1, -1):
+            if s[i] != t[j]:
+                prefix[(i, j)] = 1
+            else:
+                prefix[(i, j)] = prefix.get((i - 1, j - 1), 0) + 1
+
+    # 计算满足条件的子字符串对
+    for i in range(n):
+        for j in range(m):
+            if s[i] != t[j]:
+                count += (prefix.get((i - 1, j - 1), 0) + 1) * (suffix.get((i + 1, j + 1), 0) + 1)
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_substrings_that_differ_by_one_character)

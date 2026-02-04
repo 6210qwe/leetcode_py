@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间移动，找到最长的相同前缀和后缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向两个字符串的开头和结尾。
+2. 从左到右移动左指针，直到字符不匹配为止。
+3. 从右到左移动右指针，直到字符不匹配为止。
+4. 计算需要添加或删除的字符数，使得两个字符串相等。
 
 关键点:
-- [TODO]
+- 使用双指针可以有效地找到最长的相同前缀和后缀。
+- 通过计算需要添加或删除的字符数，确保两个字符串相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s1: str, s2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过添加或删除结尾字符来同化字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n1, n2 = len(s1), len(s2)
+    left, right = 0, 0
+    
+    # 找到最长的相同前缀
+    while left < n1 and left < n2 and s1[left] == s2[left]:
+        left += 1
+    
+    # 找到最长的相同后缀
+    while right < n1 - left and right < n2 - left and s1[n1 - 1 - right] == s2[n2 - 1 - right]:
+        right += 1
+    
+    # 计算需要添加或删除的字符数
+    return (n1 - left - right) + (n2 - left - right)
 
 
 Solution = create_solution(solution_function_name)

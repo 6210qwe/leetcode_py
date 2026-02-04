@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来遍历数组，找到所有符合条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `start` 和 `end`，以及计数器 `count` 和 `prev_count`。
+2. 遍历数组：
+   - 如果当前元素大于 `right`，则重置 `start` 和 `end` 指针。
+   - 如果当前元素小于 `left`，则更新 `prev_count`。
+   - 如果当前元素在 `[left, right]` 范围内，则计算从 `start` 到当前元素的所有子数组数量，并更新 `prev_count`。
+3. 返回 `count`。
 
 关键点:
-- [TODO]
+- 使用双指针法可以有效地找到所有符合条件的子数组。
+- 通过维护 `prev_count` 来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_subarrays_with_bounded_max(nums: List[int], left: int, right: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    start, end = -1, -1
+    count, prev_count = 0, 0
+
+    for i, num in enumerate(nums):
+        if num > right:
+            start, end = i, i
+            prev_count = 0
+        elif num < left:
+            count += prev_count
+        else:
+            end = i
+            prev_count = end - start
+            count += prev_count
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_subarrays_with_bounded_max)

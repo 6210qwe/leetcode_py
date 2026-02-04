@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到替换后的最大值和最小值，然后计算它们的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 num 转换为字符串形式，方便逐位处理。
+2. 找到第一个不是 '9' 的高位数字，将其替换为 '9'，生成最大值 max_num。
+3. 找到第一个不是 '1' 且不是最高位的数字，将其替换为 '1' 或 '0'（如果最高位是 '1'），生成最小值 min_num。
+4. 计算并返回 max_num 和 min_num 的差值。
 
 关键点:
-- [TODO]
+- 通过替换高位数字来最大化或最小化数值。
+- 确保生成的数字没有前导零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 num 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过贪心算法找到替换后的最大值和最小值，然后计算它们的差值。
     """
-    # TODO: 实现最优解法
-    pass
+    num_str = str(num)
+    
+    # 生成最大值
+    for i, ch in enumerate(num_str):
+        if ch != '9':
+            max_num = int(num_str.replace(ch, '9'))
+            break
+    else:
+        max_num = num
+    
+    # 生成最小值
+    if num_str[0] != '1':
+        min_num = int(num_str.replace(num_str[0], '1', 1))
+    else:
+        for i, ch in enumerate(num_str[1:], start=1):
+            if ch not in ('0', '1'):
+                min_num = int(num_str[:i] + num_str[i:].replace(ch, '0', 1))
+                break
+        else:
+            min_num = num
+    
+    return max_num - min_num
 
 
 Solution = create_solution(solution_function_name)

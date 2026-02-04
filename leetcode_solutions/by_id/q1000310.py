@@ -21,40 +21,60 @@ LCR 113. 课程表 II - 现在总共有 numCourses 门课需要选，记为 0 �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来解决这个问题。拓扑排序可以用来检测有向图中是否存在环，并且可以生成一个线性序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示和入度数组。
+2. 初始化队列，将所有入度为 0 的节点加入队列。
+3. 进行广度优先搜索（BFS），每次从队列中取出一个节点，将其加入结果列表，并减少其邻接节点的入度。
+4. 如果某个邻接节点的入度变为 0，则将其加入队列。
+5. 最后检查结果列表的长度是否等于课程总数，如果是则返回结果列表，否则返回空列表。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来检测环并生成修课顺序。
+- 入度为 0 的节点表示没有先修课程，可以直接学习。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是课程数量，E 是先修关系的数量。
+空间复杂度: O(V + E)，用于存储图的邻接表和入度数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque, defaultdict
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def findOrder(numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+    # 构建图的邻接表表示
+    graph = defaultdict(list)
+    # 记录入度
+    in_degree = [0] * numCourses
+    
+    for course, pre in prerequisites:
+        graph[pre].append(course)
+        in_degree[course] += 1
+    
+    # 初始化队列，将所有入度为 0 的节点加入队列
+    queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+    result = []
+    
+    while queue:
+        node = queue.popleft()
+        result.append(node)
+        
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # 检查结果列表的长度是否等于课程总数
+    return result if len(result) == numCourses else []
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findOrder)

@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择值最大的项，同时保证每个标签的使用次数不超过 useLimit。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 values 和 labels 结合成一个列表，每个元素是一个 (value, label) 对。
+2. 按照 value 从大到小对这个列表进行排序。
+3. 使用一个字典来记录每个标签已经使用的次数。
+4. 遍历排序后的列表，选择符合条件的项，直到选满 numWanted 个项或遍历完所有项。
+5. 计算并返回所选项的值的总和。
 
 关键点:
-- [TODO]
+- 优先选择值最大的项，确保总和最大。
+- 使用字典记录每个标签的使用次数，确保不超过 useLimit。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 values 和 labels 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(n)，需要额外的空间存储结合后的列表和标签使用次数的字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def largestValsFromLabels(values: List[int], labels: List[int], numWanted: int, useLimit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 values 和 labels 结合成一个列表
+    items = list(zip(values, labels))
+    
+    # 按照 value 从大到小对这个列表进行排序
+    items.sort(key=lambda x: -x[0])
+    
+    # 使用一个字典来记录每个标签已经使用的次数
+    label_count = {}
+    
+    # 初始化结果变量
+    result = 0
+    selected_count = 0
+    
+    # 遍历排序后的列表
+    for value, label in items:
+        if selected_count >= numWanted:
+            break
+        
+        # 检查当前标签是否超过 useLimit
+        if label_count.get(label, 0) < useLimit:
+            result += value
+            label_count[label] = label_count.get(label, 0) + 1
+            selected_count += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largestValsFromLabels)

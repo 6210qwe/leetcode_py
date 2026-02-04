@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来寻找满足 f(x, y) == z 的所有正整数对 (x, y)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，left 指向 1，right 指向 1000。
+2. 当 left 不大于 1000 且 right 不小于 1 时，执行以下操作：
+   - 计算 f(left, right)。
+   - 如果 f(left, right) 等于 z，则将 (left, right) 添加到结果列表中，并同时移动 left 和 right。
+   - 如果 f(left, right) 小于 z，则增加 left。
+   - 如果 f(left, right) 大于 z，则减少 right。
+3. 返回结果列表。
 
 关键点:
-- [TODO]
+- 由于 f(x, y) 是单调递增的，因此可以通过双指针方法高效地找到所有解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 x 或 y 的最大值（在这里是 1000）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +53,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class CustomFunction:
+    def f(self, x: int, y: int) -> int:
+        # 具体实现由 LeetCode 提供
+        pass
 
-def solution_function_name(params):
+def findSolution(customfunction: 'CustomFunction', z: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    寻找满足 f(x, y) == z 的所有正整数对 (x, y)。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    left, right = 1, 1000
+    
+    while left <= 1000 and right >= 1:
+        value = customfunction.f(left, right)
+        if value == z:
+            result.append([left, right])
+            left += 1
+            right -= 1
+        elif value < z:
+            left += 1
+        else:
+            right -= 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findSolution)

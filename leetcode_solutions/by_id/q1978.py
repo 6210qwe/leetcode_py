@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 next_permutation 算法找到第 k 个最小妙数，然后计算从原始 num 到目标 num 的最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 next_permutation 算法找到第 k 个最小妙数。
+2. 计算从原始 num 到目标 num 的最小交换次数。
 
 关键点:
-- [TODO]
+- 使用 next_permutation 算法高效找到第 k 个最小妙数。
+- 使用贪心算法计算最小交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - next_permutation 算法的时间复杂度为 O(n)，最坏情况下需要调用 k 次，每次交换操作的时间复杂度为 O(n)。
+空间复杂度: O(1) - 只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def next_permutation(nums: List[int]) -> None:
+    """修改 nums 为下一个排列"""
+    n = len(nums)
+    i = n - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+    if i >= 0:
+        j = n - 1
+        while j >= 0 and nums[j] <= nums[i]:
+            j -= 1
+        nums[i], nums[j] = nums[j], nums[i]
+    nums[i + 1:] = reversed(nums[i + 1:])
 
 
-Solution = create_solution(solution_function_name)
+def min_swaps_to_reach_kth_smallest(num: str, k: int) -> int:
+    """
+    函数式接口 - 计算从原始 num 到第 k 个最小妙数的最小交换次数
+    """
+    nums = list(map(int, num))
+    for _ in range(k):
+        next_permutation(nums)
+    
+    target_num = ''.join(map(str, nums))
+    swaps = 0
+    num_list = list(num)
+    
+    for i in range(len(num)):
+        if num_list[i] != target_num[i]:
+            j = i + 1
+            while num_list[j] != target_num[i]:
+                j += 1
+            while j > i:
+                num_list[j], num_list[j - 1] = num_list[j - 1], num_list[j]
+                swaps += 1
+                j -= 1
+    
+    return swaps
+
+
+Solution = create_solution(min_swaps_to_reach_kth_smallest)

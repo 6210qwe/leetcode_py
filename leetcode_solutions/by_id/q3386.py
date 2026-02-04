@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点到终点的最短路径，并记录所有在最短路径上的边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法找到从起点到终点的最短路径，并记录路径上的边。
+3. 再次使用 Dijkstra 算法找到从终点到起点的最短路径，并记录路径上的边。
+4. 合并两次 Dijkstra 算法记录的边，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用 Dijkstra 算法找到最短路径。
+- 记录路径上的边。
+- 两次 Dijkstra 算法分别从起点到终点和从终点到起点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) log n)，其中 m 是边的数量，n 是节点的数量。Dijkstra 算法的时间复杂度是 O((m + n) log n)。
+空间复杂度: O(m + n)，存储图的邻接表和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+import heapq
 
+def find_edges_in_shortest_paths(n: int, edges: List[List[int]]) -> List[bool]:
+    def dijkstra(graph: List[List[Tuple[int, int]]], start: int, end: int) -> List[Tuple[int, int]]:
+        dist = [float('inf')] * n
+        dist[start] = 0
+        pq = [(0, start)]
+        visited = [False] * n
+        shortest_edges = set()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        while pq:
+            d, u = heapq.heappop(pq)
+            if visited[u]:
+                continue
+            visited[u] = True
 
+            for v, w in graph[u]:
+                if dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+                    heapq.heappush(pq, (dist[v], v))
+                    shortest_edges.add((u, v))
+                    shortest_edges.add((v, u))
 
-Solution = create_solution(solution_function_name)
+        return shortest_edges
+
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for a, b, w in edges:
+        graph[a].append((b, w))
+        graph[b].append((a, w))
+
+    # 从起点到终点的最短路径
+    forward_edges = dijkstra(graph, 0, n - 1)
+
+    # 从终点到起点的最短路径
+    reverse_edges = dijkstra(graph, n - 1, 0)
+
+    # 合并两次 Dijkstra 算法记录的边
+    result = [False] * len(edges)
+    for i, (a, b, _) in enumerate(edges):
+        if (a, b) in forward_edges and (b, a) in reverse_edges:
+            result[i] = True
+
+    return result
+
+Solution = create_solution(find_edges_in_shortest_paths)

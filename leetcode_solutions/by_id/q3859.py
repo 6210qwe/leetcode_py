@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将整数 n 转换为字符串，然后遍历所有可能的两位数字组合，找到最大乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为字符串。
+2. 初始化最大乘积为 0。
+3. 遍历字符串中的每个字符，将其转换为整数。
+4. 对于每个字符，再次遍历字符串中的每个字符，计算两两之间的乘积，并更新最大乘积。
 
 关键点:
-- [TODO]
+- 使用双重循环遍历所有可能的两位数字组合。
+- 可以重复使用相同的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d^2)，其中 d 是 n 的位数。因为我们需要遍历所有可能的两位数字组合。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_product_of_two_digits(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回给定正整数 n 的任意两位数字相乘所得的最大乘积。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数 n 转换为字符串
+    digits = str(n)
+    
+    # 初始化最大乘积为 0
+    max_product = 0
+    
+    # 遍历字符串中的每个字符
+    for i in range(len(digits)):
+        for j in range(i, len(digits)):
+            # 计算两两之间的乘积
+            product = int(digits[i]) * int(digits[j])
+            # 更新最大乘积
+            max_product = max(max_product, product)
+    
+    return max_product
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product_of_two_digits)

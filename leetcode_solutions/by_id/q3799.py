@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三重循环枚举所有可能的三位数，并检查其是否为偶数且没有前导零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用三重循环枚举所有可能的三位数。
+2. 检查每个三位数是否为偶数且没有前导零。
+3. 使用集合去重，确保每个三位数都是唯一的。
 
 关键点:
-- [TODO]
+- 三重循环枚举所有可能的三位数。
+- 使用集合去重，确保每个三位数都是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是 digits 的长度。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_unique_even_numbers(digits: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同三位偶数的数量
     """
-    # TODO: 实现最优解法
-    pass
+    unique_numbers = set()
+    
+    for i in range(len(digits)):
+        for j in range(len(digits)):
+            if i == j:
+                continue
+            for k in range(len(digits)):
+                if i == k or j == k:
+                    continue
+                # 确保没有前导零
+                if digits[i] != 0 and digits[k] % 2 == 0:
+                    number = digits[i] * 100 + digits[j] * 10 + digits[k]
+                    unique_numbers.add(number)
+    
+    return len(unique_numbers)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_unique_even_numbers)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维数组 dp 来记录每个状态下最小的曼哈顿距离和。状态可以用一个整数表示，其中每一位表示一个工人是否已经分配了自行车。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i] 表示状态 i 下的最小曼哈顿距离和。
+2. 遍历所有可能的状态，对于每个状态，计算其二进制表示中 1 的个数，表示已经分配自行车的工人数。
+3. 对于每个状态，尝试为当前工人分配一辆未分配的自行车，并更新 dp 数组。
+4. 最终返回 dp 数组的最后一个状态值。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示每个工人是否已经分配了自行车。
+- 动态规划的核心是通过子状态来推导出当前状态的最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^m * m * n)，其中 m 是工人数，n 是自行车数。2^m 是状态总数，m * n 是每次状态转移的时间复杂度。
+空间复杂度: O(2^m)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def assignBikes(workers: List[List[int]], bikes: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(workers), len(bikes)
+    dp = [float('inf')] * (1 << m)
+    dp[0] = 0
 
+    def manhattan_distance(p1, p2):
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
-Solution = create_solution(solution_function_name)
+    for state in range(1, 1 << m):
+        count = bin(state).count('1')
+        for i in range(m):
+            if state & (1 << i):
+                for j in range(n):
+                    if not (state & (1 << j)):
+                        new_state = state | (1 << j)
+                        distance = manhattan_distance(workers[i], bikes[j])
+                        dp[new_state] = min(dp[new_state], dp[state] + distance)
+
+    return dp[(1 << m) - 1]
+
+Solution = create_solution(assignBikes)

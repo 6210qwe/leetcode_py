@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到所有严格递增的子数组，并计算其和，最后返回最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前子数组和 `current_sum` 和最大子数组和 `max_sum`。
+2. 遍历数组 `nums`：
+   - 如果当前元素大于前一个元素，则将其加入当前子数组和 `current_sum`。
+   - 否则，更新最大子数组和 `max_sum`，并重置当前子数组和 `current_sum` 为当前元素。
+3. 最后更新一次最大子数组和 `max_sum`。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到所有严格递增的子数组，并计算其和。
+- 保持当前子数组和 `current_sum` 和最大子数组和 `max_sum` 的更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_ascending_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中一个严格递增子数组的最大可能元素和。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    current_sum = max_sum = nums[0]
+
+    for i in range(1, len(nums)):
+        if nums[i] > nums[i - 1]:
+            current_sum += nums[i]
+        else:
+            max_sum = max(max_sum, current_sum)
+            current_sum = nums[i]
+
+    max_sum = max(max_sum, current_sum)
+
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_ascending_sum)

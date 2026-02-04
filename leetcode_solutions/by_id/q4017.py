@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计字符频率，然后根据频率筛选字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的频率。
+2. 根据给定的阈值筛选出频率大于或等于该阈值的字符。
+3. 将筛选后的字符重新组成字符串并返回。
 
 关键点:
-- [TODO]
+- 使用 `collections.Counter` 来统计字符频率。
+- 使用列表推导式来筛选字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。统计频率和筛选字符的操作都是线性的。
+空间复杂度: O(1) 或 O(n)，取决于输入字符串的字符集大小。最坏情况下，字符集大小为 n。
 """
 
 # ============================================================================
@@ -47,14 +49,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按频率筛选字符
+    :param s: 输入字符串
+    :param k: 频率阈值
+    :return: 筛选后的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的频率
+    char_count = Counter(s)
+    
+    # 筛选出频率大于或等于 k 的字符
+    filtered_chars = [char for char in s if char_count[char] >= k]
+    
+    # 将筛选后的字符重新组成字符串并返回
+    return ''.join(filtered_chars)
 
 
 Solution = create_solution(solution_function_name)

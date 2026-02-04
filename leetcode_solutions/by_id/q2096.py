@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `dp` 来存储当前的最长递增子序列。
+2. 遍历 `obstacles` 数组，对于每个障碍高度 `h`：
+   - 使用二分查找找到 `dp` 中第一个大于等于 `h` 的位置 `idx`。
+   - 如果 `idx` 等于 `dp` 的长度，说明 `h` 可以延长当前的最长递增子序列，将其添加到 `dp` 中。
+   - 否则，更新 `dp[idx]` 为 `h`。
+   - 将 `idx + 1` 添加到结果数组 `ans` 中。
+3. 返回结果数组 `ans`。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程，使得时间复杂度降到 O(n log n)。
+- `dp` 数组用于存储当前的最长递增子序列，从而避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 obstacles 的长度。遍历 obstacles 需要 O(n) 时间，每次二分查找需要 O(log n) 时间。
+空间复杂度: O(n)，`dp` 数组的空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
 
-def solution_function_name(params):
+def solution_function_name(obstacles: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出到每个位置为止最长的有效障碍赛跑路线
     """
-    # TODO: 实现最优解法
-    pass
+    dp = []
+    ans = []
+
+    for h in obstacles:
+        idx = bisect.bisect_right(dp, h)
+        if idx == len(dp):
+            dp.append(h)
+        else:
+            dp[idx] = h
+        ans.append(idx + 1)
+
+    return ans
 
 
 Solution = create_solution(solution_function_name)

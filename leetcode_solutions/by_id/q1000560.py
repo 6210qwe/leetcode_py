@@ -21,40 +21,50 @@ LCP 72. 补给马车 - 远征队即将开启未知的冒险之旅，不过在此
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次找到物资之和最小的相邻两辆马车进行合并，直到车队长度符合要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个循环，直到车队长度小于等于目标长度。
+2. 在每一轮中，遍历当前车队，找到物资之和最小的相邻两辆马车。
+3. 将这两辆马车合并，并更新车队。
+4. 重复上述步骤，直到车队长度符合要求。
 
 关键点:
-- [TODO]
+- 每次找到物资之和最小的相邻两辆马车进行合并。
+- 合并后更新车队，并继续下一轮操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是初始车队的长度。每次合并需要 O(n) 的时间来找到最小的相邻两辆马车，最多需要进行 n/2 次合并。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def consolidate_supplies(supplies: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回车队长度符合要求后，物资的分布情况
     """
-    # TODO: 实现最优解法
-    pass
+    while len(supplies) > (len(supplies) + 1) // 2:
+        min_sum = float('inf')
+        min_index = -1
+        
+        for i in range(len(supplies) - 1):
+            if supplies[i] + supplies[i + 1] < min_sum:
+                min_sum = supplies[i] + supplies[i + 1]
+                min_index = i
+        
+        # 合并找到的两辆马车
+        supplies[min_index] = min_sum
+        del supplies[min_index + 1]
+    
+    return supplies
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(consolidate_supplies)

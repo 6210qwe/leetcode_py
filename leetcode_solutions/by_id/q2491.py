@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 如果 n 是偶数，那么 2 和 n 的最小公倍数就是 n 本身；如果 n 是奇数，那么 2 和 n 的最小公倍数就是 2 * n。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 n 是否为偶数。
+2. 如果 n 是偶数，返回 n。
+3. 如果 n 是奇数，返回 2 * n。
 
 关键点:
-- [TODO]
+- 判断 n 的奇偶性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_even_multiple(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 2 和 n 的最小公倍数
     """
-    # TODO: 实现最优解法
-    pass
+    if n % 2 == 0:
+        return n
+    else:
+        return 2 * n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_even_multiple)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个员工的访问时间，并对每个员工的访问时间进行排序，然后检查是否有三个访问时间在同一个小时内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典 `time_dict` 来存储每个员工的访问时间列表。
+2. 对每个员工的访问时间列表进行排序。
+3. 遍历每个员工的访问时间列表，检查是否有三个访问时间在同一个小时内。
+4. 如果有，则将该员工添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用哈希表存储每个员工的访问时间。
+- 对访问时间进行排序，以便于后续的检查。
+- 检查相邻的三个访问时间是否在同一个小时内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 access_times 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储每个员工的访问时间列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_high_access_employees(access_times: List[List[str]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    返回所有高访问员工的姓名。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用字典存储每个员工的访问时间
+    time_dict = {}
+    for name, time in access_times:
+        if name not in time_dict:
+            time_dict[name] = []
+        time_dict[name].append(int(time))
 
+    high_access_employees = []
 
-Solution = create_solution(solution_function_name)
+    # 检查每个员工的访问时间
+    for name, times in time_dict.items():
+        times.sort()
+        for i in range(len(times) - 2):
+            if times[i + 2] - times[i] < 100:
+                high_access_employees.append(name)
+                break
+
+    return high_access_employees
+
+Solution = create_solution(find_high_access_employees)

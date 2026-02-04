@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个机器人在 d 秒后的最终位置，然后使用排序和前缀和来计算所有机器人之间的两两距离之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 根据每个机器人的初始位置和移动方向，计算 d 秒后的最终位置。
+2. 将这些最终位置进行排序。
+3. 使用前缀和计算所有机器人之间的两两距离之和。
+4. 返回结果并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 机器人相撞后会立即改变方向，但最终位置可以通过直接计算得出。
+- 通过排序和前缀和可以高效地计算所有机器人之间的两两距离之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是机器人的数量。排序操作的时间复杂度是 O(n log n)，计算前缀和的时间复杂度是 O(n)。
+空间复杂度: O(n)，用于存储最终位置和前缀和。
 """
 
 # ============================================================================
@@ -48,13 +51,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def sum_of_distances(nums: List[int], s: str, d: int) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 计算 d 秒后的最终位置
+    final_positions = []
+    for i in range(n):
+        if s[i] == 'L':
+            final_positions.append(nums[i] - d)
+        else:
+            final_positions.append(nums[i] + d)
+    
+    # 对最终位置进行排序
+    final_positions.sort()
+    
+    # 计算前缀和
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = (prefix_sum[i] + final_positions[i]) % MOD
+    
+    # 计算所有机器人之间的两两距离之和
+    total_distance = 0
+    for i in range(n):
+        total_distance = (total_distance + (final_positions[i] * (2 * i + 1 - n)) % MOD - (prefix_sum[i] - prefix_sum[n - i - 1]) % MOD) % MOD
+    
+    return total_distance
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_distances)

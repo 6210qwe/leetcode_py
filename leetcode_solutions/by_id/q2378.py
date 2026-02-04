@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个发件人的单词总数，然后找到单词总数最多的发件人。如果有多个发件人单词总数相同，则返回字典序最大的发件人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `word_count`，用于记录每个发件人的单词总数。
+2. 遍历 `messages` 和 `senders` 数组，对于每条消息，计算其单词数并更新对应发件人的单词总数。
+3. 找到单词总数最多的发件人。如果有多个发件人单词总数相同，则返回字典序最大的发件人。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个发件人的单词总数。
+- 使用 `split` 方法来计算每条消息的单词数。
+- 使用 `max` 函数结合自定义键函数来找到单词总数最多的发件人。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 messages 的长度，m 是每条消息的平均长度。
+空间复杂度: O(n)，哈希表的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(messages: List[str], senders: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回发出单词数最多的发件人名字
     """
-    # TODO: 实现最优解法
-    pass
+    word_count = {}
+    
+    # 计算每个发件人的单词总数
+    for i in range(len(messages)):
+        sender = senders[i]
+        message = messages[i]
+        if sender not in word_count:
+            word_count[sender] = 0
+        word_count[sender] += len(message.split())
+    
+    # 找到单词总数最多的发件人
+    max_sender = max(word_count.items(), key=lambda x: (x[1], x[0]))
+    
+    return max_sender[0]
 
 
 Solution = create_solution(solution_function_name)

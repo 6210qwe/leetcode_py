@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法逐列处理，确保每列的每个元素都大于前一个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数为 0。
+2. 遍历每一列，对于每一列中的每个元素，如果当前元素不大于前一个元素，则计算需要的操作次数，并更新当前元素。
+3. 返回总的操作次数。
 
 关键点:
-- [TODO]
+- 逐列处理，确保每列的每个元素都大于前一个元素。
+- 使用贪心算法，每次只做必要的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_make_columns_strictly_increasing(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使每一列严格递增的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    operations = 0
+
+    for j in range(n):
+        for i in range(1, m):
+            if grid[i][j] <= grid[i - 1][j]:
+                needed_operations = grid[i - 1][j] - grid[i][j] + 1
+                operations += needed_operations
+                grid[i][j] += needed_operations
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_columns_strictly_increasing)

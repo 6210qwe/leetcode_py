@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来找到最短指令序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp`，使用记忆化搜索来避免重复计算。
+2. 在每个位置，尝试两种操作：加速 'A' 和倒车 'R'。
+3. 对于加速操作，更新位置和速度，并递归调用 `dp`。
+4. 对于倒车操作，更新速度，并递归调用 `dp`。
+5. 返回到达目标位置的最短指令序列长度。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归过程，减少重复计算。
+- 通过递归地探索所有可能的操作路径，找到最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(target * log(target))
+空间复杂度: O(target * log(target))
 """
 
 # ============================================================================
@@ -47,14 +51,25 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def racecar(target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(None)
+    def dp(position: int, speed: int) -> int:
+        if abs(position) > 2 * target:
+            return float('inf')
+        if position == target:
+            return 0
+        # 加速
+        move = dp(position + speed, speed * 2) + 1
+        # 倒车
+        if (position + speed > target and speed > 0) or (position + speed < target and speed < 0):
+            move = min(move, dp(position, -speed // abs(speed)) + 1)
+        return move
 
+    return dp(0, 1)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(racecar)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每根杆上的环的颜色，然后遍历哈希表，统计集齐三种颜色的杆的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典，键为杆的编号，值为一个集合，用于存储该杆上的环的颜色。
+2. 遍历输入字符串，将每个环的颜色和对应的杆编号存入字典。
+3. 遍历字典，统计值为包含三种颜色的集合的键的数量。
 
 关键点:
-- [TODO]
+- 使用集合来存储每根杆上的环的颜色，方便检查是否集齐三种颜色。
+- 字典的键为杆的编号，值为一个集合，这样可以避免重复存储相同的颜色。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是环的数量。我们需要遍历输入字符串一次。
+空间复杂度: O(1)，因为杆的数量固定为 10，所以字典的大小也是固定的。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_points(rings: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算集齐全部三种颜色环的杆的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个字典，键为杆的编号，值为一个集合，用于存储该杆上的环的颜色
+    rod_colors = {str(i): set() for i in range(10)}
+    
+    # 遍历输入字符串，将每个环的颜色和对应的杆编号存入字典
+    for i in range(0, len(rings), 2):
+        color = rings[i]
+        rod = rings[i + 1]
+        rod_colors[rod].add(color)
+    
+    # 遍历字典，统计值为包含三种颜色的集合的键的数量
+    count = 0
+    for colors in rod_colors.values():
+        if {'R', 'G', 'B'}.issubset(colors):
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_points)

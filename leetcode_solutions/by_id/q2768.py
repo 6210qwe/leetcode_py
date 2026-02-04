@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到数组中小于等于目标值的最大索引。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 进行二分查找：
+   - 计算中间索引 mid。
+   - 如果 nums[mid] 小于等于 target，则更新结果为 mid，并将左指针移动到 mid + 1。
+   - 否则，将右指针移动到 mid - 1。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用二分查找可以在 O(log n) 时间内找到满足条件的最大索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def array_upper_bound(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到数组中小于等于目标值的最大索引
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(nums) - 1
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] <= target:
+            result = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_upper_bound)

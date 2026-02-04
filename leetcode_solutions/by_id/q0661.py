@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用额外的空间来存储平滑后的图像，遍历每个单元格并计算其周围 9 个单元格的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与输入图像相同大小的结果矩阵。
+2. 遍历输入图像的每个单元格，计算其周围 9 个单元格的平均值，并将结果存储在结果矩阵中。
+3. 返回结果矩阵。
 
 关键点:
-- [TODO]
+- 使用额外的空间来存储平滑后的图像，避免直接修改输入图像。
+- 处理边界情况时，只考虑有效的单元格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是图像的行数和列数。每个单元格都需要进行一次计算。
+空间复杂度: O(m * n)，需要额外的空间来存储平滑后的图像。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def image_smoother(img: List[List[int]]) -> List[List[int]]:
+    if not img or not img[0]:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(img), len(img[0])
+    result = [[0] * n for _ in range(m)]
 
+    for i in range(m):
+        for j in range(n):
+            count, total = 0, 0
+            for di in range(-1, 2):
+                for dj in range(-1, 2):
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < m and 0 <= nj < n:
+                        total += img[ni][nj]
+                        count += 1
+            result[i][j] = total // count
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(image_smoother)

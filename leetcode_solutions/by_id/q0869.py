@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理字符串的相似关系。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个并查集类 `UnionFind`，用于管理字符串的连通性。
+2. 遍历字符串列表，检查每对字符串是否相似。如果相似，则在并查集中将它们合并。
+3. 最后，返回并查集中连通分量的数量，即为相似字符串组的数量。
 
 关键点:
-- [TODO]
+- 通过比较字符串的差异来判断相似性。
+- 使用并查集高效地管理连通性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是字符串的数量，m 是字符串的长度。需要两两比较字符串。
+空间复杂度: O(n)，并查集的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -48,13 +50,51 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        rootx = self.find(x)
+        rooty = self.find(y)
+        if rootx != rooty:
+            if self.rank[rootx] > self.rank[rooty]:
+                self.parent[rooty] = rootx
+            elif self.rank[rootx] < self.rank[rooty]:
+                self.parent[rootx] = rooty
+            else:
+                self.parent[rooty] = rootx
+                self.rank[rootx] += 1
+            self.count -= 1
+
+def is_similar(s1: str, s2: str) -> bool:
+    diff = 0
+    for c1, c2 in zip(s1, s2):
+        if c1 != c2:
+            diff += 1
+        if diff > 2:
+            return False
+    return True
+
+def solution_function_name(strs: List[str]) -> int:
+    """
+    函数式接口 - 返回相似字符串组的数量
+    """
+    n = len(strs)
+    uf = UnionFind(n)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if is_similar(strs[i], strs[j]):
+                uf.union(i, j)
+
+    return uf.count
 
 Solution = create_solution(solution_function_name)

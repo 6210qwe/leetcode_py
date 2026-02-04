@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个元素作为等差数列结尾时的最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp`，其中 `dp[i][diff]` 表示以 `nums[i]` 结尾且公差为 `diff` 的最长等差子序列的长度。
+2. 遍历数组 `nums`，对于每一对 `(i, j)`，计算它们的差值 `diff`。
+3. 更新 `dp[j][diff]` 为 `dp[i][diff] + 1`，并更新全局最大长度 `max_length`。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储每个元素作为等差数列结尾时的最大长度。
+- 动态规划的状态转移方程为 `dp[j][diff] = dp[i][diff] + 1`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组 `nums` 的长度。需要遍历每一对 `(i, j)`。
+空间复杂度: O(n^2)，哈希表 `dp` 的大小最多为 n^2。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_arith_seq_length(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中最长等差子序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums or len(nums) < 2:
+        return 0
+
+    n = len(nums)
+    dp = [{} for _ in range(n)]
+    max_length = 0
+
+    for i in range(n):
+        for j in range(i):
+            diff = nums[i] - nums[j]
+            if diff in dp[j]:
+                dp[i][diff] = dp[j][diff] + 1
+            else:
+                dp[i][diff] = 2
+            max_length = max(max_length, dp[i][diff])
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_arith_seq_length)

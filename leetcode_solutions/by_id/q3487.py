@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大删除次数，并使用双指针来检查子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 在二分查找的过程中，计算中间值 mid，表示尝试删除 mid 个字符。
+3. 使用双指针方法检查删除 mid 个字符后的 source 是否仍然包含 pattern。
+4. 如果可以删除 mid 个字符，则更新左边界；否则，更新右边界。
+5. 最终返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化删除次数的搜索过程。
+- 使用双指针方法来验证删除后的字符串是否仍包含 pattern。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 source 的长度。二分查找的时间复杂度是 O(log n)，每次检查的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_subsequence_after_removals(source: str, pattern: str, indices: List[int], removals: int) -> bool:
+    i, j = 0, 0
+    for k in range(len(source)):
+        if k in indices[:removals]:
+            continue
+        if source[k] == pattern[j]:
+            j += 1
+            if j == len(pattern):
+                return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_deletions(source: str, pattern: str, target_indices: List[int]) -> int:
+    left, right = 0, len(target_indices)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_subsequence_after_removals(source, pattern, target_indices, mid):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_deletions)

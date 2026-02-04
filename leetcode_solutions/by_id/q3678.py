@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个最大堆来维护任务的优先级，并使用一个字典来快速查找任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将所有任务加入最大堆，并用字典记录每个任务的详细信息。
+2. 添加任务时，将任务加入最大堆，并更新字典。
+3. 修改任务时，先从最大堆中移除旧任务，再将新任务加入最大堆，并更新字典。
+4. 删除任务时，从最大堆中移除任务，并更新字典。
+5. 执行最高优先级任务时，从最大堆中取出任务并返回其用户ID，然后从字典中移除该任务。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地获取最高优先级的任务。
+- 使用字典来快速查找和更新任务。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 对于添加、修改、删除和执行最高优先级任务的操作，最大堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n) - 使用了最大堆和字典来存储任务信息。
 """
 
 # ============================================================================
@@ -44,17 +48,60 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
+
+class TaskManager:
+    def __init__(self, tasks: List[List[int]]):
+        self.task_dict = {}
+        self.max_heap = []
+        for userId, taskId, priority in tasks:
+            self.add(userId, taskId, priority)
+
+    def add(self, userId: int, taskId: int, priority: int):
+        # Add task to the max heap and task dictionary
+        heapq.heappush(self.max_heap, (-priority, -taskId, userId))
+        self.task_dict[taskId] = (userId, priority)
+
+    def edit(self, taskId: int, newPriority: int):
+        # Remove the old task from the max heap and task dictionary
+        userId, oldPriority = self.task_dict[taskId]
+        self.task_dict.pop(taskId)
+        self.max_heap.remove((-oldPriority, -taskId, userId))
+        heapq.heapify(self.max_heap)
+        
+        # Add the new task to the max heap and task dictionary
+        heapq.heappush(self.max_heap, (-newPriority, -taskId, userId))
+        self.task_dict[taskId] = (userId, newPriority)
+
+    def rmv(self, taskId: int):
+        # Remove the task from the max heap and task dictionary
+        userId, priority = self.task_dict[taskId]
+        self.task_dict.pop(taskId)
+        self.max_heap.remove((-priority, -taskId, userId))
+        heapq.heapify(self.max_heap)
+
+    def execTop(self) -> int:
+        if not self.max_heap:
+            return -1
+        
+        # Get the highest priority task
+        _, taskId, userId = heapq.heappop(self.max_heap)
+        taskId = -taskId
+        self.task_dict.pop(taskId)
+        
+        # Re-heapify to maintain the heap property
+        heapq.heapify(self.max_heap)
+        
+        return userId
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# Example usage
+if __name__ == "__main__":
+    tasks = [[1, 101, 10], [2, 102, 20], [3, 103, 15]]
+    task_manager = TaskManager(tasks)
+    task_manager.add(4, 104, 5)
+    task_manager.edit(102, 8)
+    print(task_manager.execTop())  # Output: 3
+    task_manager.rmv(101)
+    task_manager.add(5, 105, 15)
+    print(task_manager.execTop())  # Output: 5

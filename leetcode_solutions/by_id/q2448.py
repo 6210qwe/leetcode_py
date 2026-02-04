@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过哈希表记录每个 nums[i] - i 的值出现的次数，从而计算出好数对的数量，进而得到坏数对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 用于记录每个 `nums[i] - i` 的值出现的次数。
+2. 初始化一个变量 `good_pairs` 用于记录好数对的数量。
+3. 遍历数组 `nums`，对于每个元素 `nums[i]`：
+   - 计算 `diff = nums[i] - i`。
+   - 如果 `diff` 已经在哈希表中出现过，则将 `count[diff]` 加到 `good_pairs` 中。
+   - 更新哈希表 `count[diff]` 的值。
+4. 计算总的数对数量 `total_pairs = n * (n - 1) // 2`，其中 `n` 是数组的长度。
+5. 返回 `total_pairs - good_pairs` 作为坏数对的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表记录 `nums[i] - i` 的值出现的次数，可以高效地计算好数对的数量。
+- 通过总的数对数量减去好数对的数量，得到坏数对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `count` 在最坏情况下需要存储 n 个不同的 `nums[i] - i` 的值。
 """
 
 # ============================================================================
@@ -49,12 +56,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_bad_pairs(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计坏数对的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    count = {}
+    good_pairs = 0
+    
+    for i in range(n):
+        diff = nums[i] - i
+        if diff in count:
+            good_pairs += count[diff]
+        count[diff] = count.get(diff, 0) + 1
+    
+    total_pairs = n * (n - 1) // 2
+    return total_pairs - good_pairs
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_bad_pairs)

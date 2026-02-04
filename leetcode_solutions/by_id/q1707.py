@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过维护每个数字在字符串 s 中的位置，确保 t 中的每个数字在 s 中的位置是递增的。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `positions`，用于存储每个数字在字符串 s 中的位置。
+2. 遍历字符串 s，填充 `positions` 字典。
+3. 遍历字符串 t，检查 t 中的每个数字在 s 中的位置是否满足条件。
+4. 如果 t 中的某个数字在 s 中的位置不满足条件，则返回 False。
+5. 如果遍历完 t 后所有条件都满足，则返回 True。
 
 关键点:
-- [TODO]
+- 使用字典 `positions` 来记录每个数字在 s 中的位置。
+- 在遍历 t 时，确保 t 中的每个数字在 s 中的位置是递增的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串 s 和 t 各一次。
+空间复杂度: O(1)，因为字典 `positions` 的大小最多为 10（数字 0 到 9）。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_transform(s: str, t: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查字符串 s 是否可以通过排序子字符串得到字符串 t
     """
-    # TODO: 实现最优解法
-    pass
+    if sorted(s) != sorted(t):
+        return False
+
+    positions = {str(i): [] for i in range(10)}
+    for i, char in enumerate(s):
+        positions[char].append(i)
+
+    for char in t:
+        if not positions[char]:
+            return False
+        pos = positions[char].pop(0)
+        for smaller in range(int(char)):
+            if positions[str(smaller)] and positions[str(smaller)][-1] < pos:
+                return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_transform)

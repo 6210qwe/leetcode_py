@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序的思想来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个长度为 101 的计数数组 `count`，用于记录每个数字出现的次数。
+2. 遍历输入数组 `nums`，填充计数数组 `count`。
+3. 计算计数数组的前缀和，这样 `count[i]` 就表示小于等于 `i` 的数字个数。
+4. 再次遍历输入数组 `nums`，通过 `count[nums[i] - 1]` 得到小于 `nums[i]` 的数字个数。
 
 关键点:
-- [TODO]
+- 使用计数数组可以高效地统计每个数字出现的次数，并通过前缀和快速得到小于某个数字的个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是输入数组 `nums` 的长度，k 是计数数组的长度（固定为 101）。
+空间复杂度: O(k)，其中 k 是计数数组的长度（固定为 101）。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallerNumbersThanCurrent(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个数组，其中每个元素表示输入数组中比当前元素小的元素个数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建计数数组
+    count = [0] * 101
+    
+    # 填充计数数组
+    for num in nums:
+        count[num] += 1
+    
+    # 计算前缀和
+    for i in range(1, 101):
+        count[i] += count[i - 1]
+    
+    # 计算结果
+    result = [count[num - 1] if num > 0 else 0 for num in nums]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallerNumbersThanCurrent)

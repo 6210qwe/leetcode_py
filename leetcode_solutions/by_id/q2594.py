@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位掩码来表示每个字符串的字符集，并使用哈希表来统计每个字符集出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `char_mask_count` 来记录每种字符集出现的次数。
+2. 遍历每个字符串，计算其字符集的位掩码。
+3. 将位掩码作为键存储在哈希表中，并更新其计数。
+4. 计算所有字符集的组合数，累加到结果中。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示字符集，可以高效地进行比较。
+- 使用哈希表来统计每种字符集的出现次数，可以快速查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是每个字符串的最大长度。
+空间复杂度: O(n)，哈希表的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_similar_pairs(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计相似字符串对的数目
     """
-    # TODO: 实现最优解法
-    pass
+    def get_char_mask(word: str) -> int:
+        mask = 0
+        for char in word:
+            mask |= 1 << (ord(char) - ord('a'))
+        return mask
+
+    char_mask_count = {}
+    result = 0
+
+    for word in words:
+        mask = get_char_mask(word)
+        if mask in char_mask_count:
+            result += char_mask_count[mask]
+            char_mask_count[mask] += 1
+        else:
+            char_mask_count[mask] = 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_similar_pairs)

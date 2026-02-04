@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组来快速计算任意子字符串的得分，并检查是否存在一个下标 i 使得左右子字符串的得分相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串 s 的前缀和数组 prefix_sum，其中 prefix_sum[i] 表示 s[0..i] 的得分。
+2. 遍历前缀和数组，检查是否存在一个下标 i 使得 prefix_sum[i] == (prefix_sum[-1] - prefix_sum[i]) / 2。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算任意子字符串的得分。
+- 通过遍历前缀和数组，可以在 O(n) 时间内找到满足条件的下标 i。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def equal_score_substrings(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否存在一个下标 i，使得字符串 s 可以被拆分成两个非空子字符串 s[0..i] 和 s[(i + 1)..(n - 1)]，且它们的得分相等。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + (ord(s[i]) - ord('a') + 1)
+    
+    total_score = prefix_sum[n]
+    
+    # 检查是否存在一个下标 i 使得左右子字符串的得分相等
+    for i in range(1, n):
+        if prefix_sum[i] == total_score - prefix_sum[i]:
+            return True
+    
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(equal_score_substrings)

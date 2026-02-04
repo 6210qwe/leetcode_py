@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来高效处理区间查询和更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有元素对 k 取模，这样可以将问题简化为在模 k 的范围内进行操作。
+2. 构建线段树，存储每个区间的最小值和最大值。
+3. 对于每个查询，使用线段树查询子数组的最小值和最大值。
+4. 如果最大值和最小值的差值不是 k 的倍数，则返回 -1。
+5. 否则，计算将所有元素变为相同值所需的操作次数。
 
 关键点:
-- [TODO]
+- 使用线段树来高效处理区间查询。
+- 对所有元素取模 k，简化问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) log n)，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n log n)，用于存储线段树。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [None] * (4 * self.n)
+        self.build(arr, 0, 0, self.n - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def build(self, arr, node, start, end):
+        if start == end:
+            self.tree[node] = (arr[start], arr[start])
+        else:
+            mid = (start + end) // 2
+            self.build(arr, 2 * node + 1, start, mid)
+            self.build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = (
+                min(self.tree[2 * node + 1][0], self.tree[2 * node + 2][0]),
+                max(self.tree[2 * node + 1][1], self.tree[2 * node + 2][1])
+            )
 
+    def query(self, node, start, end, l, r):
+        if r < start or end < l:
+            return float('inf'), float('-inf')
+        if l <= start and end <= r:
+            return self.tree[node]
+        mid = (start + end) // 2
+        left_min, left_max = self.query(2 * node + 1, start, mid, l, r)
+        right_min, right_max = self.query(2 * node + 2, mid + 1, end, l, r)
+        return min(left_min, right_min), max(left_max, right_max)
+
+def solution_function_name(nums: List[int], k: int, queries: List[List[int]]) -> List[int]:
+    mod_nums = [num % k for num in nums]
+    segment_tree = SegmentTree(mod_nums)
+    result = []
+
+    for l, r in queries:
+        min_val, max_val = segment_tree.query(0, 0, len(nums) - 1, l, r)
+        if (max_val - min_val) % k != 0:
+            result.append(-1)
+        else:
+            target = min_val
+            operations = 0
+            for i in range(l, r + 1):
+                operations += abs((nums[i] % k) - target) // k
+            result.append(operations)
+
+    return result
 
 Solution = create_solution(solution_function_name)

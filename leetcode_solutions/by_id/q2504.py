@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个数组分别记录每个位置左侧连续非递增的长度和右侧连续非递减的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `non_increasing` 和 `non_decreasing`，分别记录每个位置左侧连续非递增的长度和右侧连续非递减的长度。
+2. 从左到右遍历数组，填充 `non_increasing` 数组。
+3. 从右到左遍历数组，填充 `non_decreasing` 数组。
+4. 再次遍历数组，找到满足条件的好下标。
 
 关键点:
-- [TODO]
+- 使用两次遍历分别计算左侧和右侧的连续非递增/非递减长度。
+- 最后一次遍历检查每个位置是否满足好下标的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_good_indices(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有好下标
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    non_increasing = [1] * n
+    non_decreasing = [1] * n
+
+    # 计算左侧连续非递增的长度
+    for i in range(1, n):
+        if nums[i] <= nums[i - 1]:
+            non_increasing[i] = non_increasing[i - 1] + 1
+
+    # 计算右侧连续非递减的长度
+    for i in range(n - 2, -1, -1):
+        if nums[i] <= nums[i + 1]:
+            non_decreasing[i] = non_decreasing[i + 1] + 1
+
+    # 找到所有好下标
+    good_indices = []
+    for i in range(k, n - k):
+        if non_increasing[i - 1] >= k and non_decreasing[i + 1] >= k:
+            good_indices.append(i)
+
+    return good_indices
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_good_indices)

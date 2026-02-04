@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个位置上的非递减数字组合数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 l 和 r 转换为 b 进制。
+2. 使用动态规划计算每个位置上的非递减数字组合数。
+3. 计算 l 和 r 之间的非递减数字个数，并进行边界处理。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理边界情况，确保 l 和 r 之间的数字都被正确计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * b^2)，其中 n 是 l 和 r 的长度，b 是进制。
+空间复杂度: O(n * b)，用于存储动态规划表。
 """
 
 # ============================================================================
@@ -48,13 +50,40 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_numbers_with_non_decreasing_digits(l: str, r: str, b: int) -> int:
+    def to_base(num: str, base: int) -> List[int]:
+        """将 num 转换为 base 进制的列表表示"""
+        return [int(digit) for digit in num]
 
+    def count_non_decreasing_digits(digits: List[int], base: int) -> int:
+        """计算给定 digits 的非递减数字组合数"""
+        n = len(digits)
+        dp = [[0] * (base + 1) for _ in range(n + 1)]
+        dp[0][0] = 1
 
-Solution = create_solution(solution_function_name)
+        for i in range(1, n + 1):
+            for j in range(base + 1):
+                for k in range(j + 1):
+                    dp[i][j] += dp[i - 1][k]
+                    dp[i][j] %= MOD
+
+        result = 0
+        for i in range(1, n + 1):
+            for j in range(digits[i - 1] + 1):
+                result += dp[i][j]
+                result %= MOD
+
+        return result
+
+    l_digits = to_base(l, b)
+    r_digits = to_base(r, b)
+
+    # 计算 l 和 r 之间的非递减数字个数
+    count_r = count_non_decreasing_digits(r_digits, b)
+    count_l_minus_1 = count_non_decreasing_digits([d - 1 if d > 0 else 0 for d in l_digits], b)
+
+    return (count_r - count_l_minus_1 + MOD) % MOD
+
+Solution = create_solution(count_numbers_with_non_decreasing_digits)

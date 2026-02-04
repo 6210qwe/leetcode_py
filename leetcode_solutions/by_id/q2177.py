@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字母的频率差，检查频率差是否不超过 3。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 26 的数组，用于记录每个字母的频率差。
+2. 遍历 word1 和 word2，更新频率差数组。
+3. 检查频率差数组中的每个值是否都不超过 3。
 
 关键点:
-- [TODO]
+- 使用固定大小的数组来记录频率差，避免了动态分配和查找操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历每个字符一次。
+空间复杂度: O(1)，因为频率差数组的大小是固定的 26。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_almost_equivalent(word1: str, word2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查两个字符串是否几乎相等。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化频率差数组
+    freq_diff = [0] * 26
+
+    # 更新频率差数组
+    for char in word1:
+        freq_diff[ord(char) - ord('a')] += 1
+    for char in word2:
+        freq_diff[ord(char) - ord('a')] -= 1
+
+    # 检查频率差是否不超过 3
+    for diff in freq_diff:
+        if abs(diff) > 3:
+            return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_almost_equivalent)

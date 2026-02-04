@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过记录每个字符的最左和最右出现位置，构建区间，然后合并区间，最终得到不重叠的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 记录每个字符在字符串中的最左和最右出现位置。
+2. 构建区间，并尝试合并区间，确保每个区间内的字符都在该区间内出现。
+3. 选择不重叠的区间，使得子字符串数量最多且总长度最小。
 
 关键点:
-- [TODO]
+- 通过记录字符的最左和最右位置来构建区间。
+- 合并区间时，确保每个区间内的字符都在该区间内出现。
+- 选择不重叠的区间，使得子字符串数量最多且总长度最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串两次，一次记录字符的位置，一次构建和合并区间。
+空间复杂度: O(1)，虽然我们使用了额外的空间来记录字符的位置，但空间复杂度是常数级别的，因为字符集大小是固定的（26个小写字母）。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_num_of_non_overlapping_substrings(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最多不重叠子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个字符的最左和最右出现位置
+    left, right = {}, {}
+    for i, char in enumerate(s):
+        if char not in left:
+            left[char] = i
+        right[char] = i
+    
+    # 构建区间
+    intervals = []
+    for char in set(s):
+        intervals.append((left[char], right[char]))
+    
+    # 按区间的左端点排序
+    intervals.sort()
+    
+    # 合并区间
+    merged_intervals = []
+    for l, r in intervals:
+        if not merged_intervals or merged_intervals[-1][1] < l:
+            merged_intervals.append([l, r])
+        else:
+            merged_intervals[-1][1] = max(merged_intervals[-1][1], r)
+    
+    # 选择不重叠的区间
+    result = []
+    end = -1
+    for l, r in merged_intervals:
+        if l > end:
+            result.append(s[l:r+1])
+            end = r
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_num_of_non_overlapping_substrings)

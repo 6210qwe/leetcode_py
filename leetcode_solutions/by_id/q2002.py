@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i] 表示从第 i 个位置开始，当前玩家能获得的最大分数差。我们需要从后往前计算 dp 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 prefix_sum，prefix_sum[i] 表示从第 0 个到第 i 个石子的总和。
+2. 初始化 dp 数组，dp[n-1] = 0，因为只剩一个石子时无法再进行操作。
+3. 从 n-2 到 0 逆序遍历，对于每个 i，计算 dp[i] 的值。dp[i] = max(prefix_sum[j] - dp[j])，其中 j 从 i+1 到 n-1。
+4. 返回 dp[0]，即从第 0 个位置开始，Alice 能获得的最大分数差。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算任意区间的和。
+- 动态规划的状态转移方程：dp[i] = max(prefix_sum[j] - dp[j])。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 stones 的长度。需要遍历每个位置并计算最大值。
+空间复杂度: O(n)，需要存储前缀和数组和 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def stone_game_viii(stones: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(stones)
+    if n == 2:
+        return sum(stones)
+
+    # 计算前缀和数组
+    prefix_sum = [0] * n
+    prefix_sum[0] = stones[0]
+    for i in range(1, n):
+        prefix_sum[i] = prefix_sum[i - 1] + stones[i]
+
+    # 初始化 dp 数组
+    dp = [0] * n
+    dp[n - 1] = 0
+
+    # 从 n-2 到 0 逆序遍历
+    for i in range(n - 2, -1, -1):
+        dp[i] = -float('inf')
+        for j in range(i + 1, n):
+            dp[i] = max(dp[i], prefix_sum[j] - dp[j])
+
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stone_game_viii)

@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法从每个有黄金的单元格开始搜索，记录路径上的最大黄金数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大黄金数量为 0。
+2. 遍历网格中的每个单元格，如果该单元格有黄金，则从该单元格开始进行深度优先搜索。
+3. 在深度优先搜索过程中，标记当前单元格为已访问，并递归地探索其四个方向的相邻单元格。
+4. 在递归返回时，取消标记当前单元格为已访问，以便其他路径可以使用该单元格。
+5. 更新最大黄金数量。
 
 关键点:
-- [TODO]
+- 使用标记数组来避免重复访问同一个单元格。
+- 递归地探索所有可能的路径，并记录路径上的最大黄金数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(4^k)，其中 k 是网格中黄金单元格的数量。每个单元格最多有 4 个方向可以走，最坏情况下需要遍历所有可能的路径。
+空间复杂度: O(k)，递归调用栈的深度最多为 k。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def getMaximumGold(grid: List[List[int]]) -> int:
+    def dfs(x: int, y: int, gold: int) -> None:
+        nonlocal max_gold
+        max_gold = max(max_gold, gold)
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and not visited[nx][ny] and grid[nx][ny] > 0:
+                visited[nx][ny] = True
+                dfs(nx, ny, gold + grid[nx][ny])
+                visited[nx][ny] = False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    max_gold = 0
+    visited = [[False] * n for _ in range(m)]
 
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] > 0:
+                visited[i][j] = True
+                dfs(i, j, grid[i][j])
+                visited[i][j] = False
 
-Solution = create_solution(solution_function_name)
+    return max_gold
+
+Solution = create_solution(getMaximumGold)

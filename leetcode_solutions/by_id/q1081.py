@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来选择最少的片段覆盖整个时间范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按片段的起始时间排序。
+2. 初始化当前覆盖的结束时间为 0，片段计数为 0。
+3. 遍历所有片段，选择能覆盖当前结束时间且结束时间最远的片段。
+4. 更新当前覆盖的结束时间和片段计数。
+5. 如果当前覆盖的结束时间已经大于等于目标时间，返回片段计数。
+6. 如果遍历完所有片段仍无法覆盖目标时间，返回 -1。
 
 关键点:
-- [TODO]
+- 通过贪心选择每次能覆盖当前结束时间且结束时间最远的片段，确保使用最少的片段。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 clips 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def video_stitching(clips: List[List[int]], time: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使用贪心算法来选择最少的片段覆盖整个时间范围。
     """
-    # TODO: 实现最优解法
-    pass
+    # 按片段的起始时间排序
+    clips.sort(key=lambda x: (x[0], -x[1]))
+    
+    # 初始化当前覆盖的结束时间和片段计数
+    current_end, next_end = 0, 0
+    count = 0
+    
+    for i in range(len(clips)):
+        if clips[i][0] > current_end:
+            # 如果当前片段的起始时间大于当前覆盖的结束时间，无法继续覆盖
+            break
+        
+        # 选择能覆盖当前结束时间且结束时间最远的片段
+        if clips[i][0] <= current_end:
+            next_end = max(next_end, clips[i][1])
+        
+        # 如果当前片段是最后一个能覆盖当前结束时间的片段
+        if i == len(clips) - 1 or clips[i + 1][0] > current_end:
+            # 更新当前覆盖的结束时间和片段计数
+            current_end = next_end
+            count += 1
+            
+            # 如果当前覆盖的结束时间已经大于等于目标时间，返回片段计数
+            if current_end >= time:
+                return count
+    
+    # 如果遍历完所有片段仍无法覆盖目标时间，返回 -1
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(video_stitching)

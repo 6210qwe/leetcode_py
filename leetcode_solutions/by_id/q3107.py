@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每天选择当前最小价值的物品购买，以最大化总开销。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有物品按价值从小到大排序。
+2. 每天选择当前最小价值的物品购买，并计算开销。
+3. 累加每天的开销，得到最终的最大开销。
 
 关键点:
-- [TODO]
+- 使用优先队列（最小堆）来维护当前未购买的物品。
+- 每天从堆中取出最小价值的物品进行购买。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def maximum_spending(values: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算购买所有 m * n 件物品需要的最大开销。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有物品按价值从小到大排序
+    items = []
+    for i, row in enumerate(values):
+        for j, value in enumerate(row):
+            items.append((value, i, j))
+    
+    # 使用最小堆
+    heapq.heapify(items)
+    
+    total_cost = 0
+    day = 1
+    
+    while items:
+        value, _, _ = heapq.heappop(items)
+        total_cost += value * day
+        day += 1
+    
+    return total_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_spending)

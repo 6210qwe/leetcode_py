@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的动态属性机制来实现一个可以调用任意方法的对象。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个类 `InfiniteMethodObject`。
+2. 在该类中定义一个 `__getattr__` 方法，用于动态处理不存在的属性或方法。
+3. 在 `__getattr__` 方法中返回一个新的 `InfiniteMethodObject` 实例，以便可以继续调用任意方法。
 
 关键点:
-- [TODO]
+- 使用 `__getattr__` 方法来处理动态方法调用。
+- 返回一个新的 `InfiniteMethodObject` 实例，以支持无限的方法链式调用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次方法调用的时间复杂度是常数级。
+空间复杂度: O(1) - 不需要额外的空间来存储状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any
+
+
+class InfiniteMethodObject:
+    def __getattr__(self, name: str) -> 'InfiniteMethodObject':
+        # 动态处理不存在的属性或方法
+        return self
+
+    def __call__(self, *args: Any, **kwargs: Any) -> 'InfiniteMethodObject':
+        # 支持方法调用
+        return self
 
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现无穷方法对象
     """
-    # TODO: 实现最优解法
-    pass
+    return InfiniteMethodObject()
 
 
 Solution = create_solution(solution_function_name)

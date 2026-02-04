@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和的思想来解决这个问题。通过DFS遍历树，记录从根节点到当前节点的路径和，并使用哈希表记录路径和出现的次数。这样可以在O(1)时间内判断是否存在满足条件的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数`dfs`，参数包括当前节点、当前路径和、目标和以及哈希表。
+2. 在递归函数中，如果当前节点为空，直接返回。
+3. 更新当前路径和，并在哈希表中记录当前路径和出现的次数。
+4. 计算当前路径和与目标和的差值，并在哈希表中查找该差值出现的次数，累加到结果中。
+5. 递归处理左子树和右子树。
+6. 回溯时，更新哈希表中的路径和计数。
 
 关键点:
-- [TODO]
+- 使用前缀和的思想，通过哈希表记录路径和出现的次数，从而在O(1)时间内判断是否存在满足条件的路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(n)，递归调用栈的深度和哈希表的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def path_sum(root: Optional[TreeNode], target_sum: int) -> int:
+    def dfs(node: Optional[TreeNode], current_sum: int, prefix_sums: dict) -> None:
+        if not node:
+            return
+        
+        current_sum += node.val
+        diff = current_sum - target_sum
+        count += prefix_sums.get(diff, 0)
+        prefix_sums[current_sum] = prefix_sums.get(current_sum, 0) + 1
+        
+        dfs(node.left, current_sum, prefix_sums)
+        dfs(node.right, current_sum, prefix_sums)
+        
+        prefix_sums[current_sum] -= 1
+        if prefix_sums[current_sum] == 0:
+            del prefix_sums[current_sum]
+    
+    count = 0
+    prefix_sums = {0: 1}
+    dfs(root, 0, prefix_sums)
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(path_sum)

@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义两个二维数组 dp 和 count，其中 dp[i][j] 表示从 (i, j) 到达终点的最大得分，count[i][j] 表示从 (i, j) 到达终点的最大得分的路径数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 和 count 数组。
+2. 从右下角开始逆向遍历，更新 dp 和 count 数组。
+3. 返回 dp[0][0] 和 count[0][0]。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每个位置的最大得分和路径数。
+- 从右下角开始逆向遍历，确保每个位置的值都是基于已经计算好的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 board 的边长。
+空间复杂度: O(n^2)，我们需要两个 n x n 的二维数组来存储 dp 和 count。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def paths_with_max_score(board: List[str]) -> List[int]:
+    n = len(board)
+    MOD = 10**9 + 7
+    dp = [[0] * n for _ in range(n)]
+    count = [[0] * n for _ in range(n)]
+    count[n-1][n-1] = 1  # 起点
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n-1, -1, -1):
+        for j in range(n-1, -1, -1):
+            if board[i][j] == 'X':
+                continue
+            for di, dj in [(-1, 0), (0, -1), (-1, -1)]:
+                ni, nj = i + di, j + dj
+                if 0 <= ni < n and 0 <= nj < n:
+                    if dp[ni][nj] > dp[i][j]:
+                        dp[i][j] = dp[ni][nj]
+                        count[i][j] = count[ni][nj]
+                    elif dp[ni][nj] == dp[i][j]:
+                        count[i][j] += count[ni][nj]
+            if board[i][j] != 'S' and board[i][j] != 'E':
+                dp[i][j] += int(board[i][j])
 
+    return [dp[0][0], count[0][0] % MOD]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(paths_with_max_score)

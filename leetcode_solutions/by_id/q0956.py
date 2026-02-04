@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 为创建长度为 i 的播放列表且使用了 j 首不同歌曲的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 对于每个长度 i 从 1 到 goal，对于每种不同歌曲数量 j 从 1 到 n：
+   - 如果当前歌曲是新的，那么 dp[i][j] += dp[i-1][j-1] * (n - (j-1))。
+   - 如果当前歌曲是旧的，那么 dp[i][j] += dp[i-1][j] * max(0, j - k)。
+3. 返回 dp[goal][n] % (10^9 + 7)。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 注意边界条件和取模操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(goal * n)
+空间复杂度: O(goal * n)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def numMusicPlaylists(n: int, goal: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的播放列表数量
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [[0] * (n + 1) for _ in range(goal + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, goal + 1):
+        for j in range(1, n + 1):
+            # 当前歌曲是新的
+            dp[i][j] += dp[i - 1][j - 1] * (n - (j - 1))
+            dp[i][j] %= MOD
+            # 当前歌曲是旧的
+            if j > k:
+                dp[i][j] += dp[i - 1][j] * (j - k)
+                dp[i][j] %= MOD
+
+    return dp[goal][n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numMusicPlaylists)

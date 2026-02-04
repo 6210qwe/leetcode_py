@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和数论中的欧拉函数来计算满足条件的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数的欧拉函数值。
+2. 使用动态规划来计算每行选择一个数后，所有选择的数的最大公约数为1的方案数。
+3. 通过预处理和动态规划，优化时间和空间复杂度。
 
 关键点:
-- [TODO]
+- 利用欧拉函数来减少计算量。
+- 动态规划的状态转移方程设计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(max(mat[i][j])))，其中m是矩阵的行数，n是矩阵的列数，max(mat[i][j])是矩阵中的最大值。
+空间复杂度: O(n * max(mat[i][j]))，用于存储动态规划的状态和欧拉函数值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def euler_phi(n):
+    """计算欧拉函数值"""
+    result = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+            result -= result // p
+        p += 1
+    if n > 1:
+        result -= result // n
+    return result
 
+def solution_function_name(mat: List[List[int]]) -> int:
+    """
+    函数式接口 - 统计每一行选择互质整数的方案数
+    """
+    m, n = len(mat), len(mat[0])
+    max_val = max(max(row) for row in mat)
+    
+    # 预处理欧拉函数值
+    phi_values = [euler_phi(i) for i in range(1, max_val + 1)]
+    
+    # 初始化动态规划状态
+    dp = [0] * (max_val + 1)
+    dp[1] = 1
+    
+    # 动态规划计算
+    for row in mat:
+        new_dp = [0] * (max_val + 1)
+        for gcd in range(1, max_val + 1):
+            for num in row:
+                if num % gcd == 0:
+                    new_dp[gcd] = (new_dp[gcd] + dp[num // gcd]) % MOD
+        dp = new_dp
+    
+    return dp[1]
 
 Solution = create_solution(solution_function_name)

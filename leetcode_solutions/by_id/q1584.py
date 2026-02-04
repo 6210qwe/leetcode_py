@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到最小值和最大值，并计算总和，最后减去最小值和最大值后求平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最小值 `min_salary` 为正无穷大，最大值 `max_salary` 为负无穷大，总和 `total` 为 0。
+2. 遍历 `salary` 数组，更新 `min_salary` 和 `max_salary`，并累加 `total`。
+3. 计算去掉最小值和最大值后的平均值 `(total - min_salary - max_salary) / (len(salary) - 2)`。
 
 关键点:
-- [TODO]
+- 一次遍历即可完成最小值、最大值和总和的计算，时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 salary 数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def average_salary_excluding_min_max(salary: List[int]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回去掉最低工资和最高工资后的工资平均值
     """
-    # TODO: 实现最优解法
-    pass
+    min_salary = float('inf')
+    max_salary = float('-inf')
+    total = 0
+    
+    for s in salary:
+        if s < min_salary:
+            min_salary = s
+        if s > max_salary:
+            max_salary = s
+        total += s
+    
+    return (total - min_salary - max_salary) / (len(salary) - 2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(average_salary_excluding_min_max)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点的子树大小，并检查每个节点是否是好节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 计算每个节点的子树大小。
+3. 在回溯过程中，检查当前节点是否是好节点。
+4. 返回好节点的数量。
 
 关键点:
-- [TODO]
+- 使用邻接表表示树结构。
+- 通过 DFS 计算子树大小并检查好节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边都只访问一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
@@ -48,13 +51,34 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_good_nodes(edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计给定树中的好节点数量
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, parent: int) -> int:
+        subtree_size = 1  # 当前节点自身
+        subtree_sizes = []
+        
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                subtree_size += dfs(neighbor, node)
+                subtree_sizes.append(subtree_size - 1)
+        
+        if all(size == subtree_sizes[0] for size in subtree_sizes) or not subtree_sizes:
+            good_nodes[0] += 1
+        
+        return subtree_size
+    
+    n = len(edges) + 1
+    adj_list = [[] for _ in range(n)]
+    
+    for a, b in edges:
+        adj_list[a].append(b)
+        adj_list[b].append(a)
+    
+    good_nodes = [0]
+    dfs(0, -1)
+    
+    return good_nodes[0]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_nodes)

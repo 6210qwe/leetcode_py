@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和与字典树（Trie）来高效查找满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或和。
+2. 使用 Trie 树存储前缀异或和。
+3. 对于每个前缀异或和，使用 Trie 树查找满足条件的子数组。
 
 关键点:
-- [TODO]
+- 使用 Trie 树可以高效地查找满足条件的前缀异或和。
+- 通过前缀异或和的性质，可以快速计算子数组的异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max_num))，其中 n 是数组长度，max_num 是数组中的最大值。
+空间复杂度: O(n * log(max_num))，用于存储 Trie 树。
 """
 
 # ============================================================================
@@ -48,13 +50,52 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.count = 0
 
-def solution_function_name(params):
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, num: int) -> None:
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+            node.count += 1
+
+    def get_count(self, num: int, k: int) -> int:
+        node = self.root
+        count = 0
+        for i in range(31, -1, -1):
+            if not node:
+                break
+            bit = (num >> i) & 1
+            target_bit = (k >> i) & 1
+            if target_bit == 1:
+                if bit in node.children:
+                    count += node.children[bit].count
+                node = node.children[1 - bit]
+            else:
+                node = node.children[bit]
+        return count
+
+def subarrays_with_xor_at_least_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回异或至少为 K 的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_xor = 0
+    trie = Trie()
+    trie.insert(0)
+    count = 0
+    for num in nums:
+        prefix_xor ^= num
+        count += trie.get_count(prefix_xor, k)
+        trie.insert(prefix_xor)
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(subarrays_with_xor_at_least_k)

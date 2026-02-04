@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过异或运算的性质来解码。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有元素的异或结果 total_xor。
+2. 通过 encoded 数组计算前缀异或结果 prefix_xor。
+3. 利用 total_xor 和 prefix_xor 来逐步恢复 perm 数组。
 
 关键点:
-- [TODO]
+- 利用异或运算的性质：a ^ a = 0 和 a ^ 0 = a。
+- 通过 total_xor 和 prefix_xor 可以逐步恢复 perm 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(encoded: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解码异或后的排列
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(encoded) + 1
+    total_xor = 0
+    for i in range(1, n + 1):
+        total_xor ^= i
+
+    prefix_xor = 0
+    for i in range(1, n, 2):
+        prefix_xor ^= encoded[i]
+
+    first_element = total_xor ^ prefix_xor
+    perm = [first_element]
+    for i in range(len(encoded)):
+        perm.append(perm[-1] ^ encoded[i])
+
+    return perm
 
 
 Solution = create_solution(solution_function_name)

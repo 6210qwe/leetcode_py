@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示用 i 张卡牌可以构建的纸牌屋的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 1，表示没有卡牌时只有一种方法（即不构建）。
+2. 对于每一个 i，从 2 开始遍历到 n，计算 dp[i] 的值。对于每一个 i，我们可以选择在最底层放 k 层，那么剩下的卡牌数为 i - (k * (k + 1) / 2) - k，这些卡牌可以自由组合成其他层。
+3. 最后返回 dp[n] 即为答案。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = sum(dp[i - (k * (k + 1) // 2) - k] for k in range(1, i // 3 + 2))
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算用 n 张卡牌可以构建的纸牌屋的方法数
     """
-    # TODO: 实现最优解法
-    pass
+    if n < 2:
+        return 1
+
+    dp = [0] * (n + 1)
+    dp[0] = 1
+
+    for i in range(1, n + 1):
+        for k in range(1, i // 3 + 2):
+            if i - (k * (k + 1) // 2) - k >= 0:
+                dp[i] += dp[i - (k * (k + 1) // 2) - k]
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

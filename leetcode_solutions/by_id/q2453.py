@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用笛卡尔积生成所有可能的比赛组合
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 teams 表中选择所有队伍
+2. 使用笛卡尔积生成所有可能的比赛组合
+3. 过滤掉相同队伍的比赛
 
 关键点:
-- [TODO]
+- 使用 SQL 的 CROSS JOIN 生成笛卡尔积
+- 使用 WHERE 子句过滤掉相同队伍的比赛
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是队伍的数量。因为我们需要生成所有可能的比赛组合。
+空间复杂度: O(1)，除了存储结果外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成联赛的所有比赛
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        t1.team_name AS home_team, 
+        t2.team_name AS away_team
+    FROM 
+        teams t1
+    CROSS JOIN 
+        teams t2
+    WHERE 
+        t1.team_name < t2.team_name
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

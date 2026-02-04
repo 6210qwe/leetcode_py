@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大运行时间。我们可以通过二分查找来确定一个可能的最大运行时间，然后检查在这个时间内是否可以满足所有电脑的运行需求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对电池数组进行排序。
+2. 使用二分查找来确定最大运行时间。
+3. 检查当前中间值是否可以满足所有电脑的运行需求。
+4. 如果可以，则更新左边界；否则，更新右边界。
 
 关键点:
-- [TODO]
+- 通过二分查找来缩小可能的最大运行时间范围。
+- 检查当前中间值是否可以满足所有电脑的运行需求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(batteries)))，其中 n 是电池的数量，max(batteries) 是电池的最大容量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_running_time(n: int, batteries: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以同时运行 n 台电脑的最长时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 对电池数组进行排序
+    batteries.sort()
+    
+    # 计算总电量
+    total_power = sum(batteries)
+    
+    # 二分查找
+    left, right = 0, total_power // n
+    while left < right:
+        mid = (left + right + 1) // 2
+        if sum(min(mid, battery) for battery in batteries) >= mid * n:
+            left = mid
+        else:
+            right = mid - 1
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_running_time)

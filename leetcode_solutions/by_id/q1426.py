@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 生成 n 个各不相同的整数，使得它们的和为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 是奇数，添加 0 到结果列表。
+2. 添加从 1 到 (n//2) 的正整数及其对应的负数到结果列表。
 
 关键点:
-- [TODO]
+- 通过添加对称的正负数对来保证和为 0。
+- 如果 n 是奇数，添加 0 来保持平衡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成 n 个各不相同的整数，使得它们的和为 0。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    if n % 2 != 0:
+        result.append(0)
+        n -= 1
+    
+    for i in range(1, n // 2 + 1):
+        result.append(i)
+        result.append(-i)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

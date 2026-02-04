@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀和来计算最少操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个长度为 x 的子数组的最小操作数。
+2. 使用动态规划来找到 k 个不重叠子数组的最小操作数。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算子数组的操作数。
+- 动态规划状态转移方程：dp[i][j] 表示前 i 个位置中选择 j 个子数组的最小操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -48,13 +49,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def min_operations_to_make_k_subarrays_equal(nums: List[int], x: int, k: int) -> int:
+    n = len(nums)
+    INF = float('inf')
+    dp = [[INF] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
 
+    subarray_costs = [INF] * n
+    for i in range(n - x + 1):
+        total = prefix_sum[i + x] - prefix_sum[i]
+        median = sorted(nums[i:i + x])[x // 2]
+        cost = sum(abs(num - median) for num in nums[i:i + x])
+        subarray_costs[i] = cost
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, n + 1):
+        for j in range(1, k + 1):
+            for l in range(max(0, i - x), i):
+                dp[i][j] = min(dp[i][j], dp[l][j - 1] + subarray_costs[l])
+
+    return dp[n][k]
+
+Solution = create_solution(min_operations_to_make_k_subarrays_equal)

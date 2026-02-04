@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和位运算来找到最接近 k 的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示当前窗口的左右边界。
+2. 使用一个变量 current_or 来存储当前窗口内的按位或结果。
+3. 遍历数组，逐步扩展右边界，并更新 current_or。
+4. 如果 current_or 大于等于 k，尝试收缩左边界以找到更优解。
+5. 记录每次计算的最小绝对差值。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以有效地减少不必要的重复计算。
+- 通过位运算快速更新当前窗口的按位或结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_subarray_with_bitwise_or_closest_to_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到按位或最接近 K 的子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    min_diff = float('inf')
+    current_or = 0
+    left = 0
+
+    for right in range(n):
+        current_or |= nums[right]
+        while current_or >= k and left <= right:
+            min_diff = min(min_diff, abs(k - current_or))
+            current_or ^= nums[left]
+            left += 1
+        min_diff = min(min_diff, abs(k - current_or))
+
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_subarray_with_bitwise_or_closest_to_k)

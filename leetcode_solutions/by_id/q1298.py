@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理嵌套的括号，并在遇到右括号时反转子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s：
+   - 如果遇到左括号 '(', 将当前构建的子字符串压入栈中，并重置子字符串。
+   - 如果遇到右括号 ')', 弹出栈顶元素并将其与当前子字符串拼接后反转，然后继续处理。
+   - 如果是字母字符，直接添加到当前子字符串中。
+3. 最终栈底的元素即为结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来处理嵌套结构。
+- 在遇到右括号时进行反转操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被处理两次（一次入栈，一次出栈）。
+空间复杂度: O(n)，最坏情况下栈的大小会达到 n/2。
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reverse_substrings_between_each_pair_of_parentheses(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 反转每对括号间的子串
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    current = ""
+    
+    for char in s:
+        if char == '(':
+            stack.append(current)
+            current = ""
+        elif char == ')':
+            current = stack.pop() + current[::-1]
+        else:
+            current += char
+    
+    return current
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reverse_substrings_between_each_pair_of_parentheses)

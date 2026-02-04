@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 先处理每一行，让石头尽可能下落到最下方，直到遇到障碍物或箱子底部。
+2. 然后将整个矩阵顺时针旋转90度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每一行，使用双指针方法，将石头移动到最下方。
+2. 旋转矩阵，生成新的矩阵。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以高效地处理每一行中的石头下落。
+- 旋转矩阵时，注意行列互换和顺序调整。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def rotateTheBox(box: List[List[str]]) -> List[List[str]]:
+    m, n = len(box), len(box[0])
+    
+    # 处理每一行，让石头尽可能下落
+    for i in range(m):
+        j, k = n - 1, n - 1
+        while j >= 0:
+            if box[i][j] == '*':
+                k = j - 1
+            elif box[i][j] == '#':
+                box[i][j], box[i][k] = box[i][k], box[i][j]
+                k -= 1
+            j -= 1
+    
+    # 旋转矩阵
+    rotated_box = [[box[m - 1 - r][c] for r in range(m)] for c in range(n)]
+    
+    return rotated_box
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rotateTheBox)

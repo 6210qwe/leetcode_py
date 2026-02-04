@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `dp` 和 `cost`，其中 `dp[i]` 表示以 `nums[i]` 结尾的子数组的最大成本。
+2. 计算 `cost` 数组，其中 `cost[i]` 表示从 `nums[0]` 到 `nums[i]` 的交替和。
+3. 使用动态规划更新 `dp` 数组，对于每个 `i`，找到 `j` 使得 `dp[j] + cost[i] - cost[j]` 最大。
+4. 返回 `dp` 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用前缀和来计算 `cost` 数组。
+- 动态规划的状态转移方程为 `dp[i] = max(dp[j] + cost[i] - cost[j])`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_total_cost(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 最大化子数组的总成本
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return 0
+
+    # 计算 cost 数组
+    cost = [0] * n
+    for i in range(n):
+        cost[i] = nums[i] * (-1) ** i
+        if i > 0:
+            cost[i] += cost[i - 1]
+
+    # 初始化 dp 数组
+    dp = [0] * n
+    dp[0] = nums[0]
+
+    # 动态规划更新 dp 数组
+    for i in range(1, n):
+        dp[i] = nums[i]
+        for j in range(i):
+            dp[i] = max(dp[i], dp[j] + cost[i] - (cost[j] if j > 0 else 0))
+
+    return max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_total_cost)

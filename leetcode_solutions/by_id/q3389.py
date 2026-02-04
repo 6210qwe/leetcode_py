@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来找到从节点 0 到其他节点的最短路径，并且在计算过程中考虑每个节点的消失时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法，从节点 0 开始进行最短路径搜索。
+3. 在每次更新节点的距离时，检查该节点是否已经消失。
+4. 如果节点已经消失，则跳过该节点。
+5. 如果可以到达某个节点，则记录其最短路径时间。
+6. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用优先队列（最小堆）来实现 Dijkstra 算法。
+- 在更新距离时，检查节点是否已经消失。
+- 初始化结果数组为 -1，表示无法到达。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E)，其中 E 是边的数量。Dijkstra 算法的时间复杂度主要由优先队列的操作决定。
+空间复杂度: O(N + E)，其中 N 是节点数量，E 是边的数量。存储图的邻接表和优先队列所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minimum_time_to_visit_disappearing_nodes(n: int, edges: List[List[int]], disappear: List[int]) -> List[int]:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v, length in edges:
+        graph[u].append((v, length))
+        graph[v].append((u, length))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化距离数组和优先队列
+    dist = [float('inf')] * n
+    dist[0] = 0
+    pq = [(0, 0)]  # (distance, node)
 
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+        
+        # 如果当前节点已经消失，跳过
+        if current_dist >= disappear[current_node]:
+            continue
+        
+        # 更新邻居节点的距离
+        for neighbor, length in graph[current_node]:
+            new_dist = current_dist + length
+            if new_dist < dist[neighbor] and new_dist < disappear[neighbor]:
+                dist[neighbor] = new_dist
+                heapq.heappush(pq, (new_dist, neighbor))
 
-Solution = create_solution(solution_function_name)
+    # 构建结果数组
+    result = [-1] * n
+    for i in range(n):
+        if dist[i] != float('inf'):
+            result[i] = dist[i]
+
+    return result
+
+Solution = create_solution(minimum_time_to_visit_disappearing_nodes)

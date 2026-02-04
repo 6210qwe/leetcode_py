@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到数组中的最大值和次大值，然后计算 (max1 - 1) * (max2 - 1)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 max1 和 max2，分别表示最大值和次大值。
+2. 遍历数组，更新 max1 和 max2。
+3. 计算并返回 (max1 - 1) * (max2 - 1)。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到最大值和次大值，确保时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_product(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中两元素的最大乘积
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums or len(nums) < 2:
+        raise ValueError("输入数组长度必须大于等于2")
+
+    # 初始化最大值和次大值
+    max1, max2 = float('-inf'), float('-inf')
+
+    # 遍历数组，更新最大值和次大值
+    for num in nums:
+        if num > max1:
+            max2 = max1
+            max1 = num
+        elif num > max2:
+            max2 = num
+
+    # 计算并返回结果
+    return (max1 - 1) * (max2 - 1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product)

@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来找到最少的水龙头数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个水龙头的灌溉范围转换为区间 [left, right]。
+2. 对这些区间进行排序，按左端点从小到大排序，如果左端点相同，则按右端点从大到小排序。
+3. 使用一个变量 `max_right` 来记录当前可以灌溉到的最远位置。
+4. 使用一个变量 `end` 来记录当前已经覆盖的最远位置。
+5. 遍历排序后的区间，更新 `max_right` 和 `end`，并记录使用的水龙头数量。
+6. 如果 `max_right` 达到了或超过了花园的右边界 `n`，则返回使用的水龙头数量。
+7. 如果遍历完所有区间后仍未覆盖整个花园，则返回 -1。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每次选择的水龙头都能最大化扩展当前的覆盖范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_taps_to_water_garden(n: int, ranges: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回可以灌溉整个花园的最少水龙头数目。如果花园始终存在无法灌溉到的地方，请返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将每个水龙头的灌溉范围转换为区间 [left, right]
+    intervals = []
+    for i, r in enumerate(ranges):
+        if r > 0:
+            left = max(0, i - r)
+            right = min(n, i + r)
+            intervals.append((left, right))
+    
+    # 按左端点从小到大排序，如果左端点相同，则按右端点从大到小排序
+    intervals.sort(key=lambda x: (x[0], -x[1]))
+    
+    # 初始化变量
+    max_right = 0
+    end = 0
+    count = 0
+    
+    for interval in intervals:
+        if interval[0] > end:
+            return -1
+        if interval[0] > max_right:
+            max_right = end
+            count += 1
+        end = max(end, interval[1])
+        if end >= n:
+            return count + 1
+    
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_taps_to_water_garden)

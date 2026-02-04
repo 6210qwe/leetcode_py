@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排列组合来计算各位数字都不同的数字个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算从 0 到 n 的所有数字中，各位数字都不同的数字个数。
+2. 对于每一位数字，可以选择的数字是 10 个（0-9），但第一位不能为 0。
+3. 使用排列组合公式计算每种情况下的不同数字个数。
 
 关键点:
-- [TODO]
+- 使用排列组合公式 A(n, k) = n! / (n-k)! 来计算不同数字的排列数。
+- 考虑到第一位不能为 0，需要单独处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_numbers_with_unique_digits(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 0 到 10^n-1 中各位数字都不同的数字个数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 1
+    if n == 1:
+        return 10
+    
+    total = 10  # 一位数的情况
+    unique_digits = 9  # 第一位不能为 0
+    available_digits = 9  # 剩余可选的数字
+    
+    for i in range(1, min(n, 10)):  # 最多 10 位数字
+        unique_digits *= available_digits
+        total += unique_digits
+        available_digits -= 1
+    
+    return total
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_numbers_with_unique_digits)

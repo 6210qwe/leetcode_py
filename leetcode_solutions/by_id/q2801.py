@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字典分别记录每条对角线上的不同值的数量，然后计算每个单元格的 topLeft 和 bottomRight 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典 top_left 和 bottom_right，用于记录每条对角线上的不同值。
+2. 遍历矩阵，更新 top_left 字典。
+3. 再次遍历矩阵，更新 bottom_right 字典，并计算每个单元格的答案。
 
 关键点:
-- [TODO]
+- 使用字典记录每条对角线上的不同值，避免重复计算。
+- 每条对角线可以通过 (r - c) 来唯一标识。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m + n)，用于存储对角线上的不同值。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def difference_of_distinct_values(grid: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中每个单元格的对角线上不同值的数量差
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    answer = [[0] * n for _ in range(m)]
+    top_left = {}
+    bottom_right = {}
+
+    # 更新 top_left 字典
+    for r in range(m):
+        for c in range(n):
+            diag = r - c
+            if diag not in top_left:
+                top_left[diag] = set()
+            top_left[diag].add(grid[r][c])
+
+    # 更新 bottom_right 字典并计算答案
+    for r in range(m - 1, -1, -1):
+        for c in range(n - 1, -1, -1):
+            diag = r - c
+            if diag not in bottom_right:
+                bottom_right[diag] = set()
+            bottom_right[diag].add(grid[r][c])
+            answer[r][c] = abs(len(top_left[diag]) - len(bottom_right[diag]))
+
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(difference_of_distinct_values)

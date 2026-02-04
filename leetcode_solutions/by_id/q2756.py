@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 为了最小化购买两块巧克力的总花费，我们可以先对价格数组进行排序，然后选择前两个最小的价格来购买。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对价格数组进行排序。
+2. 选择前两个最小的价格。
+3. 计算购买这两块巧克力后的剩余钱数。
+4. 如果剩余钱数非负，则返回剩余钱数；否则返回初始的钱数。
 
 关键点:
-- [TODO]
+- 通过排序找到最小的两个价格，确保总花费最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def buy_two_chocolates(prices: List[int], money: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 购买两块巧克力并返回剩余的钱数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对价格数组进行排序
+    prices.sort()
+    
+    # 选择前两个最小的价格
+    min_cost = prices[0] + prices[1]
+    
+    # 计算购买这两块巧克力后的剩余钱数
+    remaining_money = money - min_cost
+    
+    # 如果剩余钱数非负，则返回剩余钱数；否则返回初始的钱数
+    return max(remaining_money, money)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(buy_two_chocolates)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 找出所有与 "RED" 公司相关的订单的 sales_id。
+2. 从 SalesPerson 表中排除这些 sales_id，得到没有与 "RED" 公司相关订单的销售人员。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 Company 表中找到 "RED" 公司的 com_id。
+2. 从 Orders 表中找到与 "RED" 公司相关的所有订单的 sales_id。
+3. 从 SalesPerson 表中排除这些 sales_id，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来实现上述步骤。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 SalesPerson 表的大小，m 是 Orders 表的大小。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(sales_person: List[List[str]], company: List[List[str]], orders: List[List[str]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出没有任何与名为 “RED” 的公司相关的订单的所有销售人员的姓名。
     """
-    # TODO: 实现最优解法
-    pass
+    # 从 Company 表中找到 "RED" 公司的 com_id
+    red_com_id = None
+    for com in company:
+        if com[1] == "RED":
+            red_com_id = com[0]
+            break
+    
+    # 如果没有找到 "RED" 公司，直接返回所有销售人员的姓名
+    if red_com_id is None:
+        return [sp[1] for sp in sales_person]
+
+    # 从 Orders 表中找到与 "RED" 公司相关的所有订单的 sales_id
+    red_sales_ids = set()
+    for order in orders:
+        if order[2] == red_com_id:
+            red_sales_ids.add(order[3])
+
+    # 从 SalesPerson 表中排除这些 sales_id，得到最终结果
+    result = []
+    for sp in sales_person:
+        if sp[0] not in red_sales_ids:
+            result.append(sp[1])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

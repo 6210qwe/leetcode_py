@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表推导式来过滤数组中的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组 arr，并使用过滤函数 fn 来判断每个元素是否满足条件。
+2. 将满足条件的元素添加到新的列表中。
 
 关键点:
-- [TODO]
+- 使用列表推导式来简化代码，提高可读性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 arr 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(n)，最坏情况下，所有元素都满足条件，需要额外的空间来存储这些元素。
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int], fn) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 过滤数组中的元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用列表推导式来过滤数组中的元素
+    filtered_arr = [x for i, x in enumerate(arr) if fn(x, i)]
+    return filtered_arr
 
 
 Solution = create_solution(solution_function_name)

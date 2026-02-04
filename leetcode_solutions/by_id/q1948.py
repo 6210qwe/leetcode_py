@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库来处理数据，并通过melt函数将宽表转换为长表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的DataFrame。
+2. 使用melt函数将宽表转换为长表，设置id_vars为'product_id'，value_vars为'store1', 'store2', 'store3'。
+3. 删除价格为空的行。
+4. 重命名列名，将'value'列重命名为'price'，将'variable'列重命名为'store'。
 
 关键点:
-- [TODO]
+- 使用Pandas的melt函数可以方便地将宽表转换为长表。
+- 通过删除价格为空的行来过滤掉没有销售的产品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是产品的数量。因为我们需要遍历每个产品和每个商店的价格。
+空间复杂度: O(n)，因为我们需要存储转换后的DataFrame。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def rearrange_products_table(products: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    重构Products表，查询每个产品在不同商店的价格，使得输出的格式变为(product_id, store, price)。
+    如果这一产品在商店里没有出售，则不输出这一行。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用melt函数将宽表转换为长表
+    melted_df = products.melt(id_vars='product_id', value_vars=['store1', 'store2', 'store3'], 
+                              var_name='store', value_name='price')
+    
+    # 删除价格为空的行
+    filtered_df = melted_df.dropna(subset=['price'])
+    
+    return filtered_df
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_products_table)

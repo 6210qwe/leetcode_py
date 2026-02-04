@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和组合数学来计算所有子序列的宽度之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算每个元素作为最大值和最小值的贡献。
+3. 使用组合数学公式计算每个元素的贡献，并累加结果。
+4. 返回结果对 10^9 + 7 取余后的值。
 
 关键点:
-- [TODO]
+- 排序后，每个元素作为最大值和最小值的贡献可以通过组合数学公式快速计算。
+- 使用幂运算和模运算来处理大数取余。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_subseq_widths(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有非空子序列的宽度之和
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(nums)
+    nums.sort()
+    
+    # 预计算 2 的幂次
+    pow2 = [1] * n
+    for i in range(1, n):
+        pow2[i] = (pow2[i - 1] * 2) % MOD
+    
+    result = 0
+    for i in range(n):
+        # 计算当前元素作为最大值和最小值的贡献
+        max_contribution = (nums[i] * (pow2[i] - 1)) % MOD
+        min_contribution = (nums[i] * (pow2[n - i - 1] - 1)) % MOD
+        result = (result + max_contribution - min_contribution) % MOD
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_subseq_widths)

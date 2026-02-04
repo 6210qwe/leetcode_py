@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示字符串 s 的子串 s[i...j] 中最长的回文子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示 s[i...j] 中最长的回文子序列的长度。
+2. 对于每个单个字符，dp[i][i] = 1，因为单个字符本身就是回文。
+3. 从后向前遍历字符串，对于每个 i 和 j (i < j)，如果 s[i] == s[j]，则 dp[i][j] = dp[i+1][j-1] + 2；否则，dp[i][j] = max(dp[i+1][j], dp[i][j-1])。
+4. 最终结果保存在 dp[0][n-1] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 从后向前遍历以确保子问题已经解决。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。我们需要填充一个 n x n 的二维数组。
+空间复杂度: O(n^2)，用于存储动态规划表。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_palindromic_subsequence(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串 s 中最长的回文子序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0] * n for _ in range(n)]
+
+    # 单个字符的情况
+    for i in range(n):
+        dp[i][i] = 1
+
+    # 填充 dp 数组
+    for length in range(2, n + 1):  # 子串长度
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+
+    return dp[0][n - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindromic_subsequence)

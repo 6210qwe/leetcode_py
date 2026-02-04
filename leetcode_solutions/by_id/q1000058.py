@@ -21,40 +21,53 @@ LCP 23. 魔术排列 - 秋日市集上，魔术师邀请小扣与他互动。魔
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟洗牌和取牌过程，检查是否存在一个 k 使得「魔术取数排列」恰好为 target。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个从 1 到 N 的排列 cards。
+2. 对于每个可能的 k 值 (从 1 到 N)，模拟洗牌和取牌过程。
+3. 在每次洗牌后，检查取出的前 k 张卡牌是否与 target 的前 k 张卡牌匹配。
+4. 如果匹配，则继续处理剩余的卡牌；否则，尝试下一个 k 值。
+5. 如果存在一个 k 使得最终结果与 target 匹配，则返回 True；否则，返回 False。
 
 关键点:
-- [TODO]
+- 模拟洗牌和取牌过程时，需要正确处理偶数位置和奇数位置的卡牌。
+- 通过逐步检查每个 k 值，确保找到满足条件的 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N^2)
+空间复杂度: O(N)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_magic_permutation(target: List[int]) -> bool:
+    n = len(target)
+    for k in range(1, n + 1):
+        cards = list(range(1, n + 1))
+        result = []
+        while cards:
+            # 洗牌
+            even_cards = cards[1::2]
+            odd_cards = cards[0::2]
+            cards = even_cards + odd_cards
+            # 取牌
+            if len(cards) <= k:
+                result.extend(cards)
+                break
+            else:
+                result.extend(cards[:k])
+                cards = cards[k:]
+        if result == target:
+            return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_magic_permutation)

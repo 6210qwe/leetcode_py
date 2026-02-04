@@ -21,40 +21,77 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用一个字典来存储单元格的值，键为单元格引用，值为单元格的值。
+- 使用一个函数来解析公式并计算结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个空字典来存储单元格的值。
+2. setCell 方法将单元格引用和值存入字典。
+3. resetCell 方法将单元格引用的值设为 0。
+4. getValue 方法解析公式并计算结果。
 
 关键点:
-- [TODO]
+- 使用字典来高效地存储和查找单元格的值。
+- 解析公式时，需要处理单元格引用和整数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - setCell 和 resetCell 操作的时间复杂度为 O(1)，getValue 操作的时间复杂度也为 O(1)。
+空间复杂度: O(n) - n 为调用 setCell 和 resetCell 的次数，最坏情况下所有单元格都被设置过。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict
+
+class Spreadsheet:
+    def __init__(self, rows: int):
+        self.cells: Dict[str, int] = {}
+        self.rows = rows
+
+    def setCell(self, cell: str, value: int) -> None:
+        self.cells[cell] = value
+
+    def resetCell(self, cell: str) -> None:
+        if cell in self.cells:
+            del self.cells[cell]
+
+    def getValue(self, formula: str) -> int:
+        # 去掉公式中的等号
+        formula = formula[1:]
+        # 分割公式中的两个部分
+        x, y = formula.split('+')
+        # 去掉可能的空格
+        x, y = x.strip(), y.strip()
+        
+        # 获取 X 的值
+        if x.isdigit():
+            x_value = int(x)
+        else:
+            x_value = self.cells.get(x, 0)
+        
+        # 获取 Y 的值
+        if y.isdigit():
+            y_value = int(y)
+        else:
+            y_value = self.cells.get(y, 0)
+        
+        return x_value + y_value
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试代码
+if __name__ == "__main__":
+    spreadsheet = Spreadsheet(3)
+    print(spreadsheet.getValue("=5+7"))  # 输出 12
+    spreadsheet.setCell("A1", 10)
+    print(spreadsheet.getValue("=A1+6"))  # 输出 16
+    spreadsheet.setCell("B2", 15)
+    print(spreadsheet.getValue("=A1+B2"))  # 输出 25
+    spreadsheet.resetCell("A1")
+    print(spreadsheet.getValue("=A1+B2"))  # 输出 15

@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来缓存函数的输入和输出结果，以避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典来存储函数的输入和输出结果。
+2. 定义一个包装函数，该函数在调用原始函数之前检查缓存。
+3. 如果输入已经在缓存中，则返回缓存的结果；否则，调用原始函数并将结果存储在缓存中。
 
 关键点:
-- [TODO]
+- 使用字典来缓存函数的输入和输出结果。
+- 确保输入的唯一性，以便正确地缓存结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 查找和插入缓存的时间复杂度均为 O(1)。
+空间复杂度: O(n) - 缓存的大小取决于不同输入的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any
 
+def memoize(fn: Callable) -> Callable:
+    cache = {}
+    
+    def memoized_fn(*args):
+        if args not in cache:
+            cache[args] = fn(*args)
+        return cache[args]
+    
+    def get_call_count():
+        return len(cache)
+    
+    memoized_fn.get_call_count = get_call_count
+    return memoized_fn
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(memoize)

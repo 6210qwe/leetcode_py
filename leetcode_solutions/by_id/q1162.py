@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来实现数据的筛选和排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 INNER JOIN 将 `Project` 表和 `Employee` 表连接起来。
+2. 筛选出 `project_id` 为指定值的记录。
+3. 按照 `experience_years` 降序排列。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 INNER JOIN 连接两个表。
+- 使用 WHERE 子句筛选出特定 `project_id` 的记录。
+- 使用 ORDER BY 子句按 `experience_years` 降序排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是符合条件的记录数。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，SQL 查询的空间复杂度通常为常数级。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(project_id: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    query = f"""
+    SELECT e.employee_id, e.name, e.experience_years
+    FROM Project p
+    INNER JOIN Employee e ON p.employee_id = e.employee_id
+    WHERE p.project_id = {project_id}
+    ORDER BY e.experience_years DESC
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，将任务分配给处理器，使得总处理时间最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将处理器按最早空闲时间升序排序。
+2. 将任务按所需时间降序排序。
+3. 按顺序将任务分配给处理器的核心，确保每个处理器的核心都尽可能处理较长时间的任务。
+4. 计算每个处理器完成所有任务的最大时间，并取这些时间的最大值作为最终结果。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每个处理器的核心都能处理较长时间的任务，从而最小化总处理时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是处理器的数量，m 是任务的数量。排序操作的时间复杂度为 O(n log n) 和 O(m log m)。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_processing_time(processor_time: List[int], tasks: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将处理器按最早空闲时间升序排序
+    processor_time.sort()
+    
+    # 将任务按所需时间降序排序
+    tasks.sort(reverse=True)
+    
+    # 计算每个处理器完成所有任务的最大时间
+    max_time = 0
+    for i in range(len(processor_time)):
+        # 每个处理器处理 4 个任务
+        start_index = i * 4
+        end_index = start_index + 4
+        current_tasks = tasks[start_index:end_index]
+        max_time = max(max_time, processor_time[i] + max(current_tasks))
+    
+    return max_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_processing_time)

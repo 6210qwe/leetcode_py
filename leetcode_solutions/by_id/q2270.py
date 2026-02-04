@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个数字的出现次数，并检查每个数字及其相邻数字是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表 `count` 来记录每个数字的出现次数。
+2. 遍历 `nums` 数组，填充 `count` 哈希表。
+3. 再次遍历 `nums` 数组，对于每个数字 `num`，检查其出现次数是否为 1 且其相邻数字 `num-1` 和 `num+1` 是否不在 `count` 哈希表中。
+4. 如果满足条件，将该数字加入结果列表 `result` 中。
+5. 返回结果列表 `result`。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和查询每个数字的出现次数。
+- 通过两次遍历来分别处理计数和筛选。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们需要两次遍历数组，每次遍历的时间复杂度都是 O(n)。
+空间复杂度: O(n)，哈希表 `count` 在最坏情况下需要存储所有不同的数字。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_lonely_numbers(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中的所有孤独数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个数字的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 结果列表
+    result = []
+    
+    # 遍历数组，检查每个数字是否为孤独数字
+    for num in nums:
+        if count[num] == 1 and (num - 1 not in count) and (num + 1 not in count):
+            result.append(num)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_lonely_numbers)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点的路径异或和，并使用字典来存储每个节点的子树中的所有路径异或和。然后，对于每个查询，从字典中获取相应的路径异或和并排序，找到第 k 小的路径异或和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构，使用邻接表表示。
+2. 使用 DFS 计算每个节点的路径异或和，并存储在字典中。
+3. 对于每个查询，从字典中获取相应的路径异或和并排序，找到第 k 小的路径异或和。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算路径异或和。
+- 使用字典存储每个节点的子树中的所有路径异或和。
+- 对于每个查询，从字典中获取相应的路径异或和并排序，找到第 k 小的路径异或和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log(q))，其中 n 是节点数，q 是查询数。构建树和计算路径异或和的时间复杂度是 O(n)，每个查询的时间复杂度是 O(log(q))。
+空间复杂度: O(n)，用于存储树结构和路径异或和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+def kth_smallest_path_xor_sum(par: List[int], vals: List[int], queries: List[List[int]]) -> List[int]:
+    def dfs(node: int, xor_val: int):
+        path_xors[node].add(xor_val)
+        for child in tree[node]:
+            dfs(child, xor_val ^ vals[child])
+    
+    n = len(par)
+    tree = defaultdict(list)
+    for i in range(1, n):
+        tree[par[i]].append(i)
+    
+    path_xors = defaultdict(set)
+    dfs(0, vals[0])
+    
+    result = []
+    for u, k in queries:
+        sorted_xors = sorted(path_xors[u])
+        if k <= len(sorted_xors):
+            result.append(sorted_xors[k - 1])
+        else:
+            result.append(-1)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_smallest_path_xor_sum)

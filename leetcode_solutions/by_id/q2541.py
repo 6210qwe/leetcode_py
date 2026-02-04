@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的 k，并检查 k + reverse(k) 是否等于 num。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 num 为 0，直接返回 True。
+2. 枚举从 1 到 num 的所有整数 k。
+3. 对于每个 k，计算其反转值 reverse(k)。
+4. 检查 k + reverse(k) 是否等于 num，如果是则返回 True。
+5. 如果遍历完所有 k 都没有找到满足条件的 k，则返回 False。
 
 关键点:
-- [TODO]
+- 使用字符串反转来实现 reverse(k)。
+- 通过枚举所有可能的 k 来确保不会遗漏任何情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 num 的大小。最坏情况下需要枚举从 1 到 num 的所有整数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否存在某个非负整数 k 满足 k + reverse(k) = num
     """
-    # TODO: 实现最优解法
-    pass
+    if num == 0:
+        return True
+
+    def reverse(x: int) -> int:
+        return int(str(x)[::-1])
+
+    for k in range(1, num):
+        if k + reverse(k) == num:
+            return True
+
+    return False
 
 
 Solution = create_solution(solution_function_name)

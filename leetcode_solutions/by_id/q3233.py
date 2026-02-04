@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][mask] 表示在字符串 s 的前 i 个字符中，使用 mask 表示的不同字符集合的最大分割数。
+2. 遍历字符串 s 的每个字符，更新 dp 数组。
+3. 对于每个字符，尝试将其替换为其他字符，并更新 dp 数组。
+4. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示不同字符的集合。
+- 动态规划来记录每个状态下的最大分割数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^k)，其中 n 是字符串 s 的长度，k 是不同字符的数量。
+空间复杂度: O(n * 2^k)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_partitions_after_operations(s: str, k: int) -> int:
+    n = len(s)
+    if k >= 26:
+        return 1  # 如果 k 大于等于 26，那么整个字符串就是一个分割
 
+    # 初始化 dp 数组
+    dp = [[0] * (1 << k) for _ in range(n + 1)]
+    char_to_bit = {chr(ord('a') + i): 1 << i for i in range(k)}
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, n + 1):
+        for mask in range(1 << k):
+            if dp[i - 1][mask] == 0:
+                continue
+            # 不替换当前字符
+            bit = char_to_bit.get(s[i - 1], 0)
+            if (mask & bit) != 0 or bin(mask).count('1') < k:
+                new_mask = mask | bit
+                dp[i][new_mask] = max(dp[i][new_mask], dp[i - 1][mask] + (bin(new_mask).count('1') == k))
+
+            # 替换当前字符
+            for j in range(k):
+                if (mask & (1 << j)) == 0:
+                    new_mask = mask | (1 << j)
+                    dp[i][new_mask] = max(dp[i][new_mask], dp[i - 1][mask] + (bin(new_mask).count('1') == k))
+
+    return max(max(row) for row in dp)
+
+Solution = create_solution(max_partitions_after_operations)

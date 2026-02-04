@@ -21,40 +21,82 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Floyd-Warshall 算法计算所有货币之间的最短路径，从而找到两天内最优的兑换路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建第 1 天和第 2 天的汇率图。
+2. 使用 Floyd-Warshall 算法计算第 1 天和第 2 天的所有货币之间的最短路径。
+3. 计算从初始货币经过两天兑换后的最大值。
 
 关键点:
-- [TODO]
+- 使用 Floyd-Warshall 算法处理多对多的货币兑换问题。
+- 通过两次应用 Floyd-Warshall 算法，分别计算第 1 天和第 2 天的最优兑换路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 + m^3)，其中 n 是 pairs1 的长度，m 是 pairs2 的长度。
+空间复杂度: O(n^2 + m^2)，用于存储汇率图。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import math
 
+def floyd_warshall(graph):
+    currencies = list(graph.keys())
+    n = len(currencies)
+    dist = [[-math.inf] * n for _ in range(n)]
+    
+    for i, cur in enumerate(currencies):
+        dist[i][i] = 1.0
+        for neighbor, rate in graph[cur].items():
+            j = currencies.index(neighbor)
+            dist[i][j] = rate
+    
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][k] > 0 and dist[k][j] > 0:
+                    dist[i][j] = max(dist[i][j], dist[i][k] * dist[k][j])
+    
+    return dist, currencies
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximize_amount(initial_currency: str, pairs1: List[List[str]], rates1: List[float], pairs2: List[List[str]], rates2: List[float]) -> float:
+    # 构建第 1 天和第 2 天的汇率图
+    graph1 = collections.defaultdict(dict)
+    graph2 = collections.defaultdict(dict)
+    
+    for (src, dst), rate in zip(pairs1, rates1):
+        graph1[src][dst] = rate
+        graph1[dst][src] = 1 / rate
+    
+    for (src, dst), rate in zip(pairs2, rates2):
+        graph2[src][dst] = rate
+        graph2[dst][src] = 1 / rate
+    
+    # 使用 Floyd-Warshall 算法计算第 1 天和第 2 天的所有货币之间的最短路径
+    dist1, currencies1 = floyd_warshall(graph1)
+    dist2, currencies2 = floyd_warshall(graph2)
+    
+    # 计算从初始货币经过两天兑换后的最大值
+    max_amount = 0.0
+    for currency in currencies1:
+        if currency not in currencies2:
+            continue
+        i = currencies1.index(initial_currency)
+        j = currencies1.index(currency)
+        k = currencies2.index(currency)
+        l = currencies2.index(initial_currency)
+        amount = dist1[i][j] * dist2[k][l]
+        max_amount = max(max_amount, amount)
+    
+    return max_amount
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_amount)

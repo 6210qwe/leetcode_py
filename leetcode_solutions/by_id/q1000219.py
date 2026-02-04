@@ -21,40 +21,61 @@ LCP 32. 批量处理任务 - 某实验室计算机待处理任务以 `[start,end
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列（堆）来处理任务，确保在每个时间点上尽可能多地处理任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有任务按结束时间从小到大排序。
+2. 使用一个最小堆来记录当前正在处理的任务及其剩余时间。
+3. 遍历每个时间点，更新堆中的任务，并计算当前时间点需要处理的任务数量。
+4. 如果当前时间点需要处理的任务数量大于已处理的任务数量，则增加开机时间。
+5. 最终返回总的开机时间。
 
 关键点:
-- [TODO]
+- 使用优先队列（堆）来动态管理当前正在处理的任务。
+- 在每个时间点上，尽可能多地处理任务，以减少总的开机时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是任务的数量。排序操作的时间复杂度为 O(n log n)，遍历和堆操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储堆中的任务。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_time_to_process_tasks(tasks: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算处理所有任务所需的最少开机时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 按结束时间排序
+    tasks.sort(key=lambda x: x[1])
+    
+    # 最小堆，存储 (结束时间, 剩余时间)
+    heap = []
+    total_time = 0
+    processed_time = 0
+    
+    for start, end, period in tasks:
+        # 移除已经完成的任务
+        while heap and heap[0][0] < start:
+            _, remaining = heapq.heappop(heap)
+            processed_time -= remaining
+        
+        # 添加当前任务
+        heapq.heappush(heap, (end, period))
+        processed_time += period
+        
+        # 更新总开机时间
+        if processed_time > total_time:
+            total_time = processed_time
+    
+    return total_time
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_process_tasks)

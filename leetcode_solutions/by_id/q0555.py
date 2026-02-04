@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和字典来存储可能的前缀，然后逐个字符地构建字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `prefixes` 来存储所有可能的前缀。
+2. 遍历输入字符串 `s`，逐个字符地构建当前字符串 `current`。
+3. 如果 `current` 在 `prefixes` 中且 `current` 不是某个更长字符串的前缀，则将其加入结果列表，并重置 `current`。
+4. 更新 `prefixes` 字典，移除已经找到的字符串。
 
 关键点:
-- [TODO]
+- 使用字典来快速查找和更新前缀。
+- 逐个字符地构建字符串，确保每个字符串都是尽可能短的有效字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(m)，其中 m 是 words 数组中所有字符串的总长度。我们需要存储所有可能的前缀。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def split_concatenated_strings(s: str, words: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现分割连接字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化前缀字典
+    prefixes = {word[:i] for word in words for i in range(1, len(word) + 1)}
+    
+    result = []
+    current = ""
+    
+    for char in s:
+        current += char
+        if current in prefixes and (len(current) == 1 or current[:-1] not in prefixes):
+            result.append(current)
+            current = ""
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_concatenated_strings)

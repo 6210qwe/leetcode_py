@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为总成本为 i 时可以得到的最大整数。通过遍历每个数位及其成本，更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] 为空字符串，其余为 "0"。
+2. 遍历每个数位及其成本，对于每个数位，更新 dp 数组中的每个可能的总成本。
+3. 返回 dp[target]。
 
 关键点:
-- [TODO]
+- 使用 dp 数组存储中间结果，避免重复计算。
+- 通过倒序遍历总成本，确保每次更新 dp 数组时使用的是之前的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target)，其中 n 是 cost 数组的长度，target 是目标成本。
+空间复杂度: O(target)，dp 数组的大小为 target + 1。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(cost: List[int], target: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [""] + ["0"] * target
+    
+    # 遍历每个数位及其成本
+    for i in range(9):
+        c = cost[i]
+        for j in range(c, target + 1):
+            if dp[j - c] != "0":
+                new_num = dp[j - c] + str(i + 1)
+                if len(new_num) > len(dp[j]) or (len(new_num) == len(dp[j]) and new_num > dp[j]):
+                    dp[j] = new_num
+    
+    return dp[target]
 
 
 Solution = create_solution(solution_function_name)

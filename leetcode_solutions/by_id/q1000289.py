@@ -21,40 +21,51 @@ LCR 103. 零钱兑换 - 给定不同面额的硬币 coins 和一个总金额 amo
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个数组 dp，其中 dp[i] 表示凑成金额 i 所需的最少硬币数。通过遍历每个金额 i，并尝试使用每种硬币来更新 dp[i] 的值，最终得到 dp[amount] 的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个大小为 amount+1 的数组 dp，所有元素初始化为 amount+1（表示一个不可能达到的大数），dp[0] 初始化为 0。
+2. 遍历从 1 到 amount 的每个金额 i。
+3. 对于每个金额 i，遍历每种硬币 coin，如果 coin 小于等于 i，则更新 dp[i] 为 min(dp[i], dp[i - coin] + 1)。
+4. 最后检查 dp[amount] 是否仍为初始值 amount+1，如果是则返回 -1，否则返回 dp[amount]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = min(dp[i], dp[i - coin] + 1)
+- 初始化 dp 数组时，dp[0] 设为 0，其他设为 amount+1
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 amount，m 是 coins 的长度。
+空间复杂度: O(n)，因为我们使用了一个大小为 amount+1 的数组 dp。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def coin_change(coins: List[int], amount: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现零钱兑换问题
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [amount + 1] * (amount + 1)
+    dp[0] = 0
+
+    # 遍历每个金额 i
+    for i in range(1, amount + 1):
+        # 遍历每种硬币
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+
+    # 返回结果
+    return dp[amount] if dp[amount] != amount + 1 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(coin_change)

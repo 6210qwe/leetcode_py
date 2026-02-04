@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 表示从前 i 个栈中取出 j 个硬币的最大价值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0，其他 dp[0][j] 为 0。
+2. 遍历每个栈，对于每个栈，计算其前缀和。
+3. 更新 dp 数组，对于每个栈中的每个硬币，更新 dp[i][j] 的值。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算从某个栈中取出一定数量硬币的价值。
+- 动态规划的状态转移方程为 dp[i][j] = max(dp[i-1][j], dp[i-1][j-t] + prefix_sum[t])，其中 t 是从当前栈中取出的硬币数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k^2)，其中 n 是栈的数量，k 是需要取出的硬币数量。
+空间复杂度: O(n * k)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(piles: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从栈中取出 K 个硬币的最大面值和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(piles)
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        prefix_sum = [0]
+        for coin in piles[i - 1]:
+            prefix_sum.append(prefix_sum[-1] + coin)
+        
+        for j in range(k + 1):
+            dp[i][j] = dp[i - 1][j]
+            for t in range(1, min(len(piles[i - 1]), j) + 1):
+                if j - t >= 0:
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - t] + prefix_sum[t])
+    
+    return dp[n][k]
 
 
 Solution = create_solution(solution_function_name)

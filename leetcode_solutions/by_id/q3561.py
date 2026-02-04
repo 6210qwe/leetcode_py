@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来标记所有可疑方法，并检查是否有非可疑方法调用了这些可疑方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建反向图，记录每个方法被哪些方法调用。
+2. 使用 DFS 从可疑方法 k 开始，标记所有可疑方法。
+3. 检查每个可疑方法是否被非可疑方法调用，如果有则返回所有方法。
+4. 如果没有非可疑方法调用可疑方法，则返回剩余的方法。
 
 关键点:
-- [TODO]
+- 使用反向图来快速查找调用关系。
+- 使用 DFS 标记可疑方法。
+- 检查可疑方法是否可以被移除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是方法的数量，m 是调用关系的数量。
+空间复杂度: O(n + m)，用于存储反向图和访问标记。
 """
 
 # ============================================================================
@@ -49,12 +53,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int, invocations: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建反向图
+    reverse_graph = [[] for _ in range(n)]
+    for a, b in invocations:
+        reverse_graph[b].append(a)
+
+    # 标记可疑方法
+    suspicious = [False] * n
+    def dfs(node: int):
+        if suspicious[node]:
+            return
+        suspicious[node] = True
+        for neighbor in reverse_graph[node]:
+            dfs(neighbor)
+
+    dfs(k)
+
+    # 检查可疑方法是否可以被移除
+    can_remove = True
+    for i in range(n):
+        if not suspicious[i]:
+            for neighbor in reverse_graph[i]:
+                if suspicious[neighbor]:
+                    can_remove = False
+                    break
+        if not can_remove:
+            break
+
+    if not can_remove:
+        return list(range(n))
+    else:
+        return [i for i in range(n) if not suspicious[i]]
 
 
 Solution = create_solution(solution_function_name)

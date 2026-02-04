@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并计算每个节点作为根节点时的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 遍历树，计算每个节点的子树中的好节点和坏节点数量。
+3. 在回溯过程中，更新每个节点的最大得分。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，确保每个节点及其子树都被正确处理。
+- 在回溯过程中，更新每个节点的最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边都只被访问一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_subgraph_score(n: int, edges: List[List[int]], good: List[int]) -> List[int]:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 结果数组
+    result = [0] * n
 
+    def dfs(node: int, parent: int) -> (int, int):
+        """
+        深度优先搜索，返回以 node 为根的子树中的好节点和坏节点数量。
+        """
+        good_count = good[node]
+        bad_count = 1 - good[node]
 
-Solution = create_solution(solution_function_name)
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                g, b = dfs(neighbor, node)
+                good_count += g
+                bad_count += b
+
+        # 更新当前节点的最大得分
+        result[node] = good_count - bad_count
+
+        # 返回当前子树的好节点和坏节点数量
+        return good_count, bad_count
+
+    # 从根节点开始进行 DFS
+    dfs(0, -1)
+
+    return result
+
+Solution = create_solution(max_subgraph_score)

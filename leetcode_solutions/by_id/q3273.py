@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和数论的方法来解决这个问题。具体来说，我们可以使用一个布尔数组来表示每个价格是否可以被购买。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔数组 `can_buy`，长度为 `maxPrice + 1`，初始值为 `False`。
+2. 遍历每个价格 `price`，将 `can_buy[price]` 设为 `True`。
+3. 使用双重循环遍历所有可能的价格组合，更新 `can_buy` 数组。
+4. 找到第一个 `False` 的位置，即为最贵的无法购买的商品。
 
 关键点:
-- [TODO]
+- 使用布尔数组来记录每个价格是否可以被购买。
+- 通过双重循环更新布尔数组，确保所有可能的价格组合都被考虑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * maxPrice)，其中 n 是价格列表的长度，maxPrice 是最大价格。
+空间复杂度: O(maxPrice)，用于存储布尔数组。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[int], maxPrice: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最贵的无法购买的商品
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化布尔数组
+    can_buy = [False] * (maxPrice + 1)
+    can_buy[0] = True  # 价格为0时总是可以购买
+
+    # 标记每个价格是否可以被购买
+    for price in prices:
+        if price <= maxPrice:
+            can_buy[price] = True
+
+    # 更新布尔数组
+    for i in range(1, maxPrice + 1):
+        for price in prices:
+            if i - price >= 0 and can_buy[i - price]:
+                can_buy[i] = True
+                break
+
+    # 找到第一个无法购买的价格
+    for i in range(maxPrice, -1, -1):
+        if not can_buy[i]:
+            return i
+
+    return -1
 
 
 Solution = create_solution(solution_function_name)

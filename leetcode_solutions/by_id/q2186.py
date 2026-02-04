@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到所有包含五个元音的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别表示当前窗口的左右边界。
+2. 使用一个集合 `vowels` 来存储当前窗口内的元音。
+3. 遍历字符串 `word`，使用 `right` 指针扩展窗口，直到窗口内包含所有五个元音。
+4. 如果窗口内包含所有五个元音，则将 `left` 指针向右移动，直到窗口内不再包含所有五个元音，并记录满足条件的子字符串数量。
+5. 重复步骤 3 和 4，直到遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地找到所有包含五个元音的子字符串。
+- 通过移动 `left` 指针来缩小窗口，确保每个子字符串都被正确计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `word` 的长度。每个字符最多被访问两次（一次由 `right` 指针，一次由 `left` 指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowel_substrings(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计字符串中的元音子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiou')
+    n = len(word)
+    count = 0
+    
+    for left in range(n):
+        if word[left] not in vowels:
+            continue
+        current_vowels = set()
+        for right in range(left, n):
+            if word[right] in vowels:
+                current_vowels.add(word[right])
+                if current_vowels == vowels:
+                    count += 1
+            else:
+                break
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowel_substrings)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过两次遍历矩阵，第一次找到每行的最小值及其索引，第二次找到每列的最大值及其索引。然后检查这些最小值和最大值是否在同一位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个列表来存储每行的最小值及其索引。
+2. 遍历矩阵，找到每行的最小值及其索引，并存储在列表中。
+3. 初始化一个列表来存储每列的最大值及其索引。
+4. 遍历矩阵，找到每列的最大值及其索引，并存储在列表中。
+5. 检查每行的最小值和每列的最大值是否在同一位置，如果是，则该值为幸运数。
 
 关键点:
-- [TODO]
+- 通过两次遍历矩阵，分别找到每行的最小值和每列的最大值。
+- 检查这些值是否在同一位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。我们需要遍历矩阵两次。
+空间复杂度: O(m + n)，用于存储每行的最小值及其索引和每列的最大值及其索引。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_lucky_numbers(matrix: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到矩阵中的幸运数
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return []
+
+    m, n = len(matrix), len(matrix[0])
+    
+    # 找到每行的最小值及其索引
+    row_min = [(min(row), row.index(min(row))) for row in matrix]
+    
+    # 找到每列的最大值及其索引
+    col_max = [(max(col), col.index(max(col))) for col in zip(*matrix)]
+    
+    # 检查每行的最小值和每列的最大值是否在同一位置
+    lucky_numbers = [matrix[row][col] for (val, col), (row, val) in zip(row_min, col_max) if row == col]
+    
+    return lucky_numbers
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_lucky_numbers)

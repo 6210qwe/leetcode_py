@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来找到所有满足条件的稳定山的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `stable_indices` 用于存储稳定山的下标。
+2. 从下标 1 开始遍历数组 `height`，检查每个山的左侧相邻山的高度是否大于 `threshold`。
+3. 如果满足条件，则将当前山的下标添加到 `stable_indices` 中。
+4. 返回 `stable_indices` 列表。
 
 关键点:
-- [TODO]
+- 从下标 1 开始遍历，避免处理下标 0 的特殊情况。
+- 仅使用常数级额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `height` 的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，除了返回结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_stable_mountain_indices(height: List[int], threshold: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有稳定山的下标
     """
-    # TODO: 实现最优解法
-    pass
+    stable_indices = []
+    for i in range(1, len(height)):
+        if height[i - 1] > threshold:
+            stable_indices.append(i)
+    return stable_indices
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_stable_mountain_indices)

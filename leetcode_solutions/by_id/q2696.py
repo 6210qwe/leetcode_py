@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的子集，并检查每个子集是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序，以便于后续处理。
+2. 使用回溯法生成所有可能的子集。
+3. 在生成子集的过程中，检查当前子集是否满足美丽子集的条件。
+4. 如果满足条件，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用字典记录已经选择的元素，避免重复计算。
+- 在回溯过程中，通过剪枝减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是数组的长度。最坏情况下需要生成所有子集。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_beautiful_subsets(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算美丽的子集数目
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()
+    count = 0
+    chosen = {}
+
+    def backtrack(start: int):
+        nonlocal count
+        for i in range(start, len(nums)):
+            if nums[i] - k in chosen:
+                continue
+            chosen[nums[i]] = 1
+            count += 1
+            backtrack(i + 1)
+            del chosen[nums[i]]
+
+    backtrack(0)
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_subsets)

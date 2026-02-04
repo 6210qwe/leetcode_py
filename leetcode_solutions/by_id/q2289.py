@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计数找出奇偶位置上出现次数最多的两个数，然后计算最小的操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 分别统计奇数和偶数位置上每个数的出现次数。
+2. 找出奇数和偶数位置上出现次数最多的两个数及其出现次数。
+3. 计算两种情况下的最小操作数：
+   - 奇数位置和偶数位置上的最大数不同。
+   - 奇数位置和偶数位置上的最大数相同，需要考虑次大数。
 
 关键点:
-- [TODO]
+- 使用计数器来统计每个位置上数的出现次数。
+- 通过比较最大数和次大数来确定最小操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def minimum_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组变成交替数组的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) <= 1:
+        return 0
 
+    # 统计奇数和偶数位置上每个数的出现次数
+    odd_counter = Counter()
+    even_counter = Counter()
 
-Solution = create_solution(solution_function_name)
+    for i, num in enumerate(nums):
+        if i % 2 == 0:
+            even_counter[num] += 1
+        else:
+            odd_counter[num] += 1
+
+    # 找出奇数和偶数位置上出现次数最多的两个数及其出现次数
+    (even_max, even_count), (even_second, even_second_count) = even_counter.most_common(2)
+    (odd_max, odd_count), (odd_second, odd_second_count) = odd_counter.most_common(2)
+
+    # 计算最小操作数
+    if even_max != odd_max:
+        return len(nums) - even_count - odd_count
+    else:
+        return min(len(nums) - even_count - odd_second_count, len(nums) - even_second_count - odd_count)
+
+Solution = create_solution(minimum_operations)

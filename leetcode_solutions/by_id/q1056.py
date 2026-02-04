@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的运载能力。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，左边界为最大包裹重量，右边界为所有包裹重量之和。
+2. 在二分查找的过程中，计算中间值 mid 作为当前尝试的运载能力。
+3. 检查在当前运载能力下是否可以在 D 天内完成运输：
+   - 如果可以，则缩小右边界，继续查找更小的运载能力。
+   - 如果不可以，则增大左边界，查找更大的运载能力。
+4. 最终返回左边界，即为最小的运载能力。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程，时间复杂度为 O(n log S)，其中 n 是包裹数量，S 是所有包裹重量之和。
+- 通过贪心算法来检查当前运载能力是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log S)，其中 n 是包裹数量，S 是所有包裹重量之和。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def ship_within_days(weights: List[int], days: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在 D 天内送达包裹的最小运载能力
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化二分查找的左右边界
+    left, right = max(weights), sum(weights)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_ship_in_days(weights, mid, days):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+def can_ship_in_days(weights: List[int], capacity: int, days: int) -> bool:
+    """
+    检查在给定的运载能力下是否可以在 D 天内完成运输
+    """
+    required_days = 1
+    current_weight = 0
+    
+    for weight in weights:
+        if current_weight + weight > capacity:
+            required_days += 1
+            current_weight = 0
+        current_weight += weight
+    
+    return required_days <= days
+
+
+Solution = create_solution(ship_within_days)

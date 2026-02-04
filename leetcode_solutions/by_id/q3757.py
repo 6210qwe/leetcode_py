@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式来匹配具有三个连续数字的产品名称。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 SQL 查询语句从数据库中获取所有产品名称。
+2. 使用正则表达式匹配具有三个连续数字的产品名称。
+3. 返回匹配的结果。
 
 关键点:
-- [TODO]
+- 使用正则表达式进行字符串匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是产品数量，m 是每个产品名称的平均长度。
+空间复杂度: O(1)，因为正则表达式匹配不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
 
-
-def solution_function_name(params):
+def solution_function_name(products: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找具有三个连续数字的产品
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用正则表达式匹配具有三个连续数字的产品名称
+    pattern = re.compile(r'\d{3}')
+    result = [product for product in products if pattern.search(product)]
+    return result
 
 Solution = create_solution(solution_function_name)

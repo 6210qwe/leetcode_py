@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从最大的斐波那契数开始减去，直到 k 为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有小于等于 k 的斐波那契数。
+2. 从最大的斐波那契数开始，尽可能多地减去该数，更新 k。
+3. 重复步骤 2，直到 k 为 0。
 
 关键点:
-- [TODO]
+- 生成斐波那契数列时，只需生成到大于 k 的第一个数即可。
+- 每次选择当前最大的斐波那契数进行减法操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k)
+空间复杂度: O(log k)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_min_fibonacci_numbers(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回和为 k 的斐波那契数字的最少数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成所有小于等于 k 的斐波那契数
+    fibs = []
+    a, b = 1, 1
+    while a <= k:
+        fibs.append(a)
+        a, b = b, a + b
+    
+    # 从最大的斐波那契数开始，尽可能多地减去该数，更新 k
+    count = 0
+    for fib in reversed(fibs):
+        if k >= fib:
+            k -= fib
+            count += 1
+        if k == 0:
+            break
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_fibonacci_numbers)

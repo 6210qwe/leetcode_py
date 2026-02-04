@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过记录每个玩家在每行、每列和对角线上的棋子数量来判断是否有玩家获胜。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 3x3 的棋盘，并记录每个玩家在每行、每列和对角线上的棋子数量。
+2. 遍历 moves 数组，根据当前步数确定是哪个玩家的回合，并更新棋盘和计数器。
+3. 每次移动后检查是否有玩家在某一行、某一列或对角线上有三个棋子。
+4. 如果有玩家获胜，返回该玩家；如果所有位置都被填满且没有玩家获胜，返回 "Draw"；否则返回 "Pending"。
 
 关键点:
-- [TODO]
+- 使用计数器来跟踪每个玩家在每行、每列和对角线上的棋子数量。
+- 每次移动后立即检查是否有玩家获胜，以尽早结束游戏。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tictactoe(moves: List[List[int]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断井字棋游戏的获胜者
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化棋盘和计数器
+    board = [[''] * 3 for _ in range(3)]
+    rows, cols = [0] * 3, [0] * 3
+    diag, anti_diag = 0, 0
+    
+    # 遍历 moves 数组
+    for i, (row, col) in enumerate(moves):
+        player = 'A' if i % 2 == 0 else 'B'
+        board[row][col] = player
+        
+        # 更新计数器
+        if player == 'A':
+            rows[row] += 1
+            cols[col] += 1
+            if row == col:
+                diag += 1
+            if row + col == 2:
+                anti_diag += 1
+        else:
+            rows[row] -= 1
+            cols[col] -= 1
+            if row == col:
+                diag -= 1
+            if row + col == 2:
+                anti_diag -= 1
+        
+        # 检查是否有玩家获胜
+        if abs(rows[row]) == 3 or abs(cols[col]) == 3 or abs(diag) == 3 or abs(anti_diag) == 3:
+            return player
+    
+    # 检查是否平局
+    if len(moves) == 9:
+        return "Draw"
+    
+    return "Pending"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tictactoe)

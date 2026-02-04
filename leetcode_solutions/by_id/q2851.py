@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归解析 JSON 字符串，根据不同的键值对生成相应的对象。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `parse_json`，用于解析 JSON 字符串。
+2. 检查 JSON 字符串的类型，如果是字典，则进一步解析其键值对。
+3. 根据键值对的值类型，递归调用 `parse_json` 解析嵌套的 JSON 对象。
+4. 如果是列表，则遍历列表并递归调用 `parse_json` 解析每个元素。
+5. 如果是基本类型（如字符串、整数、浮点数、布尔值、null），直接返回对应的 Python 类型。
 
 关键点:
-- [TODO]
+- 递归解析 JSON 字符串，处理不同类型的键值对。
+- 使用 Python 的内置数据结构和类型进行转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 JSON 字符串的长度。每个字符最多被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 JSON 字符串的嵌套层数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import json
 
-
-def solution_function_name(params):
+def solution_function_name(json_str: str):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将 JSON 字符串转换为对象
     """
-    # TODO: 实现最优解法
-    pass
+    def parse_json(obj):
+        if isinstance(obj, dict):
+            return {k: parse_json(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [parse_json(item) for item in obj]
+        else:
+            return obj
 
+    try:
+        parsed_obj = json.loads(json_str)
+        return parse_json(parsed_obj)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON string: {e}")
 
 Solution = create_solution(solution_function_name)

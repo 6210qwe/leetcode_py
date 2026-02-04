@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算将数组变为非递减或非递增所需的最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `dp_inc` 和 `dp_dec`，分别表示将数组变为非递减和非递增所需的最小操作次数。
+2. 遍历数组，对于每个元素，更新 `dp_inc` 和 `dp_dec`。
+3. 最后返回 `dp_inc` 和 `dp_dec` 的最小值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过比较相邻元素来决定是否需要进行操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_sort_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将数组变为非递减或非递增所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n <= 1:
+        return 0
+
+    dp_inc = [0] * n
+    dp_dec = [0] * n
+
+    for i in range(1, n):
+        if nums[i] >= nums[i - 1]:
+            dp_inc[i] = dp_inc[i - 1]
+        else:
+            dp_inc[i] = dp_inc[i - 1] + 1
+
+        if nums[i] <= nums[i - 1]:
+            dp_dec[i] = dp_dec[i - 1]
+        else:
+            dp_dec[i] = dp_dec[i - 1] + 1
+
+    return min(dp_inc[-1], dp_dec[-1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_sort_array)

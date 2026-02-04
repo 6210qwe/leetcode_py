@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来表示牢房状态，并利用哈希表检测循环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将初始牢房状态转换为一个整数。
+2. 使用哈希表记录每个状态出现的天数，以检测循环。
+3. 模拟每一天的状态变化，直到达到目标天数或检测到循环。
+4. 如果检测到循环，直接跳过循环部分，计算剩余天数。
+5. 返回最终状态。
 
 关键点:
-- [TODO]
+- 使用位运算来高效表示和操作牢房状态。
+- 通过哈希表检测循环，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 最多有 2^6 种不同的状态，因此最多模拟 64 天即可找到循环。
+空间复杂度: O(1) - 哈希表最多存储 64 个状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def prison_after_n_days(cells: List[int], n: int) -> List[int]:
+    def to_int(cells: List[int]) -> int:
+        return sum(cell << i for i, cell in enumerate(cells))
+
+    def to_list(state: int) -> List[int]:
+        return [(state >> i) & 1 for i in range(8)]
+
+    state = to_int(cells)
+    seen = {state: 0}
+    day = 0
+
+    while day < n:
+        next_state = 0
+        for i in range(1, 7):
+            if (state >> (i - 1)) & 1 == (state >> (i + 1)) & 1:
+                next_state |= 1 << i
+        state = next_state
+        day += 1
+        if state in seen:
+            cycle_length = day - seen[state]
+            n = (n - day) % cycle_length
+            day = 0
+            seen.clear()
+        else:
+            seen[state] = day
+
+    return to_list(state)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(prison_after_n_days)

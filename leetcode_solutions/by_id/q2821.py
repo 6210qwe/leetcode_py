@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 JavaScript 的 setTimeout 和 clearTimeout 来实现延迟执行和取消。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个内部函数 `execute`，该函数将在 t 毫秒后执行 fn 并传递 args。
+2. 使用 setTimeout 设置一个定时器，在 t 毫秒后调用 `execute`。
+3. 返回一个取消函数 `cancelFn`，该函数调用 clearTimeout 来取消定时器。
 
 关键点:
-- [TODO]
+- 使用闭包来保持对定时器 ID 的引用。
+- 确保在调用 cancelFn 时能够正确取消定时器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def cancellable(fn, args: List, t: int):
     """
-    函数式接口 - [TODO] 实现
+    返回一个取消函数 cancelFn，可以在 t 毫秒内取消 fn 的延迟执行。
     """
-    # TODO: 实现最优解法
-    pass
+    def execute():
+        result = fn(*args)
+        return {"time": t, "returned": result}
+
+    timer_id = None
+
+    def set_timer():
+        nonlocal timer_id
+        timer_id = setTimeout(execute, t)
+
+    def cancel_fn():
+        clearTimeout(timer_id)
+
+    set_timer()
+    return cancel_fn
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(cancellable)

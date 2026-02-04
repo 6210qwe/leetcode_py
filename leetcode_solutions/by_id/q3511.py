@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算总价值是否能被 115 整除来判断胜负。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总价值 total_value = 75 * x + 10 * y。
+2. 如果 total_value % 115 == 0，则 Alice 赢；否则 Bob 赢。
 
 关键点:
-- [TODO]
+- 通过数学计算直接判断胜负，避免了复杂的模拟过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_winner(x: int, y: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断硬币游戏的赢家
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算总价值
+    total_value = 75 * x + 10 * y
+    
+    # 判断胜负
+    if total_value % 115 == 0:
+        return "Alice"
+    else:
+        return "Bob"
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_winner)

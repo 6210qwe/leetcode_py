@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 在现有最大二叉树的基础上，插入一个新的节点。如果新节点的值大于当前根节点的值，则新节点成为新的根节点，原树成为新节点的左子树。否则，递归地在右子树中找到合适的位置插入新节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果新节点的值大于当前根节点的值，创建一个新节点作为根节点，并将原树作为新节点的左子树。
+2. 否则，递归地在右子树中找到合适的位置插入新节点。
 
 关键点:
-- [TODO]
+- 通过递归找到合适的位置插入新节点。
+- 确保新节点插入后仍然满足最大二叉树的定义。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h)，其中 h 是树的高度。最坏情况下，树的高度为 n，即 O(n)。
+空间复杂度: O(h)，递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def insert_into_max_tree(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    在现有最大二叉树的基础上，插入一个新的节点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root or root.val < val:
+        new_node = TreeNode(val)
+        new_node.left = root
+        return new_node
+    
+    # 递归地在右子树中找到合适的位置插入新节点
+    root.right = insert_into_max_tree(root.right, val)
+    return root
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(insert_into_max_tree)

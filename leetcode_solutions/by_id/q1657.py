@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和计数器来模拟游戏过程，找到连续获胜 k 次的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前最大值为 arr[0]，计数器 count 为 0。
+2. 遍历数组，从第二个元素开始，比较当前最大值和下一个元素：
+   - 如果当前最大值大于下一个元素，计数器加 1，并将下一个元素移到数组末尾。
+   - 如果当前最大值小于下一个元素，更新当前最大值为下一个元素，重置计数器为 1。
+3. 当计数器达到 k 时，返回当前最大值。
+4. 如果遍历完数组仍未找到连续获胜 k 次的整数，则继续从头遍历，直到找到为止。
 
 关键点:
-- [TODO]
+- 使用双指针和计数器来模拟游戏过程，避免实际移动元素，从而提高效率。
+- 通过循环遍历数组，确保找到连续获胜 k 次的整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_winner(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组游戏的赢家
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    max_val = arr[0]
+    count = 0
+    i = 1
+    
+    while True:
+        if max_val > arr[i % n]:
+            count += 1
+        else:
+            max_val = arr[i % n]
+            count = 1
+        
+        if count == k:
+            return max_val
+        
+        i += 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_winner)

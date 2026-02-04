@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来判断是否有环。如果存在环，则说明有重复的机票。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图和入度数组。
+2. 初始化队列，将所有入度为0的节点加入队列。
+3. 进行拓扑排序，如果在排序过程中发现环，则返回 False。
+4. 如果所有节点都被访问过且没有发现环，则返回 True。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来检测图中是否存在环。
+- 通过入度数组来判断节点是否可以加入队列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数（机场数量），E 是边数（机票数量）。
+空间复杂度: O(V + E)，存储图和入度数组的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的课程安排是否合理，即是否存在环。
+    
+    :param numCourses: 课程数量
+    :param prerequisites: 课程先修关系
+    :return: 是否可以完成所有课程
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建图和入度数组
+    graph = [[] for _ in range(numCourses)]
+    in_degree = [0] * numCourses
+    
+    for course, pre in prerequisites:
+        graph[pre].append(course)
+        in_degree[course] += 1
+    
+    # 初始化队列，将所有入度为0的节点加入队列
+    queue = [i for i in range(numCourses) if in_degree[i] == 0]
+    
+    # 拓扑排序
+    while queue:
+        node = queue.pop(0)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # 如果所有节点都被访问过且没有发现环，则返回 True
+    return sum(in_degree) == 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(canFinish)

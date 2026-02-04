@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理字符串中的字符，如果当前字符与栈顶字符是大小写关系，则弹出栈顶字符；否则将当前字符压入栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串中的每个字符。
+3. 如果栈不为空且当前字符与栈顶字符是大小写关系，则弹出栈顶字符。
+4. 否则，将当前字符压入栈。
+5. 最后，将栈中的字符拼接成结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来处理字符的匹配和删除。
+- 判断字符是否为大小写关系时，可以使用 `ord` 函数和 ASCII 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下，栈中可能会存储所有的字符。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def make_good(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串整理好，使其满足相邻字符不为相同字母的大小写形式。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    
+    for char in s:
+        if stack and (stack[-1].lower() == char.lower() and stack[-1] != char):
+            stack.pop()
+        else:
+            stack.append(char)
+    
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(make_good)

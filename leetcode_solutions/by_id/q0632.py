@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前区间的最小值，并使用一个变量来记录当前区间的最大值。通过不断更新最小堆和最大值，找到最小区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最小堆，将每个列表的第一个元素加入堆中，并记录当前的最大值。
+2. 不断从堆中取出最小值，更新当前区间的最小值和最大值，计算当前区间的长度。
+3. 如果当前区间的长度小于已知的最小区间长度，则更新最小区间。
+4. 将取出元素的下一个元素加入堆中，继续上述过程，直到某个列表的所有元素都被处理完。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取当前区间的最小值。
+- 通过不断更新最小值和最大值来找到最小区间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log k)，其中 n 是所有列表中元素的总数，k 是列表的数量。
+空间复杂度: O(k)，因为最小堆中最多有 k 个元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def smallestRange(nums: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到覆盖 k 个列表中每个列表至少一个数的最小区间
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最小堆和最大值
+    min_heap = []
+    max_val = float('-inf')
+    
+    # 将每个列表的第一个元素加入堆中
+    for i, lst in enumerate(nums):
+        heapq.heappush(min_heap, (lst[0], i, 0))
+        max_val = max(max_val, lst[0])
+    
+    # 初始化最小区间
+    min_range = [float('-inf'), float('inf')]
+    min_range_length = float('inf')
+    
+    while min_heap:
+        min_val, list_idx, element_idx = heapq.heappop(min_heap)
+        
+        # 更新最小区间
+        if max_val - min_val < min_range_length:
+            min_range = [min_val, max_val]
+            min_range_length = max_val - min_val
+        
+        # 如果当前列表还有更多元素，将其加入堆中
+        if element_idx + 1 < len(nums[list_idx]):
+            next_val = nums[list_idx][element_idx + 1]
+            heapq.heappush(min_heap, (next_val, list_idx, element_idx + 1))
+            max_val = max(max_val, next_val)
+        else:
+            # 如果某个列表的所有元素都被处理完，结束循环
+            break
+    
+    return min_range
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallestRange)

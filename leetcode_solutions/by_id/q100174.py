@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过递归构建二叉搜索树，选择中间元素作为根节点，以确保左右子树的高度尽可能平衡。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组的中间元素作为根节点。
+2. 递归地对左半部分和右半部分分别构建左子树和右子树。
+3. 返回根节点。
 
 关键点:
-- [TODO]
+- 选择中间元素作为根节点可以保证树的高度最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每个元素只访问一次。
+空间复杂度: O(log n) - 递归调用栈的深度为 log n。
 """
 
 # ============================================================================
@@ -44,17 +45,25 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def sorted_array_to_bst(nums: List[int]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    将有序数组转换为高度最小的二叉搜索树。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return None
 
+    def build_tree(left: int, right: int) -> Optional[TreeNode]:
+        if left > right:
+            return None
+        mid = (left + right) // 2
+        root = TreeNode(nums[mid])
+        root.left = build_tree(left, mid - 1)
+        root.right = build_tree(mid + 1, right)
+        return root
 
-Solution = create_solution(solution_function_name)
+    return build_tree(0, len(nums) - 1)
+
+Solution = create_solution(sorted_array_to_bst)

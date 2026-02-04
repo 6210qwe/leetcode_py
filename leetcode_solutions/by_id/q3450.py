@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算 k 秒后的球的位置来确定持有球的孩子编号。球在两端时会反转方向，因此可以通过模运算来简化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 k 秒内球经过的完整往返次数。
+2. 计算 k 秒后球的实际位置。
+3. 根据球的方向和位置确定最终持球的孩子编号。
 
 关键点:
-- [TODO]
+- 使用模运算简化计算。
+- 处理球在两端时的方向反转。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_ball_holder(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 K 秒后拿着球的孩子
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 k 秒内球经过的完整往返次数
+    full_rounds = k // (n - 1)
+    # 计算 k 秒后球的实际位置
+    position = k % (n - 1)
+    
+    # 根据球的方向和位置确定最终持球的孩子编号
+    if full_rounds % 2 == 0:
+        return position
+    else:
+        return n - 1 - position
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_ball_holder)

@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用三个字典分别存储原始单词、小写单词和去元音后的单词。
+2. 对于每个查询，首先检查是否完全匹配，然后检查是否大小写匹配，最后检查是否去元音匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个字典：original_words, lower_case_words, devowelled_words。
+2. 遍历 wordlist，填充这三个字典。
+3. 对于每个查询，按优先级顺序检查这三个字典，返回第一个匹配的单词。
 
 关键点:
-- [TODO]
+- 使用字典进行快速查找。
+- 去元音函数用于处理元音错误。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 wordlist 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，需要存储三个字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def spellchecker(wordlist: List[str], queries: List[str]) -> List[str]:
+    def devowel(s: str) -> str:
+        return ''.join('*' if c in 'aeiouAEIOU' else c for c in s)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    original_words = set(wordlist)
+    lower_case_words = {}
+    devowelled_words = {}
 
+    for word in wordlist:
+        lower_word = word.lower()
+        devowelled_word = devowel(lower_word)
+        if lower_word not in lower_case_words:
+            lower_case_words[lower_word] = word
+        if devowelled_word not in devowelled_words:
+            devowelled_words[devowelled_word] = word
 
-Solution = create_solution(solution_function_name)
+    result = []
+    for query in queries:
+        if query in original_words:
+            result.append(query)
+        elif query.lower() in lower_case_words:
+            result.append(lower_case_words[query.lower()])
+        elif devowel(query.lower()) in devowelled_words:
+            result.append(devowelled_words[devowel(query.lower())])
+        else:
+            result.append("")
+
+    return result
+
+Solution = create_solution(spellchecker)

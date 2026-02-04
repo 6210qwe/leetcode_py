@@ -21,22 +21,27 @@ LCR 153. 二叉树中和为目标值的路径 - 给你二叉树的根节点 root
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，同时维护当前路径和当前路径和。当到达叶子节点且路径和等于目标值时，将路径加入结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，参数包括当前节点、当前路径、当前路径和。
+2. 在递归函数中，如果当前节点为空，直接返回。
+3. 将当前节点值加入路径，并更新路径和。
+4. 如果当前节点是叶子节点且路径和等于目标值，将路径加入结果。
+5. 递归调用左子节点和右子节点。
+6. 回溯，移除当前节点值并恢复路径和。
 
 关键点:
-- [TODO]
+- 使用回溯法确保路径的正确性。
+- 递归过程中维护当前路径和当前路径和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。最坏情况下，二叉树退化为链表，空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -44,17 +49,26 @@ LCR 153. 二叉树中和为目标值的路径 - 给你二叉树的根节点 root
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_paths(root: Optional[TreeNode], target_sum: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    找出所有从根节点到叶子节点路径总和等于给定目标和的路径。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], path: List[int], current_sum: int):
+        if not node:
+            return
+        path.append(node.val)
+        current_sum += node.val
+        if not node.left and not node.right and current_sum == target_sum:
+            result.append(path[:])
+        dfs(node.left, path, current_sum)
+        dfs(node.right, path, current_sum)
+        path.pop()
+    
+    result: List[List[int]] = []
+    dfs(root, [], 0)
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_paths)

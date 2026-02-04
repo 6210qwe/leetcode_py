@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过找到空位并移动元素来排序数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的空位（值为0的位置）。
+2. 从左到右遍历数组，将每个元素移动到其正确的位置，利用空位进行交换。
+3. 如果当前元素已经在正确位置，则跳过。
+4. 如果当前元素不在正确位置且空位在当前元素之后，则交换当前元素和空位的值。
+5. 重复上述步骤直到数组有序。
 
 关键点:
-- [TODO]
+- 利用空位进行交换，避免额外的空间开销。
+- 通过贪心策略确保每次移动都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 在最坏情况下，每个元素都需要多次移动。
+空间复杂度: O(1) - 只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sortArrayByMovingItems(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过移动项目到空白区域来排序数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    moves = 0
+    i = 0
+    
+    while i < n:
+        if nums[i] == 0 or nums[i] == i + 1:
+            i += 1
+            continue
+        
+        correct_pos = nums[i] - 1
+        if nums[correct_pos] == 0:
+            nums[correct_pos], nums[i] = nums[i], nums[correct_pos]
+            moves += 1
+        else:
+            nums[correct_pos], nums[i] = nums[i], 0
+            moves += 1
+            i -= 1  # Recheck the current position
+        i += 1
+    
+    return moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sortArrayByMovingItems)

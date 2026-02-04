@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，记录每个节点的深度和父节点。检查 x 和 y 是否在同一深度且父节点不同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列，并设置其深度为 0，父节点为 None。
+2. 使用一个字典来存储每个节点的深度和父节点。
+3. 进行 BFS 遍历：
+   - 从队列中取出一个节点。
+   - 如果该节点的值等于 x 或 y，则记录其深度和父节点。
+   - 将该节点的左右子节点加入队列，并设置其深度和父节点。
+4. 检查 x 和 y 是否在同一深度且父节点不同。
 
 关键点:
-- [TODO]
+- 使用 BFS 遍历二叉树，确保在第一次遇到 x 和 y 时就能确定它们是否为堂兄弟节点。
+- 使用字典记录每个节点的深度和父节点，方便后续比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。因为每个节点只会被访问一次。
+空间复杂度: O(n)，最坏情况下队列中会包含所有节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_cousins(root: Optional[TreeNode], x: int, y: int) -> bool:
+    if not root:
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 用于存储每个节点的深度和父节点
+    node_info = {}
+    queue = [(root, 0, None)]  # (node, depth, parent)
 
+    while queue:
+        node, depth, parent = queue.pop(0)
+        if node.val == x or node.val == y:
+            node_info[node.val] = (depth, parent)
+        if len(node_info) == 2:
+            break
+        if node.left:
+            queue.append((node.left, depth + 1, node))
+        if node.right:
+            queue.append((node.right, depth + 1, node))
 
-Solution = create_solution(solution_function_name)
+    # 检查 x 和 y 是否在同一深度且父节点不同
+    (x_depth, x_parent), (y_depth, y_parent) = node_info[x], node_info[y]
+    return x_depth == y_depth and x_parent != y_parent
+
+Solution = create_solution(is_cousins)

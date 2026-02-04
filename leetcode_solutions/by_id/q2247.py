@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来追踪当前窗口内的唯一口味数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个口味的出现次数。
+2. 使用两个指针（left 和 right）来表示滑动窗口的左右边界。
+3. 移动右指针扩展窗口，更新哈希表中的口味计数。
+4. 如果窗口内的糖果总数超过 K，则移动左指针收缩窗口，并更新哈希表中的口味计数。
+5. 维护一个变量来记录窗口内唯一口味的最大数量。
 
 关键点:
-- [TODO]
+- 使用哈希表来快速更新和查询口味的出现次数。
+- 滑动窗口技术可以有效地在 O(n) 时间复杂度内解决问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(m)，其中 m 是不同口味的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(candies: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    flavor_count = {}
+    left = 0
+    unique_flavors = 0
+    max_unique_flavors = 0
+    
+    for right in range(len(candies)):
+        if candies[right] not in flavor_count:
+            flavor_count[candies[right]] = 0
+        flavor_count[candies[right]] += 1
+        
+        if flavor_count[candies[right]] == 1:
+            unique_flavors += 1
+        
+        while (right - left + 1) > k:
+            flavor_count[candies[left]] -= 1
+            if flavor_count[candies[left]] == 0:
+                unique_flavors -= 1
+            left += 1
+        
+        max_unique_flavors = max(max_unique_flavors, unique_flavors)
+    
+    return max_unique_flavors
 
 Solution = create_solution(solution_function_name)

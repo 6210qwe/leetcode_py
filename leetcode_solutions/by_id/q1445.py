@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算每个长度为 k 的子数组的和，并检查其平均值是否大于等于阈值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `window_sum` 来存储当前窗口的和。
+2. 遍历数组，从第 0 个元素到第 k-1 个元素，计算初始窗口的和。
+3. 检查初始窗口的平均值是否大于等于阈值，如果是则计数器加一。
+4. 从第 k 个元素开始，使用滑动窗口更新窗口和，每次移动窗口时减去窗口最左边的元素并加上新进入窗口的元素。
+5. 每次更新窗口和后，检查新的窗口平均值是否大于等于阈值，如果是则计数器加一。
+6. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以将时间复杂度降低到 O(n)。
+- 通过维护窗口和而不是每次都重新计算和，可以进一步优化性能。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_subarrays(arr: List[int], k: int, threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算大小为 K 且平均值大于等于阈值的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    window_sum = 0
+    count = 0
+    
+    # 计算初始窗口的和
+    for i in range(k):
+        window_sum += arr[i]
+    
+    # 检查初始窗口的平均值
+    if window_sum / k >= threshold:
+        count += 1
+    
+    # 使用滑动窗口更新窗口和
+    for i in range(k, len(arr)):
+        window_sum += arr[i] - arr[i - k]
+        if window_sum / k >= threshold:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_subarrays)

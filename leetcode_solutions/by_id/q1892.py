@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理，计算每个员工每天的总时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并转换为Pandas DataFrame。
+2. 计算每次进出的时间差。
+3. 按日期和员工ID分组，计算每天的总时间。
+4. 重命名列并返回结果。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和agg函数进行高效的数据处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是输入数据的行数。
+空间复杂度: O(n)，用于存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution_function_name(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每位员工每天在办公室花费的总时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每次进出的时间差
+    employees['total_time'] = employees['out_time'] - employees['in_time']
+    
+    # 按日期和员工ID分组，计算每天的总时间
+    result = employees.groupby(['event_day', 'emp_id'])['total_time'].sum().reset_index()
+    
+    # 重命名列
+    result = result.rename(columns={'event_day': 'day'})
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

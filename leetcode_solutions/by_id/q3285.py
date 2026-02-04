@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出最大部门的经理。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个部门的员工数量。
+2. 找出员工数量最多的部门。
+3. 找出这些部门的经理。
 
 关键点:
-- [TODO]
+- 使用子查询和聚合函数来计算每个部门的员工数量。
+- 使用窗口函数来找出最大部门。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -51,10 +53,26 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来找出最大部门的经理
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    WITH EmployeeCount AS (
+        SELECT departmentId, COUNT(*) AS numEmployees
+        FROM Employee
+        GROUP BY departmentId
+    ),
+    MaxDepartment AS (
+        SELECT departmentId, numEmployees
+        FROM EmployeeCount
+        WHERE numEmployees = (SELECT MAX(numEmployees) FROM EmployeeCount)
+    )
+    SELECT E.name, E.departmentId, M.numEmployees
+    FROM Employee E
+    JOIN MaxDepartment M ON E.departmentId = M.departmentId
+    WHERE E.managerId IS NULL;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

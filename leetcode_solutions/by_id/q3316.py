@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和排序来优化计算子序列的能量和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算每个可能的子序列的能量。
+3. 使用组合数学计算所有长度为 k 的子序列的数量。
+4. 计算所有子序列的能量和，并取模。
 
 关键点:
-- [TODO]
+- 排序后可以简化计算子序列的能量。
+- 使用组合数学公式计算子序列的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n^2)
+- 排序的时间复杂度为 O(n log n)。
+- 计算所有子序列的能量和的时间复杂度为 O(n^2)。
+
+空间复杂度: O(1)
+- 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +56,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_subsequence_powers(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有长度为 k 的子序列的能量和
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(nums)
+    nums.sort()
+    
+    def combination(n, k):
+        if k > n:
+            return 0
+        result = 1
+        for i in range(k):
+            result = result * (n - i) // (i + 1)
+        return result
+    
+    total_power = 0
+    for i in range(n - k + 1):
+        for j in range(i + 1, n):
+            diff = nums[j] - nums[i]
+            count = combination(j - i - 1, k - 2)
+            total_power = (total_power + diff * count) % MOD
+    
+    return total_power
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_subsequence_powers)

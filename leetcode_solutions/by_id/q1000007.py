@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法，一个指针先前进 k 步，然后两个指针同时前进，直到第一个指针到达链表尾部。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 first 和 second，都指向链表头。
+2. 先让 first 指针前进 k 步。
+3. 同时移动 first 和 second 指针，直到 first 指针到达链表尾部。
+4. 此时 second 指针所指向的节点即为倒数第 k 个节点。
 
 关键点:
-- [TODO]
+- 双指针法可以将时间复杂度降低到 O(n)，并且只需要常数级别的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(head: ListNode, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回单向链表中倒数第 k 个节点的值
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化两个指针
+    first = head
+    second = head
+    
+    # 第一个指针先前进 k 步
+    for _ in range(k):
+        if first is None:
+            raise ValueError("k is larger than the length of the list")
+        first = first.next
+    
+    # 两个指针同时前进，直到第一个指针到达链表尾部
+    while first:
+        first = first.next
+        second = second.next
+    
+    # 返回第二个指针所指向的节点的值
+    return second.val
 
 Solution = create_solution(solution_function_name)

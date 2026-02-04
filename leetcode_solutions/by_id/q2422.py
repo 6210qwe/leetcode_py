@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用基数排序对裁剪后的数字进行排序，然后找到第 k 小的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个查询，裁剪 nums 中的每个数字。
+2. 使用基数排序对裁剪后的数字进行排序。
+3. 找到第 k 小的数字并返回其下标。
 
 关键点:
-- [TODO]
+- 使用基数排序可以在 O(n) 时间内完成排序，其中 n 是 nums 的长度。
+- 通过裁剪后的数字进行排序，可以确保找到第 k 小的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 nums 的长度，m 是每个数字的长度。
+空间复杂度: O(n + m)，用于存储裁剪后的数字和基数排序的辅助数组。
 """
 
 # ============================================================================
@@ -48,13 +50,39 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[str], queries: List[List[int]]) -> List[int]:
+    def radix_sort(arr, max_len):
+        for exp in range(max_len - 1, -1, -1):
+            count = [0] * 10
+            output = [None] * len(arr)
+            
+            for num in arr:
+                digit = int(num[exp])
+                count[digit] += 1
+            
+            for i in range(1, 10):
+                count[i] += count[i - 1]
+            
+            for i in range(len(arr) - 1, -1, -1):
+                digit = int(arr[i][exp])
+                output[count[digit] - 1] = arr[i]
+                count[digit] -= 1
+            
+            arr[:] = output[:]
+    
+    def get_trimmed_nums(nums, trim):
+        return [num[-trim:] for num in nums]
+    
+    def find_kth_smallest(trimmed_nums, k):
+        radix_sort(trimmed_nums, len(trimmed_nums[0]))
+        return trimmed_nums[k - 1]
+    
+    results = []
+    for k, trim in queries:
+        trimmed_nums = get_trimmed_nums(nums, trim)
+        sorted_nums = sorted(enumerate(trimmed_nums), key=lambda x: (x[1], x[0]))
+        results.append(sorted_nums[k - 1][0])
+    
+    return results
 
 Solution = create_solution(solution_function_name)

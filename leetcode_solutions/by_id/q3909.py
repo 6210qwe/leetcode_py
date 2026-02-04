@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点的最大路径成本，并调整节点成本以使所有路径的成本相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 从根节点开始遍历树，计算每个节点的最大路径成本。
+3. 在回溯过程中，调整节点成本以使所有路径的成本相等，并记录增加的成本次数。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算每个节点的最大路径成本。
+- 在回溯过程中调整节点成本并记录增加的成本次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边都只会被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_increments_to_equalize_leaf_paths(n: int, edges: List[List[int]], cost: List[int]) -> int:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+
+    # 用于存储每个节点的最大路径成本
+    max_path_cost = [0] * n
+    # 用于存储增加的成本次数
+    increments = 0
+
+    def dfs(node: int, parent: int):
+        nonlocal increments
+        max_child_cost = 0
+        for child in adj_list[node]:
+            if child != parent:
+                dfs(child, node)
+                max_child_cost = max(max_child_cost, max_path_cost[child])
+        
+        # 更新当前节点的最大路径成本
+        max_path_cost[node] = max_child_cost + cost[node]
+        
+        # 如果当前节点不是叶子节点，调整子节点的成本
+        if len(adj_list[node]) > 1 and node != 0:
+            for child in adj_list[node]:
+                if child != parent:
+                    increments += abs(max_path_cost[child] - max_path_cost[node])
+                    max_path_cost[child] = max_path_cost[node]
+
+    # 从根节点开始 DFS
+    dfs(0, -1)
+    return increments
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_increments_to_equalize_leaf_paths)

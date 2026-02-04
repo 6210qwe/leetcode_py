@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算有效排列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将复杂度数组排序，并记录每个复杂度的索引。
+2. 使用动态规划数组 dp 来记录到当前复杂度为止的有效排列数。
+3. 对于每个复杂度，计算其在排序后的索引位置，并更新 dp 数组。
+4. 最终结果是对 dp 数组的最后一个元素取模。
 
 关键点:
-- [TODO]
+- 动态规划数组 dp 用于存储到当前复杂度为止的有效排列数。
+- 使用组合数学公式来计算排列数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 complexity 的长度。排序操作的时间复杂度为 O(n log n)，后续遍历操作为 O(n)。
+空间复杂度: O(n)，用于存储排序后的索引和动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(complexity: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有效解锁排列数
     """
-    # TODO: 实现最优解法
-    pass
-
+    MOD = 10**9 + 7
+    n = len(complexity)
+    
+    # 将复杂度数组与其索引配对
+    indexed_complexity = [(c, i) for i, c in enumerate(complexity)]
+    # 按复杂度排序
+    indexed_complexity.sort()
+    
+    # 初始化动态规划数组
+    dp = [0] * n
+    dp[0] = 1  # 第一个计算机总是解锁的
+    
+    # 计算阶乘和逆元
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = fact[i - 1] * i % MOD
+        inv_fact[i] = pow(fact[i], MOD - 2, MOD)
+    
+    # 动态规划计算有效排列数
+    for i in range(1, n):
+        c, idx = indexed_complexity[i]
+        prev_c, _ = indexed_complexity[i - 1]
+        if c == prev_c:
+            dp[idx] = dp[indexed_complexity[i - 1][1]]
+        else:
+            dp[idx] = (dp[indexed_complexity[i - 1][1]] * (i)) % MOD
+    
+    return dp[-1]
 
 Solution = create_solution(solution_function_name)

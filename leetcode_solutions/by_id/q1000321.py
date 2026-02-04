@@ -21,22 +21,26 @@ LCR 057. 存在重复元素 III - 给你一个整数数组 nums 和两个整数 
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用桶排序的思想来解决这个问题。我们将每个元素放入一个桶中，桶的大小为 t + 1。这样，如果两个元素在同一个桶中，或者相邻的桶中，那么它们的差值一定小于等于 t。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典来存储桶。
+2. 遍历数组中的每个元素，计算其应该放入的桶的编号。
+3. 检查当前桶及其相邻桶中是否有元素，如果有，则返回 True。
+4. 将当前元素放入对应的桶中。
+5. 如果当前索引超过 k，则从桶中移除过期的元素。
 
 关键点:
-- [TODO]
+- 桶的大小为 t + 1，确保桶内的元素差值不超过 t。
+- 只保留最近 k 个元素的桶，以确保索引差值不超过 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(min(n, k))
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def contains_nearby_almost_duplicate(nums: List[int], k: int, t: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否存在两个不同下标 i 和 j，使得 abs(nums[i] - nums[j]) <= t 且 abs(i - j) <= k
     """
-    # TODO: 实现最优解法
-    pass
+    if t < 0:
+        return False
+    
+    bucket = {}
+    bucket_size = t + 1
+    
+    for i, num in enumerate(nums):
+        bucket_key = num // bucket_size
+        
+        if bucket_key in bucket:
+            return True
+        if (bucket_key - 1) in bucket and abs(num - bucket[bucket_key - 1]) <= t:
+            return True
+        if (bucket_key + 1) in bucket and abs(num - bucket[bucket_key + 1]) <= t:
+            return True
+        
+        bucket[bucket_key] = num
+        
+        if i >= k:
+            del bucket[nums[i - k] // bucket_size]
+    
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(contains_nearby_almost_duplicate)

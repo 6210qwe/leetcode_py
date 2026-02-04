@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，尽可能多地安排学生坐在长椅上，同时确保相邻的学生之间至少有一个空位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历长椅的每个位置，如果当前位置为空且左右相邻位置也为空，则放置一个学生。
+2. 继续遍历直到所有位置都被检查过。
 
 关键点:
-- [TODO]
+- 确保每个学生之间的距离至少为1。
+- 从左到右遍历，确保每个学生都能被正确放置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是长椅的长度。我们只需要遍历一次长椅。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(bench: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    max_students = 0
+    i = 0
+    while i < len(bench):
+        if bench[i] == 'x':
+            # 如果当前位置是空的
+            if (i == 0 or bench[i - 1] == 'x') and (i == len(bench) - 1 or bench[i + 1] == 'x'):
+                # 如果左右相邻位置也是空的
+                max_students += 1
+                i += 2  # 跳过下一个位置
+            else:
+                i += 1
+        else:
+            i += 1
+    return max_students
 
 
 Solution = create_solution(solution_function_name)

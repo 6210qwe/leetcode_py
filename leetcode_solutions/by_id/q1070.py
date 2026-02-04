@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用除法和取余操作将十进制数转换为负二进制数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 result 用于存储结果。
+2. 当 n 不为 0 时，执行以下操作：
+   - 计算当前 n 除以 -2 的商和余数。
+   - 如果余数为 -1，调整余数为 1，并将商加 1。
+   - 将余数添加到结果字符串中。
+   - 更新 n 为新的商。
+3. 反转结果字符串并返回。
 
 关键点:
-- [TODO]
+- 处理余数为 -1 的情况，需要调整余数为 1 并将商加 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(log n)
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def base_neg2(n: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将十进制数 n 转换为负二进制字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return "0"
+    
+    result = []
+    while n != 0:
+        remainder = n % -2
+        n = n // -2
+        if remainder < 0:
+            remainder += 2
+            n += 1
+        result.append(str(remainder))
+    
+    return ''.join(result[::-1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(base_neg2)

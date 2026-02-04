@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算三个方向的投影面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算顶视图投影面积：遍历整个网格，统计非零单元格的数量。
+2. 计算前视图投影面积：遍历每一行，取每行的最大值。
+3. 计算侧视图投影面积：遍历每一列，取每列的最大值。
 
 关键点:
-- [TODO]
+- 顶视图投影面积是所有非零单元格的数量。
+- 前视图投影面积是每一行的最大值之和。
+- 侧视图投影面积是每一列的最大值之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是网格的边长。我们需要遍历整个网格来计算各个投影面积。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def projection_area(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算三维形体的投影面积
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    top_view = sum(cell > 0 for row in grid for cell in row)
+    front_view = sum(max(row) for row in grid)
+    side_view = sum(max(grid[row][col] for row in range(n)) for col in range(n))
+    
+    return top_view + front_view + side_view
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(projection_area)

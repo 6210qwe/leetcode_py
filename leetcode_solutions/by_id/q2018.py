@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和前缀和来计算每个供应商的最小浪费空间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对包裹进行排序。
+2. 计算包裹的前缀和。
+3. 对每个供应商的箱子进行排序。
+4. 使用二分查找找到每个箱子可以容纳的最大包裹索引。
+5. 计算每个供应商的总浪费空间，并记录最小值。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算某个范围内的包裹总和。
+- 使用二分查找快速找到每个箱子可以容纳的最大包裹索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m * k log n)，其中 n 是包裹数量，m 是供应商数量，k 是每个供应商箱子的数量。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def min_wasted_space(packages: List[int], boxes: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    n = len(packages)
+    
+    # 对包裹进行排序
+    packages.sort()
+    
+    # 计算包裹的前缀和
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + packages[i]
+    
+    min_waste = float('inf')
+    
+    for box_sizes in boxes:
+        box_sizes.sort()
+        
+        if box_sizes[-1] < packages[-1]:
+            continue  # 如果最大的箱子也无法装下最大的包裹，则跳过
+        
+        waste = 0
+        prev_index = 0
+        
+        for box_size in box_sizes:
+            # 使用二分查找找到当前箱子可以容纳的最大包裹索引
+            index = bisect.bisect_right(packages, box_size)
+            if index > prev_index:
+                total_package_size = prefix_sum[index] - prefix_sum[prev_index]
+                waste += (index - prev_index) * box_size - total_package_size
+                prev_index = index
+        
+        min_waste = min(min_waste, waste)
+    
+    return min_waste % MOD if min_waste != float('inf') else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_wasted_space)

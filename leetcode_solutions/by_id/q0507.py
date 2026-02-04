@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历找到所有正因子并计算其和，判断是否等于原数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `sum_of_factors` 为 1（因为 1 总是任何数的因子）。
+2. 从 2 开始遍历到 `sqrt(num)`，检查每个数是否是 `num` 的因子。
+3. 如果是因子，则将其及其对应的配对因子（`num // i`）加入 `sum_of_factors`。
+4. 最后，检查 `sum_of_factors` 是否等于 `num`。
 
 关键点:
-- [TODO]
+- 只需要遍历到 `sqrt(num)`，因为超过 `sqrt(num)` 的因子可以通过 `num // i` 得到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n)) - 我们只需要遍历到 sqrt(n)。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_perfect_number(num: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查一个数是否为完美数
     """
-    # TODO: 实现最优解法
-    pass
+    if num <= 1:
+        return False
+    
+    sum_of_factors = 1
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            sum_of_factors += i
+            if i != num // i:
+                sum_of_factors += num // i
+    
+    return sum_of_factors == num
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_perfect_number)

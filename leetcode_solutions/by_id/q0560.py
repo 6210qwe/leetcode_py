@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个前缀和出现的次数，从而在 O(n) 时间内找到和为 k 的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_sum_count`，用于记录每个前缀和出现的次数。
+2. 初始化变量 `current_sum` 为 0，用于记录当前的前缀和。
+3. 初始化变量 `count` 为 0，用于记录和为 k 的子数组的个数。
+4. 遍历数组 `nums`：
+   - 更新 `current_sum`。
+   - 检查 `current_sum - k` 是否在 `prefix_sum_count` 中，如果存在，则将对应的值加到 `count` 中。
+   - 更新 `prefix_sum_count` 中 `current_sum` 的计数。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录前缀和的出现次数，可以在 O(1) 时间内查找和更新。
+- 通过 `current_sum - k` 来快速找到和为 k 的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `prefix_sum_count` 在最坏情况下需要存储 n 个不同的前缀和。
 """
 
 # ============================================================================
@@ -49,12 +55,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def subarray_sum(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回和为 k 的子数组的个数
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum_count = {0: 1}  # 初始化前缀和计数，初始值为 0 的前缀和出现 1 次
+    current_sum = 0
+    count = 0
+
+    for num in nums:
+        current_sum += num
+        if (current_sum - k) in prefix_sum_count:
+            count += prefix_sum_count[current_sum - k]
+        prefix_sum_count[current_sum] = prefix_sum_count.get(current_sum, 0) + 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(subarray_sum)

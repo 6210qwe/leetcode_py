@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来检查每一行和每一列是否包含从 1 到 n 的所有整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表，分别用于存储每一行和每一列的集合。
+2. 遍历矩阵，将每一行和每一列的元素添加到对应的集合中。
+3. 检查每一行和每一列的集合是否包含从 1 到 n 的所有整数。
 
 关键点:
-- [TODO]
+- 使用集合来高效地检查每一行和每一列是否包含从 1 到 n 的所有整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def check_valid_matrix(matrix: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查矩阵是否每一行每一列都包含从 1 到 n 的所有整数。
+    
+    :param matrix: 大小为 n x n 的整数矩阵
+    :return: 如果矩阵是有效的，返回 True；否则，返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(matrix)
+    required_set = set(range(1, n + 1))
+    
+    for i in range(n):
+        row_set = set()
+        col_set = set()
+        for j in range(n):
+            row_set.add(matrix[i][j])
+            col_set.add(matrix[j][i])
+        
+        if row_set != required_set or col_set != required_set:
+            return False
+    
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_valid_matrix)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数组按位数相同的元素分组，检查每组内是否可以排序成非降序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素的二进制中1的个数。
+2. 使用字典将相同位数的元素分组。
+3. 对每个组内的元素进行排序。
+4. 检查排序后的数组是否是非降序。
 
 关键点:
-- [TODO]
+- 使用位运算计算每个元素的二进制中1的个数。
+- 使用字典将相同位数的元素分组。
+- 对每个组内的元素进行排序并合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是数组长度。排序操作的时间复杂度为O(n log n)。
+空间复杂度: O(n)，需要额外的空间存储分组后的元素。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_sorted(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断一个数组是否可以变为有序
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个元素的二进制中1的个数
+    bit_counts = [bin(num).count('1') for num in nums]
+    
+    # 使用字典将相同位数的元素分组
+    groups = {}
+    for i, count in enumerate(bit_counts):
+        if count not in groups:
+            groups[count] = []
+        groups[count].append(nums[i])
+    
+    # 对每个组内的元素进行排序
+    for count in groups:
+        groups[count].sort()
+    
+    # 合并排序后的组
+    sorted_nums = []
+    for count in sorted(groups.keys()):
+        sorted_nums.extend(groups[count])
+    
+    # 检查排序后的数组是否是非降序
+    return all(sorted_nums[i] <= sorted_nums[i + 1] for i in range(len(sorted_nums) - 1))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_sorted)

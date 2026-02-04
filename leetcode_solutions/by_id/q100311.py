@@ -21,22 +21,29 @@ LCR 149. 彩灯装饰记录 I - 一棵圣诞树记作根节点为 root 的二叉
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，逐层记录节点值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 初始化一个结果列表，用于存储每一层的节点值。
+3. 当队列不为空时，依次处理队列中的节点：
+   - 从队列中取出一个节点。
+   - 将该节点的值加入结果列表。
+   - 如果该节点有左子节点，将左子节点加入队列。
+   - 如果该节点有右子节点，将右子节点加入队列。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每次处理一层的所有节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点都被访问一次。
+空间复杂度: O(n)，队列在最坏情况下需要存储所有节点。
 """
 
 # ============================================================================
@@ -44,17 +51,27 @@ LCR 149. 彩灯装饰记录 I - 一棵圣诞树记作根节点为 root 的二叉
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def levelOrder(root: Optional[TreeNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 广度优先搜索实现
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
 
+    result = []
+    queue = [root]
 
-Solution = create_solution(solution_function_name)
+    while queue:
+        node = queue.pop(0)
+        result.append(node.val)
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+    return result
+
+Solution = create_solution(levelOrder)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个周期子串的出现频率，并计算最少的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串分割成长度为 k 的子串。
+2. 使用哈希表记录每个子串的出现频率。
+3. 找出出现频率最高的子串。
+4. 计算将所有子串变成出现频率最高的子串所需的最少操作次数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录子串的频率。
+- 计算最少操作次数时，只需考虑将其他子串变成出现频率最高的子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_make_word_k_periodic(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 word 成为 K 周期字符串所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串分割成长度为 k 的子串
+    subwords = [word[i:i+k] for i in range(0, len(word), k)]
+    
+    # 使用哈希表记录每个子串的出现频率
+    freq = {}
+    for subword in subwords:
+        if subword in freq:
+            freq[subword] += 1
+        else:
+            freq[subword] = 1
+    
+    # 找出出现频率最高的子串
+    max_freq = max(freq.values())
+    
+    # 计算最少操作次数
+    min_operations = len(subwords) - max_freq
+    
+    return min_operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_word_k_periodic)

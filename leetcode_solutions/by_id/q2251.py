@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 通过遍历字符串找到所有座位的位置，并将其分成若干段，每段恰好有两个座位。
+- 计算每段之间的植物数量，然后计算这些段之间的组合数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，记录所有座位的位置。
+2. 检查座位总数是否为偶数，如果不是则返回 0。
+3. 将座位分成若干段，每段恰好有两个座位。
+4. 计算每段之间的植物数量，并累乘这些数量得到最终的方案数。
 
 关键点:
-- [TODO]
+- 确保每段恰好有两个座位。
+- 使用模运算防止结果溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(corridor: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回划分走廊的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    seats = [i for i, c in enumerate(corridor) if c == 'S']
+    
+    # 如果座位总数不是偶数，则无法划分
+    if len(seats) % 2 != 0 or len(seats) < 2:
+        return 0
+    
+    ways = 1
+    for i in range(2, len(seats), 2):
+        ways = (ways * (seats[i] - seats[i - 1])) % mod
+    
+    return ways
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的位置，然后遍历数组，检查当前数字是否可以作为斐波那契数列的一部分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个数字的位置。
+2. 遍历数组，对于每一对 (a, b) 检查是否存在 c = a + b，并且 c 在数组中。
+3. 如果存在，则继续检查后续的数字是否满足斐波那契数列的条件。
+4. 记录最长的斐波那契子数组的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表快速查找数字的位置。
+- 通过双指针法检查斐波那契数列的连续性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_fib_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中最长斐波那契子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return n
+
+    # 记录每个数字的位置
+    num_to_index = {nums[i]: i for i in range(n)}
+    max_length = 0
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            a, b = nums[i], nums[j]
+            length = 2
+            while (c := a + b) in num_to_index and num_to_index[c] > j:
+                a, b = b, c
+                length += 1
+            max_length = max(max_length, length)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_fib_subarray)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希集合来检查所有长度为 k 的子串是否都出现过。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希集合，用于存储所有长度为 k 的子串。
+2. 使用滑动窗口遍历字符串 s，将每个长度为 k 的子串加入哈希集合。
+3. 如果哈希集合的大小等于 2^k，则说明所有长度为 k 的二进制子串都出现了，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以高效地生成所有长度为 k 的子串。
+- 哈希集合用于去重并记录所有出现过的子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要一次遍历字符串 s。
+空间复杂度: O(2^k)，哈希集合最多存储 2^k 个不同的子串。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_string_contains_all_binary_codes(s: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查一个字符串是否包含所有长度为 K 的二进制子串
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希集合
+    seen = set()
+    
+    # 使用滑动窗口遍历字符串 s
+    for i in range(len(s) - k + 1):
+        # 获取当前长度为 k 的子串
+        substring = s[i:i+k]
+        # 将子串加入哈希集合
+        seen.add(substring)
+    
+    # 检查哈希集合的大小是否等于 2^k
+    return len(seen) == 2 ** k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_string_contains_all_binary_codes)

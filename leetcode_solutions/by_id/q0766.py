@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历多级双向链表，并在遍历时重新连接节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `flatten` 来处理当前节点。
+2. 如果当前节点有子节点，先递归处理子节点。
+3. 将子节点插入到当前节点和当前节点的下一个节点之间。
+4. 将当前节点的子节点设为 None。
+5. 移动到下一个节点继续处理。
 
 关键点:
-- [TODO]
+- 递归处理子节点并重新连接节点。
+- 确保所有子指针设置为 None。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表中的节点总数。每个节点只被访问一次。
+空间复杂度: O(1)，除了递归调用栈外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Node:
+    def __init__(self, val, prev=None, next=None, child=None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
 
 
-Solution = create_solution(solution_function_name)
+def flatten(head: Optional[Node]) -> Optional[Node]:
+    if not head:
+        return None
+
+    def dfs(node: Node) -> Node:
+        cur = node
+        while cur:
+            next_node = cur.next
+            if cur.child:
+                # 递归处理子节点
+                child_head = dfs(cur.child)
+                cur.next = child_head
+                child_head.prev = cur
+                cur.child = None
+
+                # 连接子节点的尾部到下一个节点
+                if next_node:
+                    while cur.next:
+                        cur = cur.next
+                    cur.next = next_node
+                    next_node.prev = cur
+
+            cur = next_node
+        return node
+
+    return dfs(head)
+
+
+Solution = create_solution(flatten)

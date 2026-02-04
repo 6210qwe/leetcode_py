@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个小时数出现的次数，然后遍历数组，对于每个小时数，查找其补数（即 24 * k - 当前小时数）在哈希表中的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `hour_count` 来记录每个小时数出现的次数。
+2. 遍历 `hours` 数组，对于每个小时数 `h`，计算其补数 `complement`。
+3. 如果 `complement` 在 `hour_count` 中存在，则将 `hour_count[complement]` 加到结果中。
+4. 更新 `hour_count` 中当前小时数 `h` 的计数。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个小时数的出现次数，从而可以在 O(1) 时间内查找补数。
+- 通过遍历数组并更新哈希表，可以在 O(n) 时间复杂度内完成计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_complete_pairs(hours: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算构成整天的下标对数目
     """
-    # TODO: 实现最优解法
-    pass
+    hour_count = {}
+    result = 0
+    
+    for h in hours:
+        complement = 24 - (h % 24)
+        if complement in hour_count:
+            result += hour_count[complement]
+        
+        if h % 24 in hour_count:
+            hour_count[h % 24] += 1
+        else:
+            hour_count[h % 24] = 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_complete_pairs)

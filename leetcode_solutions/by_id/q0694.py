@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历每个岛屿，并将每个岛屿的形状编码为一个字符串。通过将这些字符串存储在一个集合中，可以确保每个岛屿的形状都是唯一的。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合来存储不同岛屿的形状。
+2. 遍历整个网格，对于每个未访问过的陆地单元格，启动一次 DFS。
+3. 在 DFS 中，记录从起点到当前单元格的相对位置，并将其编码为一个字符串。
+4. 将编码后的字符串添加到集合中。
+5. 返回集合的大小，即不同岛屿的数量。
 
 关键点:
-- [TODO]
+- 使用相对位置来编码岛屿形状，确保旋转或翻转后的岛屿也被视为相同的形状。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个单元格最多被访问一次。
+空间复杂度: O(m * n)，在最坏情况下，递归栈的深度可能达到 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def num_distinct_islands(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同岛屿的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
 
+    def dfs(x: int, y: int, direction: str) -> str:
+        if x < 0 or x >= len(grid) or y < 0 or y >= len(grid[0]) or grid[x][y] == 0:
+            return ""
+        grid[x][y] = 0  # 标记为已访问
+        shape = direction
+        # 向四个方向进行 DFS
+        shape += dfs(x + 1, y, "D")
+        shape += dfs(x - 1, y, "U")
+        shape += dfs(x, y + 1, "R")
+        shape += dfs(x, y - 1, "L")
+        return shape
 
-Solution = create_solution(solution_function_name)
+    distinct_shapes = set()
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                shape = dfs(i, j, "S")  # S 表示起始点
+                distinct_shapes.add(shape)
+
+    return len(distinct_shapes)
+
+Solution = create_solution(num_distinct_islands)

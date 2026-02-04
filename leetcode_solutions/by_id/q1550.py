@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）来维护当前最小的 k 个和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，将第一行的所有元素加入堆中。
+2. 对于每一行，从堆中取出当前最小的 k 个和，然后与当前行的每个元素相加，再将新的和加入堆中。
+3. 最后，堆顶元素即为第 k 小的和。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地维护当前最小的 k 个和。
+- 每次只处理当前行的元素，避免不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log k)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(k)，用于存储最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def kth_smallest(mat: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回有序矩阵中的第 k 个最小数组和。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    heap = [(sum(row[0] for row in mat), [0] * m)]
+    
+    visited = set(heap[0][1])
+    
+    while k > 0:
+        current_sum, indices = heapq.heappop(heap)
+        k -= 1
+        if k == 0:
+            return current_sum
+        
+        for i in range(m):
+            if indices[i] + 1 < n:
+                new_indices = list(indices)
+                new_indices[i] += 1
+                new_tuple = (current_sum - mat[i][indices[i]] + mat[i][new_indices[i]], new_indices)
+                
+                if tuple(new_indices) not in visited:
+                    visited.add(tuple(new_indices))
+                    heapq.heappush(heap, new_tuple)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_smallest)

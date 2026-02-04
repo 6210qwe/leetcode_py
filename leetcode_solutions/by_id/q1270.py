@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个堆来管理未满的栈和非空的栈。一个最小堆用于快速找到第一个未满的栈，另一个最小堆用于快速找到第一个非空的栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建两个最小堆：一个用于存储未满的栈索引，另一个用于存储非空的栈索引。
+2. push 操作时，从未满的栈堆中取出最小的索引，将值推入该栈。如果该栈已满，则从未满的栈堆中移除该索引。
+3. pop 操作时，从非空的栈堆中取出最大的索引，弹出该栈的顶部值。如果该栈为空，则从非空的栈堆中移除该索引。
+4. popAtStack 操作时，直接从指定索引的栈中弹出顶部值。如果该栈为空，则从非空的栈堆中移除该索引。
 
 关键点:
-- [TODO]
+- 使用两个最小堆来高效地管理未满的栈和非空的栈。
+- 动态调整堆中的索引，以保持堆的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是当前栈的数量。堆操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，其中 n 是当前栈的数量。需要额外的空间来存储堆。
 """
 
 # ============================================================================
@@ -44,17 +47,69 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
+class DinnerPlates:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.stacks = []
+        self.non_full_stacks = []  # 最小堆，存储未满的栈索引
+        self.non_empty_stacks = []  # 最小堆，存储非空的栈索引
 
+    def push(self, val: int) -> None:
+        if not self.non_full_stacks:
+            self.stacks.append([val])
+            if len(self.stacks[-1]) < self.capacity:
+                heapq.heappush(self.non_full_stacks, len(self.stacks) - 1)
+            if len(self.stacks[-1]) == 1:
+                heapq.heappush(self.non_empty_stacks, -(len(self.stacks) - 1))
+        else:
+            index = heapq.heappop(self.non_full_stacks)
+            self.stacks[index].append(val)
+            if len(self.stacks[index]) < self.capacity:
+                heapq.heappush(self.non_full_stacks, index)
+            if len(self.stacks[index]) == 1:
+                heapq.heappush(self.non_empty_stacks, -index)
 
-Solution = create_solution(solution_function_name)
+    def pop(self) -> int:
+        while self.non_empty_stacks and -self.non_empty_stacks[0] >= len(self.stacks):
+            heapq.heappop(self.non_empty_stacks)
+        if not self.non_empty_stacks:
+            return -1
+        index = -heapq.heappop(self.non_empty_stacks)
+        value = self.stacks[index].pop()
+        if self.stacks[index]:
+            heapq.heappush(self.non_empty_stacks, -index)
+        if len(self.stacks[index]) < self.capacity:
+            heapq.heappush(self.non_full_stacks, index)
+        return value
+
+    def popAtStack(self, index: int) -> int:
+        if index >= len(self.stacks) or not self.stacks[index]:
+            return -1
+        value = self.stacks[index].pop()
+        if self.stacks[index]:
+            heapq.heappush(self.non_empty_stacks, -index)
+        if len(self.stacks[index]) < self.capacity:
+            heapq.heappush(self.non_full_stacks, index)
+        return value
+
+# 示例测试
+if __name__ == "__main__":
+    dinner_plates = DinnerPlates(2)
+    dinner_plates.push(1)
+    dinner_plates.push(2)
+    dinner_plates.push(3)
+    dinner_plates.push(4)
+    dinner_plates.push(5)
+    print(dinner_plates.popAtStack(0))  # 输出 2
+    dinner_plates.push(20)
+    dinner_plates.push(21)
+    print(dinner_plates.popAtStack(0))  # 输出 20
+    print(dinner_plates.popAtStack(2))  # 输出 21
+    print(dinner_plates.pop())  # 输出 5
+    print(dinner_plates.pop())  # 输出 4
+    print(dinner_plates.pop())  # 输出 3
+    print(dinner_plates.pop())  # 输出 1
+    print(dinner_plates.pop())  # 输出 -1

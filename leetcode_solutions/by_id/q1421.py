@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个数字的位数来判断其是否为偶数位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 count 为 0。
+2. 遍历数组中的每个数字，计算其位数。
+3. 如果位数为偶数，则将计数器 count 加 1。
+4. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 使用对数函数 log10 来计算数字的位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计位数为偶数的数字
     """
-    # TODO: 实现最优解法
-    pass
-
+    count = 0
+    for num in nums:
+        # 计算数字的位数
+        digit_count = int(math.log10(num)) + 1 if num > 0 else 1
+        if digit_count % 2 == 0:
+            count += 1
+    return count
 
 Solution = create_solution(solution_function_name)

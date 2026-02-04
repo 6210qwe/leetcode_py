@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来统计连续相同字符的子串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0。
+2. 使用两个指针 `start` 和 `end` 来表示当前窗口的起始和结束位置。
+3. 遍历字符串，当 `s[end]` 与 `s[start]` 相同时，扩展窗口，并更新结果。
+4. 当 `s[end]` 与 `s[start]` 不同时，重置窗口的起始位置 `start` 为 `end`。
+5. 返回结果 `result`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来统计连续相同字符的子串数量。
+- 每次遇到不同字符时，重置窗口的起始位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_homogenous(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计只含单一字母的子串数量
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    start = 0
+    n = len(s)
+    
+    for end in range(n):
+        if s[end] != s[start]:
+            start = end
+        result += end - start + 1
+    
+    return result % (10**9 + 7)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_homogenous)

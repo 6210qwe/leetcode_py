@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库的 rename 方法来重命名 DataFrame 的列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 Pandas 库。
+2. 定义重命名映射字典。
+3. 使用 Pandas 的 rename 方法重命名列。
+4. 返回重命名后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 rename 方法可以高效地重命名列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 重命名操作的时间复杂度是常数级别的。
+空间复杂度: O(1) - 不需要额外的空间，只是修改了列名。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(students: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重命名 DataFrame 的列
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 定义重命名映射字典
+    rename_map = {
+        'id': 'student_id',
+        'first': 'first_name',
+        'last': 'last_name',
+        'age': 'age_in_years'
+    }
+    
+    # 使用 Pandas 的 rename 方法重命名列
+    students_renamed = students.rename(columns=rename_map)
+    
+    return students_renamed
 
 Solution = create_solution(solution_function_name)

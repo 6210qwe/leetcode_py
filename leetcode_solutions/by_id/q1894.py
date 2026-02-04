@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针交替遍历两个字符串，并将字符依次添加到结果字符串中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 word1 和 word2 的起始位置。
+2. 创建一个空的结果字符串 result。
+3. 交替从 word1 和 word2 中取字符，直到其中一个字符串遍历完毕。
+4. 将剩余的字符直接追加到结果字符串中。
 
 关键点:
-- [TODO]
+- 使用双指针交替遍历字符串，确保字符交替添加。
+- 处理字符串长度不一致的情况，将剩余字符追加到结果字符串中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 word1 和 word2 的长度。
+空间复杂度: O(n + m)，结果字符串的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_alternately(word1: str, word2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 交替合并两个字符串
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    result = []
+    
+    while i < len(word1) and j < len(word2):
+        result.append(word1[i])
+        result.append(word2[j])
+        i += 1
+        j += 1
+    
+    # 追加剩余的字符
+    result.extend(word1[i:])
+    result.extend(word2[j:])
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_alternately)

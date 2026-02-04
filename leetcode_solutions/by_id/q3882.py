@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和位运算来最大化 XOR(A) + AND(B) + XOR(C)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的异或值 total_xor。
+2. 枚举 B 的所有可能子集，并计算其 AND 值。
+3. 对于每个 B 的子集，计算剩余元素的异或值，并更新最大值。
 
 关键点:
-- [TODO]
+- 通过枚举 B 的所有可能子集，确保找到最优解。
+- 使用位运算优化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n)，其中 n 是数组的长度。枚举 B 的所有子集需要 2^n，每个子集的计算需要 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    total_xor = 0
+    for num in nums:
+        total_xor ^= num
+    
+    max_value = 0
+    for i in range(1 << n):
+        and_value = (1 << 30) - 1
+        xor_value = total_xor
+        for j in range(n):
+            if i & (1 << j):
+                and_value &= nums[j]
+                xor_value ^= nums[j]
+        
+        max_value = max(max_value, xor_value + and_value)
+    
+    return max_value
 
 
 Solution = create_solution(solution_function_name)

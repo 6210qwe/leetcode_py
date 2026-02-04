@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过双层循环遍历矩阵，根据行号的奇偶性决定遍历方向，并跳过交替单元格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表 `result`。
+2. 使用双层循环遍历矩阵：
+   - 外层循环遍历每一行。
+   - 内层循环根据行号的奇偶性决定遍历方向（从左到右或从右到左）。
+   - 根据行号的奇偶性决定是否跳过单元格。
+3. 将遍历到的单元格值添加到结果列表 `result` 中。
+4. 返回结果列表 `result`。
 
 关键点:
-- [TODO]
+- 通过行号的奇偶性来决定遍历方向和是否跳过单元格。
+- 保持时间复杂度为 O(m * n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def zigzag_traverse(grid: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 跳过交替单元格的之字形遍历
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    result = []
+    
+    for i in range(m):
+        if i % 2 == 0:
+            # 从左到右遍历
+            for j in range(0, n, 2):
+                result.append(grid[i][j])
+        else:
+            # 从右到左遍历
+            for j in range(n - 1, -1, -2):
+                result.append(grid[i][j])
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(zigzag_traverse)

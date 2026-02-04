@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历指令来判断机器人是否会在有限的步数内回到原点或改变方向。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化机器人的位置和方向。
+2. 遍历指令，根据指令更新机器人的位置和方向。
+3. 检查机器人是否回到了原点或改变了方向。如果回到了原点或改变了方向，则说明机器人会被困在一个环中。
 
 关键点:
-- [TODO]
+- 使用一个方向数组来表示四个方向（北、东、南、西）。
+- 根据指令更新机器人的位置和方向。
+- 最后检查机器人的位置和方向。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是指令的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_robot_bounded(instructions: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断机器人是否会在有限的步数内被困在一个环中
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向数组，分别表示北、东、南、西
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    x, y = 0, 0  # 初始位置
+    direction_index = 0  # 初始方向为北
+
+    for instruction in instructions:
+        if instruction == "G":
+            dx, dy = directions[direction_index]
+            x += dx
+            y += dy
+        elif instruction == "L":
+            direction_index = (direction_index - 1) % 4
+        elif instruction == "R":
+            direction_index = (direction_index + 1) % 4
+
+    # 机器人回到原点或者方向改变了
+    return (x == 0 and y == 0) or (direction_index != 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_robot_bounded)

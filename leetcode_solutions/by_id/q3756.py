@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算满足条件的子序列数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素的频率。
+2. 使用动态规划来计算以每个元素作为唯一中间众数的子序列数量。
+3. 对于每个元素，计算其左边和右边的子序列数量，并结合组合数学公式计算总数量。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 利用组合数学公式来计算子序列数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算唯一中间众数子序列的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
 
+    # 计算每个元素的频率
+    freq = [0] * (n + 1)
+    for num in nums:
+        freq[num] += 1
+
+    # 动态规划数组
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 空子序列
+
+    # 计算以每个元素作为唯一中间众数的子序列数量
+    for i in range(1, n + 1):
+        for j in range(i):
+            if freq[j] < freq[i]:
+                dp[i] += dp[j]
+
+    # 计算总数量
+    total = 0
+    for i in range(1, n + 1):
+        left = sum(dp[j] for j in range(i) if freq[j] < freq[i])
+        right = sum(dp[j] for j in range(i + 1, n + 1) if freq[j] < freq[i])
+        total += left * right * math.comb(freq[i], 1)
+
+    return total
 
 Solution = create_solution(solution_function_name)

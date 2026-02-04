@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个数字可以构成的二叉树数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组排序，以便后续查找。
+2. 使用一个哈希表 `dp` 来记录每个数字可以构成的二叉树数量。
+3. 遍历数组中的每个数字，对于每个数字 `arr[i]`，检查是否存在两个数字 `a` 和 `b` 使得 `a * b == arr[i]`。
+4. 如果存在这样的 `a` 和 `b`，则更新 `dp[arr[i]]` 的值。
+5. 最后，返回 `dp` 中所有值的总和对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来快速查找因子。
+- 动态规划的思想，逐步构建解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 其中 n 是数组的长度，因为我们需要遍历数组并进行两两比较。
+空间复杂度: O(n) - 使用了一个哈希表来存储每个数字的二叉树数量。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定数组可以构成的满足条件的二叉树数量。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    arr.sort()
+    dp = {x: 1 for x in arr}  # 每个数字至少可以单独构成一棵树
+    num_set = set(arr)
+
+    for i in range(len(arr)):
+        for j in range(i):
+            if arr[i] % arr[j] == 0 and (arr[i] // arr[j]) in num_set:
+                dp[arr[i]] += dp[arr[j]] * dp[arr[i] // arr[j]]
+                dp[arr[i]] %= MOD
+
+    return sum(dp.values()) % MOD
 
 
 Solution = create_solution(solution_function_name)

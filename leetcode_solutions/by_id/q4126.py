@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较原二进制字符串和其反转后的字符串，计算出需要翻转的位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为二进制字符串，并去除前导零。
+2. 反转该二进制字符串。
+3. 比较原二进制字符串和反转后的字符串，统计不同位的数量。
 
 关键点:
-- [TODO]
+- 使用 Python 的内置函数 bin() 和 [::-1] 来处理二进制字符串的转换和反转。
+- 通过逐位比较来计算需要翻转的位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 二进制字符串的长度与 log n 成正比。
+空间复杂度: O(log n) - 存储二进制字符串所需的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_flips_to_reverse_binary_string(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使二进制字符串等于其反转所需的最少翻转次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数 n 转换为二进制字符串，并去除前导零
+    binary_str = bin(n)[2:]
+    
+    # 反转该二进制字符串
+    reversed_str = binary_str[::-1]
+    
+    # 比较原二进制字符串和反转后的字符串，统计不同位的数量
+    flips = sum(1 for a, b in zip(binary_str, reversed_str) if a != b)
+    
+    return flips
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips_to_reverse_binary_string)

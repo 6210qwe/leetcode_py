@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算找到与给定数字二进制表示中1的个数相同且大小最接近的两个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到比给定数字大的下一个数：
+   - 从右向左找到第一个1后面跟着0的位置，交换这两个位，并将右侧的所有1移到最右边。
+2. 找到比给定数字小的上一个数：
+   - 从右向左找到第一个0后面跟着1的位置，交换这两个位，并将右侧的所有1移到最右边。
+3. 返回这两个数。
 
 关键点:
-- [TODO]
+- 通过位运算高效地找到需要交换的位。
+- 确保交换后的数是合法的32位整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 位运算的时间复杂度是常数级别的。
+空间复杂度: O(1) - 只使用了常数级别的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,49 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closed_numbers(num: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    找到与给定数字二进制表示中1的个数相同且大小最接近的两个数。
     """
-    # TODO: 实现最优解法
-    pass
+    def get_next(num: int) -> int:
+        c = num
+        c0 = 0
+        c1 = 0
+        while (c & 1) == 0 and c != 0:
+            c0 += 1
+            c >>= 1
+        while (c & 1) == 1:
+            c1 += 1
+            c >>= 1
+        if c0 + c1 == 31 or c0 + c1 == 0:
+            return -1
+        p = c0 + c1
+        num |= (1 << p)
+        num &= ~((1 << p) - 1)
+        num |= (1 << (c1 - 1)) - 1
+        return num
+
+    def get_prev(num: int) -> int:
+        c = num
+        c0 = 0
+        c1 = 0
+        while (c & 1) == 1:
+            c1 += 1
+            c >>= 1
+        if c == 0:
+            return -1
+        while (c & 1) == 0 and c != 0:
+            c0 += 1
+            c >>= 1
+        p = c0 + c1
+        num &= (~0 << (p + 1))
+        mask = (1 << (c1 + 1)) - 1
+        num |= mask << (c0 - 1)
+        return num
+
+    next_num = get_next(num)
+    prev_num = get_prev(num)
+    return [next_num, prev_num]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closed_numbers)

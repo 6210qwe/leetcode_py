@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来找到连通分量，并计算每个连通分量的大小。然后通过遍历初始感染节点，计算移除每个节点后受影响的节点数，选择使受影响节点数最小的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用并查集找到所有的连通分量。
+2. 计算每个连通分量的大小。
+3. 遍历初始感染节点，计算移除每个节点后受影响的节点数。
+4. 选择使受影响节点数最小的节点，如果有多个节点满足条件，返回索引最小的节点。
 
 关键点:
-- [TODO]
+- 使用并查集高效地找到连通分量。
+- 通过计算每个连通分量的大小来确定移除节点的影响。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * α(n))，其中 n 是节点数，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储并查集和连通分量的大小。
 """
 
 # ============================================================================
@@ -48,13 +51,63 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.size[rootX] < self.size[rootY]:
+                rootX, rootY = rootY, rootX
+            self.parent[rootY] = rootX
+            self.size[rootX] += self.size[rootY]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimize_malware_spread(graph: List[List[int]], initial: List[int]) -> int:
+    n = len(graph)
+    uf = UnionFind(n)
+    
+    # 构建并查集
+    for i in range(n):
+        for j in range(i + 1, n):
+            if graph[i][j] == 1:
+                uf.union(i, j)
+    
+    # 计算每个连通分量的大小
+    component_size = {}
+    for i in range(n):
+        root = uf.find(i)
+        if root not in component_size:
+            component_size[root] = 0
+        component_size[root] += 1
+    
+    # 初始化每个连通分量中的初始感染节点数量
+    infected_components = {}
+    for node in initial:
+        root = uf.find(node)
+        if root not in infected_components:
+            infected_components[root] = []
+        infected_components[root].append(node)
+    
+    # 找到移除后影响最小的节点
+    min_infected = float('inf')
+    result = min(initial)
+    for node in initial:
+        root = uf.find(node)
+        if len(infected_components[root]) == 1:
+            # 如果当前连通分量只有一个初始感染节点，移除该节点后的感染数
+            new_infected = sum(component_size[uf.find(i)] for i in range(n) if uf.find(i) != root)
+            if new_infected < min_infected or (new_infected == min_infected and node < result):
+                min_infected = new_infected
+                result = node
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_malware_spread)

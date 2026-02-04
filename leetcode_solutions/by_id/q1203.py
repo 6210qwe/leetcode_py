@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用锁来确保按顺序执行
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个锁，并将它们设置为锁定状态。
+2. 在 `first` 方法中，打印 "first" 并释放第二个锁。
+3. 在 `second` 方法中，等待第一个锁被释放，然后打印 "second" 并释放第三个锁。
+4. 在 `third` 方法中，等待第二个锁被释放，然后打印 "third"。
 
 关键点:
-- [TODO]
+- 使用锁来控制线程的执行顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每个方法的时间复杂度都是常数级别的。
+空间复杂度: O(1) - 只使用了常数级别的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import threading
 
+class Foo:
+    def __init__(self):
+        self.lock1 = threading.Lock()
+        self.lock2 = threading.Lock()
+        self.lock1.acquire()
+        self.lock2.acquire()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def first(self, printFirst: 'Callable[[], None]') -> None:
+        # printFirst() outputs "first". Do not change or remove this line.
+        printFirst()
+        self.lock1.release()
 
+    def second(self, printSecond: 'Callable[[], None]') -> None:
+        with self.lock1:
+            # printSecond() outputs "second". Do not change or remove this line.
+            printSecond()
+            self.lock2.release()
 
-Solution = create_solution(solution_function_name)
+    def third(self, printThird: 'Callable[[], None]') -> None:
+        with self.lock2:
+            # printThird() outputs "third". Do not change or remove this line.
+            printThird()
+
+# 示例调用
+def printFirst():
+    print("first")
+
+def printSecond():
+    print("second")
+
+def printThird():
+    print("third")
+
+foo = Foo()
+from threading import Thread
+
+t1 = Thread(target=foo.first, args=(printFirst,))
+t2 = Thread(target=foo.second, args=(printSecond,))
+t3 = Thread(target=foo.third, args=(printThird,))
+
+t1.start()
+t2.start()
+t3.start()
+
+t1.join()
+t2.join()
+t3.join()

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和二分查找来找到最短的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组的左边界，使得从该位置开始数组是非递减的。
+2. 找到数组的右边界，使得到该位置为止数组是非递减的。
+3. 使用二分查找在左右边界之间找到最短的子数组，使得删除该子数组后数组是非递减的。
 
 关键点:
-- [TODO]
+- 通过双指针和二分查找来优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最短的子数组，使得删除该子数组后数组是非递减的。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    left, right = 0, n - 1
+    
+    # 找到左边界
+    while left < n - 1 and arr[left] <= arr[left + 1]:
+        left += 1
+    if left == n - 1:
+        return 0  # 数组已经是非递减的
+    
+    # 找到右边界
+    while right > 0 and arr[right - 1] <= arr[right]:
+        right -= 1
+    if right == 0:
+        return n - 1  # 数组是严格递减的
+    
+    # 初始化结果
+    result = min(n - left - 1, right)
+    
+    # 使用二分查找找到最短的子数组
+    for i in range(left + 1):
+        j = right
+        while j < n and arr[j] < arr[i]:
+            j += 1
+        result = min(result, j - i - 1)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

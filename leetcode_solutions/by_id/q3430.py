@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用区间合并的方法来找到所有没有安排会议的天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有会议按开始时间排序。
+2. 合并重叠的会议区间。
+3. 计算所有未被会议覆盖的天数。
 
 关键点:
-- [TODO]
+- 排序后合并区间可以有效处理重叠的会议。
+- 使用两个指针来遍历合并后的区间，计算未被覆盖的天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 meetings 的长度。排序操作的时间复杂度是 O(n log n)，合并区间和计算未覆盖天数的操作是 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_days_without_meetings(days: int, meetings: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算无需开会的工作日
     """
-    # TODO: 实现最优解法
-    pass
+    # 按会议开始时间排序
+    meetings.sort(key=lambda x: x[0])
+    
+    # 合并重叠的会议区间
+    merged_meetings = []
+    for meeting in meetings:
+        if not merged_meetings or merged_meetings[-1][1] < meeting[0]:
+            merged_meetings.append(meeting)
+        else:
+            merged_meetings[-1][1] = max(merged_meetings[-1][1], meeting[1])
+    
+    # 计算未被会议覆盖的天数
+    free_days = 0
+    last_end = 0
+    for start, end in merged_meetings:
+        free_days += start - last_end - 1
+        last_end = end
+    free_days += days - last_end
+    
+    return free_days
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_days_without_meetings)

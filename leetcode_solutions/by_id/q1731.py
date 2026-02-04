@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，并检查每一层是否满足奇偶树的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 使用一个变量 `level` 记录当前层数，初始值为 0。
+3. 开始层次遍历：
+   - 对于每一层，记录前一个节点的值 `prev_val`，初始化为负无穷或正无穷，取决于当前层是偶数还是奇数。
+   - 遍历当前层的所有节点：
+     - 检查当前节点的值是否满足奇偶树的条件。
+     - 将当前节点的子节点加入队列。
+     - 更新 `prev_val` 为当前节点的值。
+4. 如果遍历过程中发现任何不满足条件的情况，返回 `False`。
+5. 如果遍历完整棵树均未发现不满足条件的情况，返回 `True`。
 
 关键点:
-- [TODO]
+- 使用 BFS 进行层次遍历。
+- 通过 `level` 变量判断当前层是偶数层还是奇数层。
+- 使用 `prev_val` 来检查当前层的节点值是否严格递增或递减。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(w)，其中 w 是树的最大宽度。队列中最多会存储一层的节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_even_odd_tree(root: Optional[TreeNode]) -> bool:
+    if not root:
+        return False
+
+    queue = [root]
+    level = 0
+
+    while queue:
+        size = len(queue)
+        prev_val = float('-inf') if level % 2 == 0 else float('inf')
+
+        for _ in range(size):
+            node = queue.pop(0)
+
+            if (level % 2 == 0 and (node.val % 2 == 0 or node.val <= prev_val)) or \
+               (level % 2 != 0 and (node.val % 2 != 0 or node.val >= prev_val)):
+                return False
+
+            prev_val = node.val
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        level += 1
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_even_odd_tree)

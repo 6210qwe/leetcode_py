@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和栈来处理字符串，优先删除得分较高的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 x >= y，先删除所有 "ab" 子字符串，再删除所有 "ba" 子字符串。
+2. 如果 x < y，先删除所有 "ba" 子字符串，再删除所有 "ab" 子字符串。
+3. 使用栈来记录当前未匹配的字符，并在匹配时计算得分。
 
 关键点:
-- [TODO]
+- 使用栈来跟踪未匹配的字符。
+- 优先删除得分较高的子字符串以最大化得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被处理两次（一次入栈，一次出栈）。
+空间复杂度: O(n)，最坏情况下栈中可能存储所有字符。
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_score_from_removing_substrings(s: str, x: int, y: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算删除子字符串的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    def remove_substrings(s: str, sub: str, score: int) -> (str, int):
+        stack = []
+        total_score = 0
+        for char in s:
+            if stack and stack[-1] + char == sub:
+                stack.pop()
+                total_score += score
+            else:
+                stack.append(char)
+        return ''.join(stack), total_score
+
+    if x >= y:
+        s, score_ab = remove_substrings(s, "ab", x)
+        s, score_ba = remove_substrings(s, "ba", y)
+    else:
+        s, score_ba = remove_substrings(s, "ba", y)
+        s, score_ab = remove_substrings(s, "ab", x)
+
+    return score_ab + score_ba
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score_from_removing_substrings)

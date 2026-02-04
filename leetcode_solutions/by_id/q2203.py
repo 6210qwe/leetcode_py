@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合记录扫地机器人清扫过的所有位置。通过遍历指令序列，更新机器人的位置，并将新位置加入集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化机器人的位置为 (0, 0)，并创建一个集合来存储清扫过的位置。
+2. 遍历指令序列，根据指令更新机器人的位置。
+3. 每次更新位置后，将新位置加入集合。
+4. 最后返回集合的大小，即清扫过的不同位置的数量。
 
 关键点:
-- [TODO]
+- 使用集合来去重，确保每个位置只被计数一次。
+- 根据指令更新机器人的位置时，需要考虑方向的变化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是指令序列的长度。
+空间复杂度: O(n)，最坏情况下，机器人清扫的所有位置都是不同的。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def numberOfCleanRooms(rooms: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算扫地机器人清扫过的不同位置数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义方向数组，分别表示北、东、南、西
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    
+    # 初始化机器人的位置和方向
+    x, y = 0, 0
+    direction = 0  # 初始方向为北
+    
+    # 创建集合来存储清扫过的位置
+    cleaned_positions = set()
+    cleaned_positions.add((x, y))
+    
+    # 遍历指令序列
+    for room in rooms:
+        for _ in range(room[1]):
+            # 更新机器人的位置
+            dx, dy = directions[direction]
+            x += dx
+            y += dy
+            
+            # 将新位置加入集合
+            cleaned_positions.add((x, y))
+        
+        # 更新方向
+        direction = (direction + 1) % 4
+    
+    # 返回清扫过的不同位置数量
+    return len(cleaned_positions)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numberOfCleanRooms)

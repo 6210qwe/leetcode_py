@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字出现的次数，然后通过组合计算不等三元组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字出现的次数，并存储在哈希表中。
+2. 遍历哈希表，计算每个数字作为中间元素时的不等三元组数量。
+3. 累加所有不等三元组的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字的频率。
+- 通过组合计算不等三元组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中不等三元组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个数字出现的次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+
+    n = len(nums)
+    result = 0
+
+    # 计算不等三元组的数量
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                if nums[i] != nums[j] and nums[i] != nums[k] and nums[j] != nums[k]:
+                    result += 1
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

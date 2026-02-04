@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字符串 s 分割成多个长度为 k 的子字符串，对每个子字符串中的字符进行哈希计算，然后将结果拼接成新的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 result 用于存储最终结果。
+2. 遍历字符串 s，每次取长度为 k 的子字符串。
+3. 对每个子字符串中的字符进行哈希计算，即计算其在字母表中的下标之和，并对 26 取余。
+4. 将取余后的结果转换为对应的字符，并添加到 result 中。
+5. 返回 result。
 
 关键点:
-- [TODO]
+- 使用切片操作来获取子字符串。
+- 使用 ord 函数获取字符的 ASCII 值，并减去 'a' 的 ASCII 值来得到其在字母表中的下标。
+- 使用 chr 函数将哈希值转换回字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历整个字符串 s。
+空间复杂度: O(1)，除了结果字符串 result 外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def hash_divided_string(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    将字符串 s 哈希为一个长度为 n / k 的新字符串 result。
+    
+    :param s: 输入字符串
+    :param k: 子字符串的长度
+    :return: 哈希后的结果字符串
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(0, len(s), k):
+        substring = s[i:i + k]
+        hash_sum = sum(ord(c) - ord('a') for c in substring)
+        hashed_char = chr((hash_sum % 26) + ord('a'))
+        result.append(hashed_char)
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(hash_divided_string)

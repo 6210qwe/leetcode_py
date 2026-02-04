@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前最大的 k 个子序列和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有负数取绝对值，并将所有正数和零加入到一个新的数组中。
+2. 对新的数组进行排序。
+3. 计算所有正数和零的和，这是最大的子序列和。
+4. 使用最小堆来维护当前最大的 k 个子序列和。
+5. 从堆中弹出最小的子序列和，并将其与新的数组中的每个元素相加，生成新的子序列和并加入堆中。
+6. 重复上述步骤直到找到第 k 大的子序列和。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地维护当前最大的 k 个子序列和。
+- 通过将负数取绝对值并将所有正数和零加入到新的数组中，可以简化问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + k log k)，其中 n 是数组的长度，k 是需要找到的第 k 大和。
+空间复杂度: O(n + k)，其中 n 是数组的长度，k 是需要找到的第 k 大和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def find_k_sum(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组的第 K 大和
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有负数取绝对值，并将所有正数和零加入到一个新的数组中
+    abs_nums = sorted(abs(num) for num in nums)
+    pos_nums = [num for num in nums if num >= 0]
+    
+    # 计算所有正数和零的和
+    total_sum = sum(pos_nums)
+    
+    # 初始化最小堆
+    heap = [(total_sum, 0)]
+    visited = set()
+    visited.add((total_sum, 0))
+    
+    # 从堆中弹出最小的子序列和，并生成新的子序列和
+    for _ in range(k - 1):
+        current_sum, idx = heapq.heappop(heap)
+        if idx < len(abs_nums):
+            new_sum = current_sum - abs_nums[idx]
+            if (new_sum, idx + 1) not in visited:
+                heapq.heappush(heap, (new_sum, idx + 1))
+                visited.add((new_sum, idx + 1))
+            if idx > 0 and (current_sum - abs_nums[idx - 1] + abs_nums[idx], idx + 1) not in visited:
+                heapq.heappush(heap, (current_sum - abs_nums[idx - 1] + abs_nums[idx], idx + 1))
+                visited.add((current_sum - abs_nums[idx - 1] + abs_nums[idx], idx + 1))
+    
+    return heapq.heappop(heap)[0]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_k_sum)

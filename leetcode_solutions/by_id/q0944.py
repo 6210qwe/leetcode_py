@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过调整数组中的每个元素，使得数组的最大值和最小值之间的差值尽可能小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最大值和最小值。
+2. 计算最大值减去 k 和最小值加上 k 后的差值。
+3. 如果这个差值小于等于 0，则返回 0，否则返回这个差值。
 
 关键点:
-- [TODO]
+- 通过调整最大值和最小值，可以使得数组中的所有元素尽可能接近。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历数组来找到最大值和最小值。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def smallestRangeI(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回调整后的数组的最小分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到数组中的最大值和最小值
+    max_val = max(nums)
+    min_val = min(nums)
+    
+    # 计算调整后的最大值和最小值
+    adjusted_max = max_val - k
+    adjusted_min = min_val + k
+    
+    # 计算调整后的差值
+    diff = adjusted_max - adjusted_min
+    
+    # 如果差值小于等于 0，则返回 0，否则返回差值
+    return max(diff, 0)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallestRangeI)

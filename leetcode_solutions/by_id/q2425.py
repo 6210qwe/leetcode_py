@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来解决这个问题。对于每一行，从左到右遍历，使用单调递减栈来记录可以被看到的人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `res` 为 0。
+2. 对于每一行：
+   - 初始化一个单调递减栈 `stack`。
+   - 从左到右遍历该行的每个元素：
+     - 如果当前元素大于栈顶元素，则将栈顶元素弹出，并增加结果计数。
+     - 将当前元素压入栈中。
+3. 返回结果 `res`。
 
 关键点:
-- [TODO]
+- 使用单调递减栈来记录可以被看到的人。
+- 每次遇到比栈顶元素大的元素时，栈顶元素会被弹出，表示该位置的人被遮挡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是网格的行数，n 是网格的列数。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，栈的最大长度为网格的一行长度。
 """
 
 # ============================================================================
@@ -49,12 +55,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在一个网格中可以看到的人数
     """
-    # TODO: 实现最优解法
-    pass
+    res = 0
+    for row in grid:
+        stack = []
+        for height in row:
+            while stack and stack[-1] <= height:
+                stack.pop()
+            if not stack:
+                res += 1
+            stack.append(height)
+    return res
 
 
 Solution = create_solution(solution_function_name)

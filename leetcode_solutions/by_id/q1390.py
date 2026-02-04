@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个产品的平均售价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `Prices` 和 `UnitsSold` 表进行连接，条件是 `product_id` 相同且 `purchase_date` 在 `start_date` 和 `end_date` 之间。
+2. 计算每个产品的总销售额和总销售数量。
+3. 计算每个产品的平均售价，并四舍五入到小数点后两位。
+4. 如果产品没有任何售出，则假设其平均售价为 0。
 
 关键点:
-- [TODO]
+- 使用 `LEFT JOIN` 确保所有产品都被考虑，即使没有售出记录。
+- 使用 `COALESCE` 函数处理没有售出记录的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `Prices` 表的行数，m 是 `UnitsSold` 表的行数。
+空间复杂度: O(1)，查询过程中使用的额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +52,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[List[int]], units_sold: List[List[int]]) -> List[List[float]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每个产品的平均售价
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建 SQL 查询
+    query = """
+    SELECT 
+        p.product_id,
+        COALESCE(ROUND(SUM(p.price * u.units) / SUM(u.units), 2), 0) AS average_price
+    FROM 
+        (VALUES %s) AS p(product_id, start_date, end_date, price)
+    LEFT JOIN 
+        (VALUES %s) AS u(product_id, purchase_date, units)
+    ON 
+        p.product_id = u.product_id AND u.purchase_date BETWEEN p.start_date AND p.end_date
+    GROUP BY 
+        p.product_id
+    """ % (
+        ", ".join(["(%d, '%s', '%s', %d)" % tuple(row) for row in prices]),
+        ", ".join(["(%d, '%s', %d)" % tuple(row) for row in units_sold])
+    )
+    
+    # 执行 SQL 查询
+    result = []
+    for row in execute_sql(query):
+        result.append([row[0], row[1]])
+    
+    return result
+
+
+def execute_sql(query: str) -> List[tuple]:
+    """
+    执行 SQL 查询并返回结果
+    """
+    # 假设这里有一个数据库连接对象 `conn`
+    conn = get_database_connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 Solution = create_solution(solution_function_name)

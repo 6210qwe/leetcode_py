@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以将每个 offer 按照结束时间进行排序，然后使用一个 dp 数组来记录到当前房屋为止的最大收益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 offers 按照结束时间进行排序。
+2. 初始化一个 dp 数组，dp[i] 表示到第 i 个房屋为止的最大收益。
+3. 遍历每个 offer，对于每个 offer，找到它开始之前的最大收益，加上当前 offer 的收益，更新 dp 数组。
+4. 最后返回 dp 数组的最后一个元素，即为最大收益。
 
 关键点:
-- [TODO]
+- 使用二分查找来快速找到当前 offer 开始之前的最大收益。
+- 动态规划的状态转移方程为 dp[i] = max(dp[i], dp[start] + gold)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 offers 的长度。排序操作的时间复杂度为 O(n log n)，遍历和二分查找的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要一个 dp 数组来记录到每个房屋为止的最大收益。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def maximize_the_profit(n: int, offers: List[List[int]]) -> int:
+    # 按结束时间排序
+    offers.sort(key=lambda x: x[1])
+    
+    # 初始化 dp 数组
+    dp = [0] * (n + 1)
+    
+    for start, end, gold in offers:
+        # 使用二分查找找到 start 之前的最大收益
+        prev_max = dp[bisect.bisect_right(offers, [start, start, 0], key=lambda x: x[1]) - 1]
+        # 更新 dp[end + 1]
+        dp[end + 1] = max(dp[end + 1], prev_max + gold)
+    
+    # 返回最大收益
+    return max(dp)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_the_profit)

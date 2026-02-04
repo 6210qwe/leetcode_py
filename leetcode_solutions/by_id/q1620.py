@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素模 k 的余数出现的次数，然后检查是否存在对应的配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 k 的数组 count，用于记录每个余数出现的次数。
+2. 遍历数组 arr，计算每个元素模 k 的余数，并更新 count 数组。
+3. 检查 count 数组中每个余数 i 和 k-i 是否匹配：
+   - 如果 i == 0 或 i == k/2，则 count[i] 必须是偶数。
+   - 否则，count[i] 必须等于 count[k-i]。
 
 关键点:
-- [TODO]
+- 使用哈希表（数组）来记录余数出现的次数，从而实现 O(n) 时间复杂度。
+- 通过检查余数及其补数的配对情况，确保每对数字的和都能被 k 整除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_arrange_pairs(arr: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查数组对是否可以被 k 整除
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为 k 的数组 count，用于记录每个余数出现的次数
+    count = [0] * k
+    
+    # 遍历数组 arr，计算每个元素模 k 的余数，并更新 count 数组
+    for num in arr:
+        count[num % k] += 1
+    
+    # 检查 count 数组中每个余数 i 和 k-i 是否匹配
+    for i in range(1, k // 2 + 1):
+        if count[i] != count[k - i]:
+            return False
+    
+    # 特殊处理余数为 0 和 k/2 的情况
+    if count[0] % 2 != 0 or (k % 2 == 0 and count[k // 2] % 2 != 0):
+        return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_arrange_pairs)

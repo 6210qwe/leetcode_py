@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和滑动窗口来找到第 K 小的子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_subarrays`，用于计算数组中所有和小于等于 `x` 的子数组数量。
+2. 使用二分查找来确定第 K 小的子数组和。初始范围是 `[min(nums), sum(nums)]`。
+3. 在每次二分查找的过程中，使用 `count_subarrays` 函数来判断当前中间值是否满足条件。
+4. 如果 `count_subarrays` 返回的数量大于等于 K，则说明第 K 小的子数组和在左半部分；否则在右半部分。
+5. 最终返回二分查找的结果。
 
 关键点:
-- [TODO]
+- 二分查找的范围是 `[min(nums), sum(nums)]`。
+- 滑动窗口用于高效计算和小于等于 `x` 的子数组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(sum(nums) - min(nums)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_subarrays(nums: List[int], x: int) -> int:
+    count = 0
+    left = 0
+    current_sum = 0
+    
+    for right in range(len(nums)):
+        current_sum += nums[right]
+        
+        while current_sum > x:
+            current_sum -= nums[left]
+            left += 1
+        
+        count += right - left + 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def kth_smallest_subarray_sum(nums: List[int], k: int) -> int:
+    low, high = min(nums), sum(nums)
+    
+    while low < high:
+        mid = (low + high) // 2
+        if count_subarrays(nums, mid) >= k:
+            high = mid
+        else:
+            low = mid + 1
+    
+    return low
 
-
-Solution = create_solution(solution_function_name)
+Solution = kth_smallest_subarray_sum

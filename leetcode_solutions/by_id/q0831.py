@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀和来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，方便快速计算子数组的和。
+2. 使用动态规划数组 dp[i][k] 表示将前 i 个元素分成 k 个子数组的最大平均值和。
+3. 初始化 dp 数组，dp[i][1] 为前 i 个元素的平均值。
+4. 填充 dp 数组，对于每个 dp[i][k]，遍历所有可能的分割点 j，更新 dp[i][k]。
+5. 返回 dp[n][K]，即为所求的最大平均值和。
 
 关键点:
-- [TODO]
+- 使用前缀和数组快速计算子数组的和。
+- 动态规划状态转移方程：dp[i][k] = max(dp[i][k], dp[j][k-1] + (prefix_sum[i] - prefix_sum[j]) / (i - j))。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * K)，其中 n 是数组长度，K 是最多分成的子数组个数。
+空间复杂度: O(n * K)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def largest_sum_of_averages(nums: List[int], K: int) -> float:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
+    
+    # 初始化 dp 数组
+    dp = [[0] * (K + 1) for _ in range(n + 1)]
+    
+    # 初始化 dp[i][1] 为前 i 个元素的平均值
+    for i in range(1, n + 1):
+        dp[i][1] = prefix_sum[i] / i
+    
+    # 填充 dp 数组
+    for k in range(2, K + 1):
+        for i in range(k, n + 1):
+            for j in range(k - 1, i):
+                dp[i][k] = max(dp[i][k], dp[j][k - 1] + (prefix_sum[i] - prefix_sum[j]) / (i - j))
+    
+    return dp[n][K]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_sum_of_averages)

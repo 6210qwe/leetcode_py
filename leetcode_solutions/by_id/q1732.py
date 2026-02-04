@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和记忆化搜索来解决这个问题。通过找到最高位的 1，并将其翻转，然后递归处理剩余部分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到 n 的最高位 1 的位置。
+2. 将该位翻转，并递归处理剩余部分。
+3. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 通过递归和记忆化搜索来优化时间复杂度。
+- 使用位运算来找到最高位的 1 并进行翻转。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是输入的整数。每次递归调用都会减少一位。
+空间复杂度: O(log n)，递归调用栈的深度。
 """
 
 # ============================================================================
@@ -47,14 +49,20 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+@lru_cache(maxsize=None)
+def min_one_bit_operations(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将整数 n 转换为 0 的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 0
+    # 找到最高位的 1
+    highest_bit = 1
+    while (highest_bit << 1) <= n:
+        highest_bit <<= 1
+    # 递归处理剩余部分
+    return 2 * min_one_bit_operations(n ^ highest_bit) + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_one_bit_operations)

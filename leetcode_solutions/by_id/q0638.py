@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。通过递归地尝试每种可能的大礼包组合，并记录已经计算过的子问题的结果，以避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs(needs)`，表示满足当前需求 `needs` 的最小花费。
+2. 如果 `needs` 已经计算过，则直接返回缓存的结果。
+3. 计算不使用任何大礼包时的花费。
+4. 对于每个大礼包，如果它可以被使用（即不会超过需求），则递归计算使用该大礼包后的最小花费。
+5. 更新并返回最小花费。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 递归地尝试每种可能的大礼包组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * m)，其中 n 是物品数量，m 是大礼包数量。每个需求状态最多有 2^n 种，每种状态最多需要检查 m 个大礼包。
+空间复杂度: O(2^n)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+def shopping_offers(price: List[int], special: List[List[int]], needs: List[int]) -> int:
+    @lru_cache(None)
+    def dfs(needs):
+        # 计算不使用任何大礼包时的花费
+        cost = sum(p * need for p, need in zip(price, needs))
+        
+        # 尝试使用每个大礼包
+        for offer in special:
+            new_needs = []
+            for i in range(len(needs)):
+                if needs[i] < offer[i]:
+                    break
+                new_needs.append(needs[i] - offer[i])
+            else:
+                cost = min(cost, offer[-1] + dfs(tuple(new_needs)))
+        
+        return cost
+    
+    return dfs(tuple(needs))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shopping_offers)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符在 s 和 t 中的出现次数，然后计算需要追加的字符数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用两个哈希表分别记录 s 和 t 中每个字符的出现次数。
+2. 计算 s 和 t 中字符的差异，累加需要追加的字符数量。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计字符频率。
+- 通过字符频率差异计算所需追加的字符数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 s 和 t 的长度。
+空间复杂度: O(1)，因为字符集大小固定为 26 个字母。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_steps_to_make_anagrams(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 s 和 t 互为字母异位词所需的最少步骤数
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录 s 和 t 中每个字符的出现次数
+    count_s = [0] * 26
+    count_t = [0] * 26
+    
+    for char in s:
+        count_s[ord(char) - ord('a')] += 1
+    for char in t:
+        count_t[ord(char) - ord('a')] += 1
+    
+    # 计算需要追加的字符数量
+    steps = 0
+    for i in range(26):
+        steps += abs(count_s[i] - count_t[i])
+    
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_steps_to_make_anagrams)

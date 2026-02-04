@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和二分查找来找到满足条件的三元组，并计算最大利润。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将价格数组排序并记录原始索引。
+2. 使用双指针遍历价格数组，找到所有满足条件的三元组。
+3. 对于每个三元组，使用二分查找找到中间元素，计算利润并更新最大利润。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以有效地找到满足条件的三元组。
+- 使用二分查找可以快速找到中间元素，从而提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(prices)
+    if n < 3:
+        return 0
+
+    # 记录原始索引
+    indexed_prices = sorted(enumerate(prices), key=lambda x: x[1])
+    prices = [p for i, p in indexed_prices]
+    indices = [i for i, p in indexed_prices]
+
+    max_profit = 0
+
+    # 双指针遍历
+    for i in range(n):
+        for j in range(i + 1, n):
+            left, right = i + 1, j - 1
+            while left <= right:
+                mid = (left + right) // 2
+                if indices[i] < indices[mid] < indices[j]:
+                    profit = prices[j] - prices[i] - prices[mid]
+                    max_profit = max(max_profit, profit)
+                    break
+                elif indices[mid] < indices[i]:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+
+    return max_profit
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算数组中负数的个数和是否存在零。如果存在零，则乘积为零；否则，根据负数的个数判断乘积的符号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化负数计数器 `neg_count` 为 0。
+2. 遍历数组 `nums`：
+   - 如果遇到 0，直接返回 0。
+   - 如果遇到负数，增加 `neg_count`。
+3. 根据 `neg_count` 的奇偶性返回结果：
+   - 如果 `neg_count` 是偶数，返回 1（因为负数的个数是偶数时，乘积为正）。
+   - 如果 `neg_count` 是奇数，返回 -1（因为负数的个数是奇数时，乘积为负）。
 
 关键点:
-- [TODO]
+- 无需实际计算乘积，只需关注负数的个数和是否存在零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def array_sign(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组元素积的符号
     """
-    # TODO: 实现最优解法
-    pass
+    neg_count = 0
+    for num in nums:
+        if num == 0:
+            return 0
+        elif num < 0:
+            neg_count += 1
+    
+    return 1 if neg_count % 2 == 0 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_sign)

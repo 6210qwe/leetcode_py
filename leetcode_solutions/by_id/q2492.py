@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的字母序连续子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `max_length` 和 `current_length`，分别记录最长子字符串的长度和当前子字符串的长度。
+2. 遍历字符串 `s`，检查当前字符和前一个字符是否连续。
+3. 如果连续，则增加 `current_length`。
+4. 如果不连续，则更新 `max_length` 并重置 `current_length`。
+5. 最后返回 `max_length` 和 `current_length` 中的最大值。
 
 关键点:
-- [TODO]
+- 使用 ASCII 值来判断字符是否连续。
+- 通过滑动窗口技术，一次遍历即可找到最长的字母序连续子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_alphabetical_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的字母序连续子字符串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return 0
+
+    max_length = 1
+    current_length = 1
+
+    for i in range(1, len(s)):
+        if ord(s[i]) == ord(s[i - 1]) + 1:
+            current_length += 1
+            max_length = max(max_length, current_length)
+        else:
+            current_length = 1
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_alphabetical_substring)

@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从节点 0 到其他节点的最短路径，并确保路径上的边颜色交替。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化队列，将起点 (0, 'red') 和 (0, 'blue') 放入队列。
+3. 使用 BFS 进行遍历，同时记录每个节点在两种颜色路径下的最短距离。
+4. 如果当前节点的颜色与上一个节点的颜色不同，则继续遍历。
+5. 更新结果数组，记录每个节点的最短路径长度。
 
 关键点:
-- [TODO]
+- 使用队列进行 BFS 遍历。
+- 通过颜色交替来确保路径的有效性。
+- 使用两个字典分别记录红色和蓝色路径的最短距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + E)，其中 n 是节点数，E 是边数。
+空间复杂度: O(n + E)，用于存储图的邻接表和队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque, defaultdict
 
+def shortestAlternatingPaths(n: int, redEdges: List[List[int]], blueEdges: List[List[int]]) -> List[int]:
+    # 构建图的邻接表表示
+    graph = defaultdict(lambda: {'red': [], 'blue': []})
+    for u, v in redEdges:
+        graph[u]['red'].append(v)
+    for u, v in blueEdges:
+        graph[u]['blue'].append(v)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化结果数组
+    result = [-1] * n
+    result[0] = 0
 
+    # 初始化队列
+    queue = deque([(0, 'red', 0), (0, 'blue', 0)])
+    visited = set([(0, 'red'), (0, 'blue')])
 
-Solution = create_solution(solution_function_name)
+    while queue:
+        node, color, distance = queue.popleft()
+
+        # 更新结果数组
+        if result[node] == -1 or result[node] > distance:
+            result[node] = distance
+
+        # 获取下一个颜色
+        next_color = 'blue' if color == 'red' else 'red'
+
+        # 遍历相邻节点
+        for neighbor in graph[node][color]:
+            if (neighbor, next_color) not in visited:
+                visited.add((neighbor, next_color))
+                queue.append((neighbor, next_color, distance + 1))
+
+    return result
+
+Solution = create_solution(shortestAlternatingPaths)

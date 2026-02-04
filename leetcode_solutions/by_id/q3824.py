@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储所有可能的 XOR 三元组值，并利用集合的唯一性来去重。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合 `xor_set` 来存储不同的 XOR 三元组值。
+2. 遍历数组中的每个元素 `nums[i]`，计算 `nums[i]` 与所有后续元素 `nums[j]` 和 `nums[k]` 的异或值，并将结果加入 `xor_set`。
+3. 返回 `xor_set` 的大小。
 
 关键点:
-- [TODO]
+- 使用集合来存储和去重 XOR 三元组值。
+- 通过三层循环遍历所有可能的三元组组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是数组的长度。我们需要遍历所有可能的三元组组合。
+空间复杂度: O(n^3)，在最坏情况下，所有的 XOR 三元组值都是唯一的，需要存储 n^3 个值。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同 XOR 三元组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    xor_set = set()
+    
+    n = len(nums)
+    for i in range(n):
+        for j in range(i, n):
+            for k in range(j, n):
+                xor_value = nums[i] ^ nums[j] ^ nums[k]
+                xor_set.add(xor_value)
+    
+    return len(xor_set)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字符串切片和拼接来实现循环替换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算实际的偏移量 `k % len(s)`，确保 k 不超过字符串长度。
+2. 将字符串分成两部分：前半部分和后半部分。
+3. 拼接后半部分和前半部分，得到加密后的字符串。
 
 关键点:
-- [TODO]
+- 使用字符串切片操作可以高效地实现循环替换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。字符串切片和拼接操作的时间复杂度为 O(n)。
+空间复杂度: O(n)，需要额外的空间来存储切片后的字符串。
 """
 
 # ============================================================================
@@ -49,12 +50,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_encrypted_string(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现加密字符串的函数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    k = k % n  # 计算实际的偏移量
+    return s[-k:] + s[:-k]  # 拼接后半部分和前半部分
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_encrypted_string)

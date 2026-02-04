@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前序遍历（DFS）来构建字符串，并在适当的位置添加括号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点为空，返回空字符串。
+2. 初始化结果字符串为当前节点的值。
+3. 如果左子节点存在，递归处理左子节点，并在其结果前后加上括号。
+4. 如果右子节点存在且左子节点不存在，递归处理右子节点并在其结果前后加上括号。
+5. 如果右子节点存在且左子节点也存在，递归处理右子节点并在其结果前后加上括号。
+6. 返回最终构建的字符串。
 
 关键点:
-- [TODO]
+- 只有当左子节点为空且右子节点不为空时，才需要在左子节点位置添加空括号。
+- 递归处理左右子节点，并在结果前后加上括号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tree2str(root: Optional[TreeNode]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将二叉树转化为字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return ""
+
+    result = str(root.val)
+
+    if root.left or root.right:
+        result += f"({tree2str(root.left)})"
+    
+    if root.right:
+        result += f"({tree2str(root.right)})"
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tree2str)

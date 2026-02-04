@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质，找到指定节点的右子树中的最左节点作为后继者；如果没有右子树，则向上查找第一个祖先节点，该节点是其父节点的左子节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果节点有右子树，找到右子树中的最左节点。
+2. 如果节点没有右子树，向上查找第一个祖先节点，该节点是其父节点的左子节点。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质，确保时间复杂度和空间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h)，其中h是树的高度。在最坏情况下，树的高度为n（即树退化成链表）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_successor(root: TreeNode, p: TreeNode) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    找到二叉搜索树中指定节点的中序后继。
     """
-    # TODO: 实现最优解法
-    pass
+    # 如果节点有右子树，找到右子树中的最左节点
+    if p.right:
+        successor = p.right
+        while successor.left:
+            successor = successor.left
+        return successor
+    
+    # 如果节点没有右子树，向上查找第一个祖先节点，该节点是其父节点的左子节点
+    successor = None
+    current = root
+    while current:
+        if p.val < current.val:
+            successor = current
+            current = current.left
+        elif p.val > current.val:
+            current = current.right
+        else:
+            break
+    return successor
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_successor)

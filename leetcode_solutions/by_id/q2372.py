@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计 `s` 和 `target` 中每个字符的出现次数，然后计算 `s` 中的字符能组成 `target` 的最大副本数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计 `s` 和 `target` 中每个字符的出现次数。
+2. 计算 `s` 中的字符能组成 `target` 的最大副本数，即 `s` 中每个字符的出现次数除以 `target` 中该字符的出现次数，取最小值。
 
 关键点:
-- [TODO]
+- 使用 `collections.Counter` 来统计字符出现次数。
+- 计算最大副本数时，需要考虑 `target` 中每个字符的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `s` 的长度，m 是 `target` 的长度。
+空间复杂度: O(1)，因为字符集是固定的（26 个小写字母）。
 """
 
 # ============================================================================
@@ -47,14 +48,26 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def rearrange_characters(s: str, target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以形成 target 的最大副本数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计 s 和 target 中每个字符的出现次数
+    s_count = Counter(s)
+    target_count = Counter(target)
+
+    # 计算 s 中的字符能组成 target 的最大副本数
+    max_copies = float('inf')
+    for char in target_count:
+        if char in s_count:
+            max_copies = min(max_copies, s_count[char] // target_count[char])
+        else:
+            return 0
+
+    return max_copies
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_characters)

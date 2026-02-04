@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数组来实现循环双端队列，并使用两个指针 head 和 tail 来标记队列的头和尾。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，分配一个大小为 k+1 的数组，以避免在插入和删除时进行额外的检查。
+2. 使用两个指针 head 和 tail 分别指向队列的头和尾。
+3. 在插入和删除操作中，更新 head 和 tail 指针的位置。
+4. 使用模运算来处理循环。
 
 关键点:
-- [TODO]
+- 数组大小为 k+1，以避免在插入和删除时进行额外的检查。
+- 使用模运算来处理循环。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(k)，其中 k 是队列的最大容量。
 """
 
 # ============================================================================
@@ -44,17 +47,73 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class MyCircularDeque:
+
+    def __init__(self, k: int):
+        self.capacity = k + 1
+        self.data = [0] * self.capacity
+        self.head = 0
+        self.tail = 0
+        self.size = 0
+
+    def insertFront(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.head = (self.head - 1 + self.capacity) % self.capacity
+        self.data[self.head] = value
+        self.size += 1
+        return True
+
+    def insertLast(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.data[self.tail] = value
+        self.tail = (self.tail + 1) % self.capacity
+        self.size += 1
+        return True
+
+    def deleteFront(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.head = (self.head + 1) % self.capacity
+        self.size -= 1
+        return True
+
+    def deleteLast(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.tail = (self.tail - 1 + self.capacity) % self.capacity
+        self.size -= 1
+        return True
+
+    def getFront(self) -> int:
+        if self.isEmpty():
+            return -1
+        return self.data[self.head]
+
+    def getRear(self) -> int:
+        if self.isEmpty():
+            return -1
+        return self.data[(self.tail - 1 + self.capacity) % self.capacity]
+
+    def isEmpty(self) -> bool:
+        return self.size == 0
+
+    def isFull(self) -> bool:
+        return self.size == self.capacity - 1
 
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    circularDeque = MyCircularDeque(3)
+    print(circularDeque.insertLast(1))  # 返回 true
+    print(circularDeque.insertLast(2))  # 返回 true
+    print(circularDeque.insertFront(3))  # 返回 true
+    print(circularDeque.insertFront(4))  # 返回 false
+    print(circularDeque.getRear())  # 返回 2
+    print(circularDeque.isFull())  # 返回 true
+    print(circularDeque.deleteLast())  # 返回 true
+    print(circularDeque.insertFront(4))  # 返回 true
+    print(circularDeque.getFront())  # 返回 4

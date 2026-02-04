@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和 + 哈希表来统计满足条件的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_count` 用于记录每个前缀和出现的次数，初始时 `prefix_count[0] = 1`。
+2. 遍历数组，计算当前前缀和 `current_sum`，如果遇到 1 则加 1，遇到 0 则减 1。
+3. 对于每个前缀和 `current_sum`，统计所有小于 `current_sum` 的前缀和的数量，并累加到结果中。
+4. 更新哈希表 `prefix_count` 中当前前缀和 `current_sum` 的计数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀和的出现次数，可以快速统计满足条件的子数组数量。
+- 通过前缀和的差值来判断子数组中 1 的数量是否大于 0 的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_subarrays_with_more_ones_than_zeros(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计数组中 1 比 0 多的子数组个数。
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_count = {0: 1}
+    current_sum = 0
+    result = 0
+    
+    for num in nums:
+        if num == 1:
+            current_sum += 1
+        else:
+            current_sum -= 1
+        
+        # 统计所有小于 current_sum 的前缀和的数量
+        for key in prefix_count:
+            if key < current_sum:
+                result += prefix_count[key]
+        
+        # 更新当前前缀和的计数
+        if current_sum in prefix_count:
+            prefix_count[current_sum] += 1
+        else:
+            prefix_count[current_sum] = 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_subarrays_with_more_ones_than_zeros)

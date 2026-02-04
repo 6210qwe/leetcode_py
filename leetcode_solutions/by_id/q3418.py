@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个小时数的余数出现次数，通过查找互补的余数来找到构成整天的对数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `hour_count` 来记录每个小时数的余数出现次数。
+2. 遍历 `hours` 数组，对于每个小时数 `hour`，计算其模 24 的余数 `remainder`。
+3. 查找 `hour_count` 中是否存在 `24 - remainder`，如果存在则将对应的值加到结果中。
+4. 更新 `hour_count` 中 `remainder` 的计数。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个余数的出现次数，可以快速查找互补的余数。
+- 模 24 的操作确保了我们只关心 24 小时内的余数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `hours` 的长度。我们只需要遍历一次 `hours` 数组。
+空间复杂度: O(1)，哈希表的大小最多为 24，因此空间复杂度是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_complete_pairs(hours: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算构成整天的下标对数目
     """
-    # TODO: 实现最优解法
-    pass
+    hour_count = [0] * 24
+    result = 0
+    
+    for hour in hours:
+        remainder = hour % 24
+        complement = (24 - remainder) % 24
+        result += hour_count[complement]
+        hour_count[remainder] += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_complete_pairs)

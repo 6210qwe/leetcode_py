@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储需要删除的节点值，并遍历链表进行删除操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `nums` 转换为哈希集合，以便快速查找。
+2. 使用一个虚拟头节点 `dummy` 来简化边界条件处理。
+3. 遍历链表，如果当前节点的值在哈希集合中，则跳过该节点；否则，继续遍历。
+4. 返回修改后的链表头节点。
 
 关键点:
-- [TODO]
+- 使用哈希集合来实现 O(1) 时间复杂度的查找。
+- 使用虚拟头节点来简化边界条件处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `nums` 的长度，m 是链表的长度。
+空间复杂度: O(n)，用于存储 `nums` 的哈希集合。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_nodes_from_linked_list(nums: List[int], head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    从链表中移除所有存在于 nums 中的节点后，返回修改后的链表的头节点。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums 转换为哈希集合
+    num_set = set(nums)
+    
+    # 创建虚拟头节点
+    dummy = ListNode(0)
+    dummy.next = head
+    current = dummy
+    
+    # 遍历链表
+    while current.next:
+        if current.next.val in num_set:
+            current.next = current.next.next
+        else:
+            current = current.next
+    
+    return dummy.next
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_nodes_from_linked_list)

@@ -21,22 +21,26 @@ LCP 19. 秋叶收藏集 - 小扣出去秋游，途中收集了一些红叶和黄
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义一个三维数组 dp[i][j]，其中 i 表示当前处理到第 i 片叶子，j 表示当前的状态（0 表示全是红叶，1 表示红叶+黄叶，2 表示红叶+黄叶+红叶）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = (leaves[0] == 'y')，dp[0][1] = dp[0][2] = float('inf')
+2. 遍历每个叶子，更新 dp 数组
+3. 最终结果为 dp[n-1][2]
 
 关键点:
-- [TODO]
+- 动态转移方程：
+  - dp[i][0] = dp[i-1][0] + (leaves[i] == 'y')
+  - dp[i][1] = min(dp[i-1][0], dp[i-1][1]) + (leaves[i] == 'r')
+  - dp[i][2] = min(dp[i-1][1], dp[i-1][2]) + (leaves[i] == 'y')
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 leaves 的长度
+空间复杂度: O(n)，使用了一维数组来存储状态
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(leaves: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将秋叶收藏集调整为「红、黄、红」所需的最少调整次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(leaves)
+    if n < 3:
+        return -1  # 不可能的情况
+
+    # 初始化 dp 数组
+    dp = [[float('inf')] * 3 for _ in range(n)]
+    dp[0][0] = (leaves[0] == 'y')
+
+    for i in range(1, n):
+        dp[i][0] = dp[i-1][0] + (leaves[i] == 'y')
+        dp[i][1] = min(dp[i-1][0], dp[i-1][1]) + (leaves[i] == 'r')
+        if i >= 2:
+            dp[i][2] = min(dp[i-1][1], dp[i-1][2]) + (leaves[i] == 'y')
+
+    return dp[n-1][2]
 
 
 Solution = create_solution(solution_function_name)

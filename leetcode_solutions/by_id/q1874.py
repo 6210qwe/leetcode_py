@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来检查 nums 中是否存在按顺序排列的 groups 中的所有子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 nums 和 groups 的起始位置。
+2. 遍历 nums 数组，尝试找到每个 group 在 nums 中的起始位置。
+3. 如果找到某个 group 的起始位置，则移动指针 j 到下一个 group，并继续查找。
+4. 如果所有 group 都能在 nums 中按顺序找到，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用双指针法来避免重复遍历 nums 数组。
+- 确保每个 group 在 nums 中的起始位置是按顺序的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是所有 group 的总长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_choose(groups: List[List[int]], nums: List[int]) -> bool:
+    i, j = 0, 0  # 初始化指针
+    while i < len(nums) and j < len(groups):
+        if nums[i:i+len(groups[j])] == groups[j]:
+            i += len(groups[j])
+            j += 1
+        else:
+            i += 1
+    return j == len(groups)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = can_choose

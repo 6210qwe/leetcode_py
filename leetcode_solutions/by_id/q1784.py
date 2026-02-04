@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择最小能量需求与实际能量消耗差值最大的任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对任务按照 (minimum - actual) 的降序进行排序。
+2. 初始化初始能量 energy 为 0。
+3. 遍历排序后的任务列表，对于每个任务：
+   - 如果当前能量不足以开始该任务，则增加初始能量使得能够开始该任务。
+   - 执行该任务，更新当前能量。
+4. 返回最终的初始能量。
 
 关键点:
-- [TODO]
+- 通过 (minimum - actual) 的降序排序，确保优先处理那些能量需求与实际消耗差值较大的任务，从而减少总的初始能量需求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是任务的数量。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimum_initial_energy(tasks: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算完成所有任务所需的最少初始能量
     """
-    # TODO: 实现最优解法
-    pass
+    # 按照 (minimum - actual) 的降序排序
+    tasks.sort(key=lambda x: x[1] - x[0], reverse=True)
+    
+    energy = 0
+    current_energy = 0
+    
+    for actual, minimum in tasks:
+        if current_energy < minimum:
+            # 增加初始能量以满足当前任务的最低能量需求
+            energy += (minimum - current_energy)
+            current_energy = minimum
+        # 执行任务，更新当前能量
+        current_energy -= actual
+    
+    return energy
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_initial_energy)

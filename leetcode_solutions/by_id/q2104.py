@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用邻接表表示树，并维护每个节点的锁定状态和锁定用户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，构建邻接表和子节点列表。
+2. lock 操作：检查节点是否已锁定，如果没有则锁定并记录用户。
+3. unlock 操作：检查节点是否被指定用户锁定，如果是则解锁。
+4. upgrade 操作：
+   - 检查节点是否未锁定且没有上锁的祖先节点。
+   - 检查节点是否有上锁的子孙节点。
+   - 如果满足条件，则锁定节点并解锁所有子孙节点。
 
 关键点:
-- [TODO]
+- 使用邻接表和子节点列表来快速访问父子关系。
+- 使用字典记录每个节点的锁定状态和锁定用户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每次操作的时间复杂度取决于树的高度和子孙节点的数量。
+空间复杂度: O(n) - 需要存储邻接表、子节点列表和锁定状态。
 """
 
 # ============================================================================
@@ -44,17 +50,70 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class LockingTree:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, parent: List[int]):
+        self.parent = parent
+        self.n = len(parent)
+        self.children = [[] for _ in range(self.n)]
+        self.locked = [None] * self.n
+        for i in range(1, self.n):
+            self.children[parent[i]].append(i)
 
+    def lock(self, num: int, user: int) -> bool:
+        if self.locked[num] is None:
+            self.locked[num] = user
+            return True
+        return False
 
-Solution = create_solution(solution_function_name)
+    def unlock(self, num: int, user: int) -> bool:
+        if self.locked[num] == user:
+            self.locked[num] = None
+            return True
+        return False
+
+    def has_locked_ancestor(self, num: int) -> bool:
+        while num != -1:
+            if self.locked[num] is not None:
+                return True
+            num = self.parent[num]
+        return False
+
+    def has_locked_descendant(self, num: int) -> bool:
+        stack = [num]
+        while stack:
+            node = stack.pop()
+            if self.locked[node] is not None:
+                return True
+            for child in self.children[node]:
+                stack.append(child)
+        return False
+
+    def unlock_descendants(self, num: int):
+        stack = [num]
+        while stack:
+            node = stack.pop()
+            self.locked[node] = None
+            for child in self.children[node]:
+                stack.append(child)
+
+    def upgrade(self, num: int, user: int) -> bool:
+        if self.locked[num] is not None:
+            return False
+        if self.has_locked_ancestor(num):
+            return False
+        if not self.has_locked_descendant(num):
+            return False
+        self.locked[num] = user
+        self.unlock_descendants(num)
+        return True
+
+# Example usage
+# lockingTree = LockingTree([-1, 0, 0, 1, 1, 2, 2])
+# print(lockingTree.lock(2, 2))  # True
+# print(lockingTree.unlock(2, 3))  # False
+# print(lockingTree.unlock(2, 2))  # True
+# print(lockingTree.lock(4, 5))  # True
+# print(lockingTree.upgrade(0, 1))  # True
+# print(lockingTree.lock(0, 1))  # False

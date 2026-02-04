@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来跟踪已经收集到的元素，并从数组末尾开始遍历，直到收集到所有需要的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `collected` 来存储已经收集到的元素。
+2. 从数组的末尾开始向前遍历，每次将当前元素添加到集合中。
+3. 如果集合中已经包含了所有需要的元素（即集合的大小等于 k），则返回操作次数。
 
 关键点:
-- [TODO]
+- 从数组末尾开始遍历可以确保操作次数最少。
+- 使用集合来快速检查是否已经收集到所有需要的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。最坏情况下需要遍历整个数组。
+空间复杂度: O(k)，用于存储已经收集到的元素。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_collect_elements(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回收集元素 1, 2, ..., k 需要的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    collected = set()
+    operations = 0
+    
+    # 从数组末尾开始向前遍历
+    for i in range(len(nums) - 1, -1, -1):
+        if nums[i] <= k:
+            collected.add(nums[i])
+        operations += 1
+        if len(collected) == k:
+            break
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_collect_elements)

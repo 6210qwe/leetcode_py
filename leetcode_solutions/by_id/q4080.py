@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录数组中的所有元素，然后从 k 开始逐个检查 k 的倍数是否在集合中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 转换为集合以快速查找。
+2. 从 k 开始逐个检查 k 的倍数是否在集合中，找到第一个不在集合中的 k 的倍数并返回。
 
 关键点:
-- [TODO]
+- 使用集合进行快速查找。
+- 从 k 开始逐个检查 k 的倍数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是找到第一个缺失的 k 的倍数所需的步数。
+空间复杂度: O(n)，用于存储 nums 的集合。
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_missing_multiple(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回从 nums 中缺失的、最小的正整数 k 的倍数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums 转换为集合
+    num_set = set(nums)
+    
+    # 从 k 开始逐个检查 k 的倍数
+    multiple = k
+    while multiple in num_set:
+        multiple += k
+    
+    return multiple
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_missing_multiple)

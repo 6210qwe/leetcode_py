@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个最小堆来存储数组中的元素及其索引，每次从堆中取出最小的元素并标记其相邻元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个最小堆，将数组中的每个元素及其索引存入堆中。
+2. 初始化一个集合来记录已经标记的元素。
+3. 从堆中取出最小的元素，将其值加到总分中，并标记该元素及其相邻元素。
+4. 重复步骤3，直到堆为空。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取当前最小的未标记元素。
+- 使用集合来记录已经标记的元素，避免重复处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。插入和删除堆的操作时间复杂度为 O(log n)，总共需要进行 n 次操作。
+空间复杂度: O(n)，用于存储堆和已标记的元素集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def find_score_of_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回标记所有元素后数组的分数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个最小堆，存储 (元素值, 索引)
+    min_heap = [(num, i) for i, num in enumerate(nums)]
+    heapq.heapify(min_heap)
+    
+    # 用于记录已经标记的元素
+    marked = set()
+    
+    score = 0
+    
+    while min_heap:
+        num, index = heapq.heappop(min_heap)
+        
+        # 如果当前元素已经被标记，则跳过
+        if index in marked:
+            continue
+        
+        # 将当前元素值加到总分中
+        score += num
+        
+        # 标记当前元素及其相邻元素
+        marked.add(index)
+        if index > 0:
+            marked.add(index - 1)
+        if index < len(nums) - 1:
+            marked.add(index + 1)
+    
+    return score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_score_of_array)

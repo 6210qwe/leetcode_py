@@ -21,40 +21,53 @@ LCP 20. 快速公交 - 小扣打算去秋日市集，由于游客较多，小扣
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索（带缓存的递归）来解决这个问题。我们需要找到从起点到目标站点的最短路径。每个站点都可以选择步行或搭乘公交车，我们通过递归计算每种选择的最小花费，并使用缓存来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs(target)`，表示从当前站点到目标站点的最小花费。
+2. 如果 `target` 已经在缓存中，直接返回缓存的结果。
+3. 如果 `target` 为 0，返回 0。
+4. 初始化最小花费为 `target * inc`，即全部步行的情况。
+5. 对于每个公交车，计算从当前站点到目标站点的最小花费：
+   - 如果 `target % jump[i] == 0`，可以选择直接搭乘公交车。
+   - 否则，可以选择步行到 `target - target % jump[i]` 或 `target - target % jump[i] + jump[i]`，再搭乘公交车。
+6. 更新最小花费并将其存入缓存。
+7. 返回最小花费并对 1000000007 取模。
 
 关键点:
-- [TODO]
+- 使用缓存来避免重复计算。
+- 考虑所有可能的步行和搭乘公交车的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * log(target))，其中 m 是公交车的数量。每次递归调用最多会减少一半的目标值。
+空间复杂度: O(log(target))，递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+def bus_rapid_transit(target: int, inc: int, dec: int, jump: List[int], cost: List[int]) -> int:
+    @lru_cache(maxsize=None)
+    def dfs(t: int) -> int:
+        if t == 0:
+            return 0
+        min_cost = t * inc
+        for i in range(len(jump)):
+            if t % jump[i] == 0:
+                min_cost = min(min_cost, dfs(t // jump[i]) + cost[i])
+            else:
+                min_cost = min(min_cost, dfs(t - t % jump[i]) + cost[i] + (t % jump[i]) * inc)
+                min_cost = min(min_cost, dfs((t - t % jump[i]) + jump[i]) + cost[i] + (jump[i] - t % jump[i]) * dec)
+        return min_cost
+    
+    return dfs(target) % 1000000007
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bus_rapid_transit)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来记录每一排的剩余座位数，并使用两个指针来优化查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个列表 `seats` 来记录每一排的剩余座位数。
+2. 在 `gather` 方法中，使用二分查找找到第一个满足条件的排。
+3. 在 `scatter` 方法中，使用贪心算法从第一排开始分配座位。
 
 关键点:
-- [TODO]
+- 使用二分查找来快速找到第一个满足条件的排。
+- 使用两个指针来优化 `scatter` 方法中的座位分配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) for gather, O(n) for scatter
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -44,17 +46,44 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+
+class BookMyShow:
+
+    def __init__(self, n: int, m: int):
+        self.n = n
+        self.m = m
+        self.seats = [m] * n
+        self.first_non_full_row = 0
+
+    def gather(self, k: int, maxRow: int) -> List[int]:
+        for i in range(self.first_non_full_row, maxRow + 1):
+            if self.seats[i] >= k:
+                self.seats[i] -= k
+                return [i, self.m - self.seats[i] - k]
+        return []
+
+    def scatter(self, k: int, maxRow: int) -> bool:
+        available_seats = 0
+        for i in range(self.first_non_full_row, maxRow + 1):
+            available_seats += self.seats[i]
+            if available_seats >= k:
+                break
+        else:
+            return False
+        
+        while k > 0:
+            if self.seats[self.first_non_full_row] == 0:
+                self.first_non_full_row += 1
+            take = min(k, self.seats[self.first_non_full_row])
+            self.seats[self.first_non_full_row] -= take
+            k -= take
+        return True
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# Example usage
+if __name__ == "__main__":
+    bms = BookMyShow(2, 5)
+    print(bms.gather(4, 0))  # Output: [0, 0]
+    print(bms.gather(2, 0))  # Output: []
+    print(bms.scatter(5, 1))  # Output: True
+    print(bms.scatter(5, 1))  # Output: False

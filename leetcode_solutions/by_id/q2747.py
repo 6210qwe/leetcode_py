@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个简单的循环来遍历数组，并应用映射函数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果数组 `result`。
+2. 遍历输入数组 `arr`，对于每个元素 `arr[i]`，调用映射函数 `fn(arr[i], i)` 并将结果添加到 `result` 中。
+3. 返回结果数组 `result`。
 
 关键点:
-- [TODO]
+- 不使用内置方法 `Array.map`，而是使用简单的循环来实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `arr` 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(n)，结果数组 `result` 的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int], fn):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现转换数组中的每个元素
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(len(arr)):
+        result.append(fn(arr[i], i))
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法检查两棵树是否通过翻转操作等价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果两棵树的当前节点都为空，返回 True。
+2. 如果其中一个节点为空而另一个不为空，返回 False。
+3. 如果当前节点的值不相等，返回 False。
+4. 递归检查以下两种情况之一：
+   - 当前节点的左子树与另一棵树的左子树等价，并且当前节点的右子树与另一棵树的右子树等价。
+   - 当前节点的左子树与另一棵树的右子树等价，并且当前节点的右子树与另一棵树的左子树等价。
 
 关键点:
-- [TODO]
+- 递归地检查所有可能的翻转情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是树中节点的数量，因为每个节点最多被访问一次。
+空间复杂度: O(h) - 其中 h 是树的高度，这是递归调用栈的最大深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_flip_equivalent(root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两棵二叉树是否通过翻转操作等价。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root1 and not root2:
+        return True
+    if not root1 or not root2:
+        return False
+    if root1.val != root2.val:
+        return False
+    
+    # 检查两种可能的翻转情况
+    return (is_flip_equivalent(root1.left, root2.left) and is_flip_equivalent(root1.right, root2.right)) or \
+           (is_flip_equivalent(root1.left, root2.right) and is_flip_equivalent(root1.right, root2.left))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_flip_equivalent)

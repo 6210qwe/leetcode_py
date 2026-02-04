@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来找到满足条件的分割点，并计算最小的绝对差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left_end 和 right_start，分别指向数组的起始位置。
+2. 移动 left_end 指针，确保 left 子数组严格递增。
+3. 移动 right_start 指针，确保 right 子数组严格递减。
+4. 计算 left 和 right 子数组的和，并记录最小的绝对差值。
+5. 如果找不到有效的分割点，返回 -1。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在线性时间内找到所有可能的分割点。
+- 通过维护前缀和，可以在常数时间内计算子数组的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def split_array_with_minimum_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分割数组得到最小绝对差
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 2:
+        return -1
+
+    left_end = 0
+    right_start = n - 1
+    min_diff = float('inf')
+
+    # Move left_end to ensure left subarray is strictly increasing
+    while left_end + 1 < n and nums[left_end] < nums[left_end + 1]:
+        left_end += 1
+
+    # Move right_start to ensure right subarray is strictly decreasing
+    while right_start > 0 and nums[right_start] < nums[right_start - 1]:
+        right_start -= 1
+
+    # Check if there is a valid split point
+    if left_end < right_start:
+        left_sum = sum(nums[:left_end + 1])
+        right_sum = sum(nums[right_start:])
+        min_diff = abs(left_sum - right_sum)
+
+    # If no valid split point found, return -1
+    if min_diff == float('inf'):
+        return -1
+
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_array_with_minimum_difference)

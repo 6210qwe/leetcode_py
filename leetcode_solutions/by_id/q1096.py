@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算子数组的和，并通过动态规划来记录最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，以便快速计算任意子数组的和。
+2. 使用两个滑动窗口分别计算长度为 firstLen 和 secondLen 的子数组的最大和。
+3. 通过动态规划记录每个位置的最大和，确保两个子数组不重叠。
+4. 最后返回两个子数组的最大和。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算子数组的和。
+- 通过滑动窗口和动态规划来记录最大和，确保两个子数组不重叠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_sum_two_no_overlap(nums: List[int], first_len: int, second_len: int) -> int:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    def get_subarray_sum(start: int, end: int) -> int:
+        return prefix_sum[end + 1] - prefix_sum[start]
+    
+    # 初始化动态规划数组
+    dp_first = [0] * n
+    dp_second = [0] * n
+    
+    # 计算第一个子数组的最大和
+    for i in range(first_len - 1, n):
+        if i == first_len - 1:
+            dp_first[i] = get_subarray_sum(0, i)
+        else:
+            dp_first[i] = max(dp_first[i - 1], get_subarray_sum(i - first_len + 1, i))
+    
+    # 计算第二个子数组的最大和
+    for i in range(second_len - 1, n):
+        if i == second_len - 1:
+            dp_second[i] = get_subarray_sum(0, i)
+        else:
+            dp_second[i] = max(dp_second[i - 1], get_subarray_sum(i - second_len + 1, i))
+    
+    # 计算两个子数组的最大和
+    max_sum = 0
+    for i in range(first_len - 1, n - second_len):
+        max_sum = max(max_sum, dp_first[i] + get_subarray_sum(i + 1, i + second_len))
+    
+    for i in range(second_len - 1, n - first_len):
+        max_sum = max(max_sum, dp_second[i] + get_subarray_sum(i + 1, i + first_len))
+    
+    return max_sum
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_two_no_overlap)

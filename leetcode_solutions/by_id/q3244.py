@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断计算数组中所有元素的最大公约数 (GCD)，最终将数组中的所有元素都变为 GCD。如果 GCD 为 1，则数组的最小长度为 1；否则，数组的最小长度为数组中等于 GCD 的元素个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中所有元素的最大公约数 (GCD)。
+2. 如果 GCD 为 1，则返回 1。
+3. 否则，统计数组中等于 GCD 的元素个数，并返回该个数。
 
 关键点:
-- [TODO]
+- 使用欧几里得算法计算 GCD。
+- 通过遍历数组来统计等于 GCD 的元素个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组的长度，max(nums) 是数组中的最大值。计算 GCD 的时间复杂度为 O(log(max(nums)))，遍历数组的时间复杂度为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
+from functools import reduce
 
-
-def solution_function_name(params):
+def minimize_array_length(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过操作使数组长度最小
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组中所有元素的最大公约数
+    array_gcd = reduce(gcd, nums)
+    
+    # 如果 GCD 为 1，则返回 1
+    if array_gcd == 1:
+        return 1
+    
+    # 统计数组中等于 GCD 的元素个数
+    count = sum(1 for num in nums if num == array_gcd)
+    
+    # 返回数组中等于 GCD 的元素个数
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_array_length)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符的总出现次数，然后检查每个字符的出现次数是否能被字符串的数量整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `char_count` 来记录每个字符的总出现次数。
+2. 遍历每个字符串，更新 `char_count`。
+3. 检查每个字符的出现次数是否能被字符串的数量整除，如果不能则返回 False，否则返回 True。
 
 关键点:
-- [TODO]
+- 使用哈希表来统计字符出现次数。
+- 检查字符出现次数是否能被字符串数量整除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是每个字符串的平均长度。
+空间复杂度: O(1)，因为字符集是固定的（26个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_redistribute_characters(words: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过重新分配字符使所有字符串都相等
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+    
+    # 统计所有字符的总出现次数
+    char_count = Counter()
+    for word in words:
+        char_count += Counter(word)
+    
+    # 检查每个字符的出现次数是否能被字符串的数量整除
+    num_words = len(words)
+    for count in char_count.values():
+        if count % num_words != 0:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_redistribute_characters)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举和贪心算法来找到最小的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 和 nums2 的最后一个元素。
+2. 检查是否可以通过交换使 nums1 和 nums2 的最后一个元素分别为各自数组的最大值。
+3. 如果可以，计算所需的操作次数；否则返回 -1。
 
 关键点:
-- [TODO]
+- 通过枚举和贪心算法来找到最小的操作次数。
+- 保证最后一次操作后，两个数组的最后一个元素分别是各自数组的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_operations_to_maximize_last_elements(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大化数组末位元素的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    last1, last2 = nums1[-1], nums2[-1]
+    max1, max2 = max(nums1), max(nums2)
+
+    if last1 < max2 or last2 < max1:
+        return -1
+
+    # Count the number of operations needed to make last1 and last2 the maximum values in their respective arrays
+    operations = 0
+    for i in range(n - 1):
+        if nums1[i] > last1 and nums2[i] > last2:
+            return -1
+        if nums1[i] > last1:
+            operations += 1
+        if nums2[i] > last2:
+            operations += 1
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_operations_to_maximize_last_elements)

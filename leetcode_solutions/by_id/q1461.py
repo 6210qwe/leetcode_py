@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和动态规划来计算所有有效的取货/交付顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果为 1。
+2. 对于每一个新的订单，计算可以插入的新位置数。
+3. 更新结果，并对结果取模。
 
 关键点:
-- [TODO]
+- 使用组合数学中的插空法来计算新订单的插入位置。
+- 通过动态规划的思想逐步累乘结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_orders(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有有效的取货/交付顺序
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    result = 1
+    
+    for i in range(1, n + 1):
+        # 插入第 i 个订单时，有 (2*i - 1) 个位置可以插入 P_i
+        # 之后有 (2*i) 个位置可以插入 D_i
+        result = result * i * (2 * i - 1) % MOD
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_orders)

@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算统计每个位上1的数量，然后构造最大的k个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个位上1的数量。
+2. 根据每个位上1的数量，构造最大的k个数。
+3. 计算这k个数的平方和并取模。
 
 关键点:
-- [TODO]
+- 使用位运算统计每个位上1的数量。
+- 构造最大的k个数时，优先考虑高位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))，其中n是数组长度，log(max(nums))是二进制位数。
+空间复杂度: O(log(max(nums)))，用于存储每个位上1的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_sum_after_operations(nums: List[int], k: int) -> int:
+    MOD = 10**9 + 7
+    bit_count = [0] * 32  # 统计每个位上1的数量
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个位上1的数量
+    for num in nums:
+        for i in range(32):
+            if num & (1 << i):
+                bit_count[i] += 1
 
+    result = 0
+    # 构造最大的k个数
+    for _ in range(k):
+        current_num = 0
+        for i in range(31, -1, -1):
+            if bit_count[i] > 0:
+                current_num |= (1 << i)
+                bit_count[i] -= 1
+        result = (result + current_num * current_num) % MOD
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(max_sum_after_operations)

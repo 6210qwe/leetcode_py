@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择较小的整数，并跳过被禁止的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 banned 数组转换为集合，以便快速查找。
+2. 初始化当前和 current_sum 和计数器 count。
+3. 遍历从 1 到 n 的整数：
+   - 如果当前整数不在 banned 集合中，检查将其加入 current_sum 是否会超过 maxSum。
+   - 如果不会超过，则将其加入 current_sum 并增加计数器 count。
+   - 如果超过 maxSum，则停止遍历。
+4. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找被禁止的整数。
+- 通过贪心算法优先选择较小的整数，确保选择的整数数量最多。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(m)，其中 m 是 banned 数组的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_count(banned: List[int], n: int, max_sum: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最多可以选择的整数数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 banned 数组转换为集合
+    banned_set = set(banned)
+    
+    current_sum = 0
+    count = 0
+    
+    for i in range(1, n + 1):
+        if i not in banned_set:
+            if current_sum + i <= max_sum:
+                current_sum += i
+                count += 1
+            else:
+                break
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_count)

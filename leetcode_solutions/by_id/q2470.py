@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理字符串中的星号和非星号字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s 中的每个字符：
+   - 如果字符是星号 '*'，则弹出栈顶元素（即移除星号左侧最近的非星号字符）。
+   - 如果字符是非星号字符，则将其压入栈中。
+3. 最后，将栈中的字符拼接成结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来维护非星号字符的顺序，并在遇到星号时弹出栈顶元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符只会被处理一次。
+空间复杂度: O(n)，最坏情况下，栈中可能存储所有非星号字符。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_stars(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除字符串中的星号
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if char == '*':
+            if stack:
+                stack.pop()
+        else:
+            stack.append(char)
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_stars)

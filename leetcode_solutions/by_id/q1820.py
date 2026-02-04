@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用度数和拓扑排序来判断树的唯一性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图，并计算每个节点的度数。
+2. 找出度数最大的节点作为根节点。
+3. 检查是否存在多个度数相同的最大节点，如果有则返回 2。
+4. 使用拓扑排序验证是否可以构建唯一的树。
+5. 如果拓扑排序过程中发现矛盾，则返回 0；否则返回 1。
 
 关键点:
-- [TODO]
+- 使用度数来确定根节点。
+- 使用拓扑排序来验证树的唯一性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。
+空间复杂度: O(n + m)，用于存储邻接表和度数。
 """
 
 # ============================================================================
@@ -44,17 +48,46 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def checkWays(pairs: List[List[int]]) -> int:
+    from collections import defaultdict, deque
+    
+    # 构建邻接表和度数
+    graph = defaultdict(set)
+    degree = defaultdict(int)
+    
+    for x, y in pairs:
+        graph[x].add(y)
+        graph[y].add(x)
+        degree[x] += 1
+        degree[y] += 1
+    
+    # 找出度数最大的节点
+    max_degree = max(degree.values())
+    roots = [node for node, deg in degree.items() if deg == max_degree]
+    
+    if len(roots) > 1:
+        return 2
+    
+    root = roots[0]
+    
+    # 拓扑排序验证
+    queue = deque([root])
+    visited = set([root])
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    
+    if len(visited) != len(graph):
+        return 0
+    
+    # 检查是否有多个根节点
+    if any(len(graph[node]) == max_degree for node in graph if node != root):
+        return 2
+    
+    return 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(checkWays)

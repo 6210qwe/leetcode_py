@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择第一个容量大于等于当前水果数量的篮子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔数组 `used` 来记录哪些篮子已经被使用。
+2. 遍历 `fruits` 数组，对于每种水果，找到第一个容量大于等于该水果数量且未被使用的篮子。
+3. 如果找到了合适的篮子，则标记该篮子为已使用；否则，该水果无法放置。
+4. 统计未放置的水果种类数量并返回。
 
 关键点:
-- [TODO]
+- 使用布尔数组 `used` 来高效地记录和检查篮子的使用情况。
+- 通过遍历 `baskets` 数组来找到第一个合适的篮子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 在最坏情况下，每次查找合适的篮子需要遍历整个 `baskets` 数组。
+空间复杂度: O(n) - 使用了一个布尔数组 `used` 来记录篮子的使用情况。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(fruits: List[int], baskets: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(fruits)
+    used = [False] * n  # 记录哪些篮子已经被使用
+    
+    for fruit in fruits:
+        found = False
+        for i in range(n):
+            if not used[i] and baskets[i] >= fruit:
+                used[i] = True
+                found = True
+                break
+        if not found:
+            return 1  # 有一种水果未放置
+    
+    return 0  # 所有水果都已成功放置
 
 
 Solution = create_solution(solution_function_name)

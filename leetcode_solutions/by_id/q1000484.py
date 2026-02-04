@@ -21,22 +21,26 @@ LCP 69. Hello LeetCode! - 力扣嘉年华同样准备了纪念品展位，参观
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们用一个二进制掩码来表示当前已经收集到的字母，并使用动态规划来记录在当前状态下所需的最小代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个二维数组 dp，其中 dp[mask] 表示当前已经收集到的字母状态为 mask 时的最小代价。
+2. 初始化 dp 数组，dp[0] = 0，其他值设为无穷大。
+3. 遍历每个单词，对于每个单词中的每个字母，计算其左边和右边字母的数量。
+4. 更新 dp 数组，考虑从当前单词中取出字母后的状态转移。
+5. 最终返回 dp[(1 << 13) - 1]，即收集完所有字母的最小代价。如果该值仍为无穷大，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用二进制掩码来表示当前已经收集到的字母状态。
+- 动态规划的状态转移方程要考虑从当前单词中取出字母后的代价。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * 2^13)，其中 n 是单词的数量，m 是单词的最大长度，2^13 是状态数。
+空间复杂度: O(2^13)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    target = "helloleetcode"
+    char_count = [0] * 26
+    for c in target:
+        char_count[ord(c) - ord('a')] += 1
+
+    n = len(words)
+    m = max(len(word) for word in words)
+    dp = [float('inf')] * (1 << 13)
+    dp[0] = 0
+
+    def get_mask(state):
+        mask = 0
+        for i in range(26):
+            if state[i] > 0:
+                mask |= (1 << i)
+        return mask
+
+    for i in range(n):
+        word = words[i]
+        for j in range(len(word)):
+            left = j
+            right = len(word) - j - 1
+            cost = left * right
+            for mask in range((1 << 13) - 1, -1, -1):
+                new_state = char_count[:]
+                for k in range(26):
+                    if (mask >> k) & 1:
+                        new_state[k] -= 1
+                new_state[ord(word[j]) - ord('a')] += 1
+                new_mask = get_mask(new_state)
+                if new_mask < (1 << 13):
+                    dp[new_mask] = min(dp[new_mask], dp[mask] + cost)
+
+    result = dp[(1 << 13) - 1]
+    return result if result != float('inf') else -1
 
 
 Solution = create_solution(solution_function_name)

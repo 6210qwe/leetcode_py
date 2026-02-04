@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和和哈希表来统计美丽子数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_count`，用于记录每个前缀异或和出现的次数。
+2. 初始化变量 `xor_sum` 为 0，用于存储当前的前缀异或和。
+3. 初始化变量 `beautiful_count` 为 0，用于存储美丽子数组的数量。
+4. 遍历数组 `nums`：
+   - 更新 `xor_sum` 为 `xor_sum ^ num`。
+   - 如果 `xor_sum` 已经在 `prefix_count` 中，则增加 `beautiful_count` 为 `prefix_count[xor_sum]`。
+   - 更新 `prefix_count[xor_sum]` 的值加 1。
+5. 返回 `beautiful_count`。
 
 关键点:
-- [TODO]
+- 使用前缀异或和来判断子数组是否美丽。
+- 使用哈希表来记录前缀异或和的出现次数，以快速计算美丽子数组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `prefix_count` 最多需要存储 n 个不同的前缀异或和。
 """
 
 # ============================================================================
@@ -49,12 +56,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_beautiful_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计美丽子数组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_count = {0: 1}  # 哈希表，初始值为 0: 1
+    xor_sum = 0  # 当前前缀异或和
+    beautiful_count = 0  # 美丽子数组的数量
+
+    for num in nums:
+        xor_sum ^= num  # 更新前缀异或和
+        if xor_sum in prefix_count:
+            beautiful_count += prefix_count[xor_sum]  # 更新美丽子数组的数量
+        prefix_count[xor_sum] = prefix_count.get(xor_sum, 0) + 1  # 更新哈希表
+
+    return beautiful_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_subarrays)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过异或操作的性质来判断是否可以找到一个有效的原始二进制数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个假设的原始数组 `original`，并将其第一个元素设为 0。
+2. 通过遍历 `derived` 数组，逐步计算 `original` 数组的其他元素。
+3. 最后检查 `original` 数组的最后一个元素与第一个元素的异或结果是否等于 `derived` 的最后一个元素。
+4. 如果满足条件，则返回 `True`，否则返回 `False`。
 
 关键点:
-- [TODO]
+- 利用异或操作的性质：a ⊕ b = c 等价于 a ⊕ c = b。
+- 通过逐步构建 `original` 数组来验证其有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `derived` 数组的长度。我们只需要遍历一次 `derived` 数组。
+空间复杂度: O(1)，除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_form_array(derived: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否存在一个能够派生得到 derived 的有效原始二进制数组 original。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(derived)
+    # 假设 original[0] = 0
+    original = [0] * n
+    for i in range(1, n):
+        original[i] = original[i - 1] ^ derived[i - 1]
+    
+    # 检查最后一个元素是否满足条件
+    return (original[n - 1] ^ original[0]) == derived[n - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_form_array)

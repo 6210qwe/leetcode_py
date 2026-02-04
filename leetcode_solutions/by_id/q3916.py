@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法结合优先队列来找到从起点到终点的最短时间路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用优先队列进行 Dijkstra 算法，队列中存储 (当前时间, 当前节点)。
+3. 初始化距离数组 `dist`，所有节点的初始距离设为无穷大，起点的距离设为 0。
+4. 从起点开始，不断取出当前时间最小的节点，并更新其邻居节点的时间。
+5. 如果到达终点，返回当前时间；如果队列为空且未到达终点，返回 -1。
 
 关键点:
-- [TODO]
+- 使用优先队列保证每次处理的都是当前时间最小的节点。
+- 更新邻居节点时，需要检查边的有效时间范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E)，其中 E 是边的数量。因为每个边最多被处理一次，且每次处理涉及优先队列操作。
+空间复杂度: O(N + E)，其中 N 是节点数量，E 是边的数量。用于存储图的邻接表和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def min_time_to_reach_destination(n: int, edges: List[List[int]]) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v, start, end in edges:
+        graph[u].append((v, start, end))
+    
+    # 优先队列，存储 (当前时间, 当前节点)
+    pq = [(0, 0)]
+    # 距离数组，初始化为无穷大
+    dist = [float('inf')] * n
+    dist[0] = 0
+    
+    while pq:
+        time, node = heapq.heappop(pq)
+        
+        if node == n - 1:
+            return time
+        
+        if time > dist[node]:
+            continue
+        
+        for next_node, start, end in graph[node]:
+            if start <= time <= end:
+                next_time = max(end, time)
+            else:
+                next_time = max(start, time)
+            
+            if next_time < dist[next_node]:
+                dist[next_node] = next_time
+                heapq.heappush(pq, (next_time, next_node))
+    
+    return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_reach_destination)

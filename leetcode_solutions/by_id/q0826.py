@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个状态的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 太大（例如大于 4800），直接返回 1，因为概率接近 1。
+2. 将 n 转换为单位为 100 的数量，即 N = (n + 24) // 25。
+3. 使用一个二维数组 dp 来存储每个状态的概率。
+4. 初始化 dp 数组，dp[i][j] 表示 A 还剩 i 单位，B 还剩 j 单位时的概率。
+5. 递归地计算每个状态的概率，直到达到基本情况。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 递归地计算每个状态的概率，并考虑四种操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N^2)，其中 N = (n + 24) // 25。
+空间复杂度: O(N^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def soup_servings(n: int) -> float:
+    if n > 4800:
+        return 1.0
+    
+    N = (n + 24) // 25
+    memo = {}
+
+    def dp(i: int, j: int) -> float:
+        if (i, j) in memo:
+            return memo[(i, j)]
+        
+        if i <= 0 and j <= 0:
+            return 0.5
+        if i <= 0:
+            return 1.0
+        if j <= 0:
+            return 0.0
+        
+        memo[(i, j)] = 0.25 * (dp(i - 4, j) + dp(i - 3, j - 1) + dp(i - 2, j - 2) + dp(i - 1, j - 3))
+        return memo[(i, j)]
+    
+    return dp(N, N)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(soup_servings)

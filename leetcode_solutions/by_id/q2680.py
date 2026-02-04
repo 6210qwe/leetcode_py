@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算所有可能的移动方式总数，然后减去不会发生碰撞的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总移动方式数：每个猴子有两种选择（顺时针或逆时针），因此总共有 2^n 种移动方式。
+2. 计算不会发生碰撞的情况：只有当所有猴子都顺时针移动或所有猴子都逆时针移动时，才不会发生碰撞。这两种情况各有一种，因此不会发生碰撞的情况数为 2。
+3. 用总移动方式数减去不会发生碰撞的情况数，得到会发生碰撞的情况数。
+4. 由于结果可能非常大，需要对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用快速幂计算 2^n % (10^9 + 7) 以避免溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 快速幂的时间复杂度
+空间复杂度: O(1) - 常数级额外空间
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_collisions(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算猴子碰撞的方法数
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+
+    def quick_pow(base: int, exponent: int, mod: int) -> int:
+        """快速幂计算 base^exponent % mod"""
+        result = 1
+        while exponent > 0:
+            if exponent & 1:
+                result = (result * base) % mod
+            base = (base * base) % mod
+            exponent >>= 1
+        return result
+
+    total_ways = quick_pow(2, n, MOD)
+    no_collision_ways = 2
+    collision_ways = (total_ways - no_collision_ways + MOD) % MOD
+    return collision_ways
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_collisions)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调队列来维护当前子段的最大值和最小值，并计算符合条件的分割方式数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化动态规划数组 dp，其中 dp[i] 表示以第 i 个元素结尾的有效分割方式数。
+2. 使用两个单调队列分别维护当前子段的最大值和最小值。
+3. 遍历数组，更新 dp 数组，并使用单调队列来维护当前子段的最大值和最小值。
+4. 计算最终的结果并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用单调队列来高效地维护当前子段的最大值和最小值。
+- 动态规划数组 dp 用于记录以每个元素结尾的有效分割方式数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +51,33 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_partitions(nums: List[int], k: int) -> int:
+    n = len(nums)
+    dp = [0] * n
+    dp[0] = 1
+    max_deque = [nums[0]]
+    min_deque = [nums[0]]
 
+    for i in range(1, n):
+        while max_deque and nums[max_deque[-1]] < nums[i]:
+            max_deque.pop()
+        while min_deque and nums[min_deque[-1]] > nums[i]:
+            min_deque.pop()
 
-Solution = create_solution(solution_function_name)
+        max_deque.append(i)
+        min_deque.append(i)
+
+        while nums[max_deque[0]] - nums[min_deque[0]] > k:
+            if max_deque[0] == i - 1:
+                max_deque.pop(0)
+            if min_deque[0] == i - 1:
+                min_deque.pop(0)
+
+        dp[i] = sum(dp[j] for j in range(max(max_deque[0], min_deque[0]), i)) % MOD
+        dp[i] = (dp[i] + 1) % MOD  # 单独作为一个子段的情况
+
+    return sum(dp) % MOD
+
+Solution = create_solution(count_partitions)

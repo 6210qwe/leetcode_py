@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和双指针来找到每对技能点之和相等的组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有技能点的总和，并确定每个团队的技能点目标值。
+2. 对技能点数组进行排序。
+3. 使用双指针从两端向中间遍历，检查每对技能点之和是否等于目标值。
+4. 如果所有对的技能点之和都相等，则计算并返回化学反应之和；否则返回 -1。
 
 关键点:
-- [TODO]
+- 通过排序和双指针确保每对技能点之和相等。
+- 检查每对技能点之和是否等于目标值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def divide_players(skill: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将玩家分成技能点之和相等的团队，并返回所有团队的化学反应之和。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(skill)
+    if n % 2 != 0:
+        return -1
+    
+    total_skill = sum(skill)
+    target_sum = total_skill // (n // 2)
+    
+    skill.sort()
+    
+    left, right = 0, n - 1
+    chemistry_sum = 0
+    
+    while left < right:
+        if skill[left] + skill[right] != target_sum:
+            return -1
+        chemistry_sum += skill[left] * skill[right]
+        left += 1
+        right -= 1
+    
+    return chemistry_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(divide_players)

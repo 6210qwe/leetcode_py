@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个二维数组 dp，其中 dp[i][0] 表示以第 i 个元素结尾且不交换的最小操作次数，dp[i][1] 表示以第 i 个元素结尾且交换的最小操作次数。
+2. 初始化 dp 数组，对于第一个元素，不交换的操作次数为 0，交换的操作次数为 1。
+3. 从第二个元素开始遍历数组，根据当前元素和前一个元素的关系更新 dp 数组。
+4. 最终结果取 dp[n-1][0] 和 dp[n-1][1] 中的最小值。
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算，确保每个状态只计算一次。
+- 通过比较相邻元素来决定是否需要交换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_make_array_beautiful(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 2:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0, 0] for _ in range(n)]
+    dp[0][0] = 0  # 不交换
+    dp[0][1] = 1  # 交换
+
+    for i in range(1, n):
+        if nums[i] > nums[i - 1]:
+            dp[i][0] = dp[i - 1][0]
+            dp[i][1] = min(dp[i - 1][0], dp[i - 1][1]) + 1
+        else:
+            dp[i][0] = dp[i - 1][0] + 1
+            dp[i][1] = min(dp[i - 1][0], dp[i - 1][1])
+
+    return min(dp[n - 1][0], dp[n - 1][1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_array_beautiful)

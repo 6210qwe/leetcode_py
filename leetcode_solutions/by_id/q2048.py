@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接遍历输入数组并构建结果数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与输入数组等长的结果数组。
+2. 遍历输入数组，对于每个索引 i，将 nums[nums[i]] 的值赋给结果数组的第 i 个位置。
 
 关键点:
-- [TODO]
+- 通过直接遍历和赋值，可以在 O(n) 时间复杂度内完成构建。
+- 为了达到 O(1) 空间复杂度，我们直接在原数组上进行修改。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def build_array(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构建数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    for i in range(n):
+        # 将 nums[i] 的值编码到 nums[nums[i]] 中
+        nums[i] += n * (nums[nums[i]] % n)
+    
+    for i in range(n):
+        # 解码得到最终结果
+        nums[i] //= n
+    
+    return nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(build_array)

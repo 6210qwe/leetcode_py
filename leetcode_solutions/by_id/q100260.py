@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用向量叉乘判断线段是否相交，并通过参数方程求解交点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算线段的方向向量。
+2. 使用向量叉乘判断线段是否相交。
+3. 如果相交，通过参数方程求解交点。
 
 关键点:
-- [TODO]
+- 使用向量叉乘判断线段是否相交。
+- 通过参数方程求解交点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,64 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def on_segment(p, q, r):
+    if (q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and
+        q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1])):
+        return True
+    return False
 
+def orientation(p, q, r):
+    val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+    if val == 0:
+        return 0
+    return 1 if val > 0 else 2
+
+def do_intersect(p1, q1, p2, q2):
+    o1 = orientation(p1, q1, p2)
+    o2 = orientation(p1, q1, q2)
+    o3 = orientation(p2, q2, p1)
+    o4 = orientation(p2, q2, q1)
+
+    if o1 != o2 and o3 != o4:
+        return True
+
+    if o1 == 0 and on_segment(p1, p2, q1):
+        return True
+    if o2 == 0 and on_segment(p1, q2, q1):
+        return True
+    if o3 == 0 and on_segment(p2, p1, q2):
+        return True
+    if o4 == 0 and on_segment(p2, q1, q2):
+        return True
+
+    return False
+
+def find_intersection(p1, q1, p2, q2):
+    if not do_intersect(p1, q1, p2, q2):
+        return []
+
+    xdiff = (p1[0] - q1[0], p2[0] - q2[0])
+    ydiff = (p1[1] - q1[1], p2[1] - q2[1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+        return []
+
+    d = (det(p1, q1), det(p2, q2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+
+    return [x, y]
+
+def solution_function_name(line1: List[List[int]], line2: List[List[int]]) -> List[float]:
+    """
+    函数式接口 - 求解两条线段的交点
+    """
+    p1, q1 = line1
+    p2, q2 = line2
+    return find_intersection(p1, q1, p2, q2)
 
 Solution = create_solution(solution_function_name)

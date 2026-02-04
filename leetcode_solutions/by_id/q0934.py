@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储所有子数组的按位或结果，并利用前缀和的思想来减少重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `results` 来存储所有的按位或结果。
+2. 遍历数组中的每个元素，对于每个元素，维护一个当前的按位或结果 `current_or`。
+3. 对于每个元素，更新 `current_or` 并将其添加到 `results` 集合中。
+4. 返回 `results` 集合的大小。
 
 关键点:
-- [TODO]
+- 使用集合来存储结果，确保结果的唯一性。
+- 利用前缀和的思想，减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。我们需要遍历每个元素，并对每个元素进行一次完整的子数组按位或计算。
+空间复杂度: O(n^2)，在最坏情况下，集合 `results` 中会存储 O(n^2) 个不同的按位或结果。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有 arr 的非空子数组的不同按位或的数量
     """
-    # TODO: 实现最优解法
-    pass
+    results = set()
+    
+    for i in range(len(arr)):
+        current_or = 0
+        for j in range(i, len(arr)):
+            current_or |= arr[j]
+            results.add(current_or)
+    
+    return len(results)
 
 
 Solution = create_solution(solution_function_name)

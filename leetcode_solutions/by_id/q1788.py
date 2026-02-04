@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个石子对 Alice 和 Bob 的总价值，并按总价值降序排序。Alice 和 Bob 交替选择石子，Alice 选择的石子对她有利，Bob 选择的石子对他有利。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个石子对 Alice 和 Bob 的总价值。
+2. 按总价值降序排序。
+3. Alice 和 Bob 交替选择石子，分别累加他们的得分。
+4. 比较 Alice 和 Bob 的得分，返回结果。
 
 关键点:
-- [TODO]
+- 通过总价值降序排序，确保 Alice 和 Bob 选择最优石子。
+- 交替选择石子，确保双方都采用最优策略。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(n) - 存储石子的总价值和索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def stoneGameVI(aliceValues: List[int], bobValues: List[int]) -> int:
+    n = len(aliceValues)
+    total_values = [(aliceValues[i] + bobValues[i], i) for i in range(n)]
+    total_values.sort(reverse=True)
+    
+    alice_score = 0
+    bob_score = 0
+    
+    for i in range(n):
+        if i % 2 == 0:
+            alice_score += aliceValues[total_values[i][1]]
+        else:
+            bob_score += bobValues[total_values[i][1]]
+    
+    if alice_score > bob_score:
+        return 1
+    elif alice_score < bob_score:
+        return -1
+    else:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stoneGameVI)

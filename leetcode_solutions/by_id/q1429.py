@@ -21,40 +21,85 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法尝试所有可能的字符到数字的映射，并检查是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 收集所有出现的字符，并记录每个字符的位置权重。
+2. 使用回溯法尝试所有可能的字符到数字的映射。
+3. 在每次映射后，计算左侧和右侧的数值，并检查是否相等。
+4. 如果找到一个有效的映射，则返回 True；否则继续尝试其他映射。
+5. 如果所有映射都无效，则返回 False。
 
 关键点:
-- [TODO]
+- 使用字典记录每个字符的位置权重。
+- 回溯法尝试所有可能的字符到数字的映射。
+- 确保没有前导零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(10! * n)，其中 n 是 words 和 result 的长度总和。最坏情况下需要尝试 10! 种字符到数字的映射。
+空间复杂度: O(n)，存储字符的位置权重和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+
+def is_solvable(words: List[str], result: str) -> bool:
+    def get_weight(char, index):
+        return 10 ** (len(word) - index - 1)
+
+    def backtrack(index, assigned, carry, sum_left, sum_right):
+        if index == len(chars):
+            return carry == 0 and sum_left == sum_right
+        char = chars[index]
+        for num in range(10):
+            if num in assigned:
+                continue
+            if num == 0 and (char in leading_zeros):
+                continue
+            assigned.add(num)
+            if char in left_weights:
+                sum_left += num * left_weights[char]
+            else:
+                sum_right -= num * right_weights[char]
+            if backtrack(index + 1, assigned, carry, sum_left, sum_right):
+                return True
+            if char in left_weights:
+                sum_left -= num * left_weights[char]
+            else:
+                sum_right += num * right_weights[char]
+            assigned.remove(num)
+        return False
+
+    chars = set()
+    left_weights = {}
+    right_weights = {}
+    leading_zeros = set()
+
+    for word in words:
+        for i, char in enumerate(word):
+            chars.add(char)
+            if char not in left_weights:
+                left_weights[char] = 0
+            left_weights[char] += get_weight(char, i)
+            if i == 0:
+                leading_zeros.add(char)
+
+    for i, char in enumerate(result):
+        chars.add(char)
+        if char not in right_weights:
+            right_weights[char] = 0
+        right_weights[char] += get_weight(char, i)
+        if i == 0:
+            leading_zeros.add(char)
+
+    return backtrack(0, set(), 0, 0, 0)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_solvable)

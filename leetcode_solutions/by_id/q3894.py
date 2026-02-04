@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个 x 值对应的最大 y 值，然后使用堆（优先队列）找到最大的三个 y 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个 x 值对应的最大 y 值。
+2. 将哈希表中的 y 值存入一个列表中。
+3. 对列表进行排序，取最大的三个 y 值。
+4. 如果找到的 y 值少于三个，返回 -1；否则返回这三个 y 值的和。
 
 关键点:
-- [TODO]
+- 使用哈希表去重并记录最大 y 值。
+- 使用排序找到最大的三个 y 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 x 和 y 的长度。主要时间开销在排序上。
+空间复杂度: O(n)，哈希表和列表的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(x: List[int], y: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 选择不同 X 值三元组使 Y 值之和最大
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个 x 值对应的最大 y 值
+    max_y = {}
+    for i in range(len(x)):
+        if x[i] not in max_y or y[i] > max_y[x[i]]:
+            max_y[x[i]] = y[i]
+
+    # 将哈希表中的 y 值存入一个列表中
+    y_values = list(max_y.values())
+
+    # 对列表进行排序，取最大的三个 y 值
+    y_values.sort(reverse=True)
+    if len(y_values) < 3:
+        return -1
+    else:
+        return sum(y_values[:3])
 
 
 Solution = create_solution(solution_function_name)

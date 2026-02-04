@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录存在的整数，然后遍历最小值到最大值之间的所有整数，找出缺失的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小值和最大值。
+2. 使用集合记录数组中存在的整数。
+3. 遍历从最小值到最大值之间的所有整数，找出不在集合中的整数。
 
 关键点:
-- [TODO]
+- 使用集合可以快速判断某个整数是否存在。
+- 遍历从最小值到最大值之间的整数，确保不会遗漏任何可能的缺失整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是数组的长度，m 是最小值和最大值之间的差值。
+空间复杂度: O(n)，使用集合存储数组中的整数。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_missing_elements(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出缺失的元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到数组中的最小值和最大值
+    min_val = min(nums)
+    max_val = max(nums)
+    
+    # 使用集合记录数组中存在的整数
+    num_set = set(nums)
+    
+    # 遍历从最小值到最大值之间的所有整数，找出不在集合中的整数
+    missing_elements = [i for i in range(min_val, max_val + 1) if i not in num_set]
+    
+    return missing_elements
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_missing_elements)

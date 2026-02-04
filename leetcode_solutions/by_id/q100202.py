@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和排序来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将箱子按宽度、深度和高度降序排序。
+2. 使用动态规划来计算每个箱子作为最底层箱子时的最大堆叠高度。
+3. 对于每个箱子，找到所有可以堆叠在其上的箱子，并更新最大高度。
+4. 返回最大堆叠高度。
 
 关键点:
-- [TODO]
+- 通过排序确保箱子可以堆叠的条件。
+- 动态规划的状态转移方程：dp[i] = max(dp[i], dp[j] + boxes[i][2])，其中 j < i 且 boxes[j] 可以堆叠在 boxes[i] 上。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是箱子的数量。排序的时间复杂度是 O(n log n)，动态规划的时间复杂度是 O(n^2)。
+空间复杂度: O(n)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(boxes: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not boxes:
+        return 0
+
+    # 按宽度、深度和高度降序排序
+    boxes.sort(key=lambda x: (-x[0], -x[1], -x[2]))
+
+    n = len(boxes)
+    dp = [0] * n
+
+    for i in range(n):
+        dp[i] = boxes[i][2]
+        for j in range(i):
+            if boxes[j][0] > boxes[i][0] and boxes[j][1] > boxes[i][1] and boxes[j][2] > boxes[i][2]:
+                dp[i] = max(dp[i], dp[j] + boxes[i][2])
+
+    return max(dp)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大可移除字符数 k，通过双指针方法检查 p 是否为 s 的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 在每次迭代中，计算中间值 mid，并尝试移除前 mid 个可移除字符。
+3. 检查移除字符后的 s 是否仍然包含 p 作为子序列。
+4. 根据检查结果调整二分查找的边界。
+5. 最终返回最大的 k。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程。
+- 使用双指针方法来高效地检查 p 是否为 s 的子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是字符串 s 的长度，m 是 removable 的长度。
+空间复杂度: O(n)，用于存储移除字符后的字符串。
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_subsequence(s: str, p: str) -> bool:
+    """检查 p 是否为 s 的子序列"""
+    it = iter(s)
+    return all(char in it for char in p)
+
+
+def max_k(s: str, p: str, removable: List[int]) -> int:
+    """使用二分查找找到最大可移除字符数 k"""
+    left, right = 0, len(removable) + 1
+    while left < right:
+        mid = (left + right) // 2
+        new_s = list(s)
+        for i in range(mid):
+            new_s[removable[i]] = ''
+        if is_subsequence(''.join(new_s), p):
+            left = mid + 1
+        else:
+            right = mid
+    return left - 1
+
+
+def solution_function_name(s: str, p: str, removable: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大可移除字符数 k
     """
-    # TODO: 实现最优解法
-    pass
+    return max_k(s, p, removable)
 
 
 Solution = create_solution(solution_function_name)

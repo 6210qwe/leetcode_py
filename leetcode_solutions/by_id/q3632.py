@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历 events 数组，计算每个按钮的按下时间，并记录按下时间最长的按钮。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `max_time` 用于记录最长按下时间，`max_index` 用于记录按下时间最长的按钮索引。
+2. 初始化 `prev_time` 为第一个事件的时间。
+3. 遍历 events 数组，对于每个事件：
+   - 计算当前事件与前一个事件的时间差 `time_diff`。
+   - 更新 `max_time` 和 `max_index`，如果 `time_diff` 大于 `max_time` 或者 `time_diff` 等于 `max_time` 但当前按钮索引小于 `max_index`。
+   - 更新 `prev_time` 为当前事件的时间。
+4. 返回 `max_index`。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到按下时间最长的按钮。
+- 使用 `max_time` 和 `max_index` 来记录当前最长按下时间和对应的按钮索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 events 的长度。我们只需要遍历一次 events 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def solution_function_name(events: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到按下时间最长的按钮
     """
-    # TODO: 实现最优解法
-    pass
+    if not events:
+        return -1
+
+    max_time = 0
+    max_index = events[0][0]
+    prev_time = events[0][1]
+
+    for i in range(1, len(events)):
+        index, time = events[i]
+        time_diff = time - prev_time
+        if time_diff > max_time or (time_diff == max_time and index < max_index):
+            max_time = time_diff
+            max_index = index
+        prev_time = time
+
+    return max_index
 
 
 Solution = create_solution(solution_function_name)

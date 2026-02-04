@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过深度优先搜索 (DFS) 来判断岛屿是否可以被分成两部分。如果岛屿本身就是不连通的，则返回 0。如果岛屿只有一个点，则返回 1。否则，尝试删除每个陆地单元并检查是否可以使岛屿分离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 DFS 函数来遍历岛屿。
+2. 定义一个函数来检查岛屿是否连通。
+3. 遍历每个陆地单元，尝试将其变为水，并检查岛屿是否分离。
+4. 如果岛屿不能通过删除一个陆地单元分离，则返回 2。
 
 关键点:
-- [TODO]
+- 使用 DFS 来遍历岛屿。
+- 通过删除每个陆地单元并检查岛屿是否分离来找到最小天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))，其中 m 和 n 是网格的行数和列数。最坏情况下，我们需要对每个陆地单元进行一次完整的 DFS 检查。
+空间复杂度: O(m * n)，用于存储访问状态。
 """
 
 # ============================================================================
@@ -48,13 +51,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def dfs(grid, i, j, visited):
+    if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == 0 or visited[i][j]:
+        return
+    visited[i][j] = True
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    for di, dj in directions:
+        dfs(grid, i + di, j + dj, visited)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_connected(grid):
+    visited = [[False] * len(grid[0]) for _ in range(len(grid))]
+    count = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1 and not visited[i][j]:
+                dfs(grid, i, j, visited)
+                count += 1
+    return count == 1
 
+def min_days_to_disconnect_island(grid: List[List[int]]) -> int:
+    if not is_connected(grid):
+        return 0
+    if sum(cell for row in grid for cell in row) == 1:
+        return 1
+    
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                grid[i][j] = 0
+                if not is_connected(grid):
+                    return 1
+                grid[i][j] = 1
+    return 2
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_days_to_disconnect_island)

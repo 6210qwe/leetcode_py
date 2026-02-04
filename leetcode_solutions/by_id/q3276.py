@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先将出现频率高的字母分配到按键的前面位置，以减少总的按键次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字母的出现频率。
+2. 将字母按频率从高到低排序。
+3. 依次将字母分配到按键上，每8个字母分配到一个新的按键位置，计算总按键次数。
 
 关键点:
-- [TODO]
+- 优先处理频率高的字母，以减少总的按键次数。
+- 每8个字母分配到一个新的按键位置，确保按键次数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)，其中 n 是 word 的长度，k 是字母种类数（最多 26）。
+空间复杂度: O(k)，用于存储字母频率和排序后的字母列表。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_pushes(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算输入单词所需的最少按键次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字母的出现频率
+    freq = [0] * 26
+    for char in word:
+        freq[ord(char) - ord('a')] += 1
+    
+    # 将字母按频率从高到低排序
+    sorted_freq = sorted(freq, reverse=True)
+    
+    # 计算总按键次数
+    total_pushes = 0
+    for i, count in enumerate(sorted_freq):
+        if count == 0:
+            break
+        total_pushes += (i // 8 + 1) * count
+    
+    return total_pushes
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_pushes)

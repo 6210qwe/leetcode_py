@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来统计满足条件的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最大元素。
+2. 使用滑动窗口来统计当前窗口内最大元素的出现次数。
+3. 当窗口内的最大元素出现次数达到 k 时，计算以当前窗口右端点为结尾的子数组数量。
+4. 移动窗口右端点，更新窗口内的最大元素出现次数。
+5. 如果窗口内的最大元素出现次数超过 k，则移动窗口左端点，减少窗口内的最大元素出现次数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效统计满足条件的子数组数量。
+- 通过维护窗口内的最大元素出现次数，确保时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_subarrays(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计最大元素出现至少 K 次的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    max_element = max(nums)
+    count = 0
+    left = 0
+    max_count = 0
+    result = 0
 
+    for right in range(len(nums)):
+        if nums[right] == max_element:
+            max_count += 1
 
-Solution = create_solution(solution_function_name)
+        while max_count >= k:
+            if nums[left] == max_element:
+                max_count -= 1
+            left += 1
+
+        # 计算以当前窗口右端点为结尾的子数组数量
+        result += left
+
+    return result
+
+Solution = create_solution(count_subarrays)

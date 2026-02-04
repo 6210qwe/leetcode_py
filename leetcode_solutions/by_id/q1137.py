@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序来对高度进行排序，并比较原数组和排序后的数组，统计不匹配的元素个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用计数排序对高度数组进行排序。
+2. 比较原数组和排序后的数组，统计不匹配的元素个数。
 
 关键点:
-- [TODO]
+- 计数排序的时间复杂度为 O(n)，适用于高度范围较小的情况。
+- 通过比较原数组和排序后的数组，可以快速找到不匹配的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1) （因为高度范围固定为 1 到 100，所以额外空间是常数级别的）
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def height_checker(heights: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现高度检查器
     """
-    # TODO: 实现最优解法
-    pass
+    # 计数排序
+    count = [0] * 101
+    for height in heights:
+        count[height] += 1
+    
+    # 生成排序后的数组
+    sorted_heights = []
+    for i in range(1, 101):
+        sorted_heights.extend([i] * count[i])
+    
+    # 统计不匹配的元素个数
+    mismatch_count = 0
+    for i in range(len(heights)):
+        if heights[i] != sorted_heights[i]:
+            mismatch_count += 1
+    
+    return mismatch_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(height_checker)

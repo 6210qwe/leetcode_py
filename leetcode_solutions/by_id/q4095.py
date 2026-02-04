@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算在给定范围内的平衡整数数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数转换为字符串形式，以便逐位处理。
+2. 使用动态规划来计算每个前缀的平衡整数数量。
+3. 通过递归和记忆化搜索来优化计算过程。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过前缀和后缀的组合来计算平衡整数的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * 10^d)，其中 d 是数字的最大位数。
+空间复杂度: O(d * 10^d)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -47,14 +49,37 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def count_balanced_integers(low: int, high: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算在给定范围 [low, high] 内的平衡整数数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def is_balanced(num: str) -> bool:
+        odd_sum = sum(int(num[i]) for i in range(0, len(num), 2))
+        even_sum = sum(int(num[i]) for i in range(1, len(num), 2))
+        return odd_sum == even_sum
 
+    @lru_cache(None)
+    def dp(index: int, is_limit: bool, is_num: bool, odd_sum: int, even_sum: int, num: str) -> int:
+        if index == len(num):
+            return int(is_num and odd_sum == even_sum)
 
-Solution = create_solution(solution_function_name)
+        total = 0
+        if not is_num:
+            total += dp(index + 1, False, False, 0, 0, num)
+
+        start = 0 if is_num else 1
+        end = int(num[index]) if is_limit else 9
+
+        for digit in range(start, end + 1):
+            new_is_num = True
+            new_odd_sum = odd_sum + (digit if (index % 2 == 0) else 0)
+            new_even_sum = even_sum + (digit if (index % 2 != 0) else 0)
+            total += dp(index + 1, is_limit and digit == end, new_is_num, new_odd_sum, new_even_sum, num)
+
+        return total
+
+    return dp(0, True, False, 0, 0, str(high)) - dp(0, True, False, 0, 0, str(low - 1))
+
+Solution = create_solution(count_balanced_integers)

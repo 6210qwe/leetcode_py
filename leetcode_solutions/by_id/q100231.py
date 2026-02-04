@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个数组 dp，其中 dp[i] 表示凑成 i 分的方法数。
+2. 初始化 dp[0] = 1，因为凑成 0 分只有一种方法（不使用任何硬币）。
+3. 遍历每种硬币，对于每种硬币，更新 dp 数组，dp[i] += dp[i - coin]，其中 coin 是当前硬币的面值。
+4. 最终返回 dp[n] % 1000000007。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过遍历每种硬币来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是总金额，k 是硬币种类数。
+空间复杂度: O(n)，因为我们使用了一个大小为 n+1 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 分有几种表示法
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 1000000007
+    coins = [1, 5, 10, 25]
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 凑成 0 分只有一种方法（不使用任何硬币）
+
+    for coin in coins:
+        for i in range(coin, n + 1):
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

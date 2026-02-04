@@ -21,40 +21,48 @@ LCR 105. 岛屿的最大面积 - 给定一个由 0 和 1 组成的非空二维�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历每个岛屿，并计算其面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大面积为 0。
+2. 遍历整个网格，对于每个未访问过的陆地 (1)，使用 DFS 计算该岛屿的面积。
+3. 更新最大面积。
+4. 返回最大面积。
 
 关键点:
-- [TODO]
+- 使用递归的 DFS 来遍历岛屿。
+- 在遍历时将访问过的陆地标记为 0，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个单元格最多访问一次。
+空间复杂度: O(m * n)，最坏情况下递归栈的深度为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_area_of_island(grid: List[List[int]]) -> int:
+    def dfs(x: int, y: int) -> int:
+        if x < 0 or x >= len(grid) or y < 0 or y >= len(grid[0]) or grid[x][y] == 0:
+            return 0
+        grid[x][y] = 0  # 标记为已访问
+        area = 1
+        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            area += dfs(x + dx, y + dy)
+        return area
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    max_area = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                max_area = max(max_area, dfs(i, j))
+    return max_area
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_area_of_island)

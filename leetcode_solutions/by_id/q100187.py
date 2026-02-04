@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过复制下一个节点的值到当前节点，然后删除下一个节点来实现删除当前节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将当前节点的值替换为下一个节点的值。
+2. 将当前节点的 next 指针指向下一个节点的 next 节点，从而跳过下一个节点。
 
 关键点:
-- [TODO]
+- 不能直接删除当前节点，因为没有前驱节点的引用。
+- 通过复制和跳过的方式间接删除当前节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(node: ListNode):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除链表中的中间节点
     """
-    # TODO: 实现最优解法
-    pass
+    if node is None or node.next is None:
+        return  # 无法删除尾节点或空节点
+
+    # 复制下一个节点的值
+    node.val = node.next.val
+    # 删除下一个节点
+    node.next = node.next.next
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,39 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个团队的人数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `GROUP BY` 子句按 `team_id` 分组。
+2. 使用 `COUNT` 函数计算每个团队的成员数量。
+3. 返回结果集，包含 `team_id` 和对应的团队人数 `team_size`。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `COUNT` 函数进行分组和计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。因为我们需要遍历整个表来进行分组和计数。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来计算每个团队的人数。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询
+    query = """
+    SELECT team_id, COUNT(*) AS team_size
+    FROM Employee
+    GROUP BY team_id;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

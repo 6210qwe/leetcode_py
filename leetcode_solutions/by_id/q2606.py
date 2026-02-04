@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+- 首先计算每一行和每一列中 1 和 0 的数量。
+- 然后根据公式 `diff[i][j] = onesRowi + onesColj - (n - onesRowi) - (m - onesColj)` 计算每个位置的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `ones_row` 和 `ones_col`，分别存储每一行和每一列中 1 的数量。
+2. 遍历矩阵，更新 `ones_row` 和 `ones_col`。
+3. 根据公式计算差值矩阵 `diff`。
 
 关键点:
-- [TODO]
+- 使用两个数组分别存储每一行和每一列中 1 的数量，避免重复计算。
+- 使用公式简化计算，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。我们需要遍历整个矩阵两次。
+空间复杂度: O(m + n)，用于存储每一行和每一列中 1 的数量。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def difference_between_ones_and_zeros_in_row_and_column(grid: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算行和列中一和零的差值矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    ones_row = [0] * m
+    ones_col = [0] * n
+
+    # 计算每一行和每一列中 1 的数量
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                ones_row[i] += 1
+                ones_col[j] += 1
+
+    # 计算差值矩阵
+    diff = [[0] * n for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            diff[i][j] = ones_row[i] + ones_col[j] - (n - ones_row[i]) - (m - ones_col[j])
+
+    return diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(difference_between_ones_and_zeros_in_row_and_column)

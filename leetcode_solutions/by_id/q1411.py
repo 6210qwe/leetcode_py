@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历链表，将二进制数转换为十进制数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0。
+2. 遍历链表，对于每个节点，将当前结果左移一位（相当于乘以 2），然后加上当前节点的值。
+3. 返回最终结果。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地进行二进制到十进制的转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def convert_binary_number(head: Optional[ListNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将二进制链表转换为十进制整数
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    current = head
+    while current:
+        result = (result << 1) | current.val
+        current = current.next
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_binary_number)

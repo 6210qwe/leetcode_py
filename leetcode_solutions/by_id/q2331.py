@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来记录每个数字在所有数组中出现的次数，然后找出出现次数等于数组数量的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器，用于记录每个数字在所有数组中出现的次数。
+2. 遍历每个数组，更新计数器。
+3. 遍历计数器，找出出现次数等于数组数量的数字。
+4. 返回这些数字，并按升序排列。
 
 关键点:
-- [TODO]
+- 使用计数器来高效统计每个数字的出现次数。
+- 只保留出现次数等于数组数量的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是数组的数量，m 是每个数组的平均长度。
+空间复杂度: O(k)，其中 k 是所有数组中不同数字的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def intersection_of_multiple_arrays(nums: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 求多个数组的交集
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化计数器
+    counter = Counter()
+    
+    # 遍历每个数组，更新计数器
+    for arr in nums:
+        counter.update(arr)
+    
+    # 找出出现次数等于数组数量的数字
+    result = [num for num, count in counter.items() if count == len(nums)]
+    
+    # 返回结果并按升序排列
+    return sorted(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(intersection_of_multiple_arrays)

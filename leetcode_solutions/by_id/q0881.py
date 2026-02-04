@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历图，并记录每个节点的最小安静值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，表示每个人之间的财富关系。
+2. 初始化一个结果数组 `answer`，初始值为每个人的索引。
+3. 定义一个递归函数 `dfs`，用于更新每个节点的最小安静值。
+4. 遍历每个人，如果当前节点的安静值大于其邻居节点的安静值，则更新当前节点的安静值。
+5. 返回结果数组 `answer`。
 
 关键点:
-- [TODO]
+- 使用图来表示财富关系。
+- 使用 DFS 进行遍历并更新安静值。
+- 使用缓存来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是人数，m 是 richer 数组的长度。
+空间复杂度: O(n + m)，存储图和递归调用栈。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def loud_and_rich(richer: List[List[int]], quiet: List[int]) -> List[int]:
+    n = len(quiet)
+    graph = [[] for _ in range(n)]
+    for a, b in richer:
+        graph[b].append(a)
+
+    answer = list(range(n))
+
+    def dfs(node: int) -> None:
+        if answer[node] != node:
+            return
+        for neighbor in graph[node]:
+            dfs(neighbor)
+            if quiet[answer[neighbor]] < quiet[answer[node]]:
+                answer[node] = answer[neighbor]
+
+    for i in range(n):
+        dfs(i)
+
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(loud_and_rich)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间遍历字符串，确保每对字符相同且字典序最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向字符串的开头和结尾。
+2. 当 left < right 时，比较 s[left] 和 s[right]：
+   - 如果 s[left] != s[right]，则将两者都替换为较小的那个字符。
+   - 移动指针 left 向右，right 向左。
+3. 最终返回处理后的字符串。
 
 关键点:
-- [TODO]
+- 使用双指针确保每个字符都被检查并替换为字典序最小的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def make_smallest_palindrome(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串 s 转换为字典序最小的回文串。
     """
-    # TODO: 实现最优解法
-    pass
+    s = list(s)  # 将字符串转换为列表以便修改
+    left, right = 0, len(s) - 1
+    
+    while left < right:
+        if s[left] != s[right]:
+            # 将较大的字符替换为较小的字符
+            s[left] = s[right] = min(s[left], s[right])
+        left += 1
+        right -= 1
+    
+    return ''.join(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(make_smallest_palindrome)

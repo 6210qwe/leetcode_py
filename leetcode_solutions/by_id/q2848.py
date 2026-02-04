@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维 DP 数组 dp[mask][i] 来表示当前选择的状态为 mask 且最后一个元素是 nums[i] 的特别排列的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维 DP 数组 dp，其中 dp[0][i] = 1 表示只选择第 i 个元素的初始状态。
+2. 遍历所有可能的状态 mask，并对于每个状态，遍历所有可能的最后一个元素 j。
+3. 对于每个状态 mask 和最后一个元素 j，遍历所有可能的前一个元素 k，如果 nums[k] 和 nums[j] 满足条件，则更新 dp[mask][j]。
+4. 最终结果是所有状态为 (1 << n) - 1 的 dp 值之和。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示状态，减少空间复杂度。
+- 动态规划的转移方程需要考虑所有可能的前一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * 2^n)
+- n 是 nums 的长度，2^n 是所有可能的状态数，n^2 是状态转移的时间复杂度。
+
+空间复杂度: O(n * 2^n)
+- dp 数组的大小为 n * 2^n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_special_permutations(nums: List[int]) -> int:
+    n = len(nums)
+    dp = [[0] * n for _ in range(1 << n)]
+    
+    # Initialize the DP table
+    for i in range(n):
+        dp[1 << i][i] = 1
+    
+    # Fill the DP table
+    for mask in range(1, 1 << n):
+        for j in range(n):
+            if mask & (1 << j) == 0:
+                continue
+            for k in range(n):
+                if mask & (1 << k) and (nums[k] % nums[j] == 0 or nums[j] % nums[k] == 0):
+                    dp[mask][j] += dp[mask ^ (1 << j)][k]
+                    dp[mask][j] %= MOD
+    
+    # Sum up all valid permutations
+    result = sum(dp[(1 << n) - 1]) % MOD
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = count_special_permutations

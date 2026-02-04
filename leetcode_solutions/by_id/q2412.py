@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次尽可能多地同时装满两杯不同类型的水。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序，找到最大值 max_amount。
+2. 计算剩余的总杯数 total_remaining = amount[1] + amount[2]。
+3. 如果 max_amount 大于等于 total_remaining，那么所需时间就是 max_amount。
+4. 否则，所需时间是 (total_remaining + 1) // 2 + max_amount - total_remaining。
 
 关键点:
-- [TODO]
+- 每次尽可能多地同时装满两杯不同类型的水。
+- 使用贪心算法确保最小化总时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_time_to_fill_cups(amount: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回装满所有杯子所需的最少秒数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    amount.sort()
+    
+    # 找到最大值
+    max_amount = amount[2]
+    
+    # 计算剩余的总杯数
+    total_remaining = amount[0] + amount[1]
+    
+    # 如果 max_amount 大于等于 total_remaining，那么所需时间就是 max_amount
+    if max_amount >= total_remaining:
+        return max_amount
+    else:
+        # 否则，所需时间是 (total_remaining + 1) // 2 + max_amount - total_remaining
+        return (total_remaining + 1) // 2 + max_amount - total_remaining
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_fill_cups)

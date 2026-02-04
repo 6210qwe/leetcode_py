@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个位置被查询的次数，然后将这些次数与 nums 中的元素进行排序，使得查询次数最多的元素对应 nums 中最大的元素，从而最大化查询结果之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置被查询的次数。
+2. 将 nums 和查询次数分别排序。
+3. 将查询次数最多的元素与 nums 中最大的元素相乘，累加得到最大和。
 
 关键点:
-- [TODO]
+- 使用差分数组来高效计算每个位置被查询的次数。
+- 对 nums 和查询次数进行排序，确保最大值对应最大查询次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是 nums 的长度，m 是 requests 的长度。排序操作的时间复杂度为 O(n log n) 和 O(m log m)。
+空间复杂度: O(n)，用于存储差分数组和查询次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_sum_range_query(nums: List[int], requests: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    count = [0] * (n + 1)
+    
+    # 计算每个位置被查询的次数
+    for start, end in requests:
+        count[start] += 1
+        count[end + 1] -= 1
+    
+    # 差分数组转换为前缀和数组
+    for i in range(1, n):
+        count[i] += count[i - 1]
+    
+    # 去掉最后一个多余的元素
+    count.pop()
+    
+    # 对 nums 和查询次数进行排序
+    nums.sort()
+    count.sort()
+    
+    # 计算最大和
+    max_sum = sum(num * cnt for num, cnt in zip(nums, count)) % MOD
+    
+    return max_sum
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_range_query)

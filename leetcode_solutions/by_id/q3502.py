@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计每个子字符串中字符的频率，并检查是否有字符至少出现 k 次。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针和哈希表，用于记录当前窗口内字符的频率。
+2. 移动右指针扩展窗口，更新哈希表。
+3. 检查当前窗口内是否有字符至少出现 k 次，如果有，则计算以当前左指针为起点的有效子字符串数量。
+4. 移动左指针收缩窗口，更新哈希表。
+5. 重复步骤 2-4 直到右指针遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口动态维护子字符串的字符频率。
+- 通过哈希表高效统计字符频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。最坏情况下，每个字符都需要作为起始点进行一次完整的遍历。
+空间复杂度: O(1)，哈希表的大小最多为 26（小写字母的数量）。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_substrings_with_k_frequency(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计字符串 s 中至少有一个字符至少出现 k 次的子字符串总数。
     """
-    # TODO: 实现最优解法
-    pass
+    def at_least_k_freq(freq, k):
+        return any(v >= k for v in freq.values())
+
+    n = len(s)
+    result = 0
+
+    for i in range(n):
+        freq = {}
+        for j in range(i, n):
+            freq[s[j]] = freq.get(s[j], 0) + 1
+            if at_least_k_freq(freq, k):
+                result += 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_substrings_with_k_frequency)

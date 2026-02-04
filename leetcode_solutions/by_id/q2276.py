@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用位运算表示每个字符串的字符集合。
+- 使用并查集来管理字符串之间的关联关系。
+- 对于每个字符串，生成其所有可能的变换（添加/删除/替换一个字符），并检查这些变换是否存在于输入字符串中。如果存在，则将它们合并到同一个组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 将每个字符串转换为位掩码，并存储在字典中。
+3. 遍历每个字符串，生成其所有可能的变换。
+4. 如果变换存在于字典中，则将当前字符串和变换字符串合并到同一个组。
+5. 统计每个组的大小，并找到最大组的大小。
 
 关键点:
-- [TODO]
+- 使用位掩码表示字符串，便于快速比较和变换。
+- 使用并查集高效地管理字符串之间的关联关系。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26^2) 其中 n 是字符串的数量，每个字符串最多有 26 个字符，每个字符有 26 种变换。
+空间复杂度: O(n) 用于存储并查集和位掩码字典。
 """
 
 # ============================================================================
@@ -48,13 +55,70 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.count = n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.size[root_x] < self.size[root_y]:
+                root_x, root_y = root_y, root_x
+            self.parent[root_y] = root_x
+            self.size[root_x] += self.size[root_y]
+            self.count -= 1
 
-Solution = create_solution(solution_function_name)
+    def get_count(self):
+        return self.count
+
+    def get_size(self, x):
+        return self.size[self.find(x)]
+
+def group_strings(words: List[str]) -> List[int]:
+    n = len(words)
+    uf = UnionFind(n)
+    mask_to_index = {}
+
+    for i, word in enumerate(words):
+        mask = 0
+        for char in word:
+            mask |= 1 << (ord(char) - ord('a'))
+        if mask in mask_to_index:
+            uf.union(i, mask_to_index[mask])
+        else:
+            mask_to_index[mask] = i
+
+        for j in range(26):
+            # 添加一个字符
+            new_mask = mask | (1 << j)
+            if new_mask in mask_to_index:
+                uf.union(i, mask_to_index[new_mask])
+
+            # 删除一个字符
+            if mask & (1 << j):
+                new_mask = mask ^ (1 << j)
+                if new_mask in mask_to_index:
+                    uf.union(i, mask_to_index[new_mask])
+
+            # 替换一个字符
+            for k in range(26):
+                if mask & (1 << j):
+                    new_mask = mask ^ (1 << j) | (1 << k)
+                    if new_mask in mask_to_index:
+                        uf.union(i, mask_to_index[new_mask])
+
+    max_group_size = 0
+    for i in range(n):
+        max_group_size = max(max_group_size, uf.get_size(i))
+
+    return [uf.get_count(), max_group_size]
+
+Solution = create_solution(group_strings)

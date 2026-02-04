@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个栈来存储当前打开的窗口，并使用一个哈希表来记录每个窗口的最近一次访问时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈 `stack` 和一个哈希表 `last_accessed`。
+2. 遍历操作列表 `operations`：
+   - 如果操作是 "Alt"，则将当前窗口的索引压入栈中，并更新其最近一次访问时间。
+   - 如果操作是 "Tab"，则从栈中弹出最近的窗口，并更新其最近一次访问时间。
+3. 返回最终的窗口顺序。
 
 关键点:
-- [TODO]
+- 使用栈来记录最近使用的窗口。
+- 使用哈希表来记录每个窗口的最近一次访问时间，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是操作列表的长度。每个操作的时间复杂度为 O(1)。
+空间复杂度: O(m)，其中 m 是不同窗口的数量。需要额外的空间来存储栈和哈希表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(operations: List[str]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 Alt 和 Tab 模拟
     """
-    # TODO: 实现最优解法
-    pass
-
+    stack = []
+    last_accessed = {}
+    current_window = 0
+    
+    for op in operations:
+        if op == "Alt":
+            if current_window not in stack:
+                stack.append(current_window)
+            last_accessed[current_window] = len(stack) - 1
+            current_window += 1
+        elif op == "Tab":
+            if stack:
+                current_window = stack.pop()
+                last_accessed[current_window] = len(stack)
+    
+    result = []
+    while stack:
+        result.append(stack.pop())
+    
+    return result[::-1]
 
 Solution = create_solution(solution_function_name)

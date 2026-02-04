@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来存储递减序列的索引，然后从右向左遍历数组，找到满足条件的最大宽度坡。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈 `stack` 用于存储递减序列的索引。
+2. 从左到右遍历数组，将递减序列的索引压入栈中。
+3. 从右到左遍历数组，对于每个元素，检查栈顶元素是否满足 A[stack[-1]] <= A[j]，如果满足则更新最大宽度，并弹出栈顶元素。
+4. 返回最大宽度。
 
 关键点:
-- [TODO]
+- 使用单调栈来存储递减序列的索引，从而在后续遍历时可以快速找到满足条件的坡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_width_ramp(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大宽度坡
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    n = len(nums)
+
+    # 从左到右遍历数组，将递减序列的索引压入栈中
+    for i in range(n):
+        if not stack or nums[stack[-1]] > nums[i]:
+            stack.append(i)
+
+    max_width = 0
+    # 从右到左遍历数组，找到满足条件的最大宽度坡
+    for j in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] <= nums[j]:
+            max_width = max(max_width, j - stack.pop())
+
+    return max_width
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_width_ramp)

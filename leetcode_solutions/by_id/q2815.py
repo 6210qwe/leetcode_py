@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法找到所有未覆盖的最大区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有区间按照起始位置排序。
+2. 初始化一个列表来存储未覆盖的区间。
+3. 遍历所有区间，合并重叠或相邻的区间。
+4. 在遍历过程中，记录未覆盖的区间。
 
 关键点:
-- [TODO]
+- 合并区间时，注意处理边界情况。
+- 记录未覆盖的区间时，需要考虑前一个区间的结束位置和当前区间的起始位置之间的空隙。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是区间的数量。排序操作的时间复杂度为 O(n log n)，后续的遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findMaximalUncoveredRanges(n: int, ranges: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找最大长度的未覆盖区间
     """
-    # TODO: 实现最优解法
-    pass
+    # 按照区间的起始位置排序
+    ranges.sort(key=lambda x: x[0])
+    
+    # 初始化未覆盖的区间列表
+    uncovered_ranges = []
+    
+    # 初始化上一个区间的结束位置
+    prev_end = -1
+    
+    for start, end in ranges:
+        if start > prev_end + 1:
+            # 如果当前区间的起始位置大于上一个区间的结束位置加1，则存在未覆盖的区间
+            uncovered_ranges.append([prev_end + 1, start - 1])
+        # 更新上一个区间的结束位置
+        prev_end = max(prev_end, end)
+    
+    # 检查最后一个区间的结束位置到 n-1 是否有未覆盖的区间
+    if prev_end < n - 1:
+        uncovered_ranges.append([prev_end + 1, n - 1])
+    
+    return uncovered_ranges
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findMaximalUncoveredRanges)

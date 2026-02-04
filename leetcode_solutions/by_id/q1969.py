@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分图最大匹配算法（匈牙利算法）来找到最多可以接受的邀请数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将男生和女生分别作为二分图的两个部分。
+2. 使用一个字典来记录每个男生当前匹配的女生。
+3. 对于每个男生，尝试通过深度优先搜索（DFS）找到一个未被匹配的女生。
+4. 如果找到一个未被匹配的女生，则更新匹配关系。
+5. 如果没有找到，则回溯并继续尝试其他可能的匹配。
 
 关键点:
-- [TODO]
+- 使用DFS进行匹配查找。
+- 维护一个字典来记录当前的匹配关系。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中n是男生的数量，m是女生的数量。最坏情况下，每个男生都需要尝试匹配所有女生。
+空间复杂度: O(n + m)，用于存储匹配关系和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximumInvitations(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(grid), len(grid[0])
+    match = [-1] * m  # 记录每个女生当前匹配的男生
+    visited = [False] * m  # 记录每次DFS中已经访问过的女生
 
+    def dfs(man: int) -> bool:
+        for woman in range(m):
+            if grid[man][woman] == 1 and not visited[woman]:
+                visited[woman] = True
+                if match[woman] == -1 or dfs(match[woman]):
+                    match[woman] = man
+                    return True
+        return False
 
-Solution = create_solution(solution_function_name)
+    count = 0
+    for man in range(n):
+        visited = [False] * m  # 重置访问标记
+        if dfs(man):
+            count += 1
+
+    return count
+
+Solution = create_solution(maximumInvitations)

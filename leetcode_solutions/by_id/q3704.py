@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过前缀和计算每个可能的分区，并检查其差值是否为偶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 遍历所有可能的分区点，计算左子数组和右子数组的和。
+3. 检查左右子数组和的差值是否为偶数，如果是则计数。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子数组的和。
+- 差值为偶数的条件是左右子数组和的奇偶性相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_partitions_with_even_sum_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计元素和差值为偶数的分区方案数
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(nums)
+    even_count = 0
+    left_sum = 0
+    
+    for i in range(len(nums) - 1):
+        left_sum += nums[i]
+        right_sum = total_sum - left_sum
+        if (left_sum % 2 == right_sum % 2):
+            even_count += 1
+    
+    return even_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_partitions_with_even_sum_difference)

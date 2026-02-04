@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每种卡片的出现次数，并通过枚举所有可能的兼容卡片对来计算最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `card_count` 来记录每种卡片的出现次数。
+2. 遍历 `cards` 数组，对于每张卡片，如果它包含字母 `x`，则将其添加到哈希表中。
+3. 枚举所有可能的兼容卡片对，计算最大分数。
+4. 对于每种卡片，检查其是否可以与另一个卡片形成兼容对，如果可以，则更新分数。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录卡片的出现次数，以便快速查找和更新。
+- 通过枚举所有可能的兼容卡片对来计算最大分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为卡片种类最多为 100 种）
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(cards: List[str], x: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在最优策略下能获得的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表来记录每种卡片的出现次数
+    card_count = {}
+    
+    # 遍历 cards 数组，记录每种卡片的出现次数
+    for card in cards:
+        if x in card:
+            card_count[card] = card_count.get(card, 0) + 1
+    
+    # 初始化最大分数
+    max_score = 0
+    
+    # 枚举所有可能的兼容卡片对
+    for card, count in card_count.items():
+        if count > 0:
+            # 找到与当前卡片兼容的另一张卡片
+            if card[0] == x:
+                compatible_card = card[0] + (chr(ord('a') + (ord(card[1]) - ord('a') + 1) % 10))
+            else:
+                compatible_card = (chr(ord('a') + (ord(card[0]) - ord('a') + 1) % 10)) + card[1]
+            
+            # 更新最大分数
+            if compatible_card in card_count and card_count[compatible_card] > 0:
+                max_score += min(count, card_count[compatible_card])
+                card_count[card] = 0
+                card_count[compatible_card] = 0
+    
+    return max_score // 2  # 每对卡片得 1 分，所以需要除以 2
 
 
 Solution = create_solution(solution_function_name)

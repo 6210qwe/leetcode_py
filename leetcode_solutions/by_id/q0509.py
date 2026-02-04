@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质，找到目标节点的中序后继。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果目标节点有右子树，那么中序后继是其右子树的最左节点。
+2. 如果目标节点没有右子树，那么从中序遍历的角度来看，中序后继是第一个从左向右遍历时遇到的目标节点的祖先节点。
 
 关键点:
-- [TODO]
+- 通过父指针可以快速找到祖先节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(H)，其中 H 是树的高度。在最坏情况下，树可能退化成链表，此时 H = N。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, parent: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.parent = parent
 
-def solution_function_name(params):
+def inorder_successor(node: 'Node') -> 'Optional[Node]':
     """
-    函数式接口 - [TODO] 实现
+    找到给定节点的中序后继。
     """
-    # TODO: 实现最优解法
-    pass
+    # 如果节点有右子树，那么中序后继是其右子树的最左节点
+    if node.right:
+        successor = node.right
+        while successor.left:
+            successor = successor.left
+        return successor
+    
+    # 如果节点没有右子树，那么从中序遍历的角度来看，中序后继是第一个从左向右遍历时遇到的目标节点的祖先节点
+    while node.parent and node == node.parent.right:
+        node = node.parent
+    return node.parent
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(inorder_successor)

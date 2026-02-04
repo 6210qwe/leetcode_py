@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将句子拆分成单词，根据规则逐个处理每个单词，最后拼接成结果字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义元音字母集合。
+2. 拆分句子为单词列表。
+3. 遍历单词列表，根据规则处理每个单词：
+   - 如果单词以元音开头，直接在单词后添加"ma"。
+   - 如果单词以辅音开头，移除第一个字符并将其放到末尾，再添加"ma"。
+   - 根据单词的索引，在单词最后添加相应数量的字母'a'。
+4. 将处理后的单词列表拼接成结果字符串。
 
 关键点:
-- [TODO]
+- 使用列表推导式简化代码。
+- 使用字符串操作方法高效处理单词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是句子的长度。每个单词只处理一次。
+空间复杂度: O(n)，需要存储处理后的单词列表。
 """
 
 # ============================================================================
@@ -49,12 +55,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def to_goat_latin(sentence: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将句子转换为山羊拉丁文
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiouAEIOU')
+    words = sentence.split()
+    
+    # 处理每个单词
+    processed_words = [
+        (word + 'ma' + 'a' * (i + 1)) if word[0] in vowels else
+        (word[1:] + word[0] + 'ma' + 'a' * (i + 1))
+        for i, word in enumerate(words)
+    ]
+    
+    # 拼接成结果字符串
+    return ' '.join(processed_words)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(to_goat_latin)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，分别计算行和列的移动代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算行移动的代价。
+2. 计算列移动的代价。
+3. 返回总代价。
 
 关键点:
-- [TODO]
+- 分别处理行和列的移动，确保每次移动都选择最优路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n)，其中 m 和 n 分别是行数和列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_cost(start_pos: List[int], home_pos: List[int], row_costs: List[int], col_costs: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算机器人回家的最小代价。
+    
+    :param start_pos: 机器人起始位置 [start_row, start_col]
+    :param home_pos: 机器人目标位置 [home_row, home_col]
+    :param row_costs: 每行的移动代价
+    :param col_costs: 每列的移动代价
+    :return: 机器人回家的最小代价
     """
-    # TODO: 实现最优解法
-    pass
+    start_row, start_col = start_pos
+    home_row, home_col = home_pos
+    
+    # 计算行移动的代价
+    if start_row < home_row:
+        row_cost = sum(row_costs[start_row + 1:home_row + 1])
+    else:
+        row_cost = sum(row_costs[home_row:start_row])
+    
+    # 计算列移动的代价
+    if start_col < home_col:
+        col_cost = sum(col_costs[start_col + 1:home_col + 1])
+    else:
+        col_cost = sum(col_costs[home_col:start_col])
+    
+    return row_cost + col_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

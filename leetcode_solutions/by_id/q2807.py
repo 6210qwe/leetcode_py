@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来跟踪所有异步函数的完成情况，并在所有函数都完成后解析最终的 promise。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 和一个结果数组 `results`。
+2. 遍历 `functions` 数组，对每个函数调用并处理其返回的 promise。
+3. 在每个 promise 的回调中，更新结果数组 `results` 并递减计数器 `count`。
+4. 如果计数器 `count` 为 0，表示所有 promise 都已完成，解析最终的 promise。
+5. 如果任何一个 promise 被拒绝，立即拒绝最终的 promise 并返回拒绝原因。
 
 关键点:
-- [TODO]
+- 使用计数器来跟踪所有异步函数的完成情况。
+- 在所有 promise 完成后解析最终的 promise。
+- 如果任何一个 promise 被拒绝，立即拒绝最终的 promise。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 functions 的长度。每个函数的 promise 都会被并行执行，但总的等待时间取决于最慢的那个 promise。
+空间复杂度: O(n)，需要存储结果数组和计数器。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import asyncio
 
-
-def solution_function_name(params):
+async def promise_all(functions: List[callable]) -> List:
     """
-    函数式接口 - [TODO] 实现
+    并行执行异步函数数组，并返回一个新的 promise 对象。
     """
-    # TODO: 实现最优解法
-    pass
+    results = [None] * len(functions)
+    count = len(functions)
+    final_promise = asyncio.get_event_loop().create_future()
 
+    def on_resolve(index, value):
+        nonlocal count
+        results[index] = value
+        count -= 1
+        if count == 0:
+            final_promise.set_result(results)
 
-Solution = create_solution(solution_function_name)
+    def on_reject(reason):
+        final_promise.set_exception(Exception(reason))
+
+    for i, func in enumerate(functions):
+        promise = func()
+        promise.add_done_callback(lambda f, idx=i: (
+            on_resolve(idx, f.result()) if f.exception() is None else on_reject(str(f.exception()))
+        ))
+
+    return await final_promise
+
+Solution = create_solution(promise_all)

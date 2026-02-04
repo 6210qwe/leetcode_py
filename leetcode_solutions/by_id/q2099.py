@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历 patterns 数组，检查每个 pattern 是否是 word 的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 遍历 patterns 数组，对于每个 pattern，使用 in 操作符检查它是否是 word 的子字符串。
+3. 如果是，则将计数器 count 增加 1。
+4. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 使用 in 操作符可以高效地检查子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 patterns 的长度，m 是 word 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_substrings(patterns: List[str], word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计 patterns 中有多少个字符串是 word 的子字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for pattern in patterns:
+        if pattern in word:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_substrings)

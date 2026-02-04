@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 进行数据处理，通过聚合和筛选找到符合条件的书籍。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 合并 `books` 和 `reading_sessions` 表，基于 `book_id`。
+2. 筛选出至少有 5 次阅读事件的书籍。
+3. 计算每本书的最高评分、最低评分和评分差幅。
+4. 计算每本书的极端评分数量和总评分数量。
+5. 计算极化得分，并筛选出极化得分大于等于 0.6 的书籍。
+6. 按极化得分降序排序，然后按标题降序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 `merge` 和 `groupby` 方法进行数据处理。
+- 使用条件筛选和聚合函数计算所需的统计值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `reading_sessions` 表的长度。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储合并后的数据表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def find_books_with_polarized_opinions(books: pd.DataFrame, reading_sessions: pd.DataFrame) -> pd.DataFrame:
+    # 合并 books 和 reading_sessions 表
+    merged_df = pd.merge(books, reading_sessions, on='book_id', how='left')
+    
+    # 筛选出至少有 5 次阅读事件的书籍
+    filtered_df = merged_df.groupby('book_id').filter(lambda x: len(x) >= 5)
+    
+    # 计算每本书的最高评分、最低评分和评分差幅
+    agg_df = filtered_df.groupby('book_id').agg(
+        highest_rating=('session_rating', 'max'),
+        lowest_rating=('session_rating', 'min'),
+        total_sessions=('session_rating', 'count')
+    ).reset_index()
+    
+    # 计算评分差幅
+    agg_df['rating_spread'] = agg_df['highest_rating'] - agg_df['lowest_rating']
+    
+    # 计算极端评分数量
+    extreme_ratings = filtered_df[filtered_df['session_rating'].isin([1, 2, 4, 5])]
+    extreme_counts = extreme_ratings.groupby('book_id')['session_rating'].count().reset_index(name='extreme_count')
+    
+    # 合并极端评分数量
+    final_df = pd.merge(agg_df, extreme_counts, on='book_id', how='left')
+    
+    # 计算极化得分
+    final_df['polarization_score'] = (final_df['extreme_count'] / final_df['total_sessions']).round(2)
+    
+    # 筛选出极化得分大于等于 0.6 的书籍
+    result_df = final_df[final_df['polarization_score'] >= 0.6]
+    
+    # 合并书籍详细信息
+    result_df = pd.merge(result_df, books, on='book_id', how='left')
+    
+    # 按极化得分降序排序，然后按标题降序排序
+    result_df = result_df.sort_values(by=['polarization_score', 'title'], ascending=[False, False])
+    
+    # 选择输出列
+    result_df = result_df[['book_id', 'title', 'author', 'genre', 'pages', 'rating_spread', 'polarization_score']]
+    
+    return result_df
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_books_with_polarized_opinions)

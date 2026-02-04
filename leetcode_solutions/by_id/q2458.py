@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和贪心算法来找到完成所有工作的最短时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 0，right 为 jobs 中的最大值乘以 job 数量。
+2. 在 left 和 right 之间进行二分查找：
+   - 计算中间值 mid，表示当前尝试的时间。
+   - 检查在 mid 时间内是否可以完成所有工作。如果可以，说明 mid 可能是一个解，尝试更小的 mid；否则，增加 mid。
+3. 最终 left 即为完成所有工作的最短时间。
 
 关键点:
-- [TODO]
+- 使用贪心算法检查在给定时间内是否可以完成所有工作。
+- 二分查找的时间复杂度较低，适合处理大规模数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(sum(jobs)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_finish_in_time(jobs: List[int], time: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查在给定时间内是否可以完成所有工作。
     """
-    # TODO: 实现最优解法
-    pass
+    workers = 1
+    current_time = 0
+    for job in jobs:
+        if current_time + job > time:
+            workers += 1
+            current_time = 0
+        current_time += job
+    return workers <= len(jobs)
 
+def find_minimum_time_to_finish_all_jobs(jobs: List[int]) -> int:
+    """
+    找到完成所有工作的最短时间。
+    """
+    left, right = 0, max(jobs) * len(jobs)
+    while left < right:
+        mid = (left + right) // 2
+        if can_finish_in_time(jobs, mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_minimum_time_to_finish_all_jobs)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口技术遍历矩阵，找到每个 3x3 子矩阵的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 (n-2) x (n-2) 的结果矩阵 `maxLocal`。
+2. 遍历矩阵 `grid`，对于每个 3x3 子矩阵，找到其最大值并存储在 `maxLocal` 中。
 
 关键点:
-- [TODO]
+- 使用嵌套循环遍历矩阵，确保每个 3x3 子矩阵都被处理。
+- 通过滑动窗口技术减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O((n-2)^2)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到矩阵中每个 3x3 子矩阵的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    maxLocal = [[0] * (n - 2) for _ in range(n - 2)]
+    
+    for i in range(n - 2):
+        for j in range(n - 2):
+            max_value = 0
+            for x in range(i, i + 3):
+                for y in range(j, j + 3):
+                    max_value = max(max_value, grid[x][y])
+            maxLocal[i][j] = max_value
+    
+    return maxLocal
 
 
 Solution = create_solution(solution_function_name)

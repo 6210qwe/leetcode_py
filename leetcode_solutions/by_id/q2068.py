@@ -21,40 +21,101 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Trie 树来存储从根节点到当前节点的路径，并在 DFS 过程中更新查询结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构。
+2. 初始化 Trie 树。
+3. 对每个查询，记录查询节点及其对应的值。
+4. 使用 DFS 遍历树，在遍历过程中插入和删除节点到 Trie 树，并更新查询结果。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来高效地计算最大异或值。
+- 在 DFS 过程中动态维护 Trie 树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log(max_val))，其中 n 是节点数，q 是查询数，max_val 是查询值的最大值。
+空间复杂度: O(n * log(max_val))，Trie 树的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.count = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, num: int):
+        node = self.root
+        for i in range(17, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+            node.count += 1
+
+    def delete(self, num: int):
+        node = self.root
+        nodes = [node]
+        for i in range(17, -1, -1):
+            bit = (num >> i) & 1
+            node = node.children[bit]
+            nodes.append(node)
+            node.count -= 1
+        for i in range(18, -1, -1):
+            if nodes[i].count == 0:
+                del nodes[i - 1].children[(num >> (17 - i)) & 1]
+
+    def query(self, num: int) -> int:
+        node = self.root
+        result = 0
+        for i in range(17, -1, -1):
+            bit = (num >> i) & 1
+            toggled_bit = 1 - bit
+            if toggled_bit in node.children:
+                result |= (1 << i)
+                node = node.children[toggled_bit]
+            else:
+                node = node.children[bit]
+        return result
+
+def dfs(node: int, tree: List[List[int]], queries: List[List[int]], results: List[int], trie: Trie):
+    for query in queries[node]:
+        results[query[0]] = trie.query(query[1])
+    trie.insert(node)
+    for child in tree[node]:
+        dfs(child, tree, queries, results, trie)
+    trie.delete(node)
+
+def solution_function_name(parents: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(parents)
+    tree = [[] for _ in range(n)]
+    root = -1
+    for i, p in enumerate(parents):
+        if p != -1:
+            tree[p].append(i)
+        else:
+            root = i
+
+    query_map = [[] for _ in range(n)]
+    for i, (node, val) in enumerate(queries):
+        query_map[node].append((i, val))
+
+    results = [0] * len(queries)
+    trie = Trie()
+    dfs(root, tree, query_map, results, trie)
+    return results
 
 Solution = create_solution(solution_function_name)

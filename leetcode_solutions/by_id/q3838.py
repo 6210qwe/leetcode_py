@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理节点之间的连通性，并通过遍历 nums 数组来构建图。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历 nums 数组，将满足条件的节点进行合并。
+3. 对于每个查询，使用并查集判断两个节点是否连通。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地管理连通性。
+- 由于 nums 数组是有序的，可以利用这一点来优化合并操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * α(n))，其中 n 是节点数，m 是查询数，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-Solution = create_solution(solution_function_name)
+def path_existence_queries(n: int, nums: List[int], max_diff: int, queries: List[List[int]]) -> List[bool]:
+    uf = UnionFind(n)
+    
+    # 构建图
+    for i in range(n):
+        for j in range(i + 1, n):
+            if nums[j] - nums[i] <= max_diff:
+                uf.union(i, j)
+            else:
+                break
+    
+    # 处理查询
+    result = []
+    for u, v in queries:
+        result.append(uf.find(u) == uf.find(v))
+    
+    return result
+
+Solution = create_solution(path_existence_queries)

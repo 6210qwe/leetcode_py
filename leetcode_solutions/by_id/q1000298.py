@@ -21,40 +21,55 @@ LCR 045. 找树左下角的值 - 给定一个二叉树的 根节点 root，请�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，记录最深层的节点值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `max_depth` 和 `leftmost_value`，分别记录当前最大深度和最左边的节点值。
+2. 定义一个递归函数 `dfs(node, depth)`，用于遍历二叉树。
+3. 在递归函数中，如果当前节点是叶子节点且深度大于 `max_depth`，更新 `max_depth` 和 `leftmost_value`。
+4. 递归调用左子节点和右子节点，深度加一。
+5. 返回 `leftmost_value`。
 
 关键点:
-- [TODO]
+- 使用深度优先搜索确保我们总是先访问左子树，从而找到最左边的节点。
+- 通过记录最大深度来确保我们找到的是最底层的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数，因为每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度，这是由于递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_bottom_left_value(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到二叉树最底层最左边节点的值
     """
-    # TODO: 实现最优解法
-    pass
+    max_depth = 0
+    leftmost_value = 0
 
+    def dfs(node: Optional[TreeNode], depth: int):
+        nonlocal max_depth, leftmost_value
+        if not node:
+            return
+        if not node.left and not node.right:
+            if depth > max_depth:
+                max_depth = depth
+                leftmost_value = node.val
+        dfs(node.left, depth + 1)
+        dfs(node.right, depth + 1)
 
-Solution = create_solution(solution_function_name)
+    dfs(root, 0)
+    return leftmost_value
+
+Solution = create_solution(find_bottom_left_value)

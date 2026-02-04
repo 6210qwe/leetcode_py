@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法找到所有可能的 k 个因子的组合，并选择其中差值最小的组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表和当前组合。
+2. 使用回溯法生成所有可能的 k 个因子的组合。
+3. 对每个组合计算最大值和最小值的差值，并更新最优解。
+4. 返回最优解。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的组合。
+- 通过剪枝减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^(k-1)) - 在最坏情况下，需要遍历所有可能的 k 个因子的组合。
+空间复杂度: O(k) - 递归调用栈的深度最多为 k。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(start: int, path: List[int]):
+        if len(path) == k:
+            if path[0] * path[-1] == n // (path[0] * path[-1]) ** (k - 2):
+                result.append(path[:])
+            return
+        for i in range(start, int(n ** (1 / (k - len(path)))) + 1):
+            if n % (i * (path[0] * path[-1]) ** (k - len(path) - 1)) == 0:
+                path.append(i)
+                backtrack(i, path)
+                path.pop()
+
+    result = []
+    backtrack(1, [])
+    min_diff = float('inf')
+    best_combination = []
+
+    for combination in result:
+        diff = max(combination) - min(combination)
+        if diff < min_diff:
+            min_diff = diff
+            best_combination = combination
+
+    return best_combination
 
 
 Solution = create_solution(solution_function_name)

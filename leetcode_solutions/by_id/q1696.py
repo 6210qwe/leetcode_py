@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来判断是否可以按要求打印目标网格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建每个颜色的边界矩形。
+2. 构建颜色之间的依赖关系图。
+3. 使用拓扑排序检查是否存在环，如果存在环则无法打印。
 
 关键点:
-- [TODO]
+- 通过构建颜色的边界矩形来确定颜色的覆盖范围。
+- 通过颜色之间的依赖关系图来判断是否可以按顺序打印。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n + C^2)，其中 m 和 n 分别是网格的行数和列数，C 是颜色的数量。
+空间复杂度: O(C^2)，用于存储颜色之间的依赖关系图。
 """
 
 # ============================================================================
@@ -49,12 +51,51 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def isPrintable(targetGrid: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以按要求打印目标网格。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(targetGrid), len(targetGrid[0])
+    color_bounds = {}
+    
+    # 构建每个颜色的边界矩形
+    for i in range(m):
+        for j in range(n):
+            color = targetGrid[i][j]
+            if color not in color_bounds:
+                color_bounds[color] = [i, j, i, j]
+            else:
+                color_bounds[color][0] = min(color_bounds[color][0], i)
+                color_bounds[color][1] = min(color_bounds[color][1], j)
+                color_bounds[color][2] = max(color_bounds[color][2], i)
+                color_bounds[color][3] = max(color_bounds[color][3], j)
+    
+    # 构建颜色之间的依赖关系图
+    graph = {color: set() for color in color_bounds}
+    in_degree = {color: 0 for color in color_bounds}
+    
+    for i in range(m):
+        for j in range(n):
+            color = targetGrid[i][j]
+            for c, (top, left, bottom, right) in color_bounds.items():
+                if top <= i <= bottom and left <= j <= right and c != color:
+                    if color not in graph[c]:
+                        graph[c].add(color)
+                        in_degree[color] += 1
+    
+    # 使用拓扑排序检查是否存在环
+    queue = [color for color in in_degree if in_degree[color] == 0]
+    visited_count = 0
+    
+    while queue:
+        color = queue.pop(0)
+        visited_count += 1
+        for next_color in graph[color]:
+            in_degree[next_color] -= 1
+            if in_degree[next_color] == 0:
+                queue.append(next_color)
+    
+    return visited_count == len(color_bounds)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(isPrintable)

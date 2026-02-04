@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查字符串是否符合三种大写规则之一。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查字符串是否全部为大写。
+2. 检查字符串是否全部为小写。
+3. 检查字符串是否只有首字母大写，其余字母小写。
 
 关键点:
-- [TODO]
+- 使用 Python 的内置方法 `isupper` 和 `islower` 来检查字符的大小写。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def detectCapitalUse(word: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检测字符串是否符合大写规则
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查字符串是否全部为大写
+    if word.isupper():
+        return True
+    # 检查字符串是否全部为小写
+    if word.islower():
+        return True
+    # 检查字符串是否只有首字母大写，其余字母小写
+    if word[0].isupper() and word[1:].islower():
+        return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(detectCapitalUse)

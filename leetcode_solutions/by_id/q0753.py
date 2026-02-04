@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从初始状态 "0000" 到目标状态 target 的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列 queue 和集合 visited，将初始状态 "0000" 加入队列，并将其标记为已访问。
+2. 将 deadends 中的所有状态加入 visited，以避免访问这些状态。
+3. 开始 BFS 循环：
+   - 从队列中取出当前状态。
+   - 如果当前状态等于目标状态 target，则返回当前步数。
+   - 对于当前状态的每一位数字，生成其上拨和下拨后的所有可能状态。
+   - 如果这些新状态未被访问过，则将其加入队列并标记为已访问。
+4. 如果队列为空且未找到目标状态，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以确保找到最短路径。
+- 通过将 deadends 中的状态加入 visited，可以避免访问这些状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(10^4 * 4 * 2) = O(1)，因为每个状态最多有 8 种变化（4 位数字，每位数字有 2 种变化）。
+空间复杂度: O(10^4) = O(1)，因为最多有 10^4 个状态需要存储。
 """
 
 # ============================================================================
@@ -49,12 +56,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def open_lock(deadends: List[str], target: str) -> int:
+    from collections import deque
+
+    if "0000" in deadends:
+        return -1
+
+    def get_neighbors(state: str):
+        neighbors = []
+        for i in range(4):
+            digit = int(state[i])
+            for delta in [-1, 1]:
+                new_digit = (digit + delta) % 10
+                new_state = state[:i] + str(new_digit) + state[i+1:]
+                neighbors.append(new_state)
+            new_digit = (digit - 1) % 10
+            new_state = state[:i] + str(new_digit) + state[i+1:]
+            neighbors.append(new_state)
+        return neighbors
+
+    queue = deque([("0000", 0)])
+    visited = set(deadends)
+
+    while queue:
+        current, steps = queue.popleft()
+        if current == target:
+            return steps
+        if current in visited:
+            continue
+        visited.add(current)
+        for neighbor in get_neighbors(current):
+            if neighbor not in visited:
+                queue.append((neighbor, steps + 1))
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(open_lock)

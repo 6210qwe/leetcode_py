@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录访问每个房间的天数，并利用前缀和的思想来计算访问下一个房间的天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的数组 dp，dp[i] 表示访问到第 i 个房间所需的天数。
+2. 初始化 dp[0] = 0，表示第 0 天访问了第 0 个房间。
+3. 从第 1 个房间开始遍历到第 n-1 个房间：
+   - 计算访问当前房间的天数 dp[i] = dp[i-1] + 1 + dp[i-1] - dp[nextVisit[i-1]]。
+   - 对结果取模 10^9 + 7。
+4. 返回 dp[n-1]。
 
 关键点:
-- [TODO]
+- 使用 dp 数组记录访问每个房间的天数。
+- 利用前缀和的思想来计算访问下一个房间的天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def first_day_visited_all_rooms(nextVisit: List[int]) -> int:
+    n = len(nextVisit)
+    MOD = 10**9 + 7
+    dp = [0] * n
+    
+    for i in range(1, n):
+        dp[i] = (dp[i - 1] + 1 + dp[i - 1] - dp[nextVisit[i - 1]] + MOD) % MOD
+    
+    return dp[-1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(first_day_visited_all_rooms)

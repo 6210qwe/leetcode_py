@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过组合不同数量的 shorter 和 longer 木板来生成所有可能的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 k 为 0，直接返回空列表。
+2. 如果 shorter 和 longer 相等，只有一种可能的长度，即 k * shorter。
+3. 否则，生成从 k * shorter 到 k * longer 的所有可能长度。
 
 关键点:
-- [TODO]
+- 通过简单的数学计算和循环生成所有可能的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def diving_board(shorter: int, longer: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    生成跳水板所有可能的长度，并按从小到大排序。
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 0:
+        return []
+    
+    if shorter == longer:
+        return [k * shorter]
+    
+    return [shorter * (k - i) + longer * i for i in range(k + 1)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(diving_board)

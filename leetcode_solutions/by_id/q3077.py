@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和前缀和来找到最小的相对损失。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对价格数组进行排序。
+2. 计算前缀和数组。
+3. 使用二分查找找到满足条件的最大价格。
+4. 计算相对损失并返回结果。
 
 关键点:
-- [TODO]
+- 通过二分查找来优化查找过程，减少时间复杂度。
+- 使用前缀和数组来快速计算区间和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是价格数组的长度。排序操作的时间复杂度为 O(n log n)，二分查找的时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(prices: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 对价格数组进行排序
+    prices.sort()
+    
+    # 计算前缀和数组
+    n = len(prices)
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + prices[i - 1]
+    
+    # 二分查找找到满足条件的最大价格
+    def is_valid(mid: int) -> bool:
+        count = 0
+        for price in prices:
+            if price <= mid:
+                count += 1
+        return count >= k
+    
+    left, right = 0, prices[-1]
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_valid(mid):
+            left = mid
+        else:
+            right = mid - 1
+    
+    # 计算相对损失
+    max_price = left
+    total_cost = prefix_sum[k] if k <= n else prefix_sum[n]
+    relative_loss = max_price * k - total_cost
+    return relative_loss
 
 Solution = create_solution(solution_function_name)

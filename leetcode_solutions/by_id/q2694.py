@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每个 divisors 中的元素，计算其在 nums 中的可整除性得分，并记录最大得分及其对应的最小 divisors 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大得分 max_score 为 0，以及结果 res 为无穷大。
+2. 遍历每个 divisors 中的元素 d：
+   - 计算 d 在 nums 中的可整除性得分 score。
+   - 如果 score 大于 max_score，更新 max_score 和 res。
+   - 如果 score 等于 max_score 且 d 小于 res，更新 res。
+3. 返回 res。
 
 关键点:
-- [TODO]
+- 使用一个变量来记录当前的最大得分和对应的最小 divisors 值。
+- 通过遍历 divisors 和 nums 来计算每个 divisors 的得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 nums 的长度，m 是 divisors 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_divisibility_score(nums: List[int], divisors: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出可整除性得分最大的整数
     """
-    # TODO: 实现最优解法
-    pass
+    max_score = 0
+    res = float('inf')
+    
+    for d in divisors:
+        score = sum(num % d == 0 for num in nums)
+        if score > max_score or (score == max_score and d < res):
+            max_score = score
+            res = d
+    
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_divisibility_score)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示长度为 i 的数组中恰好有 j 个逆序对的数量。状态转移方程为 dp[i][j] = dp[i-1][j] + dp[i-1][j-1] + ... + dp[i-1][j-(i-1)]，其中 j-(i-1) >= 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 通过双重循环遍历 n 和 k，更新 dp 数组。
+3. 返回 dp[n][k] % (10^9 + 7)。
 
 关键点:
-- [TODO]
+- 使用前缀和优化状态转移方程，减少计算量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def k_inverse_pairs(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的数组中恰好有 k 个逆序对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        prefix_sum = 0
+        for j in range(k + 1):
+            prefix_sum += dp[i - 1][j]
+            if j >= i:
+                prefix_sum -= dp[i - 1][j - i]
+            dp[i][j] = prefix_sum % MOD
+
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(k_inverse_pairs)

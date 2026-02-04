@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录 order 中每个字符的顺序，然后根据这些顺序对 s 进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表，记录 order 中每个字符的顺序。
+2. 根据哈希表中的顺序对 s 进行排序。
+3. 返回排序后的字符串。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符顺序，可以快速查找。
+- 使用 Python 的 sorted 函数进行排序，简洁高效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)，其中 n 是 order 的长度，m 是 s 的长度。构建哈希表的时间复杂度为 O(n)，排序的时间复杂度为 O(m log m)。
+空间复杂度: O(n + m)，哈希表的空间复杂度为 O(n)，排序过程中需要额外的空间 O(m)。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def custom_sort_string(order: str, s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现自定义字符串排序
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希表，记录 order 中每个字符的顺序
+    order_index = {char: index for index, char in enumerate(order)}
+    
+    # 根据哈希表中的顺序对 s 进行排序
+    sorted_s = sorted(s, key=lambda char: order_index.get(char, len(order)))
+    
+    # 返回排序后的字符串
+    return ''.join(sorted_s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(custom_sort_string)

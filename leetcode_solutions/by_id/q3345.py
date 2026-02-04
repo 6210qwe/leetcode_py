@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算所有子序列的能量和。我们使用一个二维数组 dp，其中 dp[i][j] 表示前 i 个元素中和为 j 的子序列的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，大小为 (n+1) x (k+1)，并将 dp[0][0] 设为 1。
+2. 遍历数组 nums，对于每个元素 num，更新 dp 数组。
+3. 对于每个 num，从后向前遍历 dp 数组，更新 dp[i][j] 为 dp[i-1][j] + dp[i-1][j-num]。
+4. 最终结果为 dp[n][k]。
 
 关键点:
-- [TODO]
+- 使用模运算来防止结果溢出。
+- 从后向前遍历 dp 数组以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有子序列的能量和
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(nums)
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            dp[i][j] = dp[i - 1][j]
+            if j >= nums[i - 1]:
+                dp[i][j] += dp[i - 1][j - nums[i - 1]]
+                dp[i][j] %= MOD
+
+    return dp[n][k]
 
 
 Solution = create_solution(solution_function_name)

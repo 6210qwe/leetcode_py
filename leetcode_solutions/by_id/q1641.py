@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出可以放心投资的国家。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从表 `countries` 中选择所有国家。
+2. 通过子查询检查每个国家是否在 `investments` 表中有任何高风险的投资。
+3. 返回那些没有任何高风险投资的国家。
 
 关键点:
-- [TODO]
+- 使用 NOT EXISTS 子查询来过滤掉有高风险投资的国家。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 countries 表的行数，m 是 investments 表的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT country_name
+    FROM countries
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM investments
+        WHERE risk_level = 'high' AND countries.country_id = investments.country_id
+    );
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

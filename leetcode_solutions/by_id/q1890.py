@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和计数器来计算每个子字符串的美丽值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 26 的数组 `freq` 来记录当前窗口内每个字符的频率。
+2. 使用两个嵌套循环遍历所有可能的子字符串。
+3. 对于每个子字符串，更新 `freq` 数组，并计算该子字符串的美丽值。
+4. 将所有子字符串的美丽值累加并返回结果。
 
 关键点:
-- [TODO]
+- 使用固定大小的数组 `freq` 来记录字符频率，避免了频繁的哈希操作。
+- 通过滑动窗口的方式减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。需要遍历所有可能的子字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def beauty_sum(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算字符串 s 所有子字符串的美丽值之和。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    total_beauty = 0
+    
+    for i in range(n):
+        freq = [0] * 26
+        for j in range(i, n):
+            freq[ord(s[j]) - ord('a')] += 1
+            max_freq = max(freq)
+            min_freq = min(f for f in freq if f > 0)
+            total_beauty += max_freq - min_freq
+    
+    return total_beauty
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(beauty_sum)

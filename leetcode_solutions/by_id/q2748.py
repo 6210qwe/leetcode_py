@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算列车的实际到站时间，考虑 24 小时制的循环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算实际到站时间：`actual_time = (arrivalTime + delayedTime) % 24`
+2. 返回计算结果
 
 关键点:
-- [TODO]
+- 使用模运算处理 24 小时制的循环
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def calculate_delayed_arrival_time(arrivalTime: int, delayedTime: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算列车实际到站时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算实际到站时间
+    actual_time = (arrivalTime + delayedTime) % 24
+    return actual_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calculate_delayed_arrival_time)

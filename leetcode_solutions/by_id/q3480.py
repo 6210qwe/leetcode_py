@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择成本最低的字符来构建字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符及其成本存储在一个列表中。
+2. 按照成本从小到大对字符进行排序。
+3. 依次选择成本最低的字符，直到达到所需的字符串长度。
 
 关键点:
-- [TODO]
+- 通过排序确保每次选择的成本最低。
+- 优先使用成本最低的字符来构建字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符种类数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(params: List[List[int]], target: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最小代价构造字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符及其成本存储在一个列表中
+    cost_map = [(chr(i + ord('a')), c) for i, c in enumerate(params)]
+    
+    # 按照成本从小到大对字符进行排序
+    cost_map.sort(key=lambda x: x[1])
+    
+    # 依次选择成本最低的字符，直到达到所需的字符串长度
+    result = []
+    for _ in range(target):
+        result.append(cost_map[0][0])
+    
+    return ''.join(result)
 
 
 Solution = create_solution(solution_function_name)

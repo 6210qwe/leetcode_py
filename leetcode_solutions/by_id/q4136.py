@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算每个查询的非零数字连接后的整数和数字和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，用于存储从字符串开头到当前索引的所有非零数字的连接结果。
+2. 计算前缀和数组，用于存储从字符串开头到当前索引的所有非零数字的和。
+3. 对于每个查询，使用前缀和数组快速计算子串的非零数字连接后的整数和数字和。
+4. 计算结果并取模。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来避免重复计算，提高效率。
+- 注意处理边界情况，如全零子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + q)，其中 m 是字符串 s 的长度，q 是查询的数量。
+空间复杂度: O(m)，用于存储前缀和数组。
 """
 
 # ============================================================================
@@ -48,13 +51,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def concatenate_non_zero_digits_and_multiply_by_sum(s: str, queries: List[List[int]]) -> List[int]:
+    MOD = 10**9 + 7
+    n = len(s)
+    
+    # 前缀和数组，存储从字符串开头到当前索引的所有非零数字的连接结果
+    prefix_concat = [""] * n
+    for i in range(n):
+        if s[i] != '0':
+            prefix_concat[i] = (prefix_concat[i-1] + s[i]) if i > 0 else s[i]
+        else:
+            prefix_concat[i] = prefix_concat[i-1] if i > 0 else ""
+    
+    # 前缀和数组，存储从字符串开头到当前索引的所有非零数字的和
+    prefix_sum = [0] * n
+    for i in range(n):
+        if s[i] != '0':
+            prefix_sum[i] = (prefix_sum[i-1] + int(s[i])) if i > 0 else int(s[i])
+        else:
+            prefix_sum[i] = prefix_sum[i-1] if i > 0 else 0
+    
+    # 处理每个查询
+    result = []
+    for li, ri in queries:
+        if li == 0:
+            x = prefix_concat[ri]
+            sum_x = prefix_sum[ri]
+        else:
+            x = prefix_concat[ri][len(prefix_concat[li-1]):]
+            sum_x = prefix_sum[ri] - prefix_sum[li-1]
+        
+        if x == "":
+            result.append(0)
+        else:
+            x_int = int(x)
+            result.append((x_int * sum_x) % MOD)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(concatenate_non_zero_digits_and_multiply_by_sum)

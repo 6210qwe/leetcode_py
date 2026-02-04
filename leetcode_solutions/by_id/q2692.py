@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来高效地找到并更新礼物数量最多的堆。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有礼物堆的数量加入最大堆。
+2. 重复 k 次：
+   - 从堆中取出最大的礼物堆。
+   - 计算该堆的新礼物数量（即原数量的平方根，向下取整）。
+   - 将新礼物数量重新加入堆中。
+3. 计算并返回堆中所有礼物数量的总和。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地找到并更新礼物数量最多的堆。
+- 每次操作的时间复杂度为 O(log n)，其中 n 是堆的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def take_gifts(gifts: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    从数量最多的堆取走礼物 - 给你一个整数数组 gifts ，表示各堆礼物的数量。每一秒，你需要执行以下操作：
+    1. 选择礼物数量最多的那一堆。
+    2. 将堆中的礼物数量减少到堆中原来礼物数量的平方根，向下取整。
+    返回在 k 秒后剩下的礼物数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有礼物堆的数量加入最大堆
+    max_heap = [-g for g in gifts]
+    heapq.heapify(max_heap)
 
+    # 重复 k 次
+    for _ in range(k):
+        # 从堆中取出最大的礼物堆
+        max_gift = -heapq.heappop(max_heap)
+        # 计算该堆的新礼物数量
+        new_gift = int(max_gift**0.5)
+        # 将新礼物数量重新加入堆中
+        heapq.heappush(max_heap, -new_gift)
 
-Solution = create_solution(solution_function_name)
+    # 计算并返回堆中所有礼物数量的总和
+    return -sum(max_heap)
+
+Solution = create_solution(take_gifts)

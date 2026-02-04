@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符在所有字符串中的最小出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典，记录第一个字符串中每个字符的出现次数。
+2. 遍历剩余的字符串，更新字典中每个字符的最小出现次数。
+3. 根据字典中的最小出现次数构建结果列表。
 
 关键点:
-- [TODO]
+- 使用 `collections.Counter` 来简化字符计数。
+- 通过遍历多个字符串来更新最小出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是每个字符串的平均长度。
+空间复杂度: O(1)，因为字母表的大小是固定的（26个字母）。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找共用字符
     """
-    # TODO: 实现最优解法
-    pass
+    if not words:
+        return []
 
+    # 初始化计数器，记录第一个字符串中每个字符的出现次数
+    char_count = Counter(words[0])
+
+    # 遍历剩余的字符串，更新每个字符的最小出现次数
+    for word in words[1:]:
+        current_count = Counter(word)
+        for char in char_count:
+            char_count[char] = min(char_count[char], current_count[char])
+
+    # 构建结果列表
+    result = []
+    for char, count in char_count.items():
+        result.extend([char] * count)
+
+    return result
 
 Solution = create_solution(solution_function_name)

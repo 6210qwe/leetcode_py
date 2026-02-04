@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断对字符串进行操作，最终将字符串减少到两个字符，并检查这两个字符是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串转换为整数列表。
+2. 不断对整数列表进行操作，直到列表长度为2。
+3. 检查最后两个字符是否相等。
 
 关键点:
-- [TODO]
+- 使用模10操作来处理两位数的和。
+- 通过迭代逐步减少字符串长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每次操作都会将字符串长度减半，总共需要 O(log n) 次操作，每次操作的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断操作后字符串中的数字是否相等 I
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串转换为整数列表
+    nums = [int(c) for c in s]
+    
+    # 不断对整数列表进行操作，直到列表长度为2
+    while len(nums) > 2:
+        new_nums = []
+        for i in range(len(nums) - 1):
+            new_nums.append((nums[i] + nums[i + 1]) % 10)
+        nums = new_nums
+    
+    # 检查最后两个字符是否相等
+    return nums[0] == nums[1]
 
 
 Solution = create_solution(solution_function_name)

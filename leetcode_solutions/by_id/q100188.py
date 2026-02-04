@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个链表，逐位相加并处理进位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针分别指向两个链表的头节点。
+2. 初始化一个虚拟头节点和一个当前节点指针，用于构建结果链表。
+3. 初始化进位变量为0。
+4. 遍历两个链表，直到两个链表都为空：
+   - 计算当前位的和（包括进位）。
+   - 更新进位。
+   - 创建新节点并添加到结果链表中。
+5. 如果最后还有进位，创建一个新节点并添加到结果链表中。
+6. 返回结果链表的头节点。
 
 关键点:
-- [TODO]
+- 使用虚拟头节点简化代码逻辑。
+- 处理最后一个进位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(max(m, n))，其中m和n分别是两个链表的长度。
+空间复杂度: O(max(m, n))，结果链表的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def add_two_numbers(l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现链表求和
     """
-    # TODO: 实现最优解法
-    pass
+    dummy_head = ListNode(0)
+    current = dummy_head
+    carry = 0
 
+    while l1 or l2 or carry:
+        val1 = l1.val if l1 else 0
+        val2 = l2.val if l2 else 0
+        total = val1 + val2 + carry
+        carry = total // 10
+        current.next = ListNode(total % 10)
+        current = current.next
 
-Solution = create_solution(solution_function_name)
+        if l1:
+            l1 = l1.next
+        if l2:
+            l2 = l2.next
+
+    return dummy_head.next
+
+Solution = create_solution(add_two_numbers)

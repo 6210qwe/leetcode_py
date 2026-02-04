@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列 (最小堆) 来维护当前最小的成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将每个列表及其长度和中位数存入队列。
+2. 每次从队列中取出两个成本最小的列表，计算合并成本，并将合并后的列表重新放入队列。
+3. 重复上述过程，直到队列中只剩下一个列表。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地找到当前最小的成本。
+- 合并操作需要保持列表有序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是所有列表的总长度，k 是列表的数量。每次合并操作的时间复杂度为 O(log k)，总共需要进行 k-1 次合并。
+空间复杂度: O(k)，优先队列的空间复杂度为 O(k)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def find_median(arr: List[int]) -> int:
+    n = len(arr)
+    if n % 2 == 1:
+        return arr[n // 2]
+    else:
+        return arr[(n - 1) // 2]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def merge_lists(lists: List[List[int]]) -> int:
+    # 初始化优先队列
+    heap = []
+    for i, lst in enumerate(lists):
+        heapq.heappush(heap, (len(lst), find_median(lst), i, lst))
+    
+    total_cost = 0
+    
+    while len(heap) > 1:
+        # 取出两个成本最小的列表
+        len1, median1, idx1, list1 = heapq.heappop(heap)
+        len2, median2, idx2, list2 = heapq.heappop(heap)
+        
+        # 计算合并成本
+        cost = len1 + len2 + abs(median1 - median2)
+        total_cost += cost
+        
+        # 合并两个列表
+        merged_list = sorted(list1 + list2)
+        
+        # 将合并后的列表重新放入队列
+        heapq.heappush(heap, (len(merged_list), find_median(merged_list), idx1, merged_list))
+    
+    return total_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_lists)

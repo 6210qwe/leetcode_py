@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理连通分量，并通过集合操作计算交集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 计算每对节点之间的交集，如果交集大小大于等于 k，则将这两个节点合并到同一个连通分量中。
+3. 最后返回并查集中连通分量的数量。
 
 关键点:
-- [TODO]
+- 使用并查集高效地管理连通分量。
+- 通过集合操作快速计算交集。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是 properties 的长度，m 是每个属性数组的长度。
+空间复杂度: O(n)，并查集需要 O(n) 的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
+
+    def get_count(self):
+        return self.count
+
+
+def solution_function_name(properties: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算属性图中的连通分量数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(properties)
+    uf = UnionFind(n)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if len(set(properties[i]) & set(properties[j])) >= k:
+                uf.union(i, j)
+
+    return uf.get_count()
 
 
 Solution = create_solution(solution_function_name)

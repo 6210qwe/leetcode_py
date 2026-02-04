@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到所有乘积小于 k 的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，以及当前窗口内的乘积 product。
+2. 移动右指针 right，将新元素加入乘积中。
+3. 如果当前窗口内的乘积大于等于 k，则移动左指针 left，直到乘积小于 k。
+4. 计算以 right 为结尾的所有子数组的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前子数组的乘积。
+- 每次移动右指针时，更新乘积并检查是否需要移动左指针。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个指针最多移动 n 次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回乘积小于 k 的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    if k <= 1:
+        return 0
 
+    count = 0
+    product = 1
+    left = 0
+
+    for right in range(len(nums)):
+        product *= nums[right]
+        while product >= k:
+            product /= nums[left]
+            left += 1
+        count += right - left + 1
+
+    return count
 
 Solution = create_solution(solution_function_name)

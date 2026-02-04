@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的最大差值。首先对数组进行排序，然后使用二分查找来确定最小的最大差值。在每次二分查找的过程中，检查当前的中间值是否可以作为最大差值，并且能够满足 p 个下标对的要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用二分查找来确定最小的最大差值。
+3. 在每次二分查找的过程中，检查当前的中间值是否可以作为最大差值，并且能够满足 p 个下标对的要求。
 
 关键点:
-- [TODO]
+- 排序后的数组可以方便地使用二分查找来确定最小的最大差值。
+- 每次检查过程中，通过遍历数组来确定当前的中间值是否可以作为最大差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + p log(max_diff))，其中 n 是数组的长度，max_diff 是数组中的最大差值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], p: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    def can_form_pairs(mid: int) -> bool:
+        count = 0
+        i = 0
+        while i < len(nums) - 1:
+            if nums[i + 1] - nums[i] <= mid:
+                count += 1
+                i += 2
+            else:
+                i += 1
+        return count >= p
+
+    nums.sort()
+    left, right = 0, nums[-1] - nums[0]
+    while left < right:
+        mid = (left + right) // 2
+        if can_form_pairs(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
 Solution = create_solution(solution_function_name)

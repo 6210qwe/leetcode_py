@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历来解码字符串。对于每个字符，检查接下来的两个字符是否能组成一个有效的两位数，并且后面跟着一个 '#'。如果是，则解码为对应的字符；否则，直接解码当前字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 `result` 用于存储解码后的结果。
+2. 遍历字符串 `s`：
+   - 如果当前字符和接下来的两个字符可以组成一个有效的两位数，并且后面跟着一个 '#'，则解码为对应的字符，并跳过接下来的两个字符。
+   - 否则，直接解码当前字符。
+3. 返回解码后的字符串 `result`。
 
 关键点:
-- [TODO]
+- 通过一次遍历完成解码，避免多次遍历。
+- 使用条件判断来处理不同的解码情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要一次遍历字符串。
+空间复杂度: O(1)，除了输出结果外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decrypt_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解码字符串从字母到整数映射
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    i = 0
+    while i < len(s):
+        if i + 2 < len(s) and s[i + 2] == '#':
+            num = int(s[i:i+2])
+            result.append(chr(num + ord('a') - 1))
+            i += 3
+        else:
+            num = int(s[i])
+            result.append(chr(num + ord('a') - 1))
+            i += 1
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decrypt_string)

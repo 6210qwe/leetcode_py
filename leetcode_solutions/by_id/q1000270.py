@@ -21,40 +21,86 @@ LCR 031. LRU 缓存 - 运用所掌握的数据结构，设计和实现一个 LRU
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双向链表和哈希表来实现 LRU 缓存。双向链表用于维护访问顺序，哈希表用于快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化双向链表和哈希表。
+2. 在 `get` 方法中，如果键存在于哈希表中，更新其位置到链表头部，并返回其值；否则返回 -1。
+3. 在 `put` 方法中，如果键存在于哈希表中，更新其值并移动到链表头部；如果不存在且缓存已满，移除链表尾部的节点，然后将新节点插入链表头部。
 
 关键点:
-- [TODO]
+- 双向链表的头节点和尾节点是虚拟节点，方便插入和删除操作。
+- 哈希表存储键到链表节点的映射，保证 O(1) 时间复杂度的查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(capacity)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class ListNode:
+    def __init__(self, key=None, value=None):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
 
 
-Solution = create_solution(solution_function_name)
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = {}
+        self.head = ListNode()
+        self.tail = ListNode()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _add_to_head(self, node: ListNode):
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _remove_node(self, node: ListNode):
+        prev = node.prev
+        next = node.next
+        prev.next = next
+        next.prev = prev
+
+    def _move_to_head(self, node: ListNode):
+        self._remove_node(node)
+        self._add_to_head(node)
+
+    def get(self, key: int) -> int:
+        if key in self.cache:
+            node = self.cache[key]
+            self._move_to_head(node)
+            return node.value
+        return -1
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            self._move_to_head(node)
+        else:
+            if len(self.cache) == self.capacity:
+                tail_node = self.tail.prev
+                self._remove_node(tail_node)
+                del self.cache[tail_node.key]
+            new_node = ListNode(key, value)
+            self.cache[key] = new_node
+            self._add_to_head(new_node)
+
+
+Solution = create_solution(LRUCache)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个任务的出现次数，然后根据任务数量计算最少轮数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Counter 统计每个任务的出现次数。
+2. 遍历每个任务的数量，计算完成该任务所需的最少轮数。
+   - 如果任务数量为 1，直接返回 -1。
+   - 如果任务数量为 2 或 3，分别需要 1 轮。
+   - 如果任务数量大于 3，优先使用 3 个一组的任务，剩余部分再考虑 2 个一组的任务。
 
 关键点:
-- [TODO]
+- 优先使用 3 个一组的任务可以最小化轮数。
+- 对于不能被 3 整除的任务数量，通过调整组合方式来最小化轮数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 tasks 的长度。我们需要遍历 tasks 数组并进行计数。
+空间复杂度: O(n)，哈希表存储任务的计数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+from collections import Counter
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_rounds(tasks: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算完成所有任务需要的最少轮数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个任务的出现次数
+    task_count = Counter(tasks)
+    
+    rounds = 0
+    for count in task_count.values():
+        if count == 1:
+            return -1
+        elif count % 3 == 0:
+            rounds += count // 3
+        else:
+            rounds += count // 3 + 1
+    
+    return rounds
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_rounds)

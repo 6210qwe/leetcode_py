@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储每种车位的数量，并根据 carType 来更新相应的车位数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 ParkingSystem 类时，将大、中、小车位的数量存储在一个列表中。
+2. 在 addCar 方法中，检查对应的车位数量是否大于 0，如果是，则减少一个车位并返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用列表来简化对不同车位数量的管理。
+- 根据 carType 直接索引到对应的车位数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class ParkingSystem:
+
+    def __init__(self, big: int, medium: int, small: int):
+        self.slots = [big, medium, small]
+
+    def addCar(self, carType: int) -> bool:
+        if self.slots[carType - 1] > 0:
+            self.slots[carType - 1] -= 1
+            return True
+        return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ParkingSystem)

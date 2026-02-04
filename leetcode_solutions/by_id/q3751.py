@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素减去k后的差值出现的位置，然后通过双指针法找到最长的连续子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `diff_indices` 来记录每个差值出现的位置。
+2. 遍历数组 `nums`，计算每个元素减去 `k` 后的差值，并将其位置记录在 `diff_indices` 中。
+3. 使用双指针法遍历 `diff_indices`，找到最长的连续子数组。
+4. 返回最长的连续子数组的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表记录差值出现的位置，可以快速找到连续的子数组。
+- 双指针法可以高效地找到最长的连续子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_frequency_after_subarray_operation(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算子数组操作后的最大频率
     """
-    # TODO: 实现最优解法
-    pass
+    diff_indices = {}
+    for i, num in enumerate(nums):
+        diff = num - k
+        if diff not in diff_indices:
+            diff_indices[diff] = []
+        diff_indices[diff].append(i)
 
+    max_freq = 0
+    for indices in diff_indices.values():
+        left = 0
+        for right in range(len(indices)):
+            while indices[right] - indices[left] > right - left:
+                left += 1
+            max_freq = max(max_freq, right - left + 1)
 
-Solution = create_solution(solution_function_name)
+    return max_freq
+
+Solution = create_solution(max_frequency_after_subarray_operation)

@@ -21,40 +21,57 @@ LCR 056. 两数之和 IV - 输入二叉搜索树 - 给定一个二叉搜索树�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为有序数组，然后使用双指针法查找两数之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 中序遍历二叉搜索树，将节点值存储到有序数组中。
+2. 使用双指针法在有序数组中查找两数之和等于 k 的两个节点。
 
 关键点:
-- [TODO]
+- 中序遍历二叉搜索树可以得到一个有序数组。
+- 双指针法可以在 O(n) 时间内找到两数之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_target(root: Optional[TreeNode], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断二叉搜索树中是否存在两个节点它们的值之和等于 k
     """
-    # TODO: 实现最优解法
-    pass
+    # 中序遍历二叉搜索树
+    def inorder_traversal(node: Optional[TreeNode]) -> List[int]:
+        if not node:
+            return []
+        return inorder_traversal(node.left) + [node.val] + inorder_traversal(node.right)
 
+    # 将二叉搜索树转换为有序数组
+    nums = inorder_traversal(root)
+    
+    # 使用双指针法查找两数之和
+    left, right = 0, len(nums) - 1
+    while left < right:
+        current_sum = nums[left] + nums[right]
+        if current_sum == k:
+            return True
+        elif current_sum < k:
+            left += 1
+        else:
+            right -= 1
+    
+    return False
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_target)

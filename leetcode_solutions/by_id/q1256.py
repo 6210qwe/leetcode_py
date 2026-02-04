@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的排名，并通过排序来确定每个元素的排名。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表 `rank_map` 来存储每个元素及其对应的排名。
+2. 将数组去重并排序，得到一个新的有序数组 `sorted_unique_arr`。
+3. 遍历 `sorted_unique_arr`，为每个元素分配一个排名，并将其存储在 `rank_map` 中。
+4. 遍历原始数组 `arr`，根据 `rank_map` 替换每个元素为其对应的排名。
 
 关键点:
-- [TODO]
+- 使用去重和排序来确定每个元素的排名。
+- 使用哈希表来快速查找每个元素的排名。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要额外的空间来存储哈希表和去重后的数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def arrayRankTransform(arr: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组中的每个元素替换为它们排序后的序号。
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希表来存储每个元素及其对应的排名
+    rank_map = {}
+    
+    # 将数组去重并排序
+    sorted_unique_arr = sorted(set(arr))
+    
+    # 为每个元素分配一个排名
+    for i, num in enumerate(sorted_unique_arr, start=1):
+        rank_map[num] = i
+    
+    # 替换每个元素为其对应的排名
+    return [rank_map[num] for num in arr]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(arrayRankTransform)

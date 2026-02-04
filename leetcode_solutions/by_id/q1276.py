@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到 num + 1 和 num + 2 的所有因数对，并选择其中绝对差最小的一对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 num + 1 和 num + 2。
+2. 对于每个值，从 1 到 sqrt(value) 进行遍历，找到所有的因数对。
+3. 选择绝对差最小的因数对。
 
 关键点:
-- [TODO]
+- 通过只遍历到 sqrt(value)，可以减少不必要的计算。
+- 保持代码简洁和可读性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def closest_divisors(num: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到 num + 1 和 num + 2 的最接近因数对
     """
-    # TODO: 实现最优解法
-    pass
+    def find_closest_factors(value: int) -> List[int]:
+        for i in range(int(value ** 0.5), 0, -1):
+            if value % i == 0:
+                return [i, value // i]
+        return [1, value]
+
+    factors1 = find_closest_factors(num + 1)
+    factors2 = find_closest_factors(num + 2)
+
+    if abs(factors1[0] - factors1[1]) < abs(factors2[0] - factors2[1]):
+        return factors1
+    else:
+        return factors2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closest_divisors)

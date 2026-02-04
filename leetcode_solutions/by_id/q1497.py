@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来实现栈，并使用一个辅助列表来记录每个元素的增量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化栈和增量列表。
+2. 在 `push` 操作中，如果栈未满，则将元素添加到栈顶。
+3. 在 `pop` 操作中，弹出栈顶元素，并根据增量列表更新栈顶元素的值。
+4. 在 `inc` 操作中，更新增量列表以反映增量操作。
 
 关键点:
-- [TODO]
+- 使用增量列表来延迟更新元素的值，从而在 `inc` 操作中保持 O(1) 的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作（push, pop, inc）的时间复杂度都是 O(1)。
+空间复杂度: O(n) - 其中 n 是栈的最大容量，因为我们需要存储栈和增量列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+
+class CustomStack:
+
+    def __init__(self, maxSize: int):
+        self.maxSize = maxSize
+        self.stack = []
+        self.inc = []
+
+    def push(self, x: int) -> None:
+        if len(self.stack) < self.maxSize:
+            self.stack.append(x)
+            self.inc.append(0)
+
+    def pop(self) -> int:
+        if not self.stack:
+            return -1
+        if len(self.stack) > 1:
+            self.inc[-2] += self.inc[-1]
+        res = self.stack.pop() + self.inc.pop()
+        return res
+
+    def increment(self, k: int, val: int) -> None:
+        if self.stack:
+            self.inc[min(k, len(self.stack)) - 1] += val
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    stack = CustomStack(3)
+    stack.push(1)
+    stack.push(2)
+    print(stack.pop())  # 输出 2
+    stack.push(2)
+    stack.push(3)
+    stack.push(4)
+    stack.increment(5, 100)
+    stack.increment(2, 100)
+    print(stack.pop())  # 输出 103
+    print(stack.pop())  # 输出 202
+    print(stack.pop())  # 输出 201
+    print(stack.pop())  # 输出 -1

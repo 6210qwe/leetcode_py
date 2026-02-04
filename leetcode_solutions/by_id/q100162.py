@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断s2是否为s1的旋转字符串可以通过将s1与自身拼接，然后检查s2是否为该拼接字符串的子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查s1和s2的长度是否相等，如果不相等则直接返回False。
+2. 将s1与自身拼接成一个新的字符串s1s1。
+3. 检查s2是否为s1s1的子串，如果是则返回True，否则返回False。
 
 关键点:
-- [TODO]
+- 只需要一次子串检查即可完成判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中n是s1的长度。字符串拼接和子串检查的时间复杂度都是O(n)。
+空间复杂度: O(n) - 需要额外的空间来存储拼接后的字符串s1s1。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_string_rotation(s1: str, s2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断s2是否为s1的旋转字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s1) != len(s2):
+        return False
+    
+    # 将s1与自身拼接
+    s1s1 = s1 + s1
+    
+    # 检查s2是否为s1s1的子串
+    return s2 in s1s1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_string_rotation)

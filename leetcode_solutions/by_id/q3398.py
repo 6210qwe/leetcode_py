@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查所有可能的 2x2 子矩阵，并尝试通过改变一个格子的颜色来使其成为同色正方形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历所有可能的 2x2 子矩阵。
+2. 对于每个 2x2 子矩阵，检查是否已经是同色正方形。
+3. 如果不是同色正方形，检查是否可以通过改变一个格子的颜色使其成为同色正方形。
 
 关键点:
-- [TODO]
+- 通过遍历所有 2x2 子矩阵并检查每个子矩阵的状态来解决问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定大小的矩阵，最多有 4 个 2x2 子矩阵需要检查。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_make_square(grid: List[List[str]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以通过改变一个格子的颜色来构造一个 2x2 同色正方形。
     """
-    # TODO: 实现最优解法
-    pass
+    def is_same_color(subgrid: List[List[str]], color: str) -> bool:
+        for row in subgrid:
+            for cell in row:
+                if cell != color:
+                    return False
+        return True
+
+    def can_change_one_cell_to_same_color(subgrid: List[List[str]]) -> bool:
+        count_w = sum(cell == 'W' for row in subgrid for cell in row)
+        count_b = sum(cell == 'B' for row in subgrid for cell in row)
+        return count_w == 3 or count_b == 3
+
+    for i in range(2):
+        for j in range(2):
+            subgrid = [row[j:j+2] for row in grid[i:i+2]]
+            if is_same_color(subgrid, 'W') or is_same_color(subgrid, 'B'):
+                return True
+            if can_change_one_cell_to_same_color(subgrid):
+                return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_make_square)

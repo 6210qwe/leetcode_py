@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到每个字符最多出现两次的最长子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个哈希表 char_count 来记录当前窗口内每个字符的出现次数。
+3. 移动右指针扩展窗口，更新哈希表中的字符计数。
+4. 如果某个字符的出现次数超过两次，移动左指针收缩窗口，直到所有字符的出现次数不超过两次。
+5. 在每次调整窗口后，更新最大子字符串长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地找到满足条件的最长子字符串。
+- 通过动态调整窗口大小来确保每个字符的出现次数不超过两次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，哈希表的大小最多为 26（小写字母的数量）。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到每个字符最多出现两次的最长子字符串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, 0
+    max_length = 0
+    char_count = {}
+
+    while right < len(s):
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+
+        while char_count[s[right]] > 2:
+            char_count[s[left]] -= 1
+            left += 1
+
+        max_length = max(max_length, right - left + 1)
+        right += 1
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

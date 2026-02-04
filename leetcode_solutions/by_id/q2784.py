@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和前缀和来计算所有子集的力量之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前缀和数组。
+3. 遍历每个元素，计算以该元素为最大值的所有子集的力量之和。
+4. 使用前缀和优化计算过程，避免重复计算。
 
 关键点:
-- [TODO]
+- 排序后，可以方便地确定每个子集的最大值和最小值。
+- 使用前缀和来优化计算过程，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(n) - 前缀和数组的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def power_of_heroes(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 对数组进行排序
+    nums.sort()
+    
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = (prefix_sum[i - 1] + nums[i - 1]) % MOD
+    
+    total_power = 0
+    for i in range(n):
+        # 计算以 nums[i] 为最大值的所有子集的力量之和
+        max_val = nums[i]
+        min_val_sum = (prefix_sum[n] - prefix_sum[i]) % MOD
+        count = (1 << (n - i - 1)) % MOD
+        total_power += (max_val * max_val * min_val_sum * count) % MOD
+        total_power %= MOD
+    
+    return total_power
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(power_of_heroes)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，找到出现次数为 n 的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表。
+2. 遍历数组，统计每个元素的出现次数。
+3. 遍历哈希表，找到出现次数为 n 的元素并返回。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(n) 时间内完成统计。
+- 由于数组长度为 2n，且只有一个元素重复 n 次，因此只需遍历一次即可找到目标元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 在长度 2N 的数组中找出重复 N 次的元素
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用哈希表记录每个元素的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 找到出现次数为 n 的元素
+    n = len(nums) // 2
+    for num, freq in count.items():
+        if freq == n:
+            return num
 
 Solution = create_solution(solution_function_name)

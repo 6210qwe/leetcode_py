@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径，然后统计每个城市的邻居数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化邻接矩阵 `dist`，初始值为无穷大。
+2. 根据 `edges` 更新 `dist` 矩阵。
+3. 使用 Floyd-Warshall 算法更新 `dist` 矩阵，计算所有节点对之间的最短路径。
+4. 统计每个城市在阈值距离内的邻居数量。
+5. 找到邻居数量最少且编号最大的城市。
 
 关键点:
-- [TODO]
+- 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径。
+- 统计每个城市的邻居数量，并找到符合条件的城市。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，Floyd-Warshall 算法的时间复杂度为 O(n^3)。
+空间复杂度: O(n^2)，存储邻接矩阵的空间复杂度为 O(n^2)。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_the_city(n: int, edges: List[List[int]], distance_threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到在路径距离限制为 distanceThreshold 以内可到达城市最少的城市。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化邻接矩阵
+    dist = [[float('inf')] * n for _ in range(n)]
+    
+    # 根据 edges 更新 dist 矩阵
+    for u, v, w in edges:
+        dist[u][v] = w
+        dist[v][u] = w
+    
+    # 使用 Floyd-Warshall 算法更新 dist 矩阵
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    
+    # 统计每个城市在阈值距离内的邻居数量
+    neighbors_count = [sum(dist[i][j] <= distance_threshold for j in range(n) if i != j) for i in range(n)]
+    
+    # 找到邻居数量最少且编号最大的城市
+    min_neighbors = min(neighbors_count)
+    result = max(i for i, count in enumerate(neighbors_count) if count == min_neighbors)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_the_city)

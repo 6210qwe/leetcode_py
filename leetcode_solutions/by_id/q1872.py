@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算在某一天之前可以吃的糖果总数，并判断是否可以在指定的天数内吃到指定类型的糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 candiesCount 的前缀和数组 prefix_sum。
+2. 对于每个查询，计算在 favoriteDayi 天之前可以吃的最小糖果数和最大糖果数。
+3. 判断这些范围是否包含 favoriteTypei 类糖果的数量。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算某个区间的糖果总数。
+- 确保在 favoriteDayi 天之前可以吃到 favoriteTypei 类糖果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 candiesCount 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_eat(candiesCount: List[int], queries: List[List[int]]) -> List[bool]:
+    # 计算前缀和数组
+    prefix_sum = [0]
+    for count in candiesCount:
+        prefix_sum.append(prefix_sum[-1] + count)
+    
+    def can_eat_query(favorite_type: int, favorite_day: int, daily_cap: int) -> bool:
+        min_candies = favorite_day + 1
+        max_candies = (favorite_day + 1) * daily_cap
+        start = prefix_sum[favorite_type]
+        end = prefix_sum[favorite_type + 1]
+        return not (min_candies > end or max_candies <= start)
+    
+    return [can_eat_query(favorite_type, favorite_day, daily_cap) for favorite_type, favorite_day, daily_cap in queries]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_eat)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历检查每个长度为 k 的子数组是否严格递增，并检查相邻的子数组是否也严格递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，检查每个长度为 k 的子数组是否严格递增。
+2. 如果当前子数组严格递增，检查下一个长度为 k 的子数组是否也严格递增。
+3. 如果找到符合条件的相邻子数组，返回 True。
+4. 如果遍历完数组没有找到符合条件的相邻子数组，返回 False。
 
 关键点:
-- [TODO]
+- 通过一次遍历和简单的比较操作来实现 O(n) 的时间复杂度。
+- 使用常数空间来存储中间结果，实现 O(1) 的空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查是否存在两个相邻且长度为 k 的严格递增子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    
+    def is_strictly_increasing(subarray: List[int]) -> bool:
+        """检查子数组是否严格递增"""
+        return all(subarray[i] < subarray[i + 1] for i in range(len(subarray) - 1))
+    
+    for i in range(n - 2 * k + 1):
+        if is_strictly_increasing(nums[i:i + k]) and is_strictly_increasing(nums[i + k:i + 2 * k]):
+            return True
+    
+    return False
 
 
 Solution = create_solution(solution_function_name)

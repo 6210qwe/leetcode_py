@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串，将奇数下标的数字替换为对应的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，对于每个奇数下标 i，计算 shift(s[i-1], s[i]) 的值。
+2. 将计算得到的字符替换到原字符串中。
+3. 返回处理后的字符串。
 
 关键点:
-- [TODO]
+- 使用 ASCII 码进行字符偏移计算。
+- 保持字符串的偶数下标字符不变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历一次字符串。
+空间复杂度: O(n)，因为我们需要构建一个新的字符串来存储结果。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def replace_digits(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串 s 中的奇数下标处的数字替换为对应的字符。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(len(s)):
+        if i % 2 == 0:
+            result.append(s[i])
+        else:
+            # 计算 shift(s[i-1], s[i])
+            shifted_char = chr(ord(s[i-1]) + int(s[i]))
+            result.append(shifted_char)
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(replace_digits)

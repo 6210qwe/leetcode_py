@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与后缀最小值来计算每个分割点的得分，并找到最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 从右向左遍历数组，维护一个后缀最小值。
+3. 对于每个可能的分割点，计算其得分并更新最大得分。
 
 关键点:
-- [TODO]
+- 使用前缀和避免重复计算前缀和。
+- 从右向左遍历数组，同时维护后缀最小值，以减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_score_of_split(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算分割的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = 0
+    suffix_min = min(nums[1:])
+    max_score = prefix_sum - suffix_min
+
+    for i in range(n - 1):
+        prefix_sum += nums[i]
+        if i < n - 2:
+            suffix_min = min(suffix_min, nums[i + 2])
+        score = prefix_sum - suffix_min
+        max_score = max(max_score, score)
+
+    return max_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score_of_split)

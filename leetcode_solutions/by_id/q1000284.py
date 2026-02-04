@@ -21,40 +21,53 @@ LCR 040. 最大矩形 - 给定一个由 0 和 1 组成的矩阵 matrix ，找出
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将每一行看作直方图的底，通过计算每一行的直方图的最大矩形面积来求解整个矩阵的最大矩形面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个高度数组 `heights`，用于存储每一列的高度。
+2. 遍历每一行，更新 `heights` 数组。
+3. 对于每一行，使用单调栈计算当前直方图的最大矩形面积。
+4. 更新最大矩形面积。
 
 关键点:
-- [TODO]
+- 使用单调栈来计算直方图的最大矩形面积。
+- 每一行的高度数组可以通过前一行的高度数组和当前行的值来更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(n)，需要一个额外的高度数组来存储每一列的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maximal_rectangle(matrix: List[str]) -> int:
+    if not matrix or not matrix[0]:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(matrix), len(matrix[0])
+    heights = [0] * (n + 1)
+    max_area = 0
 
+    for row in matrix:
+        for i in range(n):
+            heights[i] = heights[i] + 1 if row[i] == '1' else 0
 
-Solution = create_solution(solution_function_name)
+        stack = [-1]
+        for i in range(n + 1):
+            while heights[i] < heights[stack[-1]]:
+                h = heights[stack.pop()]
+                w = i - 1 - stack[-1]
+                max_area = max(max_area, h * w)
+            stack.append(i)
+
+    return max_area
+
+Solution = create_solution(maximal_rectangle)

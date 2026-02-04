@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以通过预处理每一列的最大值来简化问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每一列的最大值。
+2. 使用动态规划来计算最大得分。定义 dp[i][j] 为考虑前 i 列，且第 i 列的最高黑色格子在第 j 行时的最大得分。
+3. 初始化 dp 数组，遍历每一列，更新 dp 数组。
+4. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 通过预处理每一列的最大值来简化问题。
+- 使用动态规划来计算最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算网格图操作后的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    if n == 0:
+        return 0
+
+    # 计算每一列的最大值
+    max_cols = [max(col) for col in zip(*grid)]
+
+    # 初始化 dp 数组
+    dp = [[0] * n for _ in range(n)]
+
+    # 动态规划计算最大得分
+    for i in range(n):
+        for j in range(n):
+            if i == 0:
+                dp[i][j] = sum(max_cols[:j + 1])
+            else:
+                for k in range(j + 1):
+                    dp[i][j] = max(dp[i][j], dp[i - 1][k] + sum(max_cols[k + 1:j + 1]))
+
+    return max(max(row) for row in dp)
 
 
 Solution = create_solution(solution_function_name)

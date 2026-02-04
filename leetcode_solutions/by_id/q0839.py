@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储单词，并通过反向插入单词来避免重复前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个 Trie 根节点。
+2. 将所有单词反向插入 Trie 中。
+3. 计算每个单词在 Trie 中的唯一后缀长度，并累加这些长度加上 '#' 的长度。
 
 关键点:
-- [TODO]
+- 反向插入单词可以确保较短的单词不会被较长的单词覆盖。
+- 通过 Trie 的结构，可以高效地找到每个单词的唯一后缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是单词的数量，m 是单词的最大长度。
+空间复杂度: O(n * m)，Trie 的空间复杂度取决于所有单词的总长度。
 """
 
 # ============================================================================
@@ -49,12 +51,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def is_unique_suffix(self, word: str) -> bool:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return True
+            node = node.children[char]
+        return len(node.children) == 0
+
+
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回成功对 words 进行编码的最小助记字符串 s 的长度
     """
-    # TODO: 实现最优解法
-    pass
+    trie = Trie()
+    for word in words:
+        trie.insert(word[::-1])
+
+    total_length = 0
+    for word in words:
+        if trie.is_unique_suffix(word[::-1]):
+            total_length += len(word) + 1
+
+    return total_length
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历每个乘客的信息字符串，提取年龄并判断是否大于60岁。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为 0。
+2. 遍历 `details` 列表中的每个字符串。
+3. 提取每个字符串的第11和第12个字符（即年龄）。
+4. 将提取的年龄字符转换为整数，并判断是否大于60岁。
+5. 如果年龄大于60岁，则将计数器 `count` 加1。
+6. 返回计数器 `count` 的值。
 
 关键点:
-- [TODO]
+- 使用切片操作提取年龄部分。
+- 使用 `int` 函数将字符串转换为整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `details` 列表的长度。我们需要遍历整个列表一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_senior_citizens(details: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算年龄严格大于60岁的乘客数量。
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for detail in details:
+        age = int(detail[11:13])
+        if age > 60:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_senior_citizens)

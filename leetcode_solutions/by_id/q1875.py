@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并维护一个字典来记录每个值的最近祖先节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 初始化结果数组 `ans` 和一个字典 `ancestors` 来记录每个值的最近祖先节点。
+3. 使用 DFS 遍历树，对于每个节点：
+   - 更新 `ancestors` 字典，移除当前节点的值。
+   - 找到当前节点的最近互质祖先节点。
+   - 更新 `ancestors` 字典，添加当前节点的值。
+4. 返回结果数组 `ans`。
 
 关键点:
-- [TODO]
+- 使用字典 `ancestors` 来记录每个值的最近祖先节点，以 O(1) 时间复杂度找到最近互质祖先。
+- 使用 DFS 遍历树，确保每个节点的祖先节点都被正确处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))，其中 n 是节点数，log(max(nums)) 是计算最大公约数的时间复杂度。
+空间复杂度: O(n + max(nums))，其中 n 是节点数，max(nums) 是节点值的最大值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def getCoprimes(nums: List[int], edges: List[List[int]]) -> List[int]:
+    def gcd(a, b):
+        return math.gcd(a, b)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node, parent, depth):
+        if node in ancestors[nums[node]]:
+            result[node] = ancestors[nums[node]][-1]
+        for value in ancestors:
+            if gcd(value, nums[node]) == 1 and ancestors[value]:
+                result[node] = max(result[node], ancestors[value][-1])
 
+        ancestors[nums[node]].append((node, depth))
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, depth + 1)
+        ancestors[nums[node]].pop()
 
-Solution = create_solution(solution_function_name)
+    n = len(nums)
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    result = [-1] * n
+    ancestors = {value: [] for value in range(1, 51)}
+    dfs(0, -1, 0)
+    return result
+
+Solution = create_solution(getCoprimes)

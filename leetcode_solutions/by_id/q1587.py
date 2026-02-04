@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。通过位掩码表示课程的状态，并使用 DP 数组来记录每个状态下所需的最少学期数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化邻接表和入度数组。
+2. 使用位掩码表示每种可能的课程组合状态。
+3. 使用动态规划数组 dp 来记录每个状态下所需的最少学期数。
+4. 对于每个状态，找到可以在这个状态下学习的课程，并更新 DP 数组。
+5. 返回 dp[(1 << n) - 1]，即所有课程都完成时所需的最少学期数。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示课程的状态。
+- 动态规划数组 dp 用于记录每个状态下所需的最少学期数。
+- 通过枚举子集来找到可以在这个状态下学习的课程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)，其中 n 是课程的数量。我们需要枚举所有可能的状态（2^n），并且对于每个状态，我们需要检查所有课程（n）并更新 DP 数组。
+空间复杂度: O(2^n)，动态规划数组 dp 的大小。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minNumberOfSemesters(n: int, relations: List[List[int]], k: int) -> int:
+    # 构建邻接表和入度数组
+    adj_list = [[] for _ in range(n)]
+    in_degree = [0] * n
+    for prev, next in relations:
+        adj_list[prev - 1].append(next - 1)
+        in_degree[next - 1] += 1
+    
+    # 动态规划数组，dp[mask] 表示状态 mask 下所需的最少学期数
+    dp = [float('inf')] * (1 << n)
+    dp[0] = 0  # 空集合所需学期数为 0
+    
+    # 计算每个状态下的最少学期数
+    for mask in range(1 << n):
+        if dp[mask] == float('inf'):
+            continue
+        # 找到当前状态下可以学习的课程
+        available_courses = []
+        for i in range(n):
+            if (mask & (1 << i)) == 0 and in_degree[i] == 0:
+                available_courses.append(i)
+        
+        # 枚举子集，选择最多 k 门课程
+        for i in range(1, 1 << len(available_courses)):
+            if bin(i).count('1') > k:
+                continue
+            new_mask = mask
+            for j in range(len(available_courses)):
+                if i & (1 << j):
+                    new_mask |= (1 << available_courses[j])
+                    for next_course in adj_list[available_courses[j]]:
+                        in_degree[next_course] -= 1
+            dp[new_mask] = min(dp[new_mask], dp[mask] + 1)
+            for j in range(len(available_courses)):
+                if i & (1 << j):
+                    for next_course in adj_list[available_courses[j]]:
+                        in_degree[next_course] += 1
+    
+    return dp[(1 << n) - 1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minNumberOfSemesters)

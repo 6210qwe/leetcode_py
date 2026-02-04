@@ -21,24 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用三个变量维护第一、第二、第三大的不同数值，一次遍历完成
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化三个变量为 None，分别表示最大、第二大、第三大值
+2. 遍历数组，对每个数：
+   - 若等于任一已记录值，跳过（去重）
+   - 若大于最大值，更新三者：第三大=第二大，第二大=最大，最大=当前值
+   - 否则若大于第二大，更新第三大=第二大，第二大=当前值
+   - 否则若大于第三大，更新第三大=当前值
+3. 若第三大为 None，返回最大值；否则返回第三大
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 注意边界条件：数组长度 < 3 或不同元素数量 < 3
+- 使用 None 表示未设置，避免与 -2^31 冲突
+- 时间 O(n)，空间 O(1)，满足进阶要求
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 仅需一次遍历数组
+空间复杂度: O(1) - 仅使用常数额外空间（三个变量）
 """
 
 # ============================================================================
@@ -51,25 +56,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def third_maximum_number(params):
+def third_maximum_number(nums: List[int]) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 返回数组中第三大的不同数字，若不存在则返回最大值
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用三个变量 first, second, third 分别记录第一、第二、第三大的不同值，
+    遍历过程中动态更新，确保严格降序且无重复。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 非空整数列表
         
     Returns:
-        [待实现] 返回值说明
+        第三大的不同数字；若不存在，则返回最大数字
         
     Example:
-        >>> third_maximum_number([待实现])
-        [待实现]
+        >>> third_maximum_number([3, 2, 1])
+        1
+        >>> third_maximum_number([1, 2])
+        2
+        >>> third_maximum_number([2, 2, 3, 1])
+        1
     """
-    # TODO: 实现最优解法
-    pass
+    first = second = third = None
+    
+    for num in nums:
+        # 跳过重复值
+        if num == first or num == second or num == third:
+            continue
+            
+        if first is None or num > first:
+            third = second
+            second = first
+            first = num
+        elif second is None or num > second:
+            third = second
+            second = num
+        elif third is None or num > third:
+            third = num
+    
+    return third if third is not None else first
 
 
 # 自动生成Solution类（无需手动编写）

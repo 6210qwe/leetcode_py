@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）计算每个子树的节点数，并使用组合数学计算不同的构建顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构，使用邻接表表示。
+2. 使用 DFS 计算每个子树的节点数。
+3. 使用组合数学公式计算不同构建顺序的数量。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算每个子树的节点数。
+- 使用组合数学公式计算不同构建顺序的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def dfs(node: int, adj_list: List[List[int]], subtree_size: List[int]) -> int:
+    size = 1
+    for neighbor in adj_list[node]:
+        size += dfs(neighbor, adj_list, subtree_size)
+    subtree_size[node] = size
+    return size
 
+def count_ways_to_build_rooms(prev_room: List[int]) -> int:
+    n = len(prev_room)
+    adj_list = [[] for _ in range(n)]
+    for i in range(1, n):
+        adj_list[prev_room[i]].append(i)
 
-Solution = create_solution(solution_function_name)
+    subtree_size = [0] * n
+    dfs(0, adj_list, subtree_size)
+
+    ways = 1
+    for i in range(1, n):
+        parent = prev_room[i]
+        ways = (ways * math.comb(subtree_size[parent], subtree_size[i])) % MOD
+
+    return ways
+
+Solution = create_solution(count_ways_to_build_rooms)

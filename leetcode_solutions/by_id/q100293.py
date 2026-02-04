@@ -21,40 +21,66 @@ LCR 146. 螺旋遍历二维数组 - 给定一个二维数组 array，请返回�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用四个边界变量来控制遍历的方向和范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化四个边界变量：top, bottom, left, right。
+2. 按照右、下、左、上的顺序遍历数组，并更新相应的边界变量。
+3. 重复步骤2，直到遍历完所有元素。
 
 关键点:
-- [TODO]
+- 使用边界变量来控制遍历的方向和范围。
+- 在每次遍历完一个方向后，更新相应的边界变量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def spiral_traverse(matrix: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 螺旋遍历二维数组
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return []
 
+    result = []
+    top, bottom = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
 
-Solution = create_solution(solution_function_name)
+    while top <= bottom and left <= right:
+        # 向右遍历
+        for i in range(left, right + 1):
+            result.append(matrix[top][i])
+        top += 1
+
+        # 向下遍历
+        for i in range(top, bottom + 1):
+            result.append(matrix[i][right])
+        right -= 1
+
+        if top <= bottom:
+            # 向左遍历
+            for i in range(right, left - 1, -1):
+                result.append(matrix[bottom][i])
+            bottom -= 1
+
+        if left <= right:
+            # 向上遍历
+            for i in range(bottom, top - 1, -1):
+                result.append(matrix[i][left])
+            left += 1
+
+    return result
+
+Solution = create_solution(spiral_traverse)

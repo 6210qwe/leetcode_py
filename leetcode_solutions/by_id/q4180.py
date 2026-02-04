@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来计算每个节点到目标节点 x, y, z 的距离。然后检查这些距离是否构成勾股数元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 BFS 计算每个节点到目标节点 x, y, z 的距离。
+3. 对于每个节点，检查其到 x, y, z 的距离是否构成勾股数元组。
+4. 统计并返回特殊节点的数量。
 
 关键点:
-- [TODO]
+- 使用 BFS 确保每个节点到目标节点的距离是最短路径。
+- 通过排序和勾股定理检查来确定特殊节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque, defaultdict
 
+def pythagorean_distance_nodes(n: int, edges: List[List[int]], x: int, y: int, z: int) -> int:
+    # 构建图的邻接表表示
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    def bfs(start: int) -> List[int]:
+        """使用 BFS 计算从 start 出发到所有节点的距离"""
+        distances = [-1] * n
+        queue = deque([start])
+        distances[start] = 0
+        
+        while queue:
+            node = queue.popleft()
+            for neighbor in graph[node]:
+                if distances[neighbor] == -1:
+                    distances[neighbor] = distances[node] + 1
+                    queue.append(neighbor)
+        
+        return distances
+    
+    # 计算每个节点到 x, y, z 的距离
+    dist_x = bfs(x)
+    dist_y = bfs(y)
+    dist_z = bfs(z)
+    
+    # 统计特殊节点的数量
+    special_count = 0
+    for i in range(n):
+        distances = sorted([dist_x[i], dist_y[i], dist_z[i]])
+        if distances[0] ** 2 + distances[1] ** 2 == distances[2] ** 2:
+            special_count += 1
+    
+    return special_count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pythagorean_distance_nodes)

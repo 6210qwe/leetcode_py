@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数字的每一位，找到可以替换的最大值和最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字转换为字符串，方便逐位处理。
+2. 初始化最大值和最小值为原数字。
+3. 遍历每一位数字，尝试将其替换为其他数字：
+   - 如果当前位不是 '9'，则将其替换为 '9' 来获取最大值。
+   - 如果当前位不是 '0' 且不是最高位，则将其替换为 '0' 来获取最小值。
+4. 计算最大值和最小值的差值并返回。
 
 关键点:
-- [TODO]
+- 通过字符串操作来实现数字的替换。
+- 处理前导零的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是数字的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_difference(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算替换一个数字后的最大差值
     """
-    # TODO: 实现最优解法
-    pass
+    num_str = str(num)
+    max_num = num
+    min_num = num
+    
+    for i in range(len(num_str)):
+        if num_str[i] != '9':
+            # 将当前位替换为 '9' 来获取最大值
+            max_num = int(num_str[:i] + '9' + num_str[i+1:])
+        
+        if i != 0 and num_str[i] != '0':
+            # 将当前位替换为 '0' 来获取最小值
+            min_num = int(num_str[:i] + '0' + num_str[i+1:])
+    
+    return max_num - min_num
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_difference)

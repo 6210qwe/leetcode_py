@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出具有相似兴趣的朋友。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表 `interests` 来存储每个用户的兴趣列表。
+2. 使用自连接和字符串函数来比较两个用户之间的兴趣相似度。
+3. 过滤出兴趣相似度大于等于阈值的用户对。
 
 关键点:
-- [TODO]
+- 使用自连接来比较不同用户之间的兴趣。
+- 使用字符串函数来计算兴趣相似度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是用户数量，m 是每个用户的兴趣数量。因为需要两两比较用户的兴趣。
+空间复杂度: O(n * m)，用于存储用户的兴趣列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    WITH interests AS (
+        SELECT user1_id, user2_id, interest
+        FROM Friendship
+        JOIN Interests ON Friendship.user2_id = Interests.user_id
+    )
+    SELECT DISTINCT f1.user1_id, f2.user1_id
+    FROM interests f1
+    JOIN interests f2 ON f1.interest = f2.interest AND f1.user1_id < f2.user1_id
+    GROUP BY f1.user1_id, f2.user1_id
+    HAVING COUNT(DISTINCT f1.interest) >= 3
+    ORDER BY f1.user1_id, f2.user1_id
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示和为 i 的最长子序列的长度。通过遍历数组中的每个元素，更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个大小为 target + 1 的 dp 数组，所有值设为 -1，表示初始状态下没有和为目标值的子序列。
+2. 将 dp[0] 设为 0，表示和为 0 的子序列长度为 0。
+3. 遍历数组中的每个元素，对于每个元素，从 target 到当前元素值进行逆向更新 dp 数组。
+4. 如果 dp[target] 仍为 -1，表示没有和为 target 的子序列，返回 -1；否则返回 dp[target]。
 
 关键点:
-- [TODO]
+- 使用逆向更新 dp 数组，避免重复使用同一个元素。
+- 动态规划的状态转移方程为 dp[j] = max(dp[j], dp[j - num] + 1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target)，其中 n 是 nums 的长度。
+空间复杂度: O(target)，dp 数组的大小。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def length_of_longest_subsequence(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回和为 target 的 nums 子序列中，子序列长度的最大值。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [-1] * (target + 1)
+    dp[0] = 0  # 和为 0 的子序列长度为 0
+
+    # 遍历数组中的每个元素
+    for num in nums:
+        for j in range(target, num - 1, -1):
+            if dp[j - num] != -1:
+                dp[j] = max(dp[j], dp[j - num] + 1)
+
+    return dp[target]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(length_of_longest_subsequence)

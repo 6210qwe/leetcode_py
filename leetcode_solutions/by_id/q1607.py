@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法来计算矩形的总面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有矩形的左边界和右边界分别记录下来，并标记为开始或结束。
+2. 对这些边界进行排序。
+3. 使用一个计数器来记录当前重叠的矩形数量。
+4. 遍历排序后的边界，更新重叠矩形的数量，并计算每个区间的面积。
 
 关键点:
-- [TODO]
+- 使用扫描线算法可以有效地处理重叠矩形的问题。
+- 通过排序和计数器来计算重叠区域的面积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是矩形的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要存储所有的边界。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(rectangles: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩形的总面积
     """
-    # TODO: 实现最优解法
-    pass
-
+    events = []
+    for x1, y1, x2, y2 in rectangles:
+        events.append((y1, 1, x1, x2))  # 左边界
+        events.append((y2, -1, x1, x2))  # 右边界
+    
+    events.sort()
+    
+    def query():
+        res = 0
+        cur_x_sum = cur_count = 0
+        last_y = events[0][0]
+        
+        for y, op, x1, x2 in events:
+            if cur_count > 0:
+                res += (y - last_y) * cur_x_sum
+            if op == 1:
+                cur_x_sum += x2 - x1
+                cur_count += 1
+            else:
+                cur_x_sum -= x2 - x1
+                cur_count -= 1
+            last_y = y
+        
+        return res
+    
+    return query()
 
 Solution = create_solution(solution_function_name)

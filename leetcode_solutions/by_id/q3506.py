@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和组合数学来计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素的二进制表示中1的个数。
+2. 统计每个1的个数出现的频率。
+3. 根据组合数学公式计算满足条件的三元组数量。
 
 关键点:
-- [TODO]
+- 使用位运算快速计算每个元素的1的个数。
+- 利用组合数学公式减少计算量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_triplets(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的三元组数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个元素的二进制表示中1的个数
+    bit_counts = [bin(num).count('1') for num in arr]
+    
+    # 统计每个1的个数出现的频率
+    freq = [0] * 32
+    for count in bit_counts:
+        freq[count] += 1
+    
+    # 计算满足条件的三元组数量
+    result = 0
+    for i in range(32):
+        for j in range(i, 32):
+            k = 31 - (i + j)
+            if k >= 0 and k <= 31:
+                if i == j and j == k:
+                    result += freq[i] * (freq[i] - 1) * (freq[i] - 2) // 6
+                elif i == j:
+                    result += freq[i] * (freq[i] - 1) // 2 * freq[k]
+                elif j == k:
+                    result += freq[j] * (freq[j] - 1) // 2 * freq[i]
+                else:
+                    result += freq[i] * freq[j] * freq[k]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_triplets)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法遍历字符串，找到最长的单字符前缀，并将其压缩。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 comp 用于存储压缩后的结果。
+2. 使用双指针 i 和 j，其中 i 是当前字符的起始位置，j 是当前字符的结束位置。
+3. 遍历字符串，当 j 指向的字符与 i 指向的字符相同时，移动 j。
+4. 当 j 指向的字符与 i 指向的字符不同时，计算前缀长度并将其压缩后追加到 comp。
+5. 更新 i 为 j 的位置，继续遍历直到字符串结束。
 
 关键点:
-- [TODO]
+- 使用双指针法可以高效地找到最长的单字符前缀。
+- 前缀长度最多为 9，因此需要在超过 9 时进行分段处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，除了输出结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def compress_string(word: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 压缩字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if not word:
+        return ""
+
+    comp = []
+    i = 0
+    n = len(word)
+
+    while i < n:
+        j = i + 1
+        while j < n and word[j] == word[i]:
+            j += 1
+
+        length = j - i
+        while length > 0:
+            segment_length = min(length, 9)
+            comp.append(f"{segment_length}{word[i]}")
+            length -= segment_length
+
+        i = j
+
+    return "".join(comp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(compress_string)

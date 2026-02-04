@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大最小电量，并通过贪心算法来验证是否可以通过增加 k 个供电站来达到该电量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界。
+2. 对于每个中间值 mid，使用贪心算法来验证是否可以通过增加 k 个供电站来达到该电量。
+3. 如果可以，则更新左边界；否则，更新右边界。
+4. 最终返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 使用滑动窗口来计算每个城市的电量。
+- 通过贪心算法来验证是否可以达到目标电量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(stations) * n))
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_powered_city(stations: List[int], r: int, k: int) -> int:
+    def can_achieve(target: int) -> bool:
+        to_add = 0
+        current_sum = 0
+        window = [0] * (2 * r + 1)
+        for i in range(len(stations)):
+            if i >= 2 * r + 1:
+                current_sum -= window[i - (2 * r + 1)]
+            current_sum += stations[i]
+            window[i % (2 * r + 1)] = stations[i]
+            if current_sum < target:
+                needed = target - current_sum
+                to_add += needed
+                current_sum += needed
+                window[i % (2 * r + 1)] += needed
+            if to_add > k:
+                return False
+        return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, max(stations) * (r * 2 + 1)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_achieve(mid):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_powered_city)

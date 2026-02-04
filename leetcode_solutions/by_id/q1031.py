@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从数组的末尾开始逐位相加，并处理进位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `result` 用于存储结果。
+2. 从数组的末尾开始遍历，同时处理整数 `k` 的每一位。
+3. 计算当前位的和，并处理进位。
+4. 将当前位的结果添加到 `result` 中。
+5. 如果 `k` 还有剩余的高位，继续处理。
+6. 最后将 `result` 反转并返回。
 
 关键点:
-- [TODO]
+- 从数组末尾开始处理，可以方便地处理进位。
+- 使用 `divmod` 函数来处理进位和当前位的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 A 的长度。我们需要遍历整个数组。
+空间复杂度: O(1)，不考虑输出的空间占用，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def add_to_array_form(num: List[int], k: int) -> List[int]:
+    result = []
+    i = len(num) - 1
+    
+    while i >= 0 or k > 0:
+        if i >= 0:
+            k += num[i]
+        k, digit = divmod(k, 10)
+        result.append(digit)
+        i -= 1
+    
+    return result[::-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_to_array_form)

@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用正则表达式来匹配无效的 IP 地址。
+- 对每个 IP 地址进行验证，检查是否符合无效的条件。
+- 统计每个无效 IP 地址的出现次数，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用正则表达式匹配无效的 IP 地址。
+2. 对每个 IP 地址进行验证，检查是否符合无效的条件。
+3. 统计每个无效 IP 地址的出现次数。
+4. 按照 invalid_count 和 ip 降序排序。
 
 关键点:
-- [TODO]
+- 使用正则表达式来高效地匹配无效的 IP 地址。
+- 使用 Pandas 库来处理数据和统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 logs 表的行数，m 是 IP 地址的平均长度。
+空间复杂度: O(n)，用于存储无效 IP 地址的计数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+import re
 
-
-def solution_function_name(params):
+def solution_function_name(logs: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找无效的 IP 地址
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 定义正则表达式来匹配无效的 IP 地址
+    invalid_ip_pattern = re.compile(r'^(?:(?!0)(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?!0)(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
+    
+    # 过滤出无效的 IP 地址
+    invalid_ips = logs[~logs['ip'].str.match(invalid_ip_pattern)]
+    
+    # 统计每个无效 IP 地址的出现次数
+    invalid_count = invalid_ips['ip'].value_counts().reset_index()
+    invalid_count.columns = ['ip', 'invalid_count']
+    
+    # 按照 invalid_count 和 ip 降序排序
+    result = invalid_count.sort_values(by=['invalid_count', 'ip'], ascending=[False, False])
+    
+    return result
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用一个字典 `dp` 来记录在某个高度差下的最大高度。初始时，`dp[0] = 0` 表示高度差为 0 时的最大高度为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp` 字典，其中 `dp[0] = 0`。
+2. 遍历每个钢筋，对于每个钢筋，创建一个新的字典 `new_dp` 来存储当前状态。
+3. 对于每个高度差 `diff`，有三种选择：
+   - 不使用当前钢筋。
+   - 将当前钢筋加到较高的那一边。
+   - 将当前钢筋加到较低的那一边。
+4. 更新 `dp` 为 `new_dp`。
+5. 最后，返回 `dp[0]`，即高度差为 0 时的最大高度。
 
 关键点:
-- [TODO]
+- 使用字典来存储高度差和对应的最大高度，避免了不必要的空间浪费。
+- 通过动态规划的方法，逐步构建出最终的解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是钢筋的数量，m 是钢筋长度的总和。
+空间复杂度: O(m)，因为 `dp` 字典的大小最多为 m。
 """
 
 # ============================================================================
@@ -49,12 +56,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tallestBillboard(rods: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最高的广告牌
     """
-    # TODO: 实现最优解法
-    pass
+    dp = {0: 0}
+    
+    for rod in rods:
+        new_dp = dp.copy()
+        for diff, taller in dp.items():
+            shorter = taller - diff
+            # 不使用当前钢筋
+            if diff not in new_dp:
+                new_dp[diff] = taller
+            else:
+                new_dp[diff] = max(new_dp[diff], taller)
+            
+            # 将当前钢筋加到较高的一边
+            new_diff = diff + rod
+            if new_diff not in new_dp:
+                new_dp[new_diff] = taller + rod
+            else:
+                new_dp[new_diff] = max(new_dp[new_diff], taller + rod)
+            
+            # 将当前钢筋加到较低的一边
+            new_diff = abs(diff - rod)
+            new_taller = max(taller, shorter + rod)
+            if new_diff not in new_dp:
+                new_dp[new_diff] = new_taller
+            else:
+                new_dp[new_diff] = max(new_dp[new_diff], new_taller)
+        
+        dp = new_dp
+    
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tallestBillboard)

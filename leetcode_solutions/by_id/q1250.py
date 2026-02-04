@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决最长公共子序列问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示 text1 前 i 个字符和 text2 前 j 个字符的最长公共子序列长度。
+2. 如果 text1[i-1] == text2[j-1]，则 dp[i][j] = dp[i-1][j-1] + 1。
+3. 否则，dp[i][j] = max(dp[i-1][j], dp[i][j-1])。
+4. 返回 dp[m][n]，其中 m 和 n 分别是 text1 和 text2 的长度。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 初始化 dp 数组
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 text1 和 text2 的长度。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_common_subsequence(text1: str, text2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个字符串的最长公共子序列长度
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(text1), len(text2)
+    # 初始化 dp 数组
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    
+    # 填充 dp 数组
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if text1[i - 1] == text2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    
+    return dp[m][n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_common_subsequence)

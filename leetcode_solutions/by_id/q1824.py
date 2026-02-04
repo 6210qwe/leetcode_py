@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来追踪苹果的过期时间，并优先吃最早过期的苹果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，用于存储 (过期日期, 苹果数量)。
+2. 遍历每一天：
+   - 将当天新长出的苹果加入堆中。
+   - 移除堆中已经过期的苹果。
+   - 如果堆不为空，吃掉一个最早过期的苹果。
+3. 在遍历完所有天数后，继续处理堆中的剩余苹果，直到没有可吃的苹果为止。
 
 关键点:
-- [TODO]
+- 使用最小堆来确保总是先吃最早过期的苹果。
+- 每天只吃一个苹果，确保营养均衡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 days 数组的长度。每次插入和删除操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，最坏情况下堆中会存储所有的苹果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def eatenApples(apples: List[int], days: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回可以吃掉的苹果的最大数目。
     """
-    # TODO: 实现最优解法
-    pass
+    heap = []
+    n = len(apples)
+    total_eaten = 0
+    current_day = 0
+    
+    while current_day < n or heap:
+        # 添加当天新长出的苹果
+        if current_day < n and apples[current_day] > 0:
+            heapq.heappush(heap, (current_day + days[current_day], apples[current_day]))
+        
+        # 移除已经过期的苹果
+        while heap and heap[0][0] <= current_day:
+            heapq.heappop(heap)
+        
+        # 吃掉一个最早过期的苹果
+        if heap:
+            expiration, count = heapq.heappop(heap)
+            total_eaten += 1
+            if count > 1:
+                heapq.heappush(heap, (expiration, count - 1))
+        
+        current_day += 1
+    
+    return total_eaten
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(eatenApples)

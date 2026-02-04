@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式来匹配有效的单词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子按空格分割成 token。
+2. 对每个 token 使用正则表达式进行验证，确保其符合有效单词的条件。
+3. 统计符合条件的 token 数量。
 
 关键点:
-- [TODO]
+- 使用正则表达式来匹配有效单词，确保高效且简洁。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是句子的长度。每个字符最多被处理一次。
+空间复杂度: O(1)，正则表达式的匹配不需要额外的空间。
 """
 
 # ============================================================================
@@ -47,14 +48,21 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import re
 
-
-def solution_function_name(params):
+def count_valid_words(sentence: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算句子中的有效单词数
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义有效单词的正则表达式
+    valid_word_pattern = re.compile(r'^[a-z]+(-[a-z]+)?[!,.]?$')
+    
+    # 将句子按空格分割成 token
+    tokens = sentence.split()
+    
+    # 统计符合条件的 token 数量
+    valid_count = sum(bool(valid_word_pattern.match(token)) for token in tokens)
+    
+    return valid_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_valid_words)

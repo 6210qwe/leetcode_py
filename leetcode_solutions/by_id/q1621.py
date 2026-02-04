@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和二分查找来高效地找到满足条件的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针遍历数组，左指针从左到右移动，右指针从右到左移动。
+3. 对于每个左指针位置，找到右指针的位置，使得 nums[left] + nums[right] <= target。
+4. 计算从 left 到 right 之间的子序列数量，并累加到结果中。
+5. 由于结果可能很大，每次累加时对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 排序后的数组可以使用双指针高效地找到满足条件的子序列。
+- 使用快速幂计算 2 的幂次，以避免大数溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序的时间复杂度是 O(n log n)，双指针遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def quick_pow(base: int, exp: int, mod: int) -> int:
+    """快速幂计算 base^exp % mod"""
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
+
+def solution_function_name(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足条件的子序列数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    nums.sort()
+    n = len(nums)
+    result = 0
+    
+    for left in range(n):
+        right = bisect.bisect_right(nums, target - nums[left]) - 1
+        if right >= left:
+            result += quick_pow(2, right - left, MOD)
+            result %= MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

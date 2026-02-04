@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每一行、每一列和对角线上的灯的数量，以便快速判断某个单元格是否被照亮。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化四个哈希表分别记录每一行、每一列、主对角线和副对角线上的灯的数量。
+2. 遍历 `lamps` 数组，将每盏灯的位置记录到对应的哈希表中。
+3. 对于每个查询，检查目标单元格所在的行、列、主对角线和副对角线是否有灯，如果有则返回 1，否则返回 0。
+4. 查询后，关闭目标单元格及其相邻 8 个方向上的灯，并更新哈希表。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和查询灯的状态。
+- 通过计算主对角线和副对角线的索引来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(L + Q)，其中 L 是 `lamps` 的长度，Q 是 `queries` 的长度。
+空间复杂度: O(L)，用于存储哈希表中的灯的位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def gridIllumination(n: int, lamps: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 哈希表记录每一行、每一列、主对角线和副对角线上的灯的数量
+    row, col, diag, anti_diag = {}, {}, {}, {}
+    
+    # 记录灯的位置
+    for r, c in lamps:
+        if (r, c) not in row:
+            row[r] = 0
+        if (r, c) not in col:
+            col[c] = 0
+        if (r, c) not in diag:
+            diag[r - c] = 0
+        if (r, c) not in anti_diag:
+            anti_diag[r + c] = 0
+        row[r] += 1
+        col[c] += 1
+        diag[r - c] += 1
+        anti_diag[r + c] += 1
+    
+    # 查询并处理结果
+    result = []
+    for r, c in queries:
+        if row.get(r, 0) > 0 or col.get(c, 0) > 0 or diag.get(r - c, 0) > 0 or anti_diag.get(r + c, 0) > 0:
+            result.append(1)
+        else:
+            result.append(0)
+        
+        # 关闭目标单元格及其相邻 8 个方向上的灯
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < n and 0 <= nc < n and (nr, nc) in row:
+                    row[nr] -= 1
+                    if row[nr] == 0:
+                        del row[nr]
+                    col[nc] -= 1
+                    if col[nc] == 0:
+                        del col[nc]
+                    diag[nr - nc] -= 1
+                    if diag[nr - nc] == 0:
+                        del diag[nr - nc]
+                    anti_diag[nr + nc] -= 1
+                    if anti_diag[nr + nc] == 0:
+                        del anti_diag[nr + nc]
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(gridIllumination)

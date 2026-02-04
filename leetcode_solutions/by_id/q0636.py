@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来跟踪当前正在执行的函数，并计算每个函数的独占时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈 `stack` 用于存储当前正在执行的函数及其开始时间。
+2. 初始化一个数组 `exclusive_times` 用于存储每个函数的独占时间。
+3. 遍历 `logs` 列表：
+   - 如果日志是 "start" 类型，将函数 ID 和时间戳压入栈中。
+   - 如果日志是 "end" 类型，弹出栈顶元素，计算当前函数的独占时间，并更新 `exclusive_times` 数组。
+   - 如果栈不为空，说明有其他函数在等待执行，更新栈顶函数的等待时间。
+4. 返回 `exclusive_times` 数组。
 
 关键点:
-- [TODO]
+- 使用栈来跟踪当前正在执行的函数及其开始时间。
+- 计算独占时间时需要考虑嵌套调用的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是 logs 的长度。我们只需要遍历一次 logs。
+空间复杂度: O(n)，其中 n 是函数的数量。最坏情况下，栈中会存储所有的函数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def exclusive_time(n: int, logs: List[str]) -> List[int]:
+    stack = []
+    exclusive_times = [0] * n
+    
+    for log in logs:
+        function_id, action, timestamp = log.split(':')
+        function_id = int(function_id)
+        timestamp = int(timestamp)
+        
+        if action == 'start':
+            stack.append((function_id, timestamp))
+        else:
+            _, start_time = stack.pop()
+            execution_time = timestamp - start_time + 1
+            exclusive_times[function_id] += execution_time
+            
+            if stack:
+                # 更新栈顶函数的等待时间
+                top_function_id, top_start_time = stack[-1]
+                exclusive_times[top_function_id] -= execution_time
+    
+    return exclusive_times
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(exclusive_time)

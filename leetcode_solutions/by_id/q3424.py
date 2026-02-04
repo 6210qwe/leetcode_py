@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出发生在周五的交易记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `purchases` 表中选择所有字段。
+2. 使用 `WHERE` 子句过滤出 `purchase_date` 是周五的记录。
+3. 使用 `DAYOFWEEK` 函数来判断日期是否为周五（在 MySQL 中，1 表示周日，7 表示周六，因此周五是 6）。
 
 关键点:
-- [TODO]
+- 使用 `DAYOFWEEK` 函数来确定日期是星期几。
+- 确保查询效率，避免不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `purchases` 表中的记录数。需要遍历整个表来筛选出符合条件的记录。
+空间复杂度: O(1)，查询过程中只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询发生在周五的交易记录
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT *
+    FROM purchases
+    WHERE DAYOFWEEK(purchase_date) = 6;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

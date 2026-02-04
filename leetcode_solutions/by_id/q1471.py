@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个整数来表示每一行的状态，其中每一位表示一个座位是否被占用。通过状态转移方程来更新每一行的最大学生数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][state] 表示前 i 行且第 i 行状态为 state 时的最大学生数。
+2. 遍历每一行，生成所有可能的状态，并检查这些状态是否有效（即没有相邻的学生）。
+3. 对于每个有效状态，更新 dp 数组。
+4. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用位运算来表示和操作状态。
+- 状态转移时需要考虑当前行和前一行的状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * 2^n * n^2)，其中 m 是行数，n 是列数。
+空间复杂度: O(m * 2^n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxStudents(seats: List[List[str]]) -> int:
+    m, n = len(seats), len(seats[0])
+    valid_states = []
+    
+    # 生成每一行的有效状态
+    for row in seats:
+        state = 0
+        for seat in row:
+            state = (state << 1) | (seat == '.')
+        valid_states.append(state)
+    
+    # 检查状态是否有效
+    def is_valid_state(state):
+        return (state & (state >> 1)) == 0
+    
+    # 计算状态中的 1 的个数
+    def count_ones(state):
+        count = 0
+        while state:
+            count += state & 1
+            state >>= 1
+        return count
+    
+    # 动态规划数组
+    dp = [[-1] * (1 << n) for _ in range(m + 1)]
+    dp[0][0] = 0
+    
+    for i in range(1, m + 1):
+        for cur_state in range(1 << n):
+            if not is_valid_state(cur_state) or (cur_state & valid_states[i - 1]) != cur_state:
+                continue
+            for prev_state in range(1 << n):
+                if (prev_state & (cur_state >> 1)) or (prev_state & (cur_state << 1)):
+                    continue
+                if dp[i - 1][prev_state] != -1:
+                    dp[i][cur_state] = max(dp[i][cur_state], dp[i - 1][prev_state] + count_ones(cur_state))
+    
+    return max(max(row) for row in dp)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxStudents)

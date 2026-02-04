@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库进行数据处理，通过 groupby 和 nunique 函数计算每位教师教授的唯一科目数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并将其转换为 Pandas DataFrame。
+2. 使用 groupby 函数按 teacher_id 分组，并使用 nunique 函数计算每组中唯一的 subject_id 数量。
+3. 将结果转换为所需的输出格式。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行高效的数据处理。
+- 利用 groupby 和 nunique 函数简化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入数据的行数。Pandas 的 groupby 和 nunique 操作的时间复杂度均为线性。
+空间复杂度: O(n)，存储中间结果和最终结果所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(teachers: List[List[int]]) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每位教师教授的唯一科目数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将输入数据转换为 Pandas DataFrame
+    df = pd.DataFrame(teachers, columns=['teacher_id', 'subject_id', 'dept_id'])
+    
+    # 按 teacher_id 分组，并计算每组中唯一的 subject_id 数量
+    result = df.groupby('teacher_id')['subject_id'].nunique().reset_index()
+    
+    # 重命名列名以匹配输出格式
+    result.columns = ['teacher_id', 'cnt']
+    
+    return result
 
 Solution = create_solution(solution_function_name)

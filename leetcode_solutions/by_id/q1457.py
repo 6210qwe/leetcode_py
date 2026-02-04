@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][k] 表示在前 i 项工作中分成 k 天的最小难度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][k] 表示前 i 项工作分成 k 天的最小难度。
+2. 遍历所有可能的分割点 j，计算 dp[i][k] 的值。
+3. 对于每个分割点 j，更新 dp[i][k] 的值为 min(dp[i][k], dp[j][k-1] + max(jobDifficulty[j:i]))。
 
 关键点:
-- [TODO]
+- 使用动态规划来存储中间结果，避免重复计算。
+- 通过遍历所有可能的分割点来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * d)，其中 n 是 jobDifficulty 的长度，d 是天数。
+空间复杂度: O(n * d)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_difficulty(jobDifficulty: List[int], d: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算工作计划的最小难度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(jobDifficulty)
+    if n < d:
+        return -1
+    
+    # 初始化 dp 数组
+    dp = [[float('inf')] * (d + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    # 动态规划填表
+    for i in range(1, n + 1):
+        for k in range(1, d + 1):
+            max_difficulty = 0
+            for j in range(i, k - 1, -1):
+                max_difficulty = max(max_difficulty, jobDifficulty[j - 1])
+                dp[i][k] = min(dp[i][k], dp[j - 1][k - 1] + max_difficulty)
+    
+    return dp[n][d] if dp[n][d] != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_difficulty)

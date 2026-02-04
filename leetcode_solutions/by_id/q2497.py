@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来最大化匹配数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 players 和 trainers 数组进行排序。
+2. 初始化两个指针 i 和 j，分别指向 players 和 trainers 的起始位置。
+3. 遍历 players 数组，对于每个运动员，找到第一个能够匹配的训练师。
+4. 如果找到匹配的训练师，移动训练师指针 j。
+5. 返回匹配的总数。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以高效地找到匹配的训练师。
+- 每次匹配后移动训练师指针，确保每个训练师只被使用一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是 players 的长度，m 是 trainers 的长度。排序操作的时间复杂度为 O(n log n) 和 O(m log m)，遍历操作的时间复杂度为 O(n + m)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_match(players: List[int], trainers: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 players 和 trainers 的最大匹配数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 players 和 trainers 数组进行排序
+    players.sort()
+    trainers.sort()
+    
+    # 初始化指针和匹配计数
+    i, j, match_count = 0, 0, 0
+    
+    # 遍历 players 数组
+    while i < len(players) and j < len(trainers):
+        if players[i] <= trainers[j]:
+            # 找到匹配的训练师
+            match_count += 1
+            i += 1
+            j += 1
+        else:
+            # 当前训练师无法匹配当前运动员，移动训练师指针
+            j += 1
+    
+    return match_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_match)

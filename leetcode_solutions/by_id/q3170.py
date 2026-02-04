@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的下标对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别指向数组的起始和 `indexDifference` 位置。
+2. 使用两个变量 `min_index` 和 `max_index` 来记录当前窗口内的最小值和最大值的下标。
+3. 滑动窗口，更新 `min_index` 和 `max_index`，并检查是否满足 `abs(nums[min_index] - nums[right]) >= valueDifference` 或 `abs(nums[max_index] - nums[right]) >= valueDifference`。
+4. 如果找到满足条件的下标对，返回 `[min_index, right]` 或 `[max_index, right]`。
+5. 如果遍历完数组仍未找到满足条件的下标对，返回 `[-1, -1]`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前窗口内的最小值和最大值的下标。
+- 每次移动右指针时，更新最小值和最大值的下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_indices_with_difference(nums: List[int], index_difference: int, value_difference: int) -> List[int]:
+    n = len(nums)
+    if n < 2:
+        return [-1, -1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, index_difference
+    min_index, max_index = left, left
 
+    while right < n:
+        if nums[right - index_difference] < nums[min_index]:
+            min_index = right - index_difference
+        if nums[right - index_difference] > nums[max_index]:
+            max_index = right - index_difference
 
-Solution = create_solution(solution_function_name)
+        if abs(nums[min_index] - nums[right]) >= value_difference:
+            return [min_index, right]
+        if abs(nums[max_index] - nums[right]) >= value_difference:
+            return [max_index, right]
+
+        right += 1
+
+    return [-1, -1]
+
+Solution = create_solution(find_indices_with_difference)

@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算子矩阵中 'X' 和 'Y' 的频数，并通过双指针法来遍历所有可能的子矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每一行的前缀和数组，记录从左到右 'X' 和 'Y' 的频数。
+2. 对于每一列，使用双指针法遍历所有可能的子矩阵，检查 'X' 和 'Y' 的频数是否相等。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子矩阵中 'X' 和 'Y' 的频数。
+- 双指针法可以高效地遍历所有可能的子矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m^2)，其中 n 是矩阵的行数，m 是矩阵的列数。
+空间复杂度: O(n * m)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_submatrices_with_equal_frequency(grid: List[List[str]]) -> int:
+    if not grid or not grid[0]:
+        return 0
+    
+    n, m = len(grid), len(grid[0])
+    prefix_sum = [[[0, 0] for _ in range(m + 1)] for _ in range(n)]
+    
+    # 计算每一行的前缀和
+    for i in range(n):
+        for j in range(1, m + 1):
+            if grid[i][j - 1] == 'X':
+                prefix_sum[i][j][0] = prefix_sum[i][j - 1][0] + 1
+                prefix_sum[i][j][1] = prefix_sum[i][j - 1][1]
+            elif grid[i][j - 1] == 'Y':
+                prefix_sum[i][j][0] = prefix_sum[i][j - 1][0]
+                prefix_sum[i][j][1] = prefix_sum[i][j - 1][1] + 1
+            else:
+                prefix_sum[i][j][0] = prefix_sum[i][j - 1][0]
+                prefix_sum[i][j][1] = prefix_sum[i][j - 1][1]
+    
+    count = 0
+    
+    # 双指针法遍历所有可能的子矩阵
+    for start_col in range(m):
+        for end_col in range(start_col + 1, m + 1):
+            x_count, y_count = 0, 0
+            for row in range(n):
+                x_count += prefix_sum[row][end_col][0] - prefix_sum[row][start_col][0]
+                y_count += prefix_sum[row][end_col][1] - prefix_sum[row][start_col][1]
+                if x_count == y_count and x_count > 0:
+                    count += 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_submatrices_with_equal_frequency)

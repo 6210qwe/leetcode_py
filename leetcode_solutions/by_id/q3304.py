@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，并在每个节点上计算以该节点为根的相同颜色的最大子树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于遍历树并计算以当前节点为根的相同颜色的最大子树。
+2. 在 `dfs` 函数中，递归地处理左子树和右子树，记录它们的颜色和大小。
+3. 如果当前节点的颜色与左子树或右子树的颜色相同，则更新当前节点的最大子树大小。
+4. 返回当前节点的颜色和最大子树大小。
+5. 在主函数中调用 `dfs` 函数，并返回结果。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 在每个节点上维护当前节点的颜色和最大子树大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的空间取决于树的高度。
 """
 
 # ============================================================================
@@ -44,17 +48,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def dfs(node: Optional[TreeNode]) -> (int, int):
+    if not node:
+        return -1, 0
+    
+    left_color, left_size = dfs(node.left)
+    right_color, right_size = dfs(node.right)
+    
+    color = node.val
+    size = 1
+    if left_color == color:
+        size += left_size
+    if right_color == color:
+        size += right_size
+    
+    return color, size
 
-def solution_function_name(params):
+def solution_function_name(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算相同颜色的最大子树
     """
-    # TODO: 实现最优解法
-    pass
-
+    _, max_size = dfs(root)
+    return max_size
 
 Solution = create_solution(solution_function_name)

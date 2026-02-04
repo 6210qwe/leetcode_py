@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在每个节点上计算两种情况下的最大得分：
+1. 不选择当前节点，保留其值。
+2. 选择当前节点，将其值加入得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个递归的 DFS 函数，计算每个子树的最大得分。
+3. 在每个节点上，计算两种情况下的最大得分，并返回。
+4. 最终结果是从根节点开始的 DFS 结果。
 
 关键点:
-- [TODO]
+- 使用 DFS 递归地处理每个子树。
+- 在每个节点上，计算两种情况下的最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点只被访问一次。
+空间复杂度: O(n)，用于存储树的邻接表和递归调用栈。
 """
 
 # ============================================================================
@@ -48,13 +53,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def max_score_after_operations(edges: List[List[int]], values: List[int]) -> int:
+    # 构建树的邻接表表示
+    n = len(values)
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, parent: int) -> int:
+        # 计算不选择当前节点的情况下的子树最大得分
+        score_without_current = sum(dfs(child, node) for child in tree[node] if child != parent)
+        
+        # 计算选择当前节点的情况下的子树最大得分
+        score_with_current = values[node]
+        for child in tree[node]:
+            if child != parent:
+                score_with_current += sum(values[sub_child] for sub_child in tree[child] if sub_child != node)
+        
+        # 返回两种情况下的最大得分
+        return max(score_without_current, score_with_current - values[node])
 
+    # 从根节点开始的 DFS 结果
+    return sum(values) - dfs(0, -1)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score_after_operations)

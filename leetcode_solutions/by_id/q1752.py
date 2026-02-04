@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个查询，提取子数组并检查其是否可以重新排列为等差数列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每个查询范围 [l[i], r[i]]。
+2. 提取子数组并对其进行排序。
+3. 检查排序后的子数组是否为等差数列。
+4. 将结果添加到答案列表中。
 
 关键点:
-- [TODO]
+- 排序后的子数组可以通过检查相邻元素之间的差值是否相等来判断是否为等差数列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * k log k)，其中 m 是查询的数量，k 是子数组的最大长度。
+空间复杂度: O(k)，用于存储排序后的子数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def check_arithmetic_subarrays(nums: List[int], l: List[int], r: List[int]) -> List[bool]:
+    def is_arithmetic(arr: List[int]) -> bool:
+        if len(arr) < 2:
+            return False
+        diff = arr[1] - arr[0]
+        for i in range(2, len(arr)):
+            if arr[i] - arr[i - 1] != diff:
+                return False
+        return True
+
+    result = []
+    for i in range(len(l)):
+        subarray = sorted(nums[l[i]:r[i] + 1])
+        result.append(is_arithmetic(subarray))
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_arithmetic_subarrays)

@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式提取所有数字，并使用集合去重。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用正则表达式匹配所有连续的数字。
+2. 对每个匹配到的数字，去掉前导零并转换为整数。
+3. 使用集合去重，返回集合的大小。
 
 关键点:
-- [TODO]
+- 使用正则表达式提取数字。
+- 去掉前导零以确保唯一性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。正则表达式匹配和遍历字符串的时间复杂度都是 O(n)。
+空间复杂度: O(m)，其中 m 是不同整数的数量。集合的空间复杂度是 O(m)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
+from typing import Set
 
-
-def solution_function_name(params):
+def num_different_integers(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串中不同整数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用正则表达式匹配所有连续的数字
+    numbers = re.findall(r'\d+', word)
+    
+    # 去掉前导零并转换为整数
+    unique_numbers = {int(num) for num in numbers}
+    
+    # 返回不同整数的数量
+    return len(unique_numbers)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_different_integers)

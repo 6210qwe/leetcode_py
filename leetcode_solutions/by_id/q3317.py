@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计数每个字符出现的次数，我们可以将所有字符配对来形成尽可能多的回文字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有字符的出现次数。
+2. 将字符按长度进行分组，并计算每个长度的字符串数量。
+3. 使用字符配对来形成回文字符串，优先处理长度为奇数的字符串。
+4. 计算最终可以形成的回文字符串的最大数量。
 
 关键点:
-- [TODO]
+- 通过字符配对，我们可以确保每个字符串都能变成回文。
+- 优先处理长度为奇数的字符串，因为它们需要一个中心字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 words 的总长度，m 是 words 的数量。
+空间复杂度: O(1)，因为字符计数和长度分组使用的额外空间是常数级的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_palindromes_after_operations(words: List[str]) -> int:
+    from collections import Counter
+    
+    # 计算所有字符的出现次数
+    char_count = Counter()
+    for word in words:
+        char_count += Counter(word)
+    
+    # 计算每个长度的字符串数量
+    length_count = Counter(len(word) for word in words)
+    
+    # 计算可以配对的字符数量
+    pairs = sum(count // 2 for count in char_count.values())
+    
+    # 计算可以形成的回文字符串的最大数量
+    result = 0
+    for length in sorted(length_count.keys()):
+        if length % 2 == 0:
+            # 长度为偶数的字符串可以直接使用成对的字符
+            result += min(length_count[length], pairs // (length // 2))
+            pairs -= min(length_count[length], pairs // (length // 2)) * (length // 2)
+        else:
+            # 长度为奇数的字符串需要一个中心字符
+            result += min(length_count[length], pairs // ((length - 1) // 2))
+            pairs -= min(length_count[length], pairs // ((length - 1) // 2)) * ((length - 1) // 2)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_palindromes_after_operations)

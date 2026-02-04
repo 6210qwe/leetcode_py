@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个最小堆来分别存储最前面和最后面的 candidates 个工人，每次从这两个堆中取出最小值，直到雇佣 k 位工人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个最小堆 `left_heap` 和 `right_heap`，分别存储最前面和最后面的 candidates 个工人。
+2. 使用两个指针 `left` 和 `right` 分别指向最前面和最后面的候选人。
+3. 进行 k 轮雇佣：
+   - 从 `left_heap` 和 `right_heap` 中取出最小值，选择较小的一个工人。
+   - 将该工人从堆中移除，并更新总代价。
+   - 如果 `left` 指针小于 `right` 指针，将新的候选人加入对应的堆中。
+4. 返回总代价。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取最小代价的工人。
+- 通过双指针确保不会重复添加工人。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log c)，其中 k 是雇佣的工人数量，c 是 candidates 的数量。每次从堆中取出元素的时间复杂度是 O(log c)。
+空间复杂度: O(c)，用于存储两个最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def total_cost(costs: List[int], k: int, candidates: int) -> int:
+    n = len(costs)
+    left_heap = []
+    right_heap = []
+    left = 0
+    right = n - 1
+    total_cost = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化两个最小堆
+    for _ in range(candidates):
+        if left <= right:
+            heapq.heappush(left_heap, (costs[left], left))
+            left += 1
+        if left <= right:
+            heapq.heappush(right_heap, (costs[right], right))
+            right -= 1
 
+    for _ in range(k):
+        if not right_heap or (left_heap and left_heap[0][0] <= right_heap[0][0]):
+            cost, index = heapq.heappop(left_heap)
+            total_cost += cost
+            if left <= right:
+                heapq.heappush(left_heap, (costs[left], left))
+                left += 1
+        else:
+            cost, index = heapq.heappop(right_heap)
+            total_cost += cost
+            if left <= right:
+                heapq.heappush(right_heap, (costs[right], right))
+                right -= 1
 
-Solution = create_solution(solution_function_name)
+    return total_cost
+
+Solution = create_solution(total_cost)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个计数器来记录当前窗口内各个字符的数量。
+3. 移动右指针扩展窗口，直到窗口内的子字符串包含所有元音字母。
+4. 当窗口包含所有元音字母时，移动左指针收缩窗口，直到窗口不再包含所有元音字母。
+5. 在每次移动右指针时，检查当前窗口内的辅音字母数量是否为 k，如果是，则计数加一。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地找到满足条件的子字符串。
+- 通过计数器来快速判断窗口内是否包含所有元音字母和辅音字母的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 word 的长度。每个字符最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowels_and_consonants(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回 word 的子字符串中，每个元音字母至少出现一次，并且恰好包含 k 个辅音字母的子字符串的总数。
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiou')
+    n = len(word)
+    left, right = 0, 0
+    vowel_count = 0
+    consonant_count = 0
+    result = 0
+    char_count = [0] * 26
+
+    while right < n:
+        if word[right] in vowels:
+            vowel_count += 1
+        else:
+            consonant_count += 1
+        char_count[ord(word[right]) - ord('a')] += 1
+
+        while vowel_count == 5 and consonant_count > k:
+            if word[left] in vowels:
+                vowel_count -= 1
+            else:
+                consonant_count -= 1
+            char_count[ord(word[left]) - ord('a')] -= 1
+            left += 1
+
+        if vowel_count == 5 and consonant_count == k:
+            result += 1
+
+        right += 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowels_and_consonants)

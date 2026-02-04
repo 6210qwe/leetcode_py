@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法，计算将 nums 变得与 target 相似的最少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 和 target 分别按奇偶性分成两个子数组。
+2. 对每个子数组进行排序。
+3. 计算两个子数组中对应位置元素的差值之和，除以 4 即为所需操作次数。
 
 关键点:
-- [TODO]
+- 通过分组和排序，确保每次操作都能最大化减少差异。
+- 由于每次操作只能改变两个元素的奇偶性，因此需要分别处理奇数和偶数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储奇偶子数组。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def make_arrays_similar(nums: List[int], target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 nums 变得与 target 相似的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums 和 target 分别按奇偶性分成两个子数组
+    nums_odd = [num for num in nums if num % 2 != 0]
+    nums_even = [num for num in nums if num % 2 == 0]
+    target_odd = [num for num in target if num % 2 != 0]
+    target_even = [num for num in target if num % 2 == 0]
+
+    # 对每个子数组进行排序
+    nums_odd.sort()
+    nums_even.sort()
+    target_odd.sort()
+    target_even.sort()
+
+    # 计算两个子数组中对应位置元素的差值之和
+    operations = 0
+    for i in range(len(nums_odd)):
+        operations += abs(nums_odd[i] - target_odd[i])
+    for i in range(len(nums_even)):
+        operations += abs(nums_even[i] - target_even[i])
+
+    # 由于每次操作可以减少 4 的差距，所以结果除以 4
+    return operations // 4
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(make_arrays_similar)

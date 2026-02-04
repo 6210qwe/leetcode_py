@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个栈来实现排序，主栈用于存储排序后的元素，辅助栈用于暂存元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. push 操作：将新元素与主栈的栈顶元素比较，如果新元素大于或等于栈顶元素，则直接入栈；否则，将主栈中所有小于新元素的元素依次弹出并压入辅助栈，然后将新元素压入主栈，最后再将辅助栈中的元素依次弹出并压回主栈。
+2. pop 操作：直接弹出主栈的栈顶元素。
+3. peek 操作：返回主栈的栈顶元素，如果主栈为空则返回 -1。
+4. isEmpty 操作：检查主栈是否为空。
 
 关键点:
-- [TODO]
+- 使用辅助栈来保持主栈的有序性。
+- 在 push 操作中，通过比较和移动元素来维持主栈的有序性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 最坏情况下，push 操作需要将所有元素从主栈移到辅助栈再移回来。
+空间复杂度: O(n) - 使用了一个额外的辅助栈来暂存元素。
 """
 
 # ============================================================================
@@ -48,13 +51,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class SortedStack:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self):
+        self.stack = []
+        self.temp_stack = []
+
+    def push(self, val: int) -> None:
+        # 将主栈中小于 val 的元素移到辅助栈
+        while self.stack and self.stack[-1] < val:
+            self.temp_stack.append(self.stack.pop())
+        # 将 val 压入主栈
+        self.stack.append(val)
+        # 将辅助栈中的元素移回主栈
+        while self.temp_stack:
+            self.stack.append(self.temp_stack.pop())
+
+    def pop(self) -> None:
+        if self.stack:
+            self.stack.pop()
+
+    def peek(self) -> int:
+        return self.stack[-1] if self.stack else -1
+
+    def isEmpty(self) -> bool:
+        return not self.stack
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(SortedStack)

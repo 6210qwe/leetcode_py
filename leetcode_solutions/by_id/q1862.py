@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计苹果和橘子的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个 SQL 查询来统计苹果的数量。
+2. 创建一个 SQL 查询来统计橘子的数量。
+3. 将两个查询的结果合并并返回。
 
 关键点:
-- [TODO]
+- 使用 COUNT 函数来统计数量。
+- 使用 WHERE 子句来过滤苹果和橘子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。每个查询都需要遍历整个表。
+空间复杂度: O(1)，查询结果只包含常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +53,23 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来统计苹果和橘子的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query_apples = "SELECT COUNT(*) FROM fruits WHERE type = 'apple';"
+    query_oranges = "SELECT COUNT(*) FROM fruits WHERE type = 'orange';"
+
+    # 假设我们有一个数据库连接对象 `conn` 和一个游标对象 `cursor`
+    cursor = conn.cursor()
+
+    # 执行查询
+    cursor.execute(query_apples)
+    apples_count = cursor.fetchone()[0]
+
+    cursor.execute(query_oranges)
+    oranges_count = cursor.fetchone()[0]
+
+    return apples_count, oranges_count
 
 
 Solution = create_solution(solution_function_name)

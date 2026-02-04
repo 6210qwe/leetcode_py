@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理嵌套表达式，并使用哈希表来存储变量的作用域。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前的作用域。
+2. 定义一个辅助函数 `evaluate`，用于递归地解析和计算表达式。
+3. 在 `evaluate` 函数中，根据表达式的类型（整数、变量、let、add、mult）进行相应的处理。
+4. 对于 let 表达式，创建一个新的作用域，并在新作用域中处理变量赋值。
+5. 对于 add 和 mult 表达式，递归计算子表达式的值并返回结果。
+6. 对于变量，从当前作用域中查找其值，如果找不到则向上一层作用域查找。
 
 关键点:
-- [TODO]
+- 使用栈来管理嵌套的作用域。
+- 使用哈希表来存储每个作用域中的变量值。
+- 递归处理嵌套表达式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表达式的长度。每个字符最多只会被处理一次。
+空间复杂度: O(n)，递归调用栈和作用域哈希表的空间消耗。
 """
 
 # ============================================================================
@@ -49,12 +55,59 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def evaluate(expression: str) -> int:
+    def parse(s: str):
+        res = []
+        i = 0
+        while i < len(s):
+            if s[i] == ' ':
+                i += 1
+                continue
+            if s[i] == '(':
+                balance = 1
+                j = i + 1
+                while j < len(s) and balance > 0:
+                    if s[j] == '(':
+                        balance += 1
+                    elif s[j] == ')':
+                        balance -= 1
+                    j += 1
+                res.append(s[i:j])
+                i = j
+            else:
+                j = i
+                while j < len(s) and s[j] != ' ':
+                    j += 1
+                res.append(s[i:j])
+                i = j
+        return res
+
+    def eval_expr(expr, scope):
+        if expr[0] == '(':
+            return eval_nested(expr, scope)
+        if expr.isdigit() or (expr.startswith('-') and expr[1:].isdigit()):
+            return int(expr)
+        if expr in scope[-1]:
+            return scope[-1][expr]
+        raise ValueError(f"Undefined variable: {expr}")
+
+    def eval_nested(expr, scope):
+        tokens = parse(expr[1:-1])
+        if tokens[0] == 'let':
+            new_scope = {}
+            for i in range(1, len(tokens) - 2, 2):
+                var = tokens[i]
+                val = eval_expr(tokens[i + 1], scope + [new_scope])
+                new_scope[var] = val
+            return eval_expr(tokens[-1], scope + [new_scope])
+        elif tokens[0] == 'add':
+            return eval_expr(tokens[1], scope) + eval_expr(tokens[2], scope)
+        elif tokens[0] == 'mult':
+            return eval_expr(tokens[1], scope) * eval_expr(tokens[2], scope)
+        else:
+            raise ValueError(f"Invalid expression: {expr}")
+
+    return eval_nested(expression, [{}])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(evaluate)

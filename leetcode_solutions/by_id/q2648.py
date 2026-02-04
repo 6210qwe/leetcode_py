@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为前 i 种题目中恰好得到 j 分的方法数。对于每种题目，我们可以选择做 0 到 counti 道题目，更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1，表示没有题目时，得分为 0 的方法数为 1。
+2. 遍历每种题目，对于每种题目，遍历当前得分 j 从 target 到 0，更新 dp 数组。
+3. 对于每种题目，遍历可以做的题目数量 k，更新 dp 数组。
+4. 最终结果为 dp[n][target]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为 dp[i][j] = (dp[i][j] + dp[i-1][j - k * marks]) % MOD，其中 k 是可以选择的题目数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target * max_count)，其中 n 是题目的种类数，target 是目标分数，max_count 是每种题目最多可以做的题目数量。
+空间复杂度: O(n * target)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def ways_to_earn_points(target: int, types: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    n = len(types)
+    dp = [[0] * (target + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, n + 1):
+        count, marks = types[i - 1]
+        for j in range(target + 1):
+            dp[i][j] = dp[i - 1][j]
+            for k in range(1, count + 1):
+                if j >= k * marks:
+                    dp[i][j] = (dp[i][j] + dp[i - 1][j - k * marks]) % MOD
 
+    return dp[n][target]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ways_to_earn_points)

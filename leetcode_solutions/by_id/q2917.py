@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法，先对数组进行排序，然后使用两个指针分别从头和尾开始遍历，找到所有满足条件的下标对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化两个指针 left 和 right，分别指向数组的起始位置和末尾位置。
+3. 遍历数组，如果 nums[left] + nums[right] < target，则说明从 left 到 right-1 的所有下标对都满足条件，将这些下标对的数量加到结果中，并将 left 指针右移一位。
+4. 如果 nums[left] + nums[right] >= target，则将 right 指针左移一位。
+5. 重复步骤 3 和 4 直到 left 和 right 相遇。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以有效地减少不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序的时间复杂度是 O(n log n)，双指针遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_pairs(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足 nums[i] + nums[j] < target 的下标对 (i, j) 的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    left, right = 0, len(nums) - 1
+    count = 0
+    
+    while left < right:
+        if nums[left] + nums[right] < target:
+            # 从 left 到 right-1 的所有下标对都满足条件
+            count += right - left
+            left += 1
+        else:
+            right -= 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs)

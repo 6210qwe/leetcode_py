@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断三个点是否共线。如果三个点共线，则它们的斜率相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前两个点 (P1, P2) 的斜率。
+2. 计算后两个点 (P2, P3) 的斜率。
+3. 比较两个斜率，如果不相等，则这三个点不共线，构成回旋镖。
 
 关键点:
-- [TODO]
+- 使用斜率公式 (y2 - y1) / (x2 - x1)，为了避免除法运算带来的精度问题，可以使用乘法形式 (y2 - y1) * (x3 - x2) != (y3 - y2) * (x2 - x1) 来判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_boomerang(points: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的三个点是否构成一个回旋镖。
+
+    :param points: 三个点的坐标列表
+    :return: 如果这三个点构成回旋镖则返回 True，否则返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    (x1, y1), (x2, y2), (x3, y3) = points
+    # 使用乘法形式避免除法运算带来的精度问题
+    return (y2 - y1) * (x3 - x2) != (y3 - y2) * (x2 - x1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_boomerang)

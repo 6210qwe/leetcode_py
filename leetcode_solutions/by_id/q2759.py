@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法来处理多维数组，根据给定的深度 n 来决定是否继续扁平化子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 flatten，接收当前数组和当前深度。
+2. 如果当前深度大于等于 n，则直接返回当前数组。
+3. 否则，遍历当前数组，对于每个元素：
+   - 如果元素是列表，则递归调用 flatten 函数处理该子数组，并将结果展开。
+   - 如果元素不是列表，则直接添加到结果列表中。
+4. 返回最终的扁平化结果。
 
 关键点:
-- [TODO]
+- 递归处理多维数组。
+- 根据深度 n 决定是否继续扁平化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组中所有元素的总数。每个元素最多被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def flatten_deeply_nested_array(arr: List[any], n: int) -> List[any]:
     """
-    函数式接口 - [TODO] 实现
+    扁平化多维数组，根据给定的深度 n。
     """
-    # TODO: 实现最优解法
-    pass
+    def flatten(arr: List[any], depth: int) -> List[any]:
+        if depth >= n:
+            return arr
+        result = []
+        for item in arr:
+            if isinstance(item, list):
+                result.extend(flatten(item, depth + 1))
+            else:
+                result.append(item)
+        return result
+
+    return flatten(arr, 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(flatten_deeply_nested_array)

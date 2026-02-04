@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用位运算和数学技巧来找出两个数中的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 `diff = a - b`。
+2. 计算 `k = (diff >> 31) & 1`，这里 `k` 会是 0 或 1，取决于 `diff` 的符号。
+3. 返回 `a * k + b * (1 - k)`，这样可以确保返回的是 `a` 和 `b` 中较大的那个。
 
 关键点:
-- [TODO]
+- 使用位运算和数学技巧避免直接比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_value(a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出两个数字a和b中最大的那一个
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 diff
+    diff = a - b
+    # 计算 k
+    k = (diff >> 31) & 1
+    # 返回结果
+    return a * k + b * (1 - k)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_value)

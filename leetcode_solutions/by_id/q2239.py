@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟每条指令的执行过程，记录机器人能够执行的指令数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `answer`。
+2. 对于每个起始位置，模拟执行后续的所有指令，记录能够执行的指令数目。
+3. 更新结果数组 `answer`。
 
 关键点:
-- [TODO]
+- 使用方向字典来映射指令字符到对应的坐标变化。
+- 检查每次移动后的坐标是否在网格内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m^2)，其中 m 是指令字符串的长度。对于每个起始位置，我们最多需要遍历剩余的指令。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def execute_instructions(n: int, startPos: List[int], s: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 执行所有后缀指令并返回能够执行的指令数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向字典
+    directions = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
+    
+    def is_within_grid(x, y):
+        return 0 <= x < n and 0 <= y < n
+    
+    m = len(s)
+    answer = []
+    
+    for i in range(m):
+        x, y = startPos
+        count = 0
+        for j in range(i, m):
+            dx, dy = directions[s[j]]
+            nx, ny = x + dx, y + dy
+            if is_within_grid(nx, ny):
+                x, y = nx, ny
+                count += 1
+            else:
+                break
+        answer.append(count)
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(execute_instructions)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计每个查询区间内的活跃服务器，并计算没有收到请求的服务器数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 logs 按照时间进行排序。
+2. 将 queries 与它们的索引一起排序，以便处理完后可以恢复到原始顺序。
+3. 使用两个指针来维护一个滑动窗口，窗口内的 logs 是在当前查询区间内的。
+4. 使用哈希表记录当前窗口内的活跃服务器。
+5. 对于每个查询，计算不在哈希表中的服务器数目。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地维护当前查询区间内的活跃服务器。
+- 使用哈希表来快速查找活跃服务器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) log m)，其中 m 是 logs 的长度，n 是 queries 的长度。排序操作的时间复杂度是 O(m log m) 和 O(n log n)，滑动窗口的时间复杂度是 O(m + n)。
+空间复杂度: O(m + n)，用于存储排序后的 logs 和 queries，以及哈希表。
 """
 
 # ============================================================================
@@ -49,12 +53,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_zero_request_servers(n: int, logs: List[List[int]], x: int, queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计没有收到请求的服务器数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 logs 按照时间进行排序
+    logs.sort(key=lambda log: log[1])
+    
+    # 将 queries 与它们的索引一起排序
+    sorted_queries = sorted(enumerate(queries), key=lambda x: x[1])
+    
+    # 初始化结果数组
+    result = [0] * len(queries)
+    
+    # 使用哈希表记录当前窗口内的活跃服务器
+    active_servers = {}
+    
+    # 使用两个指针来维护滑动窗口
+    left, right = 0, 0
+    
+    for i, query in sorted_queries:
+        # 移动右指针，将符合条件的 logs 加入窗口
+        while right < len(logs) and logs[right][1] <= query:
+            server_id = logs[right][0]
+            if server_id not in active_servers:
+                active_servers[server_id] = 0
+            active_servers[server_id] += 1
+            right += 1
+        
+        # 移动左指针，移除不符合条件的 logs
+        while left < right and logs[left][1] < query - x:
+            server_id = logs[left][0]
+            active_servers[server_id] -= 1
+            if active_servers[server_id] == 0:
+                del active_servers[server_id]
+            left += 1
+        
+        # 计算没有收到请求的服务器数目
+        result[i] = n - len(active_servers)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_zero_request_servers)

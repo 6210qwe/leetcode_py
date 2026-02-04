@@ -21,22 +21,25 @@ LCP 35. 电动车游城市 - 小明的电动车电量充满时可行驶距离为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法结合优先队列来解决这个问题。我们需要考虑每个城市的充电时间和行驶时间，并且要维护一个二维的 dp 数组来记录每个城市在不同电量下的最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化 dp 数组和优先队列。
+3. 使用 Dijkstra 算法遍历图，更新 dp 数组中的最小时间。
+4. 返回 dp[end][cnt] 作为结果。
 
 关键点:
-- [TODO]
+- 使用优先队列来优化 Dijkstra 算法。
+- 维护一个二维 dp 数组来记录每个城市在不同电量下的最小时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E + V * cnt)，其中 E 是路径的数量，V 是城市的数量，cnt 是电动车的最大电量。
+空间复杂度: O(V * cnt)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -44,17 +47,49 @@ LCP 35. 电动车游城市 - 小明的电动车电量充满时可行驶距离为
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def electric_car_plan(paths: List[List[int]], cnt: int, start: int, end: int, charge: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从起点到终点的最小时间
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(charge)
+    graph = [[] for _ in range(n)]
+    for u, v, w in paths:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
 
+    # dp[i][j] 表示到达城市 i 且电量为 j 时的最小时间
+    dp = [[float('inf')] * (cnt + 1) for _ in range(n)]
+    dp[start][0] = 0
 
-Solution = create_solution(solution_function_name)
+    # 优先队列，(时间, 当前城市, 当前电量)
+    pq = [(0, start, 0)]
+    while pq:
+        time, city, power = heapq.heappop(pq)
+
+        if time > dp[city][power]:
+            continue
+
+        if city == end:
+            return time
+
+        # 充电
+        for new_power in range(power + 1, min(cnt, power + 1 + charge[city])):
+            new_time = time + (new_power - power) * charge[city]
+            if new_time < dp[city][new_power]:
+                dp[city][new_power] = new_time
+                heapq.heappush(pq, (new_time, city, new_power))
+
+        # 行驶
+        for next_city, distance in graph[city]:
+            if power >= distance:
+                new_time = time + distance
+                new_power = power - distance
+                if new_time < dp[next_city][new_power]:
+                    dp[next_city][new_power] = new_time
+                    heapq.heappush(pq, (new_time, next_city, new_power))
+
+    return -1
+
+Solution = create_solution(electric_car_plan)

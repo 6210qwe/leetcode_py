@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序找到中位数的位置，然后计算将中位数变为 k 所需的最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 确定中位数的位置。
+3. 计算将中位数变为 k 所需的操作次数。
 
 关键点:
-- [TODO]
+- 排序后直接定位中位数。
+- 通过贪心策略计算操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入和输出外，只使用常数级额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_make_median_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使数组中位数等于 K 的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 确定中位数的位置
+    n = len(nums)
+    mid = n // 2
+    
+    # 计算将中位数变为 k 所需的操作次数
+    operations = 0
+    if n % 2 == 1:
+        # 数组长度为奇数
+        operations = abs(nums[mid] - k)
+    else:
+        # 数组长度为偶数
+        operations = abs(nums[mid] - k) + abs(nums[mid - 1] - k)
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_median_k)

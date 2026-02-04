@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `prev1` 和 `prev2` 分别表示到达前一个台阶和前两个台阶的最小花费。
+2. 从第三个台阶开始，逐个计算到达当前台阶的最小花费，并更新 `prev1` 和 `prev2`。
+3. 最后返回 `prev1` 和 `prev2` 中的最小值，即为到达楼梯顶部的最小花费。
 
 关键点:
-- [TODO]
+- 使用两个变量来存储前两个台阶的最小花费，避免使用额外的数组空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 cost 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_climbing_stairs(cost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算到达楼梯顶部的最小花费
     """
-    # TODO: 实现最优解法
-    pass
+    if not cost:
+        return 0
+
+    n = len(cost)
+    if n == 1:
+        return cost[0]
+
+    prev1, prev2 = cost[0], cost[1]
+
+    for i in range(2, n):
+        current_cost = cost[i] + min(prev1, prev2)
+        prev1, prev2 = prev2, current_cost
+
+    return min(prev1, prev2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_climbing_stairs)

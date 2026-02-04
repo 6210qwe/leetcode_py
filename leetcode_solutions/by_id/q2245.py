@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，先从小行星中选择质量最小的进行碰撞，逐步增加行星的质量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对小行星质量数组进行排序。
+2. 初始化行星质量为给定的初始质量。
+3. 遍历排序后的小行星数组，逐一尝试摧毁小行星：
+   - 如果当前行星质量大于等于小行星质量，则摧毁小行星，并增加行星质量。
+   - 否则，返回 False，表示无法摧毁所有小行星。
+4. 如果遍历完所有小行星，返回 True。
 
 关键点:
-- [TODO]
+- 排序后的小行星数组确保每次碰撞都能尽可能多地增加行星质量。
+- 通过贪心策略，确保行星质量增长最大化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是小行星的数量。排序操作的时间复杂度是 O(n log n)，后续遍历操作是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_destroy_asteroids(mass: int, asteroids: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以摧毁所有小行星。
+    
+    :param mass: 行星的初始质量。
+    :param asteroids: 小行星的质量数组。
+    :return: 如果可以摧毁所有小行星，返回 True；否则返回 False。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对小行星质量数组进行排序
+    asteroids.sort()
+    
+    # 遍历排序后的小行星数组
+    for asteroid in asteroids:
+        if mass >= asteroid:
+            # 如果当前行星质量大于等于小行星质量，则摧毁小行星，并增加行星质量
+            mass += asteroid
+        else:
+            # 否则，返回 False，表示无法摧毁所有小行星
+            return False
+    
+    # 如果遍历完所有小行星，返回 True
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_destroy_asteroids)

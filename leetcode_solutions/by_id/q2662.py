@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查骑士的每一步是否符合骑士的移动规则，并且确保所有格子都被访问。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典来存储每个数字对应的坐标。
+2. 遍历字典，检查每一步是否符合骑士的移动规则。
+3. 如果所有步都符合规则并且所有格子都被访问，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用字典存储每个数字的坐标，方便快速查找。
+- 检查每一步是否符合骑士的移动规则。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_knight_tour(grid: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查给定的网格是否表示有效的骑士巡视方案。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    if n == 0:
+        return False
+    
+    # 构建一个字典来存储每个数字对应的坐标
+    pos = {}
+    for i in range(n):
+        for j in range(n):
+            pos[grid[i][j]] = (i, j)
+    
+    # 定义骑士的移动方向
+    moves = [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2)]
+    
+    # 检查每一步是否符合骑士的移动规则
+    for step in range(1, n * n):
+        r1, c1 = pos[step - 1]
+        r2, c2 = pos[step]
+        if not any((r1 + dr, c1 + dc) == (r2, c2) for dr, dc in moves):
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_knight_tour)

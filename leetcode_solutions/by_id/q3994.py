@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个数字的出现频率，然后找到出现频率最低且最小的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为字符串，以便逐位处理。
+2. 使用哈希表统计每个数字的出现频率。
+3. 遍历哈希表，找到出现频率最低且最小的数字。
 
 关键点:
-- [TODO]
+- 使用哈希表进行频率统计。
+- 遍历哈希表时，同时考虑频率和数字大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是 n 的十进制表示的位数。
+空间复杂度: O(1)，因为哈希表的大小最多为 10（0 到 9）。
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_least_frequent_digit(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出整数 n 十进制表示中出现频率最低的数字。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数 n 转换为字符串
+    n_str = str(n)
+    
+    # 使用哈希表统计每个数字的出现频率
+    frequency = [0] * 10
+    for digit in n_str:
+        frequency[int(digit)] += 1
+    
+    # 初始化最小频率和结果
+    min_frequency = float('inf')
+    result = None
+    
+    # 遍历哈希表，找到出现频率最低且最小的数字
+    for digit in range(10):
+        if frequency[digit] > 0 and frequency[digit] < min_frequency:
+            min_frequency = frequency[digit]
+            result = digit
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_least_frequent_digit)

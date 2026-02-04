@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用等差数列的性质，通过求和公式计算出完整的等差数列的和，然后减去实际数组的和，即可得到缺失的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算等差数列的公差 d。
+2. 计算等差数列的总和 sum_complete。
+3. 计算实际数组的总和 sum_actual。
+4. 缺失的数字为 sum_complete - sum_actual。
 
 关键点:
-- [TODO]
+- 通过等差数列的求和公式可以快速计算出完整的等差数列的和。
+- 通过一次遍历计算实际数组的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_missing_number(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到等差数列中缺失的数字
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    total_diff = (arr[-1] - arr[0]) // n
+    expected_sum = (n + 1) * (arr[0] + arr[-1]) // 2
+    actual_sum = sum(arr)
+    return expected_sum - actual_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_missing_number)

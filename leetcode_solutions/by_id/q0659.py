@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来记录每个数字的出现次数和当前可以延长的子序列的尾部。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表：`count` 用于记录每个数字的剩余数量，`tails` 用于记录当前可以延长的子序列的尾部。
+2. 遍历数组 `nums`：
+   - 更新 `count` 中当前数字的数量。
+   - 如果当前数字可以延长现有的子序列（即 `tails` 中存在当前数字减一），则更新 `tails`。
+   - 否则，检查当前数字是否可以作为新的子序列的开始，并且后续的两个数字是否存在。
+3. 最后检查 `tails` 中是否存在长度小于 3 的子序列。
 
 关键点:
-- [TODO]
+- 使用哈希表 `count` 和 `tails` 来高效地管理和扩展子序列。
+- 确保每个子序列的长度至少为 3。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `count` 和 `tails` 在最坏情况下需要存储所有元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def is_possible(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以将数组分割成一个或多个长度至少为 3 的连续递增子序列。
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    tails = {}
 
+    for num in nums:
+        count[num] = count.get(num, 0) + 1
 
-Solution = create_solution(solution_function_name)
+    for num in nums:
+        if count[num] == 0:
+            continue
+        count[num] -= 1
+
+        if tails.get(num - 1, 0) > 0:
+            tails[num - 1] -= 1
+            tails[num] = tails.get(num, 0) + 1
+        elif count.get(num + 1, 0) > 0 and count.get(num + 2, 0) > 0:
+            count[num + 1] -= 1
+            count[num + 2] -= 1
+            tails[num + 2] = tails.get(num + 2, 0) + 1
+        else:
+            return False
+
+    return True
+
+Solution = create_solution(is_possible)

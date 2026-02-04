@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每一行进行排序，然后逐列找到最大值并累加。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对每一行进行排序。
+2. 初始化答案为0。
+3. 对于每一列，找到该列的最大值并将其加到答案中。
 
 关键点:
-- [TODO]
+- 通过排序，可以方便地找到每一行的最大值。
+- 逐列遍历，确保每次删除的是当前列的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def delete_greatest_value(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除每行中的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对每一行进行排序
+    for row in grid:
+        row.sort()
+    
+    # 初始化答案
+    answer = 0
+    
+    # 逐列遍历，找到每一列的最大值并累加
+    for col in range(len(grid[0])):
+        max_val = 0
+        for row in grid:
+            max_val = max(max_val, row[col])
+        answer += max_val
+    
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(delete_greatest_value)

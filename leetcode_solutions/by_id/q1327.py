@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用累计权重来确定最后一个能进入巴士的乘客。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按照 turn 列对 Queue 表进行排序。
+2. 初始化总重量为 0。
+3. 遍历排序后的 Queue 表，累加每个乘客的体重。
+4. 如果累加后的总重量超过 1000 千克，则返回上一个乘客的名字。
+5. 如果遍历结束仍未超过 1000 千克，则返回最后一个乘客的名字。
 
 关键点:
-- [TODO]
+- 使用累计权重来判断是否超过重量限制。
+- 通过遍历一次 Queue 表来找到最后一个能进入巴士的乘客。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 Queue 表的长度，因为需要对表进行排序。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(queue: List[dict]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最后一个能进入巴士的乘客
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 turn 列对 Queue 表进行排序
+    queue.sort(key=lambda x: x['turn'])
+    
+    total_weight = 0
+    last_person_name = ""
+    
+    for person in queue:
+        if total_weight + person['weight'] <= 1000:
+            total_weight += person['weight']
+            last_person_name = person['person_name']
+        else:
+            break
+    
+    return last_person_name
 
 
 Solution = create_solution(solution_function_name)

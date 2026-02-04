@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过递归和数学推导来找到第 k 位字符，避免生成完整的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 k 位于中间位置 (即 k == 2^(n-1))，直接返回 "1"。
+2. 如果 k 小于中间位置，递归调用 find_kth_bit(n-1, k)。
+3. 如果 k 大于中间位置，递归调用 find_kth_bit(n-1, 2^n - k)，并翻转结果。
 
 关键点:
-- [TODO]
+- 通过递归和数学推导避免生成完整的字符串，从而优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_kth_bit(n: int, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    递归函数 - 找到第 n 个二进制字符串中的第 k 位字符
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return "0"
+    mid = (1 << (n - 1))
+    if k == mid:
+        return "1"
+    elif k < mid:
+        return find_kth_bit(n - 1, k)
+    else:
+        return "1" if find_kth_bit(n - 1, 2 * mid - k) == "0" else "0"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_bit)

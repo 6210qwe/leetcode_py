@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用四维动态规划来解决这个问题。我们使用两个指针分别表示两个人的位置，通过动态规划计算从起点到终点的最大樱桃数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个四维数组 dp，其中 dp[r1][c1][r2][c2] 表示从 (0, 0) 到 (r1, c1) 和 (r2, c2) 的最大樱桃数。
+2. 初始化 dp[0][0][0][0] 为 grid[0][0]。
+3. 通过四重循环遍历所有可能的状态，更新 dp 数组。
+4. 最后返回 dp[n-1][n-1][n-1][n-1]。
 
 关键点:
-- [TODO]
+- 使用四维动态规划来处理两个路径的问题。
+- 注意边界条件和无效状态的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)
+空间复杂度: O(n^3)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def cherryPickup(grid: List[List[int]]) -> int:
+    n = len(grid)
+    # 初始化 dp 数组
+    dp = [[[[-float('inf')] * n for _ in range(n)] for _ in range(n)] for _ in range(n)]
+    dp[0][0][0][0] = grid[0][0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for r1 in range(n):
+        for c1 in range(n):
+            for r2 in range(n):
+                c2 = r1 + c1 - r2
+                if c2 < 0 or c2 >= n or grid[r1][c1] == -1 or grid[r2][c2] == -1:
+                    continue
+                cherries = grid[r1][c1]
+                if r1 != r2 or c1 != c2:
+                    cherries += grid[r2][c2]
+                for dr1, dc1, dr2, dc2 in [(-1, 0, -1, 0), (-1, 0, 0, -1), (0, -1, -1, 0), (0, -1, 0, -1)]:
+                    pr1, pc1, pr2, pc2 = r1 + dr1, c1 + dc1, r2 + dr2, c2 + dc2
+                    if pr1 >= 0 and pc1 >= 0 and pr2 >= 0 and pc2 >= 0:
+                        dp[r1][c1][r2][c2] = max(dp[r1][c1][r2][c2], dp[pr1][pc1][pr2][pc2] + cherries)
 
+    return max(0, dp[n-1][n-1][n-1][n-1])
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(cherryPickup)

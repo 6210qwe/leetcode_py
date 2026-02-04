@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，每次从最大的两堆中取石子，直到无法再取为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将三堆石子的数量按降序排列。
+2. 计算总石子数 `total` 和最大堆的石子数 `max_stones`。
+3. 如果 `max_stones` 大于其他两堆石子数之和，则最大得分是 `(total - max_stones) // 2`。
+4. 否则，最大得分是 `total // 2`。
 
 关键点:
-- [TODO]
+- 通过排序和简单的数学计算来确定最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(a: int, b: int, c: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现移除石子的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    # 将三堆石子的数量按降序排列
+    stones = sorted([a, b, c], reverse=True)
+    
+    # 计算总石子数
+    total = sum(stones)
+    
+    # 计算最大堆的石子数
+    max_stones = stones[0]
+    
+    # 如果最大堆的石子数大于其他两堆石子数之和
+    if max_stones > total - max_stones:
+        return (total - max_stones) // 2
+    else:
+        return total // 2
 
 
 Solution = create_solution(solution_function_name)

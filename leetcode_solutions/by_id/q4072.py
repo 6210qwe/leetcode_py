@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来计算每个组内的节点对的交互代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 DFS 遍历树，计算每个组内的节点对的交互代价。
+3. 在 DFS 过程中，维护当前子树的节点数和路径长度，以便计算交互代价。
 
 关键点:
-- [TODO]
+- 使用字典存储每个组的节点列表。
+- 在 DFS 过程中，递归地计算子树的节点数和路径长度。
+- 通过子树的节点数和路径长度计算交互代价。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +51,45 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def total_sum_of_interaction_cost(n: int, edges: List[List[int]], group: List[int]) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 存储每个组的节点列表
+    group_nodes = {}
+    for i, g in enumerate(group):
+        if g not in group_nodes:
+            group_nodes[g] = []
+        group_nodes[g].append(i)
 
+    def dfs(node: int, parent: int, depth: int) -> (int, int):
+        """
+        深度优先搜索
+        :param node: 当前节点
+        :param parent: 父节点
+        :param depth: 当前节点的深度
+        :return: 子树的节点数和路径长度
+        """
+        subtree_size = 1
+        path_length = 0
+        for neighbor in graph[node]:
+            if neighbor == parent:
+                continue
+            child_size, child_path_length = dfs(neighbor, node, depth + 1)
+            subtree_size += child_size
+            path_length += child_path_length + child_size
+        return subtree_size, path_length
 
-Solution = create_solution(solution_function_name)
+    total_cost = 0
+    for g, nodes in group_nodes.items():
+        for node in nodes:
+            subtree_size, path_length = dfs(node, -1, 0)
+            total_cost += path_length
+
+    # 由于每条边被计算了两次，需要除以2
+    return total_cost // 2
+
+Solution = create_solution(total_sum_of_interaction_cost)

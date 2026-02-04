@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来最大化商品数量
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有商品按单位重量的价值从高到低排序。
+2. 使用一个优先队列（最小堆）来存储当前选择的商品的重量。
+3. 遍历排序后的商品列表，对于每个商品：
+   - 如果当前背包容量足够，则直接加入背包，并更新背包剩余容量。
+   - 如果当前背包容量不足，则将优先队列中最小重量的商品移除，以腾出空间。
+4. 返回最终背包中的商品总价值。
 
 关键点:
-- [TODO]
+- 使用优先队列来动态调整背包中的商品，确保每次选择都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是商品的数量。排序操作的时间复杂度为 O(n log n)，优先队列的操作为 O(log n)。
+空间复杂度: O(n)，优先队列的空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(weights: List[int], values: List[int], capacity: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化商品价值
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算每个商品的单位重量价值
+    items = sorted(zip(weights, values), key=lambda x: x[1] / x[0], reverse=True)
+    
+    total_value = 0
+    current_weight = 0
+    min_heap = []
+    
+    for weight, value in items:
+        if current_weight + weight <= capacity:
+            # 如果当前背包容量足够，则直接加入背包
+            current_weight += weight
+            total_value += value
+            heapq.heappush(min_heap, weight)
+        elif min_heap and min_heap[0] < weight:
+            # 如果当前背包容量不足，则将优先队列中最小重量的商品移除
+            current_weight += weight - heapq.heappop(min_heap)
+            current_weight -= heapq.heappushpop(min_heap, weight)
+    
+    return total_value
 
 Solution = create_solution(solution_function_name)

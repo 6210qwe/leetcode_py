@@ -21,40 +21,36 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 的 drop_duplicates 方法来删除重复的行，基于 email 列，并保留第一次出现的行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 使用 drop_duplicates 方法删除重复行，指定 email 列为依据，并保留第一次出现的行。
+3. 返回处理后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 drop_duplicates 方法可以高效地删除重复行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。drop_duplicates 方法的时间复杂度是线性的。
+空间复杂度: O(1)，除了输入和输出外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def drop_duplicate_rows(customers: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除 DataFrame 中基于 email 列的重复行，仅保留第一次出现的行。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 drop_duplicates 方法删除重复行，基于 email 列，并保留第一次出现的行
+    return customers.drop_duplicates(subset='email', keep='first')
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(drop_duplicate_rows)

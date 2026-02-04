@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用位掩码表示每个字符串的字符集合。
+- 对于每个 startWord，生成所有可能的变体（即添加一个不在原字符串中的字符）。
+- 使用哈希表存储这些变体，以便快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `word_set` 来存储 startWords 的所有可能变体。
+2. 对于每个 startWord，将其字符集合表示为一个 26 位的整数（位掩码）。
+3. 生成所有可能的变体（通过在位掩码上设置未使用的位），并将这些变体存储在 `word_set` 中。
+4. 遍历 targetWords，对于每个 targetWord，计算其字符集合的位掩码。
+5. 检查该位掩码是否在 `word_set` 中，如果是，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用位掩码可以高效地表示和比较字符集合。
+- 通过预处理 startWords 的所有可能变体，可以在 O(1) 时间内检查 targetWords 中的每个字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26 + m)，其中 n 是 startWords 的长度，m 是 targetWords 的长度。生成变体的时间复杂度是 O(n * 26)，检查 targetWords 的时间复杂度是 O(m)。
+空间复杂度: O(n * 26)，存储 startWords 的所有可能变体。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_words_obtained_after_adding_letter(startWords: List[str], targetWords: List[str]) -> int:
+    word_set = set()
+    
+    # 生成 startWords 的所有可能变体
+    for word in startWords:
+        mask = 0
+        for char in word:
+            mask |= 1 << (ord(char) - ord('a'))
+        for i in range(26):
+            if not (mask & (1 << i)):
+                word_set.add(mask | (1 << i))
+    
+    count = 0
+    # 检查 targetWords 是否在 word_set 中
+    for word in targetWords:
+        mask = 0
+        for char in word:
+            mask |= 1 << (ord(char) - ord('a'))
+        if mask in word_set:
+            count += 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_words_obtained_after_adding_letter)

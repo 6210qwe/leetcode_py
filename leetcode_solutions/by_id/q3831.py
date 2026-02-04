@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和后缀的乘积来计算每个可能的 x 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀乘积和后缀乘积。
+2. 使用哈希表记录每个前缀乘积出现的次数。
+3. 遍历后缀乘积，计算每个可能的 x 值，并更新结果数组。
 
 关键点:
-- [TODO]
+- 使用模运算来处理大数乘积。
+- 通过哈希表优化查找前缀乘积的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k + n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_x_value_of_array(nums: List[int], k: int) -> List[int]:
+    n = len(nums)
+    prefix_product = 1
+    suffix_product = 1
+    prefix_count = [0] * k
+    result = [0] * k
+    
+    # 计算前缀乘积并记录每个前缀乘积出现的次数
+    for i in range(n):
+        prefix_product = (prefix_product * nums[i]) % k
+        prefix_count[prefix_product] += 1
+    
+    # 计算后缀乘积并更新结果数组
+    for i in range(n - 1, -1, -1):
+        suffix_product = (suffix_product * nums[i]) % k
+        if i < n - 1:
+            result[suffix_product] += prefix_count[(k - suffix_product) % k]
+        else:
+            result[suffix_product] += 1
+        prefix_count[prefix_product] -= 1
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_x_value_of_array)

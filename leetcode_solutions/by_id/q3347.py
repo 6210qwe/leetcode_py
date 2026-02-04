@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组并根据条件将元素分配到两个数组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个空数组 arr1 和 arr2。
+2. 将 nums[0] 追加到 arr1，将 nums[1] 追加到 arr2。
+3. 从第三个元素开始遍历 nums 数组：
+   - 如果 arr1 的最后一个元素大于 arr2 的最后一个元素，将当前元素追加到 arr1。
+   - 否则，将当前元素追加到 arr2。
+4. 最后，将 arr1 和 arr2 连接起来形成结果数组 result 并返回。
 
 关键点:
-- [TODO]
+- 通过比较 arr1 和 arr2 的最后一个元素来决定当前元素的分配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 遍历一次数组。
+空间复杂度: O(n) - 使用了两个额外的数组来存储元素。
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_elements_into_two_arrays(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将元素分配到两个数组中 I
     """
-    # TODO: 实现最优解法
-    pass
+    arr1 = [nums[0]]
+    arr2 = [nums[1]]
+
+    for num in nums[2:]:
+        if arr1[-1] > arr2[-1]:
+            arr1.append(num)
+        else:
+            arr2.append(num)
+
+    return arr1 + arr2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_elements_into_two_arrays)

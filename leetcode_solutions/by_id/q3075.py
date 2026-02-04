@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库中的 dropna 方法来删除具有缺失值的行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 读取输入数据并转换为 DataFrame。
+3. 使用 dropna 方法删除 name 列中具有缺失值的行。
+4. 返回处理后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 dropna 方法可以高效地删除具有缺失值的行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。dropna 方法的时间复杂度是线性的。
+空间复杂度: O(1)，除了返回的结果外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(students: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除具有缺失值的行
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用 dropna 方法删除 name 列中具有缺失值的行
+    result = students.dropna(subset=['name'])
+    return result
 
 Solution = create_solution(solution_function_name)

@@ -21,56 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用原地修改的方法，将每个元素放到其对应的索引位置上，然后遍历数组找到那些不在正确位置上的索引。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 遍历数组，将每个元素放到其对应的索引位置上。
+2. 再次遍历数组，找到那些不在正确位置上的索引，这些索引即为消失的数字。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用原地修改的方法，避免使用额外空间。
+- 优化时间和空间复杂度，确保时间复杂度为 O(n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 需要两次遍历数组
+空间复杂度: O(1) - 除了返回的结果数组外，不使用额外空间
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def find_all_numbers_disappeared_in_an_array(params):
+def find_all_numbers_disappeared_in_an_array(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 找到所有数组中消失的数字
     
     实现思路:
-    [待实现] 简要说明实现思路
+    通过原地修改的方法，将每个元素放到其对应的索引位置上，然后遍历数组找到那些不在正确位置上的索引。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 包含 n 个整数的数组，其中 nums[i] 在区间 [1, n] 内
         
     Returns:
-        [待实现] 返回值说明
+        返回所有在 [1, n] 范围内但没有出现在 nums 中的数字
         
     Example:
-        >>> find_all_numbers_disappeared_in_an_array([待实现])
-        [待实现]
+        >>> find_all_numbers_disappeared_in_an_array([4,3,2,7,8,2,3,1])
+        [5, 6]
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    for i in range(n):
+        while nums[i] != i + 1 and nums[nums[i] - 1] != nums[i]:
+            # 将 nums[i] 放到其对应的索引位置上
+            nums[nums[i] - 1], nums[i] = nums[i], nums[nums[i] - 1]
+    
+    # 找到那些不在正确位置上的索引
+    return [i + 1 for i in range(n) if nums[i] != i + 1]
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(find_all_numbers_disappeared_in_an_array)

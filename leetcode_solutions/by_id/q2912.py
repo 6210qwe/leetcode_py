@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 递归遍历对象的每个属性，根据条件进行筛选。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数来遍历对象的每个属性。
+2. 如果当前属性是字典或列表，则递归调用该函数。
+3. 根据给定的条件判断是否保留当前属性。
+4. 返回筛选后的对象。
 
 关键点:
-- [TODO]
+- 递归处理嵌套的字典和列表。
+- 使用条件函数来判断是否保留属性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是对象中所有键值对和列表元素的总数。
+空间复杂度: O(d)，其中 d 是对象的最大深度，因为递归调用栈的深度最多为 d。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any, Callable
 
-
-def solution_function_name(params):
+def deep_object_filter(obj: Any, condition: Callable[[Any], bool]) -> Any:
     """
-    函数式接口 - [TODO] 实现
+    递归遍历对象的每个属性，根据条件进行筛选。
+
+    :param obj: 要筛选的对象。
+    :param condition: 判断是否保留属性的条件函数。
+    :return: 筛选后的对象。
     """
-    # TODO: 实现最优解法
-    pass
+    if isinstance(obj, dict):
+        return {k: deep_object_filter(v, condition) for k, v in obj.items() if condition(v)}
+    elif isinstance(obj, list):
+        return [deep_object_filter(item, condition) for item in obj if condition(item)]
+    else:
+        return obj if condition(obj) else None
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(deep_object_filter)

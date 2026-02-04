@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串，统计不在竖线对之间的星号数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录星号的数量。
+2. 初始化一个标志变量 `in_pair` 用于标记当前是否在竖线对之间。
+3. 遍历字符串 `s`：
+   - 如果遇到竖线 `|`，切换 `in_pair` 的状态。
+   - 如果 `in_pair` 为 `False` 且遇到星号 `*`，增加 `count`。
+4. 返回 `count`。
 
 关键点:
-- [TODO]
+- 使用标志变量 `in_pair` 来判断当前是否在竖线对之间。
+- 仅在 `in_pair` 为 `False` 时统计星号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_asterisks(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计不在竖线对之间的星号数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    in_pair = False
+    for char in s:
+        if char == '|':
+            in_pair = not in_pair
+        elif char == '*' and not in_pair:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_asterisks)

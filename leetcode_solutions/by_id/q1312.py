@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储已挖掘的单元格，并检查每个工件的所有部分是否都在已挖掘的单元格中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有已挖掘的单元格存入集合 `dug`。
+2. 遍历每个工件，检查其所有部分是否都在 `dug` 集合中。
+3. 如果某个工件的所有部分都在 `dug` 集合中，则将其计入可提取的工件数量。
 
 关键点:
-- [TODO]
+- 使用集合来高效地检查单元格是否已被挖掘。
+- 遍历每个工件的所有部分，确保所有部分都被挖掘。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(A + D)，其中 A 是 artifacts 的长度，D 是 dig 的长度。我们需要遍历 dig 来构建集合，然后遍历 artifacts 来检查每个工件。
+空间复杂度: O(D)，用于存储已挖掘的单元格集合。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_artifacts(n: int, artifacts: List[List[int]], dig: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计可以提取的工件
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有已挖掘的单元格存入集合
+    dug = set(tuple(cell) for cell in dig)
+    
+    # 计算可以提取的工件数量
+    extractable_count = 0
+    
+    for artifact in artifacts:
+        r1, c1, r2, c2 = artifact
+        all_parts_dug = True
+        
+        for r in range(r1, r2 + 1):
+            for c in range(c1, c2 + 1):
+                if (r, c) not in dug:
+                    all_parts_dug = False
+                    break
+            if not all_parts_dug:
+                break
+        
+        if all_parts_dug:
+            extractable_count += 1
+    
+    return extractable_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_artifacts)

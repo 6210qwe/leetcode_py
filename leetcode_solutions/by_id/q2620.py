@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个队列来存储最近的 k 个整数，并维护一个计数器来记录当前连续的 value 数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列和一个计数器。
+2. 在每次调用 `consec` 方法时，将新的整数添加到队列中。
+3. 如果队列长度超过 k，则移除队列头部的元素，并更新计数器。
+4. 检查队列中的所有元素是否都等于 value，并返回相应的布尔值。
 
 关键点:
-- [TODO]
+- 使用队列来维护最近的 k 个整数。
+- 使用计数器来优化对队列中元素的检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用 `consec` 方法的时间复杂度是常数级别的。
+空间复杂度: O(k) - 队列最多存储 k 个整数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class DataStream:
+    def __init__(self, value: int, k: int):
+        self.value = value
+        self.k = k
+        self.queue = deque()
+        self.count = 0
+
+    def consec(self, num: int) -> bool:
+        # 将新整数添加到队列中
+        self.queue.append(num)
+        
+        # 更新计数器
+        if num == self.value:
+            self.count += 1
+        else:
+            self.count = 0
+        
+        # 如果队列长度超过 k，则移除队列头部的元素
+        if len(self.queue) > self.k:
+            removed_num = self.queue.popleft()
+            if removed_num == self.value:
+                self.count -= 1
+        
+        # 检查队列中的所有元素是否都等于 value
+        return self.count == self.k
 
 
-Solution = create_solution(solution_function_name)
+# 示例
+if __name__ == "__main__":
+    dataStream = DataStream(4, 3)
+    print(dataStream.consec(4))  # 输出: False
+    print(dataStream.consec(4))  # 输出: False
+    print(dataStream.consec(4))  # 输出: True
+    print(dataStream.consec(3))  # 输出: False

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来确定 n 的二进制表示中的每一位，并构建 powers 数组。然后使用前缀积来快速计算查询结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为二进制表示，构建 powers 数组。
+2. 计算 powers 数组的前缀积。
+3. 对于每个查询，使用前缀积快速计算结果并取模。
 
 关键点:
-- [TODO]
+- 使用位运算高效地构建 powers 数组。
+- 使用前缀积来加速查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n + q)，其中 n 是输入的整数，q 是查询的数量。
+空间复杂度: O(log n)，用于存储 powers 数组和前缀积数组。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    powers = []
+    
+    # 构建 powers 数组
+    for i in range(31):
+        if (n >> i) & 1:
+            powers.append(1 << i)
+    
+    # 计算前缀积
+    prefix_product = [1]
+    for power in powers:
+        prefix_product.append((prefix_product[-1] * power) % MOD)
+    
+    # 处理查询
+    results = []
+    for left, right in queries:
+        result = (prefix_product[right + 1] * pow(prefix_product[left], MOD - 2, MOD)) % MOD
+        results.append(result)
+    
+    return results
 
 
 Solution = create_solution(solution_function_name)

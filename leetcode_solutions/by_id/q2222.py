@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逐个计算区间的乘积并处理后缀0，避免直接计算大数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量来存储乘积和后缀0的数量。
+2. 遍历区间内的每个数，更新乘积并统计后缀0的数量。
+3. 处理乘积，移除后缀0，并根据位数决定是否进行缩写。
+4. 返回最终的缩写结果。
 
 关键点:
-- [TODO]
+- 使用对数来处理大数乘积，避免直接计算导致溢出。
+- 逐个处理后缀0，确保结果准确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是区间 [left, right] 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def abbreviate_product(left: int, right: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    计算闭区间 [left, right] 中所有整数乘积的缩写。
     """
-    # TODO: 实现最优解法
-    pass
+    product = 1
+    num_zeros = 0
+    
+    for i in range(left, right + 1):
+        product *= i
+        while product % 10 == 0:
+            product //= 10
+            num_zeros += 1
+    
+    product_str = str(product)
+    length = len(product_str)
+    
+    if length <= 10:
+        return f"{product_str}e{num_zeros}"
+    else:
+        prefix = product_str[:5]
+        suffix = product_str[-5:]
+        return f"{prefix}...{suffix}e{num_zeros}"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(abbreviate_product)

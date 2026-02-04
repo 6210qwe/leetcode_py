@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个值在数组中的所有索引，然后使用二分查找来快速计算区间内的频率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，遍历数组，将每个值的索引存入哈希表。
+2. 查询时，使用二分查找找到左边界和右边界，计算区间内的频率。
 
 关键点:
-- [TODO]
+- 使用哈希表存储每个值的索引列表。
+- 使用二分查找快速定位区间内的频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q log n)，其中 n 是数组长度，q 是查询次数。初始化的时间复杂度是 O(n)，每次查询的时间复杂度是 O(log n)。
+空间复杂度: O(n)，哈希表存储每个值的索引列表。
 """
 
 # ============================================================================
@@ -49,12 +50,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class RangeFreqQuery:
+
+    def __init__(self, arr: List[int]):
+        self.index_map = {}
+        for i, num in enumerate(arr):
+            if num not in self.index_map:
+                self.index_map[num] = []
+            self.index_map[num].append(i)
+
+    def query(self, left: int, right: int, value: int) -> int:
+        if value not in self.index_map:
+            return 0
+        indices = self.index_map[value]
+        left_idx = self._binary_search_left(indices, left)
+        right_idx = self._binary_search_right(indices, right)
+        return right_idx - left_idx
+
+    def _binary_search_left(self, indices: List[int], target: int) -> int:
+        low, high = 0, len(indices)
+        while low < high:
+            mid = (low + high) // 2
+            if indices[mid] < target:
+                low = mid + 1
+            else:
+                high = mid
+        return low
+
+    def _binary_search_right(self, indices: List[int], target: int) -> int:
+        low, high = 0, len(indices)
+        while low < high:
+            mid = (low + high) // 2
+            if indices[mid] <= target:
+                low = mid + 1
+            else:
+                high = mid
+        return low
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(RangeFreqQuery)

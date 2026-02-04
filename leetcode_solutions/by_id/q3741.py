@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每个会议的初始空闲时间。
+2. 尝试移动每个会议，计算移动后的最大空闲时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有会议按开始时间排序。
+2. 计算每个会议前后的空闲时间。
+3. 尝试移动每个会议，计算移动后的最大空闲时间。
+4. 返回最大空闲时间。
 
 关键点:
-- [TODO]
+- 通过贪心算法找到最优解。
+- 保持代码简洁和可读性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_free_time(eventTime: int, startTime: List[int], endTime: List[int]) -> int:
+    n = len(startTime)
+    intervals = sorted(zip(startTime, endTime), key=lambda x: x[0])
+    
+    # Calculate initial free times
+    free_times = []
+    for i in range(n):
+        if i == 0:
+            free_times.append(intervals[i][0])
+        else:
+            free_times.append(intervals[i][0] - intervals[i-1][1])
+    
+    # Add the last free time
+    free_times.append(eventTime - intervals[-1][1])
+    
+    # Try to move each meeting and calculate the maximum free time
+    max_free = max(free_times)
+    for i in range(n):
+        duration = intervals[i][1] - intervals[i][0]
+        
+        # Move the meeting to the left
+        if i > 0:
+            new_free = intervals[i][0] - (intervals[i-1][1] - duration)
+            max_free = max(max_free, min(new_free, free_times[i-1] + free_times[i]))
+        
+        # Move the meeting to the right
+        if i < n - 1:
+            new_free = (intervals[i+1][0] + duration) - intervals[i][1]
+            max_free = max(max_free, min(new_free, free_times[i] + free_times[i+1]))
+    
+    return max_free
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_free_time)

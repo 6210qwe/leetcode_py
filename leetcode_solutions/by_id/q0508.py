@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 计算每个节点的子树元素和，并使用哈希表记录每个子树元素和的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算以当前节点为根的子树元素和。
+2. 在递归过程中，更新哈希表中每个子树元素和的出现次数。
+3. 遍历哈希表，找到出现次数最多的子树元素和。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算子树元素和。
+- 使用哈希表记录每个子树元素和的出现次数。
+- 找到出现次数最多的子树元素和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，哈希表的空间复杂度也是 O(n)。
 """
 
 # ============================================================================
@@ -44,17 +47,44 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_frequent_tree_sum(root: Optional[TreeNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回出现次数最多的子树元素和。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
 
+    # 哈希表记录每个子树元素和的出现次数
+    sum_count = {}
 
-Solution = create_solution(solution_function_name)
+    def dfs(node: TreeNode) -> int:
+        """
+        递归计算以当前节点为根的子树元素和。
+        """
+        if not node:
+            return 0
+
+        # 计算当前节点的子树元素和
+        subtree_sum = node.val + dfs(node.left) + dfs(node.right)
+
+        # 更新哈希表
+        if subtree_sum in sum_count:
+            sum_count[subtree_sum] += 1
+        else:
+            sum_count[subtree_sum] = 1
+
+        return subtree_sum
+
+    # 计算所有子树元素和
+    dfs(root)
+
+    # 找到出现次数最多的子树元素和
+    max_count = max(sum_count.values())
+    result = [subtree_sum for subtree_sum, count in sum_count.items() if count == max_count]
+
+    return result
+
+Solution = create_solution(find_frequent_tree_sum)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查花色是否一致来判断是否为同花，然后通过计数牌面大小来判断是否有三条或对子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查所有花色是否相同，如果相同则返回 "Flush"。
+2. 使用哈希表统计每个牌面大小出现的次数。
+3. 根据牌面大小的统计结果，判断是否存在三条或对子，返回相应的手牌类型。
+4. 如果没有找到上述手牌类型，则返回 "High Card"。
 
 关键点:
-- [TODO]
+- 使用集合来快速检查花色是否一致。
+- 使用字典来统计牌面大小的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为输入大小固定为 5，所以时间复杂度是常数级的。
+空间复杂度: O(1) - 使用的额外空间也是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def best_poker_hand(ranks: List[int], suits: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回给定的 5 张牌中，能组成的最好手牌类型。
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查是否为同花
+    if len(set(suits)) == 1:
+        return "Flush"
+    
+    # 统计每个牌面大小出现的次数
+    rank_count = {}
+    for rank in ranks:
+        if rank in rank_count:
+            rank_count[rank] += 1
+        else:
+            rank_count[rank] = 1
+    
+    # 检查是否有三条
+    for count in rank_count.values():
+        if count >= 3:
+            return "Three of a Kind"
+    
+    # 检查是否有对子
+    for count in rank_count.values():
+        if count == 2:
+            return "Pair"
+    
+    # 如果没有找到上述手牌类型，则返回 "High Card"
+    return "High Card"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(best_poker_hand)

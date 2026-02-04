@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历字符串，记录当前连续的 1 和 0 的长度，并更新最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `max_ones` 和 `max_zeros` 分别记录 1 和 0 的最长连续子字符串的长度。
+2. 初始化两个变量 `current_ones` 和 `current_zeros` 分别记录当前连续的 1 和 0 的长度。
+3. 遍历字符串：
+   - 如果当前字符是 '1'，则增加 `current_ones` 并重置 `current_zeros`。
+   - 如果当前字符是 '0'，则增加 `current_zeros` 并重置 `current_ones`。
+   - 更新 `max_ones` 和 `max_zeros`。
+4. 比较 `max_ones` 和 `max_zeros`，返回 `max_ones > max_zeros`。
 
 关键点:
-- [TODO]
+- 通过一次遍历字符串来记录最长的连续 1 和 0 的长度。
+- 使用四个变量来分别记录当前和最大长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串 s 中由 1 组成的最长连续子字符串是否严格长于由 0 组成的最长连续子字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    max_ones = 0
+    max_zeros = 0
+    current_ones = 0
+    current_zeros = 0
+
+    for char in s:
+        if char == '1':
+            current_ones += 1
+            current_zeros = 0
+        else:
+            current_zeros += 1
+            current_ones = 0
+        max_ones = max(max_ones, current_ones)
+        max_zeros = max(max_zeros, current_zeros)
+
+    return max_ones > max_zeros
 
 
 Solution = create_solution(solution_function_name)

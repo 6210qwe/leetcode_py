@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的出现次数，然后遍历找到重复和缺失的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表，用于记录每个数字的出现次数。
+2. 遍历整个矩阵，更新哈希表中的计数。
+3. 遍历哈希表，找到出现两次的数字（重复）和未出现的数字（缺失）。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个数字的出现次数，时间复杂度为 O(n^2)。
+- 通过遍历哈希表找到重复和缺失的数字，空间复杂度为 O(n^2)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_missing_and_repeated_values(grid: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出缺失和重复的数字
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    count = [0] * (n * n + 1)
+    
+    # 记录每个数字的出现次数
+    for i in range(n):
+        for j in range(n):
+            count[grid[i][j]] += 1
+    
+    # 找到重复和缺失的数字
+    repeated = missing = -1
+    for i in range(1, n * n + 1):
+        if count[i] == 2:
+            repeated = i
+        elif count[i] == 0:
+            missing = i
+    
+    return [repeated, missing]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_missing_and_repeated_values)

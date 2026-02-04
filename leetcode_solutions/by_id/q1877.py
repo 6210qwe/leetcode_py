@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个用户的关注者数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 对 user_id 进行分组。
+2. 使用 COUNT 函数统计每个 user_id 的 follower_id 数量。
+3. 按 user_id 排序结果。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 COUNT 函数来统计每个用户的关注者数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 Followers 表的行数。GROUP BY 和 ORDER BY 操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询操作不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(followers: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from operator import itemgetter
+    
+    # 统计每个用户的关注者数量
+    followers_count = defaultdict(int)
+    for user_id, follower_id in followers:
+        followers_count[user_id] += 1
+    
+    # 按 user_id 排序并生成结果
+    result = [[user_id, count] for user_id, count in sorted(followers_count.items(), key=itemgetter(0))]
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出在指定时间段内有活动记录的用户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 确定查询的时间范围。
+2. 使用 SQL 查询语句从数据库中筛选出在该时间范围内有活动记录的用户。
+3. 返回这些用户的 ID 列表。
 
 关键点:
-- [TODO]
+- 使用合适的 SQL 查询语句来过滤和选择数据。
+- 确保查询的时间范围正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是用户活动记录的数量。SQL 查询的时间复杂度取决于数据库的实现，但通常为线性。
+空间复杂度: O(1)，因为 SQL 查询的空间复杂度主要取决于数据库引擎的内部实现，而不是输入数据的大小。
 """
 
 # ============================================================================
@@ -48,13 +50,16 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找活跃用户的 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 实现最优解法
+    query = """
+    SELECT DISTINCT user_id
+    FROM Activity
+    WHERE activity_date BETWEEN '2019-06-28' AND '2019-07-27'
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

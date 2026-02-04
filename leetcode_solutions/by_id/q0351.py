@@ -54,25 +54,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def android_unlock_patterns(params):
+def android_unlock_patterns(m: int, n: int) -> int:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> android_unlock_patterns([待实现])
-        [待实现]
+    统计安卓九宫格中，从长度为 m 到 n 的所有合法解锁方案数。
+
+    使用回溯 + 预处理跨越中点的非法跳跃 + 利用对称性剪枝。
     """
-    # TODO: 实现最优解法
-    pass
+    # 预处理跳跃中必经的中间点，0 表示无中间点
+    skip = [[0] * 10 for _ in range(10)]
+    skip[1][3] = skip[3][1] = 2
+    skip[1][7] = skip[7][1] = 4
+    skip[3][9] = skip[9][3] = 6
+    skip[7][9] = skip[9][7] = 8
+    skip[1][9] = skip[9][1] = 5
+    skip[3][7] = skip[7][3] = 5
+    skip[4][6] = skip[6][4] = 5
+    skip[2][8] = skip[8][2] = 5
+
+    visited = [False] * 10
+
+    def dfs(cur: int, remain: int) -> int:
+        if remain == 0:
+            return 1
+        visited[cur] = True
+        res = 0
+        for nxt in range(1, 10):
+            mid = skip[cur][nxt]
+            if not visited[nxt] and (mid == 0 or visited[mid]):
+                res += dfs(nxt, remain - 1)
+        visited[cur] = False
+        return res
+
+    ans = 0
+    for length in range(m, n + 1):
+        # 1,3,7,9 对称
+        ans += dfs(1, length - 1) * 4
+        # 2,4,6,8 对称
+        ans += dfs(2, length - 1) * 4
+        # 中心点 5
+        ans += dfs(5, length - 1)
+    return ans
 
 
 # 自动生成Solution类（无需手动编写）

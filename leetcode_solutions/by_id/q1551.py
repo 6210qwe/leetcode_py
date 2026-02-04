@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库进行数据处理和计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的 DataFrame。
+2. 使用 Pandas 的 `groupby` 和 `agg` 方法对数据进行分组和聚合。
+3. 计算每个项目的净现值 (NPV)。
+4. 返回结果 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 Pandas 进行高效的分组和聚合操作。
+- 利用 Pandas 的向量化操作提高计算效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是数据行数，m 是分组后的项目数量。
+空间复杂度: O(m)，存储分组后的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def npv_queries(values: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每个项目的净现值 (NPV)
     """
-    # TODO: 实现最优解法
-    pass
+    # 按项目 ID 分组，并计算每个项目的 NPV
+    result = values.groupby('project_id').agg(
+        npv=('value', 'sum')
+    ).reset_index()
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(npv_queries)

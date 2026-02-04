@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素在每一行出现的次数，然后找到出现次数等于行数的最小元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `count` 用于记录每个元素在每一行出现的次数。
+2. 遍历矩阵的每一行，更新 `count` 字典。
+3. 遍历 `count` 字典，找到出现次数等于行数的最小元素。
 
 关键点:
-- [TODO]
+- 使用哈希表记录元素出现次数，可以高效地统计和查找。
+- 只需要一次遍历矩阵即可完成统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是每行的元素个数。
+空间复杂度: O(n)，最坏情况下，哈希表中存储了所有不同的元素。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(mat: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出所有行中最小公共元素
     """
-    # TODO: 实现最优解法
-    pass
+    if not mat or not mat[0]:
+        return -1
+
+    count = {}
+    for row in mat:
+        for num in row:
+            if num not in count:
+                count[num] = 0
+            count[num] += 1
+
+    # 找到出现次数等于行数的最小元素
+    for num in sorted(count.keys()):
+        if count[num] == len(mat):
+            return num
+
+    return -1
 
 
 Solution = create_solution(solution_function_name)

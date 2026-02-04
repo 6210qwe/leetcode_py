@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个商品的第一个小于等于它的价格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈和结果数组。
+2. 遍历价格数组，对于每个价格：
+   - 如果栈不为空且当前价格小于等于栈顶价格，则弹出栈顶并计算折扣后的价格。
+   - 将当前价格及其索引压入栈中。
+3. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用单调栈可以高效地找到每个价格的第一个小于等于它的价格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是价格数组的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下栈中会存储所有的价格。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def final_prices(prices: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算商品折扣后的最终价格
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = prices[:]
+    
+    for i, price in enumerate(prices):
+        while stack and prices[stack[-1]] >= price:
+            index = stack.pop()
+            result[index] -= price
+        stack.append(i)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(final_prices)

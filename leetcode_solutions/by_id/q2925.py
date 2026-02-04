@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将对象的键值对进行反转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字典 `inverted_dict` 用于存储反转后的键值对。
+2. 遍历输入字典 `obj` 的每个键值对 `(key, value)`。
+3. 如果 `value` 已经存在于 `inverted_dict` 中，则将 `key` 添加到对应的列表中。
+4. 否则，在 `inverted_dict` 中创建一个新的键 `value`，其值为包含 `key` 的列表。
+5. 返回 `inverted_dict`。
 
 关键点:
-- [TODO]
+- 使用字典来存储反转后的键值对。
+- 使用列表来处理多个键对应同一个值的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字典 `obj` 的键值对数量。需要遍历整个字典一次。
+空间复杂度: O(n)，最坏情况下，每个键值对都不同，需要存储 n 个键值对。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Any, List
 
 
-def solution_function_name(params):
+def invert_object(obj: Dict[Any, Any]) -> Dict[Any, List[Any]]:
     """
-    函数式接口 - [TODO] 实现
+    将对象的键值对进行反转。
+
+    :param obj: 输入字典
+    :return: 反转后的字典
     """
-    # TODO: 实现最优解法
-    pass
+    inverted_dict = {}
+    for key, value in obj.items():
+        if value in inverted_dict:
+            inverted_dict[value].append(key)
+        else:
+            inverted_dict[value] = [key]
+    return inverted_dict
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(invert_object)

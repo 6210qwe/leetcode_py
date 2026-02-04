@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将 word1[0:i] 转换为 word2[0:j] 所需的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示将 word1 的前 i 个字符转换为 word2 的前 j 个字符所需的最小操作数。
+2. 如果 word1[i-1] == word2[j-1]，则 dp[i][j] = dp[i-1][j-1]。
+3. 否则，dp[i][j] = min(dp[i-1][j-1] + 1, dp[i-1][j] + 1, dp[i][j-1] + 1)。
+4. 返回 dp[n][n]，其中 n 是字符串的长度。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。我们需要填充一个 n x n 的 dp 数组。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word1: str, word2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word1)
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+
+    for i in range(1, n + 1):
+        dp[i][0] = i
+        dp[0][i] = i
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = min(
+                    dp[i - 1][j - 1] + 1,  # 替换操作
+                    dp[i - 1][j] + 1,      # 删除操作
+                    dp[i][j - 1] + 1       # 插入操作
+                )
+
+    return dp[n][n]
 
 
 Solution = create_solution(solution_function_name)

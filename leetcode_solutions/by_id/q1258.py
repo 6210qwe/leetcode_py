@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用SQL查询来筛选出所有浏览过自己文章的作者，并按作者ID升序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从Views表中选择author_id和viewer_id相等的记录。
+2. 去重这些记录以确保每个作者只出现一次。
+3. 按author_id升序排列结果。
 
 关键点:
-- [TODO]
+- 使用DISTINCT去重。
+- 使用ORDER BY对结果进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是Views表的行数。排序操作的时间复杂度为O(n log n)。
+空间复杂度: O(1)，不考虑输出结果的空间占用。
 """
 
 # ============================================================================
@@ -51,10 +53,16 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询所有浏览过自己文章的作者，并按作者ID升序排列
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL查询实现
+    query = """
+    SELECT DISTINCT author_id AS id
+    FROM Views
+    WHERE author_id = viewer_id
+    ORDER BY author_id ASC
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

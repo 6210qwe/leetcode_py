@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计子字符串中字符的频率，并检查是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表，一个用于记录 word2 中每个字符的频率，另一个用于记录当前窗口中字符的频率。
+2. 使用滑动窗口遍历 word1，维护一个窗口大小为 word2 长度的子字符串。
+3. 在每次滑动时，更新窗口中字符的频率，并检查当前窗口是否满足条件。
+4. 如果满足条件，则增加计数器。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地统计和检查字符频率。
+- 确保窗口大小始终为 word2 的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为字母表大小固定为 26）
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_valid_substrings(word1: str, word2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 word1 中合法子字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(word1), len(word2)
+    if m > n:
+        return 0
+
+    # 记录 word2 中每个字符的频率
+    target_freq = [0] * 26
+    for char in word2:
+        target_freq[ord(char) - ord('a')] += 1
+
+    # 初始化窗口
+    window_freq = [0] * 26
+    for i in range(m):
+        window_freq[ord(word1[i]) - ord('a')] += 1
+
+    count = 1 if window_freq == target_freq else 0
+
+    # 滑动窗口
+    for i in range(m, n):
+        window_freq[ord(word1[i]) - ord('a')] += 1
+        window_freq[ord(word1[i - m]) - ord('a')] -= 1
+        if window_freq == target_freq:
+            count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_valid_substrings)

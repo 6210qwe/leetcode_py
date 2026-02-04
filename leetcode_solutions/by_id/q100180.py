@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用掩码和位操作来实现插入操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个掩码，将 N 的第 i 到 j 位清零。
+2. 将 M 左移 i 位。
+3. 将处理后的 M 和 N 进行按位或操作，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用掩码清除 N 的第 i 到 j 位。
+- 将 M 左移到正确的位置。
+- 使用按位或操作将 M 插入到 N 中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def insert_bits(N: int, M: int, i: int, j: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将 M 对应的二进制数字插入 N 对应的二进制数字的第 i ~ j 位区域
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个掩码，将 N 的第 i 到 j 位清零
+    all_ones = ~0
+    left = all_ones << (j + 1)
+    right = (1 << i) - 1
+    mask = left | right
+
+    # 清除 N 的第 i 到 j 位
+    N_cleared = N & mask
+
+    # 将 M 左移 i 位
+    M_shifted = M << i
+
+    # 将处理后的 M 和 N 进行按位或操作
+    result = N_cleared | M_shifted
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(insert_bits)

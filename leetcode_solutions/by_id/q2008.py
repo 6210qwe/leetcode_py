@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来解析表达式，并使用动态规划来计算最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用栈来解析表达式，记录每个子表达式的值及其反转后的值。
+2. 使用动态规划来计算每个子表达式的最小操作次数。
+3. 返回整个表达式的最小操作次数。
 
 关键点:
-- [TODO]
+- 使用栈来处理括号和运算符。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表达式的长度。
+空间复杂度: O(n)，栈和动态规划数组的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +51,66 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_flip(expression: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算反转表达式值的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    def parse_expression(expr):
+        stack = []
+        values = []
+        for char in expr:
+            if char == '(':
+                stack.append(char)
+            elif char == ')':
+                sub_expr = []
+                while stack and stack[-1] != '(':
+                    sub_expr.append(stack.pop())
+                stack.pop()  # Remove '('
+                sub_expr.reverse()
+                value, cost = eval_sub_expression(sub_expr)
+                values.append((value, cost))
+                stack.append(value)
+            else:
+                stack.append(char)
+        return stack, values
+
+    def eval_sub_expression(sub_expr):
+        value = 1
+        cost = 0
+        op = '|'
+        for char in sub_expr:
+            if char in ('&', '|'):
+                op = char
+            else:
+                if char == '1':
+                    new_value = 1
+                    new_cost = 1
+                else:
+                    new_value = 0
+                    new_cost = 1
+                if op == '&':
+                    value &= new_value
+                    cost += (new_value == 0)
+                else:
+                    value |= new_value
+                    cost += (new_value == 1)
+        return str(value), cost
+
+    def dp_min_cost(values):
+        n = len(values)
+        dp = [[float('inf')] * 2 for _ in range(n + 1)]
+        dp[0][0] = 0
+        dp[0][1] = 0
+
+        for i in range(n):
+            value, cost = values[i]
+            for j in range(2):
+                dp[i + 1][j] = min(dp[i + 1][j], dp[i][j ^ int(value)] + cost)
+
+        return min(dp[n][0], dp[n][1])
+
+    _, values = parse_expression(expression)
+    return dp_min_cost(values)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_flip)

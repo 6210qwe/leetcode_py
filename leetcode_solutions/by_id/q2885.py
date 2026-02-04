@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来统计每个单词的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将文本按空格分割成单词列表。
+2. 遍历单词列表，使用哈希表记录每个单词的出现次数。
+3. 返回哈希表中的结果。
 
 关键点:
-- [TODO]
+- 使用 Python 的 `collections.Counter` 来简化统计过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是文本的长度。分割文本和遍历单词列表的时间复杂度都是 O(n)。
+空间复杂度: O(m)，其中 m 是不同单词的数量。哈希表的空间复杂度取决于不同单词的数量。
 """
 
 # ============================================================================
@@ -47,14 +48,20 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def solution_function_name(text: str) -> dict:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计文本中单词的出现次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将文本按空格分割成单词列表
+    words = text.split()
+    
+    # 使用 Counter 统计每个单词的出现次数
+    word_count = Counter(words)
+    
+    return word_count
 
 
 Solution = create_solution(solution_function_name)

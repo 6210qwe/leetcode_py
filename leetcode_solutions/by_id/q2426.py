@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][0] 表示第 i 天结束时不持有股票的最大收益，dp[i][1] 表示第 i 天结束时持有股票的最大收益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0, dp[0][1] = -prices[0]。
+2. 遍历每一天，更新 dp 数组：
+   - 如果当天不持有股票，那么可能是前一天也不持有股票，或者前一天持有股票并在当天卖出。
+   - 如果当天持有股票，那么可能是前一天也持有股票，或者前一天不持有股票并在当天买入。
+3. 最后返回 dp[n-1][0]，即最后一天不持有股票的最大收益。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为：
+  - dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+  - dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 prices 的长度，因为我们需要遍历整个价格数组一次。
+空间复杂度: O(1)，因为我们只需要常数级的额外空间来存储 dp 数组的状态。
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大股票收益
     """
-    # TODO: 实现最优解法
-    pass
+    if not prices:
+        return 0
+
+    n = len(prices)
+    dp_i_0 = 0
+    dp_i_1 = -prices[0]
+
+    for i in range(1, n):
+        dp_i_0 = max(dp_i_0, dp_i_1 + prices[i])
+        dp_i_1 = max(dp_i_1, dp_i_0 - prices[i])
+
+    return dp_i_0
 
 
 Solution = create_solution(solution_function_name)

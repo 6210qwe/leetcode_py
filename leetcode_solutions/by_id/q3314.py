@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 从每个单元格出发，沿8个方向生成所有可能的数字。
+2. 检查生成的数字是否为质数且大于10。
+3. 统计每个质数的出现频率。
+4. 返回出现频率最高的质数，如果有多个则返回最大的那个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数来检查一个数是否为质数。
+2. 使用一个字典来记录每个质数的出现频率。
+3. 遍历矩阵中的每个单元格，沿8个方向生成所有可能的数字。
+4. 如果生成的数字是质数且大于10，则更新字典中的频率。
+5. 找出出现频率最高的质数，如果有多个则返回最大的那个。
 
 关键点:
-- [TODO]
+- 生成所有可能的数字时，需要考虑路径上的数字组合。
+- 质数检查函数需要高效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 8 * max(m, n))，其中m和n是矩阵的行数和列数。每个单元格最多有8个方向，每个方向最多有max(m, n)个数字。
+空间复杂度: O(m * n * 8 * max(m, n))，用于存储生成的数字及其频率。
 """
 
 # ============================================================================
@@ -48,13 +56,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(num: int) -> bool:
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(mat: List[List[int]]) -> int:
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    m, n = len(mat), len(mat[0])
+    prime_count = {}
+    
+    for i in range(m):
+        for j in range(n):
+            for dx, dy in directions:
+                x, y = i, j
+                num = 0
+                while 0 <= x < m and 0 <= y < n:
+                    num = num * 10 + mat[x][y]
+                    if num > 10 and is_prime(num):
+                        prime_count[num] = prime_count.get(num, 0) + 1
+                    x += dx
+                    y += dy
+    
+    if not prime_count:
+        return -1
+    
+    max_freq = max(prime_count.values())
+    return max(num for num, freq in prime_count.items() if freq == max_freq)
 
 Solution = create_solution(solution_function_name)

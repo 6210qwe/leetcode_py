@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个位置的得分，并记录最大得分的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组中 1 的数量。
+2. 初始化当前 0 的数量和最大得分。
+3. 遍历数组，更新当前 0 的数量和得分。
+4. 如果当前得分大于最大得分，更新最大得分和结果列表。
+5. 如果当前得分等于最大得分，将当前索引加入结果列表。
 
 关键点:
-- [TODO]
+- 使用前缀和的思想，避免重复计算。
+- 通过一次遍历完成计算，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    total_ones = sum(nums)  # 计算整个数组中 1 的数量
+    max_score = -1
+    current_zeros = 0
+    result = []
 
+    for i in range(n + 1):
+        score = current_zeros + (total_ones - (i - current_zeros))
+        if score > max_score:
+            max_score = score
+            result = [i]
+        elif score == max_score:
+            result.append(i)
+        
+        if i < n and nums[i] == 0:
+            current_zeros += 1
+
+    return result
 
 Solution = create_solution(solution_function_name)

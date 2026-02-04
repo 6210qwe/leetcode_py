@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算每个元素作为子数组最大值和最小值的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用单调递增栈计算每个元素作为子数组最小值的贡献。
+2. 使用单调递减栈计算每个元素作为子数组最大值的贡献。
+3. 计算总和。
 
 关键点:
-- [TODO]
+- 单调栈用于快速找到每个元素作为子数组最值的范围。
+- 贡献计算时需要考虑子数组长度不超过 k 的限制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多 k 个元素的子数组的最值之和
     """
-    # TODO: 实现最优解法
-    pass
+    def get_contribution(nums: List[int], k: int, is_min: bool) -> int:
+        stack = []
+        contribution = 0
+        n = len(nums)
+        
+        for i in range(n + 1):
+            while stack and (i == n or (is_min and nums[stack[-1]] > nums[i]) or (not is_min and nums[stack[-1]] < nums[i])):
+                mid = stack.pop()
+                left = stack[-1] if stack else -1
+                right = i
+                left_bound = mid - left
+                right_bound = right - mid
+                left_take = min(left_bound, k)
+                right_take = min(right_bound, k)
+                contribution += nums[mid] * (left_take * right_take)
+            stack.append(i)
+        
+        return contribution
+    
+    max_contribution = get_contribution(nums, k, False)
+    min_contribution = get_contribution(nums, k, True)
+    
+    return max_contribution + min_contribution
 
 
 Solution = create_solution(solution_function_name)

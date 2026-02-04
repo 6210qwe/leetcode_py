@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个话题标签的出现次数，并按降序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `GROUP BY` 和 `COUNT` 来统计每个话题标签的出现次数。
+2. 使用 `ORDER BY` 按出现次数降序排序。
+3. 选择前 N 个热门话题标签。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `COUNT` 来统计每个话题标签的出现次数。
+- 使用 `ORDER BY` 进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数据表中的记录数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储中间结果和最终结果所需的空间。
 """
 
 # ============================================================================
@@ -51,10 +53,23 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找热门话题标签
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT hashtag, COUNT(*) as count
+    FROM posts
+    GROUP BY hashtag
+    ORDER BY count DESC
+    LIMIT %s;
+    """
+    # 执行查询并返回结果
+    # 假设 params 包含一个数据库连接对象 conn 和一个整数 N
+    conn, N = params
+    cursor = conn.cursor()
+    cursor.execute(query, (N,))
+    results = cursor.fetchall()
+    return [row[0] for row in results]
 
 
 Solution = create_solution(solution_function_name)

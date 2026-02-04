@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个指针交替遍历一维数组，填充二维数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入是否有效，即 `rowsCount * colsCount` 是否等于 `nums` 的长度。
+2. 初始化一个 `rowsCount x colsCount` 的二维数组。
+3. 使用两个指针，一个从上到下遍历，另一个从下到上遍历，交替填充二维数组。
+4. 返回填充好的二维数组。
 
 关键点:
-- [TODO]
+- 通过交替遍历确保正确的填充顺序。
+- 检查输入的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。
+空间复杂度: O(1)，除了返回结果外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def snail(nums: List[int], rowsCount: int, colsCount: int) -> List[List[int]]:
+    if rowsCount * colsCount != len(nums):
+        return []
+    
+    result = [[0] * colsCount for _ in range(rowsCount)]
+    index = 0
+    
+    for col in range(colsCount):
+        if col % 2 == 0:
+            for row in range(rowsCount):
+                result[row][col] = nums[index]
+                index += 1
+        else:
+            for row in range(rowsCount - 1, -1, -1):
+                result[row][col] = nums[index]
+                index += 1
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(snail)

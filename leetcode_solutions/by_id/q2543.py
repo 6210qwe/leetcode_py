@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个创作者的总播放量和最大播放量的视频ID。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表：`total_views` 记录每个创作者的总播放量，`max_video` 记录每个创作者的最大播放量的视频ID。
+2. 遍历输入数组，更新 `total_views` 和 `max_video`。
+3. 找出总播放量最高的创作者，并获取他们的最大播放量的视频ID。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用哈希表高效地记录和更新数据。
+- 在更新 `max_video` 时，确保选择字典序最小的ID。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def most_popular_creator(creators: List[str], ids: List[str], views: List[int]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出流行度最高的创作者及其最流行的视频ID
     """
-    # TODO: 实现最优解法
-    pass
+    total_views = {}
+    max_video = {}
+
+    for i in range(len(creators)):
+        creator = creators[i]
+        video_id = ids[i]
+        view_count = views[i]
+
+        if creator not in total_views:
+            total_views[creator] = view_count
+            max_video[creator] = (video_id, view_count)
+        else:
+            total_views[creator] += view_count
+            if view_count > max_video[creator][1]:
+                max_video[creator] = (video_id, view_count)
+            elif view_count == max_video[creator][1]:
+                max_video[creator] = (min(video_id, max_video[creator][0]), view_count)
+
+    max_total_views = max(total_views.values())
+    result = []
+
+    for creator, total_view in total_views.items():
+        if total_view == max_total_views:
+            result.append([creator, max_video[creator][0]])
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_popular_creator)

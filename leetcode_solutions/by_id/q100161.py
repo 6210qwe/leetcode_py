@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历字符串，记录每个字符及其连续出现的次数，并构建压缩后的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向当前字符的起始位置和结束位置。
+2. 遍历字符串，当遇到不同字符时，将当前字符及其计数添加到结果字符串中，并更新指针。
+3. 最后比较压缩后的字符串和原字符串的长度，返回较短的那个。
 
 关键点:
-- [TODO]
+- 使用双指针可以高效地统计每个字符的连续出现次数。
+- 通过一次遍历即可完成字符串的压缩。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(n)，最坏情况下，压缩后的字符串长度与原字符串相同。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def compress_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现字符串压缩功能
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return ""
+
+    n = len(s)
+    result = []
+    i = 0
+
+    while i < n:
+        j = i
+        while j < n and s[j] == s[i]:
+            j += 1
+        result.append(s[i] + str(j - i))
+        i = j
+
+    compressed = "".join(result)
+    return compressed if len(compressed) < n else s
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(compress_string)

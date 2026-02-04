@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法将复杂对象转换为 JSON 字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `to_json`，用于递归处理对象。
+2. 如果对象是基本类型（int, float, str, bool, None），直接返回其字符串表示。
+3. 如果对象是列表或字典，分别处理每个元素或键值对，并递归调用 `to_json`。
+4. 对于自定义对象，使用 `__dict__` 属性获取其属性字典，并递归调用 `to_json`。
 
 关键点:
-- [TODO]
+- 递归处理嵌套结构。
+- 使用标准库 `json` 中的 `dumps` 方法来生成最终的 JSON 字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是对象中所有元素的数量。
+空间复杂度: O(n)，递归调用栈和存储中间结果的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import json
 
+def to_json(obj):
+    if isinstance(obj, (int, float, str, bool, type(None))):
+        return obj
+    elif isinstance(obj, list):
+        return [to_json(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: to_json(value) for key, value in obj.items()}
+    else:
+        return {key: to_json(value) for key, value in obj.__dict__.items()}
 
-def solution_function_name(params):
+def solution_function_name(obj):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将对象转换为 JSON 字符串
     """
-    # TODO: 实现最优解法
-    pass
-
+    return json.dumps(to_json(obj))
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来存储非数字字符，并在遇到数字时弹出栈顶元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s 中的每个字符：
+   - 如果字符是非数字字符，将其压入栈。
+   - 如果字符是数字字符，从栈中弹出一个非数字字符（如果栈不为空）。
+3. 将栈中的字符拼接成最终结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来存储非数字字符，确保在遇到数字时可以正确弹出最近的非数字字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符只处理一次。
+空间复杂度: O(n)，最坏情况下栈中会存储所有的非数字字符。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现清除数字的操作
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if char.isdigit():
+            if stack:
+                stack.pop()
+        else:
+            stack.append(char)
+    return ''.join(stack)
 
 
 Solution = create_solution(solution_function_name)

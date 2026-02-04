@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过二分查找确定最大高度，并检查是否可以构造出该高度的三角形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找确定最大高度。
+2. 对于每个高度，检查是否可以用给定的红球和蓝球构造出该高度的三角形。
+3. 如果可以构造，则更新最大高度；否则，减少高度。
 
 关键点:
-- [TODO]
+- 使用二分查找优化时间复杂度。
+- 检查每一层所需球数是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(red, blue)) * (log(max(red, blue))))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(red: int, blue: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以实现的三角形的最大高度
     """
-    # TODO: 实现最优解法
-    pass
+    def can_form_triangle(height: int, red: int, blue: int) -> bool:
+        total_balls = (height * (height + 1)) // 2
+        if total_balls > red + blue:
+            return False
+        # 检查奇数行和偶数行
+        for i in range(1, height + 1):
+            if i % 2 == 1:
+                if red < i:
+                    return False
+                red -= i
+            else:
+                if blue < i:
+                    return False
+                blue -= i
+        return True
+
+    low, high = 1, 100
+    while low <= high:
+        mid = (low + high) // 2
+        if can_form_triangle(mid, red, blue):
+            low = mid + 1
+        else:
+            high = mid - 1
+    return high
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过维护两个指针分别指向当前需要放置奇数和偶数的位置，然后计算每个位置上应该放置的奇数或偶数所需的最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `odd_ptr` 和 `even_ptr`，分别指向第一个奇数和偶数的位置。
+2. 遍历数组，根据当前指针的位置判断当前位置应该放置奇数还是偶数。
+3. 如果当前位置的元素不符合要求，则找到下一个符合要求的元素，并计算交换次数。
+4. 更新指针位置，继续遍历直到数组结束。
+5. 如果在遍历过程中发现无法满足条件，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用两个指针分别指向当前需要放置奇数和偶数的位置。
+- 计算每次交换的最小次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_swaps_to_alternate_parity(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 nums 变成任意一种有效排列所需的最小相邻交换次数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return 0
+
+    # 初始化指针
+    odd_ptr, even_ptr = 0, 0
+    swaps = 0
+
+    for i in range(n):
+        if i % 2 == 0:
+            # 当前位置应该是偶数
+            while even_ptr < n and nums[even_ptr] % 2 != 0:
+                even_ptr += 1
+            if even_ptr == n:
+                return -1
+            swaps += abs(even_ptr - i)
+            even_ptr += 1
+        else:
+            # 当前位置应该是奇数
+            while odd_ptr < n and nums[odd_ptr] % 2 == 0:
+                odd_ptr += 1
+            if odd_ptr == n:
+                return -1
+            swaps += abs(odd_ptr - i)
+            odd_ptr += 1
+
+    return swaps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swaps_to_alternate_parity)

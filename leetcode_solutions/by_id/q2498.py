@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用倒序遍历和位运算来找到每个位置的最短子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右到左遍历数组，维护一个当前的最大按位或值。
+2. 对于每个位置 i，更新当前的最大按位或值，并计算从 i 开始的最短子数组长度。
+3. 使用一个字典来记录每个位最后出现的位置，以便快速跳过不需要的位。
 
 关键点:
-- [TODO]
+- 倒序遍历可以确保我们总是知道从当前位置到数组末尾的最大按位或值。
+- 使用字典记录每个位最后出现的位置，可以快速跳过不需要的位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输出数组的空间）
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def smallest_subarrays(nums: List[int]) -> List[int]:
+    n = len(nums)
+    last_occurrence = [0] * 32  # 记录每个位最后出现的位置
+    result = [1] * n  # 初始化结果数组
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n - 1, -1, -1):
+        for j in range(32):
+            if nums[i] & (1 << j):
+                last_occurrence[j] = i  # 更新位 j 最后出现的位置
+        max_index = max(last_occurrence)  # 当前位置 i 的最短子数组结束位置
+        result[i] = max_index - i + 1  # 计算最短子数组长度
 
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_subarrays)

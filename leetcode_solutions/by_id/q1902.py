@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来记录每辆车与前一辆车相遇的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储每辆车的索引。
+2. 从后向前遍历车辆列表，计算每辆车与前一辆车相遇的时间。
+3. 如果当前车的速度大于或等于栈顶车的速度，则栈顶车对当前车没有影响，继续弹出栈顶元素。
+4. 如果当前车的速度小于栈顶车的速度，计算相遇时间并更新结果。
+5. 将当前车的索引压入栈中。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护每辆车与前一辆车的相遇时间。
+- 从后向前遍历以确保每辆车只与后面的车相遇。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_collision_times(cars: List[List[int]]) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    计算每辆车与下一辆车相遇的时间。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(cars)
+    result = [-1.0] * n
+    stack = []
+
+    for i in range(n - 1, -1, -1):
+        pos, speed = cars[i]
+        while stack and (speed <= cars[stack[-1]][1] or (cars[stack[-1]][0] - pos) / (speed - cars[stack[-1]][1]) >= result[stack[-1]] > 0):
+            stack.pop()
+        if stack:
+            result[i] = (cars[stack[-1]][0] - pos) / (speed - cars[stack[-1]][1])
+        stack.append(i)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_collision_times)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为到达第 i 个位置的最小成本。通过从后向前遍历数组，我们可以计算出每个位置的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 dp 数组，长度为 n+1，其中 dp[i] 表示到达第 i 个位置的最小成本。
+2. 从后向前遍历数组，对于每个位置 i，尝试从 i+1 到 i+k 的所有位置，找到最小的成本。
+3. 如果无法到达任何位置，则返回 -1。
+4. 返回 dp[0] 作为结果。
 
 关键点:
-- [TODO]
+- 从后向前遍历可以避免重复计算。
+- 使用一个辅助数组 pre 来记录前一个位置，以便构造最终路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是数组的长度，k 是跳跃的最大步数。
+空间复杂度: O(n)，需要两个长度为 n 的数组来存储 dp 和 pre。
 """
 
 # ============================================================================
@@ -44,17 +47,35 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def min_cost_path(costs: List[int], k: int) -> List[int]:
+    n = len(costs)
+    if n == 0:
+        return []
+    
+    # 初始化 dp 和 pre 数组
+    dp = [float('inf')] * (n + 1)
+    pre = [-1] * (n + 1)
+    dp[n] = 0
+    
+    # 从后向前遍历
+    for i in range(n - 1, -1, -1):
+        for j in range(1, k + 1):
+            if i + j <= n and dp[i + j] < float('inf'):
+                if costs[i] + dp[i + j] < dp[i]:
+                    dp[i] = costs[i] + dp[i + j]
+                    pre[i] = i + j
+    
+    # 构造路径
+    if dp[0] == float('inf'):
+        return [-1]
+    
+    path = []
+    i = 0
+    while i != -1:
+        path.append(i)
+        i = pre[i]
+    
+    return path
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_path)

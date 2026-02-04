@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口找到长度为 k 的最大子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_subarray` 来存储当前找到的最大子数组。
+2. 使用滑动窗口遍历数组，每次比较当前窗口的子数组与 `max_subarray`，更新 `max_subarray`。
+3. 返回 `max_subarray`。
 
 关键点:
-- [TODO]
+- 使用切片操作来获取当前窗口的子数组。
+- 比较子数组时，使用字典序比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到长度为 k 的最大子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == k:
+        return nums
+    
+    max_subarray = nums[:k]
+    
+    for i in range(1, n - k + 1):
+        current_subarray = nums[i:i + k]
+        if current_subarray > max_subarray:
+            max_subarray = current_subarray
+    
+    return max_subarray
 
 
 Solution = create_solution(solution_function_name)

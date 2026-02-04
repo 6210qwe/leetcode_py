@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字符串替换方法将所有的 "." 替换为 "[.]"。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Python 的字符串 replace 方法进行替换。
+2. 返回替换后的字符串。
 
 关键点:
-- [TODO]
+- 使用内置的字符串替换方法可以简洁高效地完成任务。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。replace 方法的时间复杂度是线性的。
+空间复杂度: O(n)，因为需要创建一个新的字符串来存储结果。
 """
 
 # ============================================================================
@@ -49,12 +49,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def defang_ip_address(address: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将给定的有效 IPv4 地址中的每个 "." 替换为 "[.]"。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用字符串替换方法进行替换
+    return address.replace('.', '[.]')
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(defang_ip_address)

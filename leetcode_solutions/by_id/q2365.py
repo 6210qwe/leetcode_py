@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算字符串中指定字符的数量，然后计算其占总长度的百分比。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，统计指定字符的出现次数。
+2. 计算该字符占总长度的百分比，并向下取整。
 
 关键点:
-- [TODO]
+- 使用一次遍历来统计字符数量，时间复杂度为 O(n)。
+- 计算百分比时使用整数除法，确保结果向下取整。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def percentage_of_letter_in_string(s: str, letter: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串中指定字符的百分比
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计指定字符的出现次数
+    count = sum(1 for char in s if char == letter)
+    
+    # 计算百分比并向下取整
+    return (count * 100) // len(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(percentage_of_letter_in_string)

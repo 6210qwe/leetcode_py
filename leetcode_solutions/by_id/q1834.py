@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来找到最少需要教会的语言数量。首先找出所有无法沟通的好友对，然后统计每种语言在这些好友对中的出现频率，最后选择出现频率最高的语言进行教学。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `cannot_communicate` 来存储无法沟通的好友对。
+2. 遍历所有好友对，检查他们是否有共同语言。如果没有，将这对好友加入 `cannot_communicate` 集合。
+3. 初始化一个字典 `language_count` 来统计每种语言在 `cannot_communicate` 好友对中的出现频率。
+4. 遍历 `cannot_communicate` 集合中的每个好友对，更新 `language_count`。
+5. 找出 `language_count` 中出现频率最高的语言，并计算需要教会的用户数量。
 
 关键点:
-- [TODO]
+- 使用集合来存储无法沟通的好友对，避免重复计算。
+- 使用字典来统计每种语言的出现频率，方便找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + f * n)，其中 m 是用户的数量，f 是好友对的数量，n 是语言的数量。
+空间复杂度: O(m + f)，用于存储无法沟通的好友对和语言计数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_teachings(n: int, languages: List[List[int]], friendships: List[List[int]]) -> int:
+    # 将语言列表转换为集合，方便查找
+    languages = [set(langs) for langs in languages]
+    
+    # 存储无法沟通的好友对
+    cannot_communicate = set()
+    
+    # 检查每对好友是否可以沟通
+    for u, v in friendships:
+        if not (languages[u-1] & languages[v-1]):
+            cannot_communicate.add(u)
+            cannot_communicate.add(v)
+    
+    # 统计每种语言在无法沟通的好友对中的出现频率
+    language_count = {}
+    for user in cannot_communicate:
+        for lang in languages[user-1]:
+            if lang not in language_count:
+                language_count[lang] = 0
+            language_count[lang] += 1
+    
+    # 找出出现频率最高的语言
+    max_count = 0
+    best_language = None
+    for lang, count in language_count.items():
+        if count > max_count:
+            max_count = count
+            best_language = lang
+    
+    # 计算需要教会的用户数量
+    if best_language is None:
+        return 0
+    return len(cannot_communicate) - max_count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_teachings)

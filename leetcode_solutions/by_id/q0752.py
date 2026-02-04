@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将给定的 IP 地址转换为整数，然后找到合适的子网掩码长度，使得子网中的 IP 地址数量正好等于 n。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 IP 地址转换为整数。
+2. 计算 IP 地址的二进制表示中连续的 0 的个数，确定子网掩码的长度。
+3. 生成 CIDR 表示，并递归处理剩余的 IP 地址。
 
 关键点:
-- [TODO]
+- 使用位运算来计算连续的 0 的个数。
+- 递归地处理剩余的 IP 地址，直到所有地址都被分配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是需要分配的 IP 地址数量。每次递归调用都会将问题规模减半。
+空间复杂度: O(log n)，递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def ip_to_int(ip: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    将 IP 地址转换为整数。
     """
-    # TODO: 实现最优解法
-    pass
+    return int(''.join(f'{int(i):08b}' for i in ip.split('.')), 2)
 
 
-Solution = create_solution(solution_function_name)
+def int_to_ip(num: int) -> str:
+    """
+    将整数转换为 IP 地址。
+    """
+    return '.'.join(str((num >> (i * 8)) & 0xFF) for i in range(4)[::-1])
+
+
+def find_cidr(ip: int, n: int) -> List[str]:
+    """
+    递归地找到合适的 CIDR 表示。
+    """
+    if n == 0:
+        return []
+    
+    # 计算 IP 地址的二进制表示中连续的 0 的个数
+    mask = ip & -ip
+    mask_length = 32 - (mask).bit_length()
+    
+    # 找到合适的子网掩码长度
+    while mask_length > 0 and (1 << mask_length) > n:
+        mask_length -= 1
+    
+    # 生成 CIDR 表示
+    cidr = f"{int_to_ip(ip)}/{32 - mask_length}"
+    
+    # 递归处理剩余的 IP 地址
+    next_ip = ip + (1 << mask_length)
+    remaining_n = n - (1 << mask_length)
+    
+    return [cidr] + find_cidr(next_ip, remaining_n)
+
+
+def ip_to_cidr(ip: str, n: int) -> List[str]:
+    """
+    将给定的 IP 地址和数量转换为 CIDR 表示。
+    """
+    ip_int = ip_to_int(ip)
+    return find_cidr(ip_int, n)
+
+
+Solution = create_solution(ip_to_cidr)

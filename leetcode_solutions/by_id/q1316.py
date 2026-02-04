@@ -21,40 +21,115 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用锁和条件变量来控制多个线程的执行顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `current` 从 1 开始，并设置一个总长度 `n`。
+2. 每个线程根据其特定条件（是否能被 3、5 或 3 和 5 整除）等待相应的条件变量。
+3. 当满足条件时，相应的线程获取锁并打印结果，然后释放锁并将计数器加一。
+4. 如果计数器达到 `n`，则所有线程结束。
 
 关键点:
-- [TODO]
+- 使用 `threading.Condition` 来控制线程的同步。
+- 每个线程在满足条件时才打印并更新计数器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import threading
 
+class FizzBuzz:
+    def __init__(self, n: int):
+        self.n = n
+        self.current = 1
+        self.lock = threading.Lock()
+        self.condition = threading.Condition(self.lock)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # printFizz() outputs "fizz"
+    def fizz(self, printFizz: 'Callable[[], None]') -> None:
+        while True:
+            with self.condition:
+                if self.current > self.n:
+                    break
+                if self.current % 3 == 0 and self.current % 5 != 0:
+                    printFizz()
+                    self.current += 1
+                    self.condition.notify_all()
 
+    # printBuzz() outputs "buzz"
+    def buzz(self, printBuzz: 'Callable[[], None]') -> None:
+        while True:
+            with self.condition:
+                if self.current > self.n:
+                    break
+                if self.current % 3 != 0 and self.current % 5 == 0:
+                    printBuzz()
+                    self.current += 1
+                    self.condition.notify_all()
 
-Solution = create_solution(solution_function_name)
+    # printFizzBuzz() outputs "fizzbuzz"
+    def fizzbuzz(self, printFizzBuzz: 'Callable[[], None]') -> None:
+        while True:
+            with self.condition:
+                if self.current > self.n:
+                    break
+                if self.current % 3 == 0 and self.current % 5 == 0:
+                    printFizzBuzz()
+                    self.current += 1
+                    self.condition.notify_all()
+
+    # printNumber(x) outputs "x", where x is an integer.
+    def number(self, printNumber: 'Callable[[int], None]') -> None:
+        while True:
+            with self.condition:
+                if self.current > self.n:
+                    break
+                if self.current % 3 != 0 and self.current % 5 != 0:
+                    printNumber(self.current)
+                    self.current += 1
+                    self.condition.notify_all()
+
+# 示例用法
+if __name__ == "__main__":
+    import threading
+    from typing import Callable
+
+    def printFizz():
+        print("fizz")
+
+    def printBuzz():
+        print("buzz")
+
+    def printFizzBuzz():
+        print("fizzbuzz")
+
+    def printNumber(num: int):
+        print(num)
+
+    n = 15
+    fizz_buzz = FizzBuzz(n)
+
+    t1 = threading.Thread(target=fizz_buzz.fizz, args=(printFizz,))
+    t2 = threading.Thread(target=fizz_buzz.buzz, args=(printBuzz,))
+    t3 = threading.Thread(target=fizz_buzz.fizzbuzz, args=(printFizzBuzz,))
+    t4 = threading.Thread(target=fizz_buzz.number, args=(printNumber,))
+
+    t1.start()
+    t2.start()
+    t3.start()
+    t4.start()
+
+    t1.join()
+    t2.join()
+    t3.join()
+    t4.join()

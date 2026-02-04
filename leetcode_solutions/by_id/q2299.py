@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个指针遍历链表，遇到 0 时开始累加后续节点的值，直到下一个 0 出现，将累加值作为新节点插入结果链表中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哑节点 dummy 和一个当前节点 cur，用于构建新的链表。
+2. 遍历原链表，使用一个变量 sum 来累加每两个 0 之间的节点值。
+3. 当遇到 0 时，创建一个新节点，其值为 sum，并将其插入到新链表中。
+4. 重置 sum 并继续遍历，直到原链表结束。
+5. 返回新链表的头节点。
 
 关键点:
-- [TODO]
+- 使用哑节点简化链表操作。
+- 通过遍历一次链表完成节点的合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需要遍历链表一次。
+空间复杂度: O(1)，除了输出的新链表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def merge_nodes(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    合并零之间的节点 - 给你一个链表的头节点 head ，该链表包含由 0 分隔开的一连串整数。链表的 开端 和 末尾 的节点都满足 Node.val == 0 。
+    对于每两个相邻的 0 ，请你将它们之间的所有节点合并成一个节点，其值是所有已合并节点的值之和。然后将所有 0 移除，修改后的链表不应该含有任何 0 。
+    返回修改后链表的头节点 head 。
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return None
 
+    dummy = ListNode(0)
+    cur = dummy
+    sum_val = 0
 
-Solution = create_solution(solution_function_name)
+    while head:
+        if head.val == 0 and sum_val > 0:
+            cur.next = ListNode(sum_val)
+            cur = cur.next
+            sum_val = 0
+        else:
+            sum_val += head.val
+        head = head.next
+
+    return dummy.next
+
+Solution = create_solution(merge_nodes)

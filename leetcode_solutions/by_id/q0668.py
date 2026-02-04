@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定第 k 小的数字。通过计算乘法表中小于等于 mid 的数字个数来进行判断。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 计算中间值 mid。
+3. 计算乘法表中小于等于 mid 的数字个数 count。
+4. 如果 count 小于 k，则说明第 k 小的数字在 mid 的右边，更新 left。
+5. 否则，更新 right。
+6. 最终返回 left 即为第 k 小的数字。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小搜索范围。
+- 计算乘法表中小于等于 mid 的数字个数时，可以逐行计算每行中小于等于 mid 的数字个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * log(m * n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_kth_number(m: int, n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    在大小为 m x n 的乘法表中，找出并返回第 k 小的数字。
     """
-    # TODO: 实现最优解法
-    pass
+    def count_less_equal(mid: int) -> int:
+        """计算乘法表中小于等于 mid 的数字个数。"""
+        count = 0
+        for i in range(1, m + 1):
+            count += min(mid // i, n)
+        return count
+
+    left, right = 1, m * n
+    while left < right:
+        mid = (left + right) // 2
+        if count_less_equal(mid) < k:
+            left = mid + 1
+        else:
+            right = mid
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_number)

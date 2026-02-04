@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过交替放置排序后的前一半和后一半元素来确保每个元素都不等于其两侧相邻元素的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 创建一个新的数组，交替放置排序后的前一半和后一半元素。
+3. 返回新数组。
 
 关键点:
-- [TODO]
+- 通过交替放置排序后的前一半和后一半元素，可以确保每个元素都不等于其两侧相邻元素的平均值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储新的数组。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过交替放置排序后的前一半和后一半元素来确保每个元素都不等于其两侧相邻元素的平均值。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 创建一个新的数组，交替放置排序后的前一半和后一半元素
+    n = len(nums)
+    result = [0] * n
+    left, right = 0, (n - 1) // 2 + 1
+    for i in range(n):
+        if i % 2 == 0:
+            result[i] = nums[left]
+            left += 1
+        else:
+            result[i] = nums[right]
+            right += 1
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

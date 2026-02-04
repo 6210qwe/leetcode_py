@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将年、月、日分别转换为二进制表示，然后拼接成最终结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从输入字符串中提取年、月、日。
+2. 将年、月、日分别转换为二进制表示。
+3. 拼接二进制表示，形成最终结果。
 
 关键点:
-- [TODO]
+- 使用 Python 内置函数 bin() 进行十进制到二进制的转换，并去掉前缀 '0b'。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 字符串处理和转换操作都是常数时间复杂度。
+空间复杂度: O(1) - 使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def convert_date_to_binary(date: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    将日期转换为二进制表示
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取年、月、日
+    year, month, day = date.split('-')
+    
+    # 将年、月、日分别转换为二进制表示
+    binary_year = bin(int(year))[2:]
+    binary_month = bin(int(month))[2:]
+    binary_day = bin(int(day))[2:]
+    
+    # 拼接二进制表示
+    return f"{binary_year}-{binary_month}-{binary_day}"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_date_to_binary)

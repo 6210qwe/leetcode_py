@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算找到二进制表示中的所有 1，并计算相邻 1 之间的最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `last` 用于记录上一个 1 的位置，`max_gap` 用于记录最大距离。
+2. 遍历 n 的每一位，使用位运算找到每一个 1。
+3. 计算当前 1 和上一个 1 之间的距离，并更新 `max_gap`。
+4. 更新 `last` 为当前 1 的位置。
+5. 返回 `max_gap`。
 
 关键点:
-- [TODO]
+- 使用位运算高效地找到每一个 1。
+- 通过记录上一个 1 的位置来计算相邻 1 之间的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 因为我们在遍历 n 的每一位，最坏情况下需要遍历 log(n) 位。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def binary_gap(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到并返回 n 的二进制表示中两个相邻 1 之间的最长距离。
     """
-    # TODO: 实现最优解法
-    pass
+    last = -1  # 上一个 1 的位置
+    max_gap = 0  # 最大距离
+    index = 0  # 当前位的位置
+
+    while n > 0:
+        if n & 1 == 1:  # 检查当前位是否为 1
+            if last != -1:
+                max_gap = max(max_gap, index - last)  # 更新最大距离
+            last = index  # 更新上一个 1 的位置
+        n >>= 1  # 右移一位
+        index += 1  # 位置加一
+
+    return max_gap
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(binary_gap)

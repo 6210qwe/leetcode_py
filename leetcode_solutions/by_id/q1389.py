@@ -21,40 +21,87 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从初始状态到目标状态的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 BFS 队列，记录箱子和玩家的位置，并初始化访问集合。
+2. 对于队列中的每个状态，尝试所有可能的移动（上下左右）。
+3. 如果移动后的新状态未被访问过，则将其加入队列，并更新访问集合。
+4. 如果箱子到达目标位置，返回推动次数。
+5. 如果队列为空且未找到解，返回 -1。
 
 关键点:
-- [TODO]
+- 使用元组 (box_x, box_y, player_x, player_y, moves) 来表示状态。
+- 使用集合来记录已访问的状态，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 4^k)，其中 k 是推箱子的最大步数，m 和 n 分别是网格的行数和列数。
+空间复杂度: O(m * n * 4^k)，用于存储 BFS 队列和访问集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from collections import deque
 
+def min_push_box(grid: List[List[str]]) -> int:
+    def is_valid(x: int, y: int) -> bool:
+        return 0 <= x < m and 0 <= y < n and grid[x][y] != '#'
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def can_move_to_target(x: int, y: int, target_x: int, target_y: int) -> bool:
+        if (x, y) == (target_x, target_y):
+            return True
+        visited = set()
+        queue = deque([(x, y)])
+        while queue:
+            cur_x, cur_y = queue.popleft()
+            for dx, dy in directions:
+                new_x, new_y = cur_x + dx, cur_y + dy
+                if is_valid(new_x, new_y) and (new_x, new_y) not in visited:
+                    if (new_x, new_y) == (target_x, target_y):
+                        return True
+                    visited.add((new_x, new_y))
+                    queue.append((new_x, new_y))
+        return False
 
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    start = None
+    box = None
+    target = None
 
-Solution = create_solution(solution_function_name)
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 'S':
+                start = (i, j)
+            elif grid[i][j] == 'B':
+                box = (i, j)
+            elif grid[i][j] == 'T':
+                target = (i, j)
+
+    queue = deque([(box[0], box[1], start[0], start[1], 0)])
+    visited = set([(box[0], box[1], start[0], start[1])])
+
+    while queue:
+        bx, by, px, py, moves = queue.popleft()
+        if (bx, by) == target:
+            return moves
+
+        for dx, dy in directions:
+            nbx, nby = bx + dx, by + dy
+            pbx, pby = bx - dx, by - dy
+
+            if is_valid(nbx, nby) and is_valid(pbx, pby) and can_move_to_target(px, py, pbx, pby):
+                if (nbx, nby, bx, by) not in visited:
+                    visited.add((nbx, nby, bx, by))
+                    queue.append((nbx, nby, bx, by, moves + 1))
+
+    return -1
+
+Solution = create_solution(min_push_box)

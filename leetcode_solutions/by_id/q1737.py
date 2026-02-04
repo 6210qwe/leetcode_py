@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个计数器来记录当前的嵌套深度，并在遍历字符串时更新最大嵌套深度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `current_depth` 和 `max_depth` 为 0。
+2. 遍历字符串 s：
+   - 如果遇到 '('，则 `current_depth` 加 1，并更新 `max_depth`。
+   - 如果遇到 ')'，则 `current_depth` 减 1。
+3. 返回 `max_depth`。
 
 关键点:
-- [TODO]
+- 通过遍历字符串一次，使用计数器来记录当前的嵌套深度，并在遇到 '(' 时更新最大嵌套深度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_depth(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定字符串 s 的最大嵌套深度
     """
-    # TODO: 实现最优解法
-    pass
+    current_depth = 0
+    max_depth = 0
+    for char in s:
+        if char == '(':
+            current_depth += 1
+            max_depth = max(max_depth, current_depth)
+        elif char == ')':
+            current_depth -= 1
+    return max_depth
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_depth)

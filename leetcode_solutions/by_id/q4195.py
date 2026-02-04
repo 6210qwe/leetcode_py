@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每个用户的提示词总数和平均 token 数。
+2. 过滤出至少提交了 3 个提示词的用户。
+3. 过滤出至少有一个提示词的 token 数超过平均 token 数的用户。
+4. 按平均 token 数降序和 user_id 升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Pandas 库读取数据。
+2. 计算每个用户的提示词总数和平均 token 数。
+3. 过滤出符合条件的用户。
+4. 按要求排序并返回结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行数据处理。
+- 确保过滤条件正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 prompts 表的行数。主要时间开销在于排序操作。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(prompts: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找高 tokens 使用量的用户
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个用户的提示词总数和平均 token 数
+    user_stats = prompts.groupby('user_id').agg(
+        prompt_count=('prompt', 'count'),
+        total_tokens=('tokens', 'sum')
+    ).reset_index()
+    user_stats['avg_tokens'] = (user_stats['total_tokens'] / user_stats['prompt_count']).round(2)
+
+    # 过滤出至少提交了 3 个提示词的用户
+    user_stats = user_stats[user_stats['prompt_count'] >= 3]
+
+    # 过滤出至少有一个提示词的 token 数超过平均 token 数的用户
+    filtered_users = []
+    for user_id in user_stats['user_id']:
+        user_prompts = prompts[prompts['user_id'] == user_id]
+        if any(user_prompts['tokens'] > user_stats.loc[user_stats['user_id'] == user_id, 'avg_tokens'].values[0]):
+            filtered_users.append(user_id)
+    user_stats = user_stats[user_stats['user_id'].isin(filtered_users)]
+
+    # 按平均 token 数降序和 user_id 升序排序
+    result = user_stats.sort_values(by=['avg_tokens', 'user_id'], ascending=[False, True])
+
+    return result[['user_id', 'prompt_count', 'avg_tokens']]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历每一行，统计每行中 1 的数量，并记录最大值及其对应的行下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `max_ones` 用于记录当前最大 1 的数量，`max_index` 用于记录最大 1 的数量对应的行下标。
+2. 遍历每一行，计算每行中 1 的数量。
+3. 如果当前行 1 的数量大于 `max_ones`，更新 `max_ones` 和 `max_index`。
+4. 返回 `max_index` 和 `max_ones`。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到包含最多 1 的行，时间复杂度为 O(m * n)。
+- 只需要常数空间来存储最大值和对应的行下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(mat: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出包含最多 1 的行的下标及其 1 的数量
     """
-    # TODO: 实现最优解法
-    pass
+    max_ones = 0
+    max_index = 0
+    
+    for i, row in enumerate(mat):
+        ones_count = sum(row)
+        if ones_count > max_ones:
+            max_ones = ones_count
+            max_index = i
+    
+    return [max_index, max_ones]
 
 
 Solution = create_solution(solution_function_name)

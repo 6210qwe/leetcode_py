@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每个会话的持续时间。
+2. 统计每个会话的滚动事件和点击事件数量。
+3. 计算每个会话的点击滚动比率。
+4. 过滤出满足僵尸会话条件的会话。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Pandas 读取输入数据。
+2. 计算每个会话的开始时间和结束时间。
+3. 计算每个会话的持续时间。
+4. 统计每个会话的滚动事件和点击事件数量。
+5. 计算每个会话的点击滚动比率。
+6. 过滤出满足僵尸会话条件的会话。
+7. 按滚动事件数量降序和会话 ID 升序排序结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 进行高效的数据处理。
+- 通过 groupby 和聚合函数计算所需的统计量。
+- 使用布尔索引过滤出符合条件的会话。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_zombie_sessions(app_events: pd.DataFrame) -> pd.DataFrame:
+    # 计算每个会话的开始时间和结束时间
+    start_times = app_events[app_events['event_type'] == 'app_open'].groupby('session_id')['event_timestamp'].min()
+    end_times = app_events[app_events['event_type'] == 'app_close'].groupby('session_id')['event_timestamp'].max()
+
+    # 计算每个会话的持续时间
+    session_durations = (end_times - start_times).dt.total_seconds() / 60
+
+    # 统计每个会话的滚动事件和点击事件数量
+    scroll_counts = app_events[app_events['event_type'] == 'scroll'].groupby('session_id').size()
+    click_counts = app_events[app_events['event_type'] == 'click'].groupby('session_id').size()
+
+    # 计算每个会话的点击滚动比率
+    click_scroll_ratios = click_counts / scroll_counts
+
+    # 合并所有统计信息
+    session_stats = pd.DataFrame({
+        'user_id': app_events.groupby('session_id')['user_id'].first(),
+        'session_duration_minutes': session_durations,
+        'scroll_count': scroll_counts,
+        'click_count': click_counts.fillna(0),
+        'click_scroll_ratio': click_scroll_ratios.fillna(0)
+    })
+
+    # 过滤出满足僵尸会话条件的会话
+    zombie_sessions = session_stats[
+        (session_stats['session_duration_minutes'] > 30) &
+        (session_stats['scroll_count'] >= 5) &
+        (session_stats['click_scroll_ratio'] < 0.2) &
+        (~app_events[app_events['event_type'] == 'purchase']['session_id'].isin(session_stats.index))
+    ]
+
+    # 按滚动事件数量降序和会话 ID 升序排序结果
+    result = zombie_sessions.sort_values(by=['scroll_count', 'session_id'], ascending=[False, True])
+
+    return result[['session_id', 'user_id', 'session_duration_minutes', 'scroll_count']]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_zombie_sessions)

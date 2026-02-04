@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历每个岛屿，并标记已访问的土地。如果一个岛屿在边界上，则它不是封闭岛屿。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历整个网格，找到所有未访问的土地。
+2. 对于每个未访问的土地，使用 DFS 进行遍历，并标记所有连通的土地。
+3. 如果在遍历过程中遇到边界，则该岛屿不是封闭岛屿。
+4. 统计所有封闭岛屿的数量。
 
 关键点:
-- [TODO]
+- 使用 DFS 标记已访问的土地。
+- 在遍历过程中检查是否遇到边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是网格的行数，n 是网格的列数。每个格子最多只会被访问一次。
+空间复杂度: O(m * n)，递归调用栈的深度最多为 m * n。
 """
 
 # ============================================================================
@@ -49,12 +52,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_closed_islands(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计封闭岛屿的数目
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid:
+        return 0
+
+    rows, cols = len(grid), len(grid[0])
+    visited = set()
+
+    def dfs(r: int, c: int) -> bool:
+        if (r, c) in visited or grid[r][c] == 1:
+            return True
+        if r == 0 or r == rows - 1 or c == 0 or c == cols - 1:
+            return False
+
+        visited.add((r, c))
+        is_closed = True
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if not (0 <= nr < rows and 0 <= nc < cols):
+                continue
+            if not dfs(nr, nc):
+                is_closed = False
+
+        return is_closed
+
+    closed_islands = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 0 and (r, c) not in visited and dfs(r, c):
+                closed_islands += 1
+
+    return closed_islands
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_closed_islands)

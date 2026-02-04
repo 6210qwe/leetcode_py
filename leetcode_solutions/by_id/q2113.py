@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速选择算法找到第 k 大的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串数组转换为整数数组。
+2. 使用快速选择算法找到第 k 大的整数。
+3. 将找到的整数转换回字符串并返回。
 
 关键点:
-- [TODO]
+- 快速选择算法的时间复杂度平均为 O(n)，最坏情况下为 O(n^2)。
+- 通过随机化选择枢轴可以避免最坏情况的发生。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) 平均情况，O(n^2) 最坏情况
+空间复杂度: O(1) 除了输入和输出外，不需要额外的空间
 """
 
 # ============================================================================
@@ -47,14 +49,44 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import random
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[str], k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中的第 k 大整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串数组转换为整数数组
+    nums_int = [int(num) for num in nums]
 
+    def quick_select(arr, left, right, k):
+        if left == right:
+            return arr[left]
+
+        pivot_index = random.randint(left, right)
+        pivot_index = partition(arr, left, right, pivot_index)
+
+        if k == pivot_index:
+            return arr[k]
+        elif k < pivot_index:
+            return quick_select(arr, left, pivot_index - 1, k)
+        else:
+            return quick_select(arr, pivot_index + 1, right, k)
+
+    def partition(arr, left, right, pivot_index):
+        pivot_value = arr[pivot_index]
+        arr[pivot_index], arr[right] = arr[right], arr[pivot_index]
+        store_index = left
+        for i in range(left, right):
+            if arr[i] > pivot_value:
+                arr[store_index], arr[i] = arr[i], arr[store_index]
+                store_index += 1
+        arr[right], arr[store_index] = arr[store_index], arr[right]
+        return store_index
+
+    # 使用快速选择算法找到第 k 大的整数
+    kth_largest = quick_select(nums_int, 0, len(nums_int) - 1, k - 1)
+    
+    # 将找到的整数转换回字符串并返回
+    return str(kth_largest)
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs(current, remaining_fuel)`，表示从当前城市 `current` 出发，剩余 `remaining_fuel` 汽油时的路径数目。
+2. 如果当前城市是终点城市，则路径数加1。
+3. 对于每个可以到达的城市 `next_city`，如果从 `current` 到 `next_city` 的油耗不超过 `remaining_fuel`，则递归调用 `dfs(next_city, remaining_fuel - cost)`。
+4. 使用缓存来存储已经计算过的状态，避免重复计算。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归。
+- 注意路径数对 10^9 + 7 取余。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * fuel)，其中 n 是城市的数量，fuel 是初始汽油量。
+空间复杂度: O(n * fuel)，用于存储记忆化搜索的状态。
 """
 
 # ============================================================================
@@ -48,13 +51,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_routes(locations: List[int], start: int, finish: int, fuel: int) -> int:
+    from functools import lru_cache
+    
+    @lru_cache(None)
+    def dfs(current: int, remaining_fuel: int) -> int:
+        if remaining_fuel < 0:
+            return 0
+        total_paths = 1 if current == finish else 0
+        for next_city in range(len(locations)):
+            if next_city != current:
+                cost = abs(locations[current] - locations[next_city])
+                if remaining_fuel >= cost:
+                    total_paths += dfs(next_city, remaining_fuel - cost)
+                    total_paths %= MOD
+        return total_paths
+    
+    return dfs(start, fuel)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_routes)

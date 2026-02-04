@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从头到尾遍历数组，根据当前位决定是否跳过下一个位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化索引 i 为 0。
+2. 遍历数组直到倒数第二个元素：
+   - 如果当前位是 1，则跳过下一个位（i += 2）。
+   - 否则，只移动一位（i += 1）。
+3. 最后检查索引 i 是否等于数组长度减 1，如果是则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 通过遍历数组并根据当前位决定是否跳过下一个位来判断最后一个字符是否是一比特字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 bits 的长度。我们只需遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_one_bit_character(bits: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断最后一个字符是否是一比特字符
     """
-    # TODO: 实现最优解法
-    pass
+    i = 0
+    n = len(bits)
+    while i < n - 1:
+        if bits[i] == 1:
+            i += 2
+        else:
+            i += 1
+    return i == n - 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_one_bit_character)

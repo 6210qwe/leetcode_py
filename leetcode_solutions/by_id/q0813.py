@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历图，并记录从起点到终点的所有路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 dfs，用于从当前节点开始进行深度优先搜索。
+2. 在递归函数中，如果当前节点是目标节点，则将当前路径加入结果列表。
+3. 否则，遍历当前节点的所有邻居节点，继续递归搜索。
+4. 初始化结果列表和当前路径，从起点开始调用递归函数。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 通过传递路径列表来记录每条路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是节点数。在最坏情况下，每个节点都可能连接到其他所有节点，导致路径数量呈指数增长。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def all_paths_source_target(graph: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回从节点 0 到节点 n-1 的所有路径
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, path: List[int]):
+        if node == len(graph) - 1:
+            result.append(path)
+            return
+        for neighbor in graph[node]:
+            dfs(neighbor, path + [neighbor])
+
+    result = []
+    dfs(0, [0])
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(all_paths_source_target)

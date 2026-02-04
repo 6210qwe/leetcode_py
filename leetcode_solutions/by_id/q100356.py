@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针找到需要排序的子数组的起始和结束位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从左到右遍历数组，找到第一个逆序的位置，记为left。
+2. 从右到左遍历数组，找到第一个逆序的位置，记为right。
+3. 在left和right之间的子数组中，找到最大值和最小值。
+4. 将最大值和最小值分别与left之前的元素和right之后的元素比较，调整left和right的位置。
+5. 返回[left, right]。
 
 关键点:
-- [TODO]
+- 通过两次遍历找到需要排序的子数组的边界。
+- 通过最大值和最小值进一步调整边界，确保整个数组在调整后是有序的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到需要排序的子数组的起始和结束位置
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return [-1, -1]
+
+    n = len(nums)
+    left, right = -1, -1
+
+    # 从左到右找到第一个逆序的位置
+    for i in range(1, n):
+        if nums[i] < nums[i - 1]:
+            left = i - 1
+            break
+
+    # 如果数组已经是有序的
+    if left == -1:
+        return [-1, -1]
+
+    # 从右到左找到第一个逆序的位置
+    for i in range(n - 2, -1, -1):
+        if nums[i] > nums[i + 1]:
+            right = i + 1
+            break
+
+    # 在left和right之间的子数组中找到最大值和最小值
+    sub_min, sub_max = min(nums[left:right + 1]), max(nums[left:right + 1])
+
+    # 调整left的位置
+    while left > 0 and nums[left - 1] > sub_min:
+        left -= 1
+
+    # 调整right的位置
+    while right < n - 1 and nums[right + 1] < sub_max:
+        right += 1
+
+    return [left, right]
 
 
 Solution = create_solution(solution_function_name)

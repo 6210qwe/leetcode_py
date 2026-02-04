@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和排序来最大化总奖励。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对奖励数组进行排序。
+2. 初始化总奖励 x 为 0。
+3. 遍历排序后的奖励数组，如果当前奖励大于总奖励 x，则将其加到 x 上，并标记该下标。
+4. 返回最终的总奖励 x。
 
 关键点:
-- [TODO]
+- 通过排序确保每次选择的奖励都是当前可以获取的最大值。
+- 贪心算法保证了每一步的选择都是局部最优，从而达到全局最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 rewardValues 的长度，主要由排序操作决定。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(reward_values: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算执行操作可获得的最大总奖励
     """
-    # TODO: 实现最优解法
-    pass
+    # 对奖励数组进行排序
+    reward_values.sort()
+    
+    # 初始化总奖励
+    total_reward = 0
+    
+    # 遍历排序后的奖励数组
+    for reward in reward_values:
+        if reward > total_reward:
+            total_reward += reward
+    
+    return total_reward
 
 
 Solution = create_solution(solution_function_name)

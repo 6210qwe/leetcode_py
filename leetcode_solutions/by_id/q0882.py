@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到峰值元素的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，分别指向数组的起始和末尾。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 arr[mid] > arr[mid + 1]，说明峰值在左侧或就是 mid，更新 right = mid。
+   - 否则，峰值在右侧，更新 left = mid + 1。
+3. 当 left == right 时，left 即为峰值元素的下标。
 
 关键点:
-- [TODO]
+- 通过比较中间位置及其右侧的元素来确定峰值的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def peak_index_in_mountain_array(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到山脉数组的峰值元素的下标
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] > arr[mid + 1]:
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(peak_index_in_mountain_array)

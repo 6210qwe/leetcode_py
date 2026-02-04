@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用模运算和循环来找到最小的全 1 数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `num` 为 1，`length` 为 1。
+2. 在循环中，计算 `num % k`，如果结果为 0，说明找到了能被 k 整除的全 1 数字，返回 `length`。
+3. 如果未找到，更新 `num` 为 `num * 10 + 1`，并增加 `length`。
+4. 如果在循环中 `num` 超过了一个阈值（如 10^6），则返回 -1，表示不存在这样的 n。
 
 关键点:
-- [TODO]
+- 使用模运算来避免大数溢出。
+- 通过循环逐步构建全 1 数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_all_ones_multiple(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最小的全 1 数字，使其能被 k 整除，并返回其长度。
     """
-    # TODO: 实现最优解法
-    pass
+    if k % 2 == 0 or k % 5 == 0:
+        return -1  # 如果 k 是 2 或 5 的倍数，则不存在这样的 n
+
+    num = 1
+    length = 1
+    while num % k != 0:
+        num = (num * 10 + 1) % k
+        length += 1
+        if length > k:  # 如果长度超过 k，则返回 -1
+            return -1
+    return length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_all_ones_multiple)

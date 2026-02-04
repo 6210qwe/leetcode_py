@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用几何方法判断路径是否被圆阻挡
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查每个圆是否阻挡了从 (0, 0) 到 (xCorner, yCorner) 的直线路径。
+2. 如果所有圆都不阻挡路径，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 计算圆心到直线的距离，如果距离小于等于半径，则认为圆阻挡了路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 circles 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def is_rectangle_corner_reachable(xCorner: int, yCorner: int, circles: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断矩形的两个角落是否可达
     """
-    # TODO: 实现最优解法
-    pass
+    for circle in circles:
+        x, y, r = circle
+        # 计算圆心到直线 (0, 0) 到 (xCorner, yCorner) 的距离
+        distance = abs(x * yCorner - y * xCorner) / (xCorner ** 2 + yCorner ** 2) ** 0.5
+        # 如果距离小于等于半径，则圆阻挡了路径
+        if distance <= r:
+            return False
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_rectangle_corner_reachable)

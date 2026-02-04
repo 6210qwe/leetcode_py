@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来追踪每个专家是否知晓秘密，并使用广度优先搜索（BFS）来处理同一时间的会议。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将专家 0 和 firstPerson 连接。
+2. 按时间对会议进行排序。
+3. 对于每个时间点，使用 BFS 处理该时间点的所有会议，更新并查集。
+4. 最后，通过并查集找出所有知晓秘密的专家。
 
 关键点:
-- [TODO]
+- 使用并查集来高效管理专家之间的连接关系。
+- 使用 BFS 来处理同一时间的会议，确保秘密在同一时间点内传播。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m + n + m)，其中 m 是 meetings 的长度，n 是专家的数量。排序操作的时间复杂度为 O(m log m)，并查集和 BFS 的操作总时间为 O(n + m)。
+空间复杂度: O(n + m)，并查集需要 O(n) 的空间，存储会议需要 O(m) 的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,59 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            self.parent[root_x] = root_y
+
+def solution_function_name(n: int, meetings: List[List[int]], first_person: int) -> List[int]:
+    # 初始化并查集
+    uf = UnionFind(n)
+    uf.union(0, first_person)
+    
+    # 按时间对会议进行排序
+    meetings.sort(key=lambda x: x[2])
+    
+    # 处理每个时间点的会议
+    i = 0
+    while i < len(meetings):
+        current_time = meetings[i][2]
+        groups = {}
+        
+        # 处理当前时间点的所有会议
+        while i < len(meetings) and meetings[i][2] == current_time:
+            x, y, _ = meetings[i]
+            root_x = uf.find(x)
+            root_y = uf.find(y)
+            
+            if root_x not in groups:
+                groups[root_x] = set()
+            if root_y not in groups:
+                groups[root_y] = set()
+            
+            groups[root_x].add(x)
+            groups[root_y].add(y)
+            
+            i += 1
+        
+        # 合并当前时间点的所有组
+        for group in groups.values():
+            if any(uf.find(expert) == uf.find(0) for expert in group):
+                for expert in group:
+                    uf.union(expert, 0)
+    
+    # 返回所有知晓秘密的专家
+    return [i for i in range(n) if uf.find(i) == uf.find(0)]
 
 
 Solution = create_solution(solution_function_name)

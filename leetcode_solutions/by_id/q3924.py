@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数字转换为英文单词，然后统计其中的奇数字母数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个字典，将数字0-9映射到对应的英文单词。
+2. 将输入的数字转换为对应的英文单词字符串。
+3. 遍历英文单词字符串，统计其中的奇数字母数量。
 
 关键点:
-- [TODO]
+- 使用字典进行数字到英文单词的映射。
+- 遍历字符串时，使用集合来快速判断字母是否为奇数字母。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是数字转换成英文单词后的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,20 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_odd_letters(num: int) -> int:
+    # 数字到英文单词的映射
+    num_to_word = {
+        0: "zero", 1: "one", 2: "two", 3: "three", 4: "four",
+        5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"
+    }
+    
+    # 将数字转换为英文单词字符串
+    word = ''.join(num_to_word[int(digit)] for digit in str(num))
+    
+    # 奇数字母集合
+    odd_letters = set("aeiou")
+    
+    # 统计奇数字母数量
+    return sum(1 for letter in word if letter in odd_letters)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_odd_letters)

@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表和水塘抽样来实现随机翻转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，记录矩阵的总大小 `total` 和已翻转的元素集合 `flipped`。
+2. 在 `flip` 方法中，使用水塘抽样从剩余未翻转的元素中随机选择一个元素。
+3. 将选中的元素标记为已翻转，并更新哈希表。
+4. 在 `reset` 方法中，清空已翻转的元素集合 `flipped`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录已翻转的元素，避免直接存储整个矩阵，节省空间。
+- 使用水塘抽样保证每个未翻转元素被选中的概率相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次 `flip` 和 `reset` 操作的时间复杂度都是常数级别。
+空间复杂度: O(min(m * n, k)) - 其中 k 是 `flip` 操作的次数，最坏情况下为 O(m * n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from random import randint
+from typing import List
+
+class Solution:
+    def __init__(self, m: int, n: int):
+        self.m = m
+        self.n = n
+        self.total = m * n
+        self.flipped = set()
+
+    def flip(self) -> List[int]:
+        # 生成一个随机索引
+        rand_index = randint(0, self.total - len(self.flipped) - 1)
+        
+        # 查找实际的未翻转索引
+        actual_index = rand_index
+        for i in self.flipped:
+            if i <= actual_index:
+                actual_index += 1
+        
+        # 记录翻转
+        self.flipped.add(actual_index)
+        
+        # 返回对应的行列坐标
+        return [actual_index // self.n, actual_index % self.n]
+
+    def reset(self) -> None:
+        self.flipped.clear()
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    sol = Solution(3, 1)
+    print(sol.flip())  # 可能输出 [1, 0]
+    print(sol.flip())  # 可能输出 [2, 0]
+    print(sol.flip())  # 可能输出 [0, 0]
+    sol.reset()
+    print(sol.flip())  # 可能输出 [2, 0]

@@ -21,40 +21,86 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来管理 Alice 和 Bob 的连通性，并优先处理类型 3 的边以最大化可删除的边数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个并查集，分别用于 Alice 和 Bob。
+2. 按照边的类型对 edges 进行排序，优先处理类型 3 的边。
+3. 遍历排序后的 edges：
+   - 对于类型 3 的边，尝试同时连接 Alice 和 Bob 的并查集。
+   - 对于类型 1 和类型 2 的边，分别尝试连接 Alice 和 Bob 的并查集。
+4. 如果在处理过程中发现某个并查集已经连通了所有节点，则停止处理剩余的边。
+5. 最后检查 Alice 和 Bob 的并查集是否都连通了所有节点，如果是则返回可删除的最大边数，否则返回 -1。
 
 关键点:
-- [TODO]
+- 优先处理类型 3 的边，因为它们可以同时连接 Alice 和 Bob 的图。
+- 使用并查集来高效管理连通性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E + E α(n))，其中 E 是边的数量，n 是节点数量，α 是反阿克曼函数。
+空间复杂度: O(n)，并查集需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
+            return True
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_num_edges_to_remove(n: int, edges: List[List[int]]) -> int:
+    alice_uf = UnionFind(n)
+    bob_uf = UnionFind(n)
+    removed_edges = 0
+    
+    # Sort edges by type, prioritize type 3
+    edges.sort(key=lambda x: -x[0])
+    
+    for edge in edges:
+        t, u, v = edge
+        u -= 1
+        v -= 1
+        if t == 3:
+            if not (alice_uf.union(u, v) and bob_uf.union(u, v)):
+                removed_edges += 1
+        elif t == 1:
+            if not alice_uf.union(u, v):
+                removed_edges += 1
+        elif t == 2:
+            if not bob_uf.union(u, v):
+                removed_edges += 1
+    
+    if alice_uf.count == 1 and bob_uf.count == 1:
+        return removed_edges
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_num_edges_to_remove)

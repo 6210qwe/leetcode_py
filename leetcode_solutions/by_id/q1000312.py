@@ -21,40 +21,73 @@ LCR 114. 火星词典 - 现有一种使用英语字母的外星文语言，这�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来确定字母的顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建有向图和入度表。
+2. 初始化队列，将入度为0的节点加入队列。
+3. 进行拓扑排序，依次处理队列中的节点。
+4. 如果最终结果包含所有字母，则返回结果；否则返回空字符串。
 
 关键点:
-- [TODO]
+- 通过比较相邻单词来构建图。
+- 使用拓扑排序来确定字母顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(C + V + E)，其中 C 是字符总数，V 是字母数量（最多 26），E 是边的数量。
+空间复杂度: O(V + E)，用于存储图和入度表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据词典还原出此语言中已知的字母顺序
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 构建有向图和入度表
+    graph = defaultdict(set)
+    in_degree = {char: 0 for word in words for char in word}
+    
+    # 通过比较相邻单词来构建图
+    for i in range(len(words) - 1):
+        w1, w2 = words[i], words[i + 1]
+        min_len = min(len(w1), len(w2))
+        if len(w1) > len(w2) and w1[:min_len] == w2[:min_len]:
+            return ""
+        for j in range(min_len):
+            if w1[j] != w2[j]:
+                if w2[j] not in graph[w1[j]]:
+                    graph[w1[j]].add(w2[j])
+                    in_degree[w2[j]] += 1
+                break
+    
+    # 初始化队列，将入度为0的节点加入队列
+    queue = deque([char for char in in_degree if in_degree[char] == 0])
+    result = []
+    
+    # 进行拓扑排序
+    while queue:
+        char = queue.popleft()
+        result.append(char)
+        for neighbor in graph[char]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # 如果最终结果包含所有字母，则返回结果；否则返回空字符串
+    if len(result) == len(in_degree):
+        return ''.join(result)
+    else:
+        return ""
 
 Solution = create_solution(solution_function_name)

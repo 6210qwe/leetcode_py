@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组来快速计算任意子字符串中 1 和 0 的数量，并通过双重循环遍历所有可能的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix`，用于存储从字符串开头到当前位置的 1 和 0 的数量。
+2. 遍历字符串，更新前缀和数组。
+3. 使用双重循环遍历所有可能的子字符串，计算每个子字符串中 1 和 0 的数量。
+4. 检查每个子字符串是否满足 1 的数量大于或等于 0 的数量的平方，如果是则计数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算任意子字符串中 1 和 0 的数量。
+- 双重循环遍历所有可能的子字符串，确保不遗漏任何子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。双重循环遍历所有可能的子字符串。
+空间复杂度: O(n)，使用前缀和数组存储 1 和 0 的数量。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_dominant_substrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计 1 显著的字符串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    prefix = [(0, 0)]  # (count_1, count_0)
+    
+    # 构建前缀和数组
+    for i in range(n):
+        count_1, count_0 = prefix[-1]
+        if s[i] == '1':
+            count_1 += 1
+        else:
+            count_0 += 1
+        prefix.append((count_1, count_0))
+    
+    count = 0
+    # 遍历所有可能的子字符串
+    for i in range(n):
+        for j in range(i, n):
+            count_1 = prefix[j + 1][0] - prefix[i][0]
+            count_0 = prefix[j + 1][1] - prefix[i][1]
+            if count_1 >= count_0 ** 2:
+                count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_dominant_substrings)

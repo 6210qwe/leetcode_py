@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个优先队列来管理空闲服务器和忙碌服务器。一个用于存储当前空闲的服务器，另一个用于存储当前忙碌的服务器及其释放时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个优先队列：一个用于存储空闲服务器 (idle_servers)，另一个用于存储忙碌服务器 (busy_servers)。
+2. 将所有服务器按权重和下标排序后加入空闲服务器队列。
+3. 遍历每个任务，对于每个任务：
+   - 释放所有已经完成任务的服务器，将其从忙碌服务器队列中移除并加入空闲服务器队列。
+   - 如果有空闲服务器，选择权重最小且下标最小的服务器处理当前任务，并将其加入忙碌服务器队列。
+   - 如果没有空闲服务器，等待最早释放的服务器，并将其用于处理当前任务。
+4. 记录每个任务分配的服务器下标。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地管理和选择服务器。
+- 通过维护当前时间和服务器释放时间来确保服务器的正确调度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + m) log n)
+- 初始化空闲服务器队列的时间复杂度为 O(n log n)。
+- 每个任务的操作时间复杂度为 O(log n)，总共 m 个任务，因此总时间复杂度为 O(m log n)。
+- 总时间复杂度为 O((n + m) log n)。
+
+空间复杂度: O(n + m)
+- 优先队列的空间复杂度为 O(n)。
+- 结果数组的空间复杂度为 O(m)。
+- 总空间复杂度为 O(n + m)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def assign_tasks(servers: List[int], tasks: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    分配任务到服务器
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(servers), len(tasks)
+    idle_servers = [(weight, i) for i, weight in enumerate(servers)]
+    heapq.heapify(idle_servers)
+    busy_servers = []
+    current_time = 0
+    result = []
 
+    for j in range(m):
+        # 更新当前时间
+        current_time = max(current_time, j)
 
-Solution = create_solution(solution_function_name)
+        # 释放已经完成任务的服务器
+        while busy_servers and busy_servers[0][0] <= current_time:
+            _, server_index = heapq.heappop(busy_servers)
+            heapq.heappush(idle_servers, (servers[server_index], server_index))
+
+        # 如果有空闲服务器，选择权重最小且下标最小的服务器
+        if idle_servers:
+            weight, server_index = heapq.heappop(idle_servers)
+            result.append(server_index)
+            heapq.heappush(busy_servers, (current_time + tasks[j], server_index))
+        else:
+            # 等待最早释放的服务器
+            release_time, server_index = heapq.heappop(busy_servers)
+            current_time = release_time
+            result.append(server_index)
+            heapq.heappush(busy_servers, (current_time + tasks[j], server_index))
+
+    return result
+
+Solution = create_solution(assign_tasks)

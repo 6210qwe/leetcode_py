@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示从 (i, j) 出发能够移动的最大次数。我们可以从右向左遍历每一列，并更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与 grid 大小相同的 dp 数组，所有元素初始化为 0。
+2. 从最后一列开始，逐列向左遍历。
+3. 对于每一个单元格 (i, j)，检查其右侧的三个可能的移动位置 (i-1, j+1), (i, j+1), (i+1, j+1) 是否满足条件（即值严格大于当前单元格），如果满足则更新 dp[i][j] 为这三个位置的最大值加 1。
+4. 最后，返回 dp 数组中第一列的最大值。
 
 关键点:
-- [TODO]
+- 从右向左遍历可以确保在计算 dp[i][j] 时，dp[i-1][j+1], dp[i][j+1], dp[i+1][j+1] 已经被计算过。
+- 动态规划的状态转移方程为 dp[i][j] = max(dp[i-1][j+1], dp[i][j+1], dp[i+1][j+1]) + 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。我们需要遍历整个矩阵。
+空间复杂度: O(m * n)，我们需要一个与 grid 大小相同的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_moves(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中移动的最大次数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    dp = [[0] * n for _ in range(m)]
+    
+    # 从最后一列开始，逐列向左遍历
+    for j in range(n - 2, -1, -1):
+        for i in range(m):
+            # 检查右侧的三个可能的移动位置
+            for di in [-1, 0, 1]:
+                ni = i + di
+                if 0 <= ni < m and grid[ni][j + 1] > grid[i][j]:
+                    dp[i][j] = max(dp[i][j], dp[ni][j + 1] + 1)
+    
+    # 返回 dp 数组中第一列的最大值
+    return max(dp[i][0] for i in range(m))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_moves)

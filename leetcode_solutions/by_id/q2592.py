@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到最小代价的交换方式，使得 nums1 和 nums2 在每个位置上都不相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计 nums1 和 nums2 在每个位置上的相同元素，并记录这些位置。
+2. 计算这些相同元素的频率，找到频率最高的元素。
+3. 尽可能多地交换这些频率最高的元素，直到满足条件或无法再交换。
+4. 如果无法满足条件，返回 -1；否则返回总代价。
 
 关键点:
-- [TODO]
+- 使用哈希表统计频率。
+- 优先交换频率最高的元素。
+- 交换时尽量选择代价最小的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_total_cost(nums1: List[int], nums2: List[int]) -> int:
+    n = len(nums1)
+    freq = {}
+    same_positions = []
+    total_cost = 0
+    
+    # 统计相同位置的元素及其频率
+    for i in range(n):
+        if nums1[i] == nums2[i]:
+            same_positions.append(i)
+            freq[nums1[i]] = freq.get(nums1[i], 0) + 1
+    
+    # 找到频率最高的元素
+    max_freq = max(freq.values()) if freq else 0
+    most_common_element = next((k for k, v in freq.items() if v == max_freq), None)
+    
+    # 交换频率最高的元素
+    for i in same_positions:
+        if freq[nums1[i]] < max_freq or (freq[nums1[i]] == max_freq and nums1[i] == most_common_element):
+            for j in range(n):
+                if nums1[j] != nums2[j] and nums1[j] != nums1[i]:
+                    total_cost += i + j
+                    nums1[i], nums1[j] = nums1[j], nums1[i]
+                    break
+            else:
+                return -1
+    
+    return total_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_total_cost)

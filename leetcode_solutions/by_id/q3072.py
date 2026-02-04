@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库中的 pivot 方法来实现数据透视。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并将其转换为 pandas DataFrame。
+2. 使用 pivot 方法将数据进行透视，设置 `month` 为索引，`city` 为列，`temperature` 为值。
+3. 重置索引以确保 `month` 作为一列返回。
 
 关键点:
-- [TODO]
+- 使用 pandas 的 pivot 方法可以高效地完成数据透视操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是数据的行数，因为 pivot 操作的时间复杂度是线性的。
+空间复杂度: O(n) - 因为需要存储整个 DataFrame。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import pandas as pd
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(weather: List[List[str]]) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现数据透视
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入数据转换为 pandas DataFrame
+    df = pd.DataFrame(weather, columns=['city', 'month', 'temperature'])
+    
+    # 使用 pivot 方法进行数据透视
+    pivoted_df = df.pivot(index='month', columns='city', values='temperature')
+    
+    # 重置索引以确保 month 作为一列返回
+    result_df = pivoted_df.reset_index()
+    
+    return result_df
 
 
 Solution = create_solution(solution_function_name)

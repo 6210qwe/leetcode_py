@@ -21,22 +21,23 @@ LCP 06. 拿硬币 - 桌上有 n 堆力扣币，每堆的数量保存在数组 co
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每一堆硬币，计算其拿完所需的最少次数。每次可以拿 1 或 2 枚硬币，因此对于每堆硬币，最少次数为 (coins[i] + 1) // 2。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `total_moves` 用于记录总次数。
+2. 遍历每堆硬币，计算每堆硬币拿完所需的最少次数，并累加到 `total_moves`。
+3. 返回 `total_moves`。
 
 关键点:
-- [TODO]
+- 使用整数除法 `(coins[i] + 1) // 2` 计算每堆硬币的最少次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 coins 的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(coins: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算拿完所有硬币的最少次数
     """
-    # TODO: 实现最优解法
-    pass
+    total_moves = 0
+    for coin in coins:
+        total_moves += (coin + 1) // 2
+    return total_moves
 
 
 Solution = create_solution(solution_function_name)

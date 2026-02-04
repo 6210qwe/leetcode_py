@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个怪物到达城市的时间，并按时间升序排序。然后依次消灭怪物，直到无法在怪物到达城市之前消灭它。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个怪物到达城市的时间，即 `time = dist[i] / speed[i]`。
+2. 将这些时间进行升序排序。
+3. 依次检查每个怪物到达城市的时间，如果当前时间小于等于怪物到达城市的时间，则可以消灭该怪物；否则，游戏结束。
 
 关键点:
-- [TODO]
+- 计算每个怪物到达城市的时间并排序。
+- 依次检查每个怪物是否能在其到达城市之前被消灭。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 dist 和 speed 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储每个怪物到达城市的时间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def eliminate_maximum(dist: List[int], speed: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 消灭怪物的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个怪物到达城市的时间
+    times = [d / s for d, s in zip(dist, speed)]
+    
+    # 按时间升序排序
+    times.sort()
+    
+    # 依次检查每个怪物是否能在其到达城市之前被消灭
+    for i, time in enumerate(times):
+        if i >= time:
+            return i
+    
+    return len(dist)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(eliminate_maximum)

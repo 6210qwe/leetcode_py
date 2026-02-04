@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每个字母第一次出现的位置，然后在第二次遇到该字母时，计算两次出现之间的距离，并与 distance 数组中的值进行比较。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 first_occurrence 来记录每个字母第一次出现的位置。
+2. 遍历字符串 s，对于每个字母：
+   - 如果该字母第一次出现，则记录其位置。
+   - 如果该字母第二次出现，则计算两次出现之间的距离，并与 distance 数组中的值进行比较。
+3. 如果所有字母的距离都符合要求，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用字典来记录每个字母第一次出现的位置。
+- 计算两次出现之间的距离时，需要减去 1，因为距离是指中间的字符数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，虽然使用了字典，但字典的大小最多为 26（字母表的大小），因此可以视为常数空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_distances(s: str, distance: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查字符串 s 是否是一个匀整字符串。
+    :param s: 字符串 s
+    :param distance: 距离数组
+    :return: 如果 s 是一个匀整字符串，返回 True；否则返回 False。
     """
-    # TODO: 实现最优解法
-    pass
+    first_occurrence = {}  # 记录每个字母第一次出现的位置
+    
+    for i, char in enumerate(s):
+        if char in first_occurrence:
+            # 计算两次出现之间的距离
+            expected_distance = i - first_occurrence[char] - 1
+            if expected_distance != distance[ord(char) - ord('a')]:
+                return False
+        else:
+            first_occurrence[char] = i
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_distances)

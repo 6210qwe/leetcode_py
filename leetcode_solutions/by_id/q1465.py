@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）计算每个子树的和，并记录所有可能的子树和。然后遍历这些子树和，找到最大的乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 计算整棵树的总和。
+2. 在 DFS 过程中，记录每个子树的和。
+3. 遍历所有子树和，计算 (总和 - 子树和) * 子树和 的最大值。
+4. 返回最大乘积并对 10^9 + 7 取模。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算子树和并记录。
+- 遍历所有子树和，找到最大乘积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。我们需要遍历每个节点一次。
+空间复杂度: O(n)，递归调用栈的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def maxProduct(self, root: Optional[TreeNode]) -> int:
+        MOD = 10**9 + 7
+        self.total_sum = 0
+        self.subtree_sums = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        def dfs(node: Optional[TreeNode]) -> int:
+            if not node:
+                return 0
+            left_sum = dfs(node.left)
+            right_sum = dfs(node.right)
+            current_sum = left_sum + right_sum + node.val
+            self.subtree_sums.append(current_sum)
+            return current_sum
 
+        # 计算整棵树的总和
+        self.total_sum = dfs(root)
 
-Solution = create_solution(solution_function_name)
+        # 找到最大乘积
+        max_product = 0
+        for subtree_sum in self.subtree_sums:
+            product = (self.total_sum - subtree_sum) * subtree_sum
+            max_product = max(max_product, product)
+
+        return max_product % MOD
+
+Solution = create_solution(Solution)

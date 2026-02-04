@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和后缀数组来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化后缀数组 suffixes，其中 suffixes[i] 表示从位置 i 开始的后缀是否可以作为非递减序列的一部分。
+2. 初始化 dp 数组，其中 dp[i] 表示从位置 i 开始的子字符串可以划分成多少种非递减序列。
+3. 从右向左遍历字符串，更新 dp 和 suffixes 数组。
+4. 最终结果保存在 dp[0] 中。
 
 关键点:
-- [TODO]
+- 使用后缀数组来快速判断当前子字符串是否可以作为非递减序列的一部分。
+- 动态规划的状态转移方程需要考虑当前子字符串和后续子字符串的关系。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。每个位置最多需要比较 n 次。
+空间复杂度: O(n)，用于存储 dp 和 suffixes 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def number_of_ways_to_separate_numbers(num: str) -> int:
+    MOD = 10**9 + 7
+    n = len(num)
+    
+    # 后缀数组，suffixes[i] 表示从位置 i 开始的后缀是否可以作为非递减序列的一部分
+    suffixes = [False] * (n + 1)
+    suffixes[n] = True
+    
+    # dp 数组，dp[i] 表示从位置 i 开始的子字符串可以划分成多少种非递减序列
+    dp = [0] * (n + 1)
+    dp[n] = 1
+    
+    for i in range(n - 1, -1, -1):
+        if num[i] == '0':
+            continue
+        
+        current_num = 0
+        for j in range(i, n):
+            current_num = current_num * 10 + int(num[j])
+            if current_num > 2**63 - 1:
+                break
+            
+            if j + 1 < n and num[j + 1] != '0' and suffixes[j + 1]:
+                dp[i] += dp[j + 1]
+                dp[i] %= MOD
+                suffixes[i] = True
+    
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_ways_to_separate_numbers)

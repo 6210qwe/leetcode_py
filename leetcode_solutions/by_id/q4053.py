@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符的频率，然后遍历哈希表找到众数频率组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个字符的频率。
+2. 初始化一个字典 `freq_groups`，键为频率，值为具有该频率的字符列表。
+3. 遍历哈希表，将字符按频率分组到 `freq_groups` 中。
+4. 找到 `freq_groups` 中字符数量最多的频率组，如果有多个频率组字符数量相同，则选择频率较大的那个组。
+5. 返回该频率组中的所有字符。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计字符频率。
+- 通过字典 `freq_groups` 分组字符，并找到字符数量最多的频率组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。需要遍历字符串一次来统计频率，再遍历哈希表一次来分组和找到众数频率组。
+空间复杂度: O(1)，因为字符集是固定的（26 个小写字母），所以哈希表和 `freq_groups` 的大小都是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +53,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回众数频率组中的所有字符
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的频率
+    char_count = {}
+    for char in s:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # 将字符按频率分组
+    freq_groups = {}
+    for char, count in char_count.items():
+        if count not in freq_groups:
+            freq_groups[count] = []
+        freq_groups[count].append(char)
+    
+    # 找到字符数量最多的频率组
+    max_group_size = 0
+    max_freq = 0
+    for freq, group in freq_groups.items():
+        if len(group) > max_group_size or (len(group) == max_group_size and freq > max_freq):
+            max_group_size = len(group)
+            max_freq = freq
+    
+    # 返回该频率组中的所有字符
+    return ''.join(freq_groups[max_freq])
 
 
 Solution = create_solution(solution_function_name)

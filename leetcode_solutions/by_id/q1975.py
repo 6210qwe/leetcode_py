@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从 start 位置开始，向左和向右同时扩展，找到第一个等于 target 的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最小距离为无穷大。
+2. 从 start 位置开始，分别向左和向右扩展，找到第一个等于 target 的位置。
+3. 更新最小距离。
+4. 返回最小距离。
 
 关键点:
-- [TODO]
+- 从 start 位置开始双向扩展，确保找到最近的目标元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。最坏情况下需要遍历整个数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_distance_to_target(nums: List[int], target: int, start: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到与 start 位置最近的目标元素的距离
     """
-    # TODO: 实现最优解法
-    pass
+    min_distance = float('inf')
+    
+    # 向左扩展
+    for i in range(start, -1, -1):
+        if nums[i] == target:
+            min_distance = min(min_distance, start - i)
+            break
+    
+    # 向右扩展
+    for i in range(start, len(nums)):
+        if nums[i] == target:
+            min_distance = min(min_distance, i - start)
+            break
+    
+    return min_distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_distance_to_target)

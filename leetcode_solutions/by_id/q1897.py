@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示从 word1 的第 i 个字符到 word2 的第 j 个字符之间可以构成的最长回文子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示从 word1 的第 i 个字符到 word2 的第 j 个字符之间可以构成的最长回文子序列的长度。
+2. 遍历 word1 和 word2 的所有字符，更新 dp 数组。
+3. 最后，找到 dp 数组中最大的值，即为所求的最长回文子序列的长度。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = max(dp[i+1][j], dp[i][j-1]) if word1[i] != word2[j] else 2 + dp[i+1][j-1]
+- 边界条件：dp[i][i] = 1，表示单个字符本身就是回文
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 和 m 分别是 word1 和 word2 的长度。
+空间复杂度: O(n * m)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word1: str, word2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算由子序列构造的最长回文串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(word1), len(word2)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # 初始化 dp 数组
+    for i in range(n):
+        dp[i][m] = 1
+    for j in range(m):
+        dp[n][j] = 1
+    
+    # 填充 dp 数组
+    for i in range(n - 1, -1, -1):
+        for j in range(m - 1, -1, -1):
+            if word1[i] == word2[j]:
+                dp[i][j] = 2 + dp[i + 1][j + 1]
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])
+    
+    # 找到最大值
+    max_length = 0
+    for i in range(n):
+        for j in range(m):
+            if word1[i] == word2[j]:
+                max_length = max(max_length, 2 + dp[i + 1][j + 1])
+    
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示使用 j 条地毯覆盖前 i 个砖块后，剩余的最少白色砖块数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示使用 j 条地毯覆盖前 i 个砖块后，剩余的最少白色砖块数。
+2. 遍历每个砖块 i 和地毯数量 j，更新 dp[i][j]。
+3. 如果当前砖块是黑色的，那么 dp[i][j] = dp[i-1][j]。
+4. 如果当前砖块是白色的，那么有两种选择：
+   - 不使用地毯覆盖当前砖块，dp[i][j] = dp[i-1][j] + 1。
+   - 使用一条地毯覆盖当前砖块及其前面的 carpetLen-1 个砖块，dp[i][j] = dp[max(0, i-carpetLen)][j-1]。
+5. 返回 dp[n][numCarpets]，即使用 numCarpets 条地毯覆盖 n 个砖块后，剩余的最少白色砖块数。
 
 关键点:
-- [TODO]
+- 使用动态规划来优化时间和空间复杂度。
+- 通过前缀和来快速计算覆盖的白色砖块数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * numCarpets)，其中 n 是 floor 的长度。
+空间复杂度: O(n * numCarpets)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_white_tiles(floor: str, num_carpets: int, carpet_len: int) -> int:
+    n = len(floor)
+    dp = [[float('inf')] * (num_carpets + 1) for _ in range(n + 1)]
+    
+    # 初始化 dp 数组
+    for j in range(num_carpets + 1):
+        dp[0][j] = 0
+    
+    for i in range(1, n + 1):
+        for j in range(num_carpets + 1):
+            if floor[i - 1] == '0':
+                dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = dp[i - 1][j] + 1
+                if j > 0:
+                    dp[i][j] = min(dp[i][j], dp[max(0, i - carpet_len)][j - 1])
+    
+    return dp[n][num_carpets]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_white_tiles)

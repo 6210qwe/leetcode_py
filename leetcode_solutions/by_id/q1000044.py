@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来找到缺失的两个数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有数字的异或结果。
+2. 找到异或结果中的任意一个为1的位，将数组分为两组。
+3. 分别计算两组的异或结果，得到缺失的两个数字。
 
 关键点:
-- [TODO]
+- 通过异或操作找到两个缺失数字的不同位。
+- 通过分组异或操作找到具体的缺失数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用位运算找到缺失的两个数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算所有数字的异或结果
+    xor = 0
+    n = len(nums) + 2
+    for num in nums:
+        xor ^= num
+    for i in range(1, n + 1):
+        xor ^= i
+
+    # 找到异或结果中的任意一个为1的位
+    diff_bit = xor & -xor
+
+    # 分别计算两组的异或结果
+    num1, num2 = 0, 0
+    for num in nums:
+        if num & diff_bit:
+            num1 ^= num
+        else:
+            num2 ^= num
+    for i in range(1, n + 1):
+        if i & diff_bit:
+            num1 ^= i
+        else:
+            num2 ^= i
+
+    return [num1, num2]
 
 
 Solution = create_solution(solution_function_name)

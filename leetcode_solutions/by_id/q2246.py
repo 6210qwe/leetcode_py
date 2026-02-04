@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 通过构建有向图来表示员工之间的喜欢关系。
+- 使用深度优先搜索 (DFS) 来找到所有的环和链。
+- 计算每个环的长度，并计算每个节点的最长链长度。
+- 最终结果是最大的环长度或两个链的长度之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建有向图和反向图。
+2. 使用 DFS 找到所有的环和链。
+3. 计算每个环的长度。
+4. 计算每个节点的最长链长度。
+5. 返回最大值。
 
 关键点:
-- [TODO]
+- 使用 DFS 来遍历图并记录路径。
+- 通过反向图来计算最长链。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +57,52 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_employees_to_meeting(favorite: List[int]) -> int:
+    n = len(favorite)
+    graph = [[] for _ in range(n)]
+    reverse_graph = [[] for _ in range(n)]
+    
+    # 构建有向图和反向图
+    for i, f in enumerate(favorite):
+        graph[i].append(f)
+        reverse_graph[f].append(i)
+    
+    def dfs(node, visited, path):
+        if node in visited:
+            return
+        visited.add(node)
+        path.append(node)
+        for neighbor in graph[node]:
+            dfs(neighbor, visited, path)
+    
+    def find_longest_chain(node, memo):
+        if node in memo:
+            return memo[node]
+        if not reverse_graph[node]:
+            return 0
+        max_chain = 0
+        for neighbor in reverse_graph[node]:
+            max_chain = max(max_chain, 1 + find_longest_chain(neighbor, memo))
+        memo[node] = max_chain
+        return max_chain
+    
+    max_cycle_length = 0
+    max_chain_sum = 0
+    visited = set()
+    
+    for i in range(n):
+        if i not in visited:
+            path = []
+            dfs(i, visited, path)
+            if len(path) > 1 and path[0] in graph[path[-1]]:
+                cycle_length = len(path)
+                max_cycle_length = max(max_cycle_length, cycle_length)
+            else:
+                for node in path:
+                    longest_chain = find_longest_chain(node, {})
+                    max_chain_sum = max(max_chain_sum, longest_chain)
+    
+    return max(max_cycle_length, max_chain_sum)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_employees_to_meeting)

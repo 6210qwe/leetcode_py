@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到每个城市最高气温出现的第一天。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每个城市的最高气温。
+2. 使用主查询找到每个城市最高气温出现的第一天。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 MAX 函数来找到每个城市的最高气温。
+- 使用 WHERE 子句和 MIN 函数来找到每个城市最高气温出现的第一天。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是记录的数量。因为我们需要对数据进行分组和排序操作。
+空间复杂度: O(n)，存储中间结果的空间复杂度。
 """
 
 # ============================================================================
@@ -51,10 +52,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH MaxTemp AS (
+        SELECT city, MAX(recordDate) AS max_date, MAX(temperature) AS max_temp
+        FROM Weather
+        GROUP BY city
+    )
+    SELECT w.city, MIN(w.recordDate) AS first_day
+    FROM Weather w
+    JOIN MaxTemp mt ON w.city = mt.city AND w.temperature = mt.max_temp
+    GROUP BY w.city;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

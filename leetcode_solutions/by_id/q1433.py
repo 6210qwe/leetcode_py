@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用两个字典来存储加密和解密的映射关系。
+- 对于加密，直接通过字符查找对应的值。
+- 对于解密，使用深度优先搜索（DFS）来生成所有可能的解密字符串，并检查它们是否在字典中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，构建加密和解密的映射字典。
+2. 加密时，遍历输入字符串，根据加密字典替换每个字符。
+3. 解密时，使用DFS生成所有可能的解密字符串，并统计在字典中的数量。
 
 关键点:
-- [TODO]
+- 使用字典来快速查找加密和解密的映射。
+- 使用DFS生成所有可能的解密字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * 2^k)，其中 n 是输入字符串的长度，m 是字典的长度，k 是解密字符串的长度的一半。
+空间复杂度: O(m + k)，其中 m 是字典的长度，k 是解密字符串的长度的一半。
 """
 
 # ============================================================================
@@ -49,12 +54,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Encrypter:
+    def __init__(self, keys: List[str], values: List[str], dictionary: List[str]):
+        self.encrypt_map = {key: value for key, value in zip(keys, values)}
+        self.decrypt_map = {}
+        for key, value in zip(keys, values):
+            if value not in self.decrypt_map:
+                self.decrypt_map[value] = []
+            self.decrypt_map[value].append(key)
+        self.dictionary = set(dictionary)
+
+    def encrypt(self, word1: str) -> str:
+        encrypted = ""
+        for char in word1:
+            if char in self.encrypt_map:
+                encrypted += self.encrypt_map[char]
+            else:
+                return ""
+        return encrypted
+
+    def decrypt(self, word2: str) -> int:
+        def dfs(index, current):
+            if index == len(word2):
+                if current in self.dictionary:
+                    self.count += 1
+                return
+            if word2[index:index+2] in self.decrypt_map:
+                for char in self.decrypt_map[word2[index:index+2]]:
+                    dfs(index + 2, current + char)
+
+        self.count = 0
+        dfs(0, "")
+        return self.count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Encrypter)

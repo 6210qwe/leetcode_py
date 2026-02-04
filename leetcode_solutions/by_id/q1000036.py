@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过将身高和体重组合成一个二维数组，并按身高升序、体重降序排序，然后使用最长递增子序列（LIS）算法来解决问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将身高和体重组合成一个二维数组。
+2. 按照身高升序、体重降序对二维数组进行排序。
+3. 使用动态规划或二分查找来找到最长递增子序列（LIS）。
 
 关键点:
-- [TODO]
+- 通过排序和LIS算法，可以有效地找到满足条件的最长序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是height和weight的长度。排序操作的时间复杂度为O(n log n)，LIS算法的时间复杂度为O(n log n)。
+空间复杂度: O(n)，用于存储排序后的数组和LIS数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from bisect import bisect_left
 
-
-def solution_function_name(params):
+def solution_function_name(height: List[int], weight: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算叠罗汉最多能叠几个人
     """
-    # TODO: 实现最优解法
-    pass
+    if not height or not weight:
+        return 0
 
+    # 将身高和体重组合成一个二维数组
+    people = list(zip(height, weight))
+    
+    # 按身高升序、体重降序排序
+    people.sort(key=lambda x: (x[0], -x[1]))
+
+    # 使用LIS算法找到最长递增子序列
+    lis = []
+    for _, w in people:
+        pos = bisect_left(lis, w)
+        if pos == len(lis):
+            lis.append(w)
+        else:
+            lis[pos] = w
+
+    return len(lis)
 
 Solution = create_solution(solution_function_name)

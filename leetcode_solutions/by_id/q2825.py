@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计数每个字符出现的次数，如果某个字符出现偶数次，则可以完全删除；如果出现奇数次，则最终会留下一个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的出现次数。
+2. 遍历字符计数，统计出现奇数次的字符个数。
+3. 最终结果为出现奇数次的字符个数。
 
 关键点:
-- [TODO]
+- 使用哈希表（字典）来记录每个字符的出现次数。
+- 通过遍历字典来统计出现奇数次的字符个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。需要遍历字符串一次来计数字符出现次数，并再次遍历字典来统计出现奇数次的字符个数。
+空间复杂度: O(1)，因为字符集是固定的（26 个小写字母），所以字典的空间复杂度是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_string_length(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过计数每个字符出现的次数，计算最小化后的字符串长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个字符的出现次数
+    char_count = {}
+    for char in s:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # 统计出现奇数次的字符个数
+    odd_count = sum(1 for count in char_count.values() if count % 2 != 0)
+    
+    return odd_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_string_length)

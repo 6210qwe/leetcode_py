@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与最大公约数 (GCD) 来确定有效的分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和数组。
+2. 遍历前缀和数组，使用 GCD 来确定有效的分割点。
+3. 统计最少的子数组数目。
 
 关键点:
-- [TODO]
+- 前缀和用于快速计算任意子数组的和。
+- GCD 用于确保每个子数组的和是相同的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是数组长度，k 是数组中元素的最大值。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀和数组
+    prefix_sum = [0]
+    for num in nums:
+        prefix_sum.append(prefix_sum[-1] + num)
+    
+    # 计算整个数组的和
+    total_sum = prefix_sum[-1]
+    
+    # 初始化最少子数组数目
+    min_subarrays = len(nums)
+    
+    # 遍历前缀和数组，使用 GCD 来确定有效的分割点
+    for i in range(1, len(prefix_sum)):
+        if math.gcd(total_sum, prefix_sum[i]) == prefix_sum[i]:
+            min_subarrays = min(min_subarrays, (len(prefix_sum) - 1) // i)
+    
+    return min_subarrays
 
 
 Solution = create_solution(solution_function_name)

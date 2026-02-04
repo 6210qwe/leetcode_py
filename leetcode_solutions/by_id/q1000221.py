@@ -21,40 +21,62 @@ LCP 33. 蓄水 - 给定 N 个无限容量且初始均空的水缸，每个水缸
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来最小化操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，存储每个水缸的 (所需倒水次数, 当前水桶容量, 对应水缸索引)。
+2. 计算每个水缸的初始倒水次数，并将其加入优先队列。
+3. 从优先队列中取出当前倒水次数最多的水缸，计算升级一次水桶后的倒水次数，并更新优先队列。
+4. 重复步骤3，直到所有水缸的倒水次数都小于等于当前最优解的操作次数。
 
 关键点:
-- [TODO]
+- 使用优先队列来动态维护每个水缸的倒水次数。
+- 通过贪心策略，每次选择倒水次数最多的水缸进行升级，以最小化总操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是水缸的数量。每次插入和删除优先队列的时间复杂度是 O(log n)，最坏情况下需要对每个水缸进行多次操作。
+空间复杂度: O(n)，优先队列的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_operations_to_fill_vats(bucket: List[int], vat: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少操作次数来完成所有水缸的蓄水要求
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(bucket)
+    if n != len(vat):
+        raise ValueError("bucket and vat must be of the same length")
 
+    # 初始化优先队列
+    pq = []
+    for i in range(n):
+        if vat[i] == 0:
+            continue
+        if bucket[i] == 0:
+            return -1
+        heapq.heappush(pq, (-((vat[i] + bucket[i] - 1) // bucket[i]), bucket[i], i))
 
-Solution = create_solution(solution_function_name)
+    operations = 0
+    while pq:
+        max_pours, current_bucket, index = heapq.heappop(pq)
+        max_pours = -max_pours
+        if max_pours * (operations + 1) < operations:
+            break
+        operations += 1
+        new_bucket = current_bucket + 1
+        new_pours = (vat[index] + new_bucket - 1) // new_bucket
+        heapq.heappush(pq, (-new_pours, new_bucket, index))
+
+    return operations
+
+Solution = create_solution(min_operations_to_fill_vats)

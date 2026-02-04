@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来构建二维矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 DFS 遍历图，将节点放置在矩阵中。
+3. 在 DFS 过程中，确保相邻节点在矩阵中相邻。
 
 关键点:
-- [TODO]
+- 使用邻接表来存储图。
+- 使用 DFS 来遍历图并构建矩阵。
+- 使用一个访问标记数组来避免重复访问节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。
+空间复杂度: O(n + m)，用于存储邻接表和访问标记数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def construct_2d_grid(n: int, edges: List[List[int]]) -> List[List[int]]:
+    # 构建邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # 用于存储结果矩阵
+    grid = []
+    # 用于记录节点是否已访问
+    visited = [False] * n
+    
+    def dfs(node: int, row: int, col: int):
+        if visited[node]:
+            return
+        visited[node] = True
+        
+        # 如果当前行不存在，创建新行
+        if len(grid) <= row:
+            grid.append([None] * (col + 1))
+        
+        # 将节点放置在矩阵中
+        grid[row][col] = node
+        
+        # 遍历相邻节点
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                if col + 1 < len(grid[row]) and grid[row][col + 1] is None:
+                    dfs(neighbor, row, col + 1)
+                elif row + 1 < len(grid) and grid[row + 1][col] is None:
+                    dfs(neighbor, row + 1, col)
+                else:
+                    dfs(neighbor, row + 1, 0)
+    
+    # 从节点 0 开始 DFS
+    dfs(0, 0, 0)
+    
+    return grid
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(construct_2d_grid)

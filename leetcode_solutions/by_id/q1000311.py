@@ -21,40 +21,52 @@ LCR 052. 递增顺序搜索树 - 给你一棵二叉搜索树，请 按中序遍�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为递增顺序搜索树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `inorder_traversal` 进行中序遍历。
+2. 在中序遍历过程中，将当前节点的左子节点设为 None，并将其右子节点指向下一个节点。
+3. 使用一个指针 `prev` 来记录上一个访问的节点，以便在遍历时更新节点的右子节点。
 
 关键点:
-- [TODO]
+- 中序遍历确保了节点按递增顺序访问。
+- 使用 `prev` 指针来连接节点，形成新的递增顺序搜索树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的空间复杂度为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def increasingBST(self, root: TreeNode) -> TreeNode:
+        def inorder_traversal(node: Optional[TreeNode]):
+            nonlocal prev
+            if not node:
+                return
+            inorder_traversal(node.left)
+            if prev:
+                prev.right = node
+            else:
+                new_root = node
+            node.left = None
+            prev = node
+            inorder_traversal(node.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        prev = None
+        new_root = None
+        inorder_traversal(root)
+        return new_root
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

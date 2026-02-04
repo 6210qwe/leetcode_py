@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过过滤和排序来找到所有有效的优惠券。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `is_valid_code` 来检查优惠券代码是否有效。
+2. 过滤出所有有效的优惠券。
+3. 对有效的优惠券按业务类别和标识符进行排序。
+4. 返回排序后的有效优惠券标识符列表。
 
 关键点:
-- [TODO]
+- 使用正则表达式来验证优惠券代码的有效性。
+- 使用 Python 的 `sorted` 函数来进行多级排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是优惠券的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储有效优惠券的空间。
 """
 
 # ============================================================================
@@ -47,14 +50,28 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import re
 
+def is_valid_code(code: str) -> bool:
+    """检查优惠券代码是否有效"""
+    if not code:
+        return False
+    return bool(re.match(r'^[a-zA-Z0-9_]+$', code))
 
-def solution_function_name(params):
+def solution_function_name(code: List[str], businessLine: List[str], isActive: List[bool]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有有效的优惠券标识符并按规则排序
     """
-    # TODO: 实现最优解法
-    pass
+    valid_coupons = []
+    for i in range(len(code)):
+        if (is_valid_code(code[i]) and 
+            businessLine[i] in ["electronics", "grocery", "pharmacy", "restaurant"] and 
+            isActive[i]):
+            valid_coupons.append((code[i], businessLine[i]))
 
+    # 按业务类别和标识符排序
+    sorted_coupons = sorted(valid_coupons, key=lambda x: (["electronics", "grocery", "pharmacy", "restaurant"].index(x[1]), x[0]))
+
+    return [coupon[0] for coupon in sorted_coupons]
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,28 @@ LCP 09. 最小跳跃次数 - 为了给刷题的同学一些奖励，力扣团队
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将起点 (0, 0) 加入队列，其中 0 表示当前弹簧位置，0 表示当前步数。
+2. 使用一个集合 visited 来记录已经访问过的弹簧位置，避免重复访问。
+3. 进行 BFS：
+   - 从队列中取出一个节点 (position, steps)。
+   - 如果 position + jump[position] >= N，则返回 steps + 1。
+   - 将 position + jump[position] 和 0 到 position-1 的所有位置加入队列，并标记为已访问。
+4. 如果队列为空且未找到解，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以保证找到最短路径。
+- 使用集合 visited 来避免重复访问，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N)
+空间复杂度: O(N)
 """
 
 # ============================================================================
@@ -49,12 +55,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(jump: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用广度优先搜索找到最小跳跃次数
     """
-    # TODO: 实现最优解法
-    pass
+    N = len(jump)
+    if N == 0:
+        return -1
+
+    from collections import deque
+    queue = deque([(0, 0)])  # (position, steps)
+    visited = set([0])
+
+    while queue:
+        position, steps = queue.popleft()
+        if position + jump[position] >= N:
+            return steps + 1
+        for next_pos in range(position):
+            if next_pos not in visited:
+                visited.add(next_pos)
+                queue.append((next_pos, steps + 1))
+        if position + jump[position] not in visited:
+            visited.add(position + jump[position])
+            queue.append((position + jump[position], steps + 1))
+
+    return -1
 
 
 Solution = create_solution(solution_function_name)

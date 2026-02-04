@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并计算每个子树的值。如果某个子树的值可以被 k 整除，则将其视为一个独立的连通块。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树。
+2. 使用 DFS 遍历树，计算每个子树的值。
+3. 如果某个子树的值可以被 k 整除，则将其视为一个独立的连通块。
+4. 返回所有可以被 k 整除的连通块的数量。
 
 关键点:
-- [TODO]
+- 使用 DFS 递归遍历树。
+- 计算每个子树的值，并检查是否可以被 k 整除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点的数量。我们需要遍历每个节点一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_k_divisible_components(n: int, edges: List[List[int]], values: List[int], k: int) -> int:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    count = 0
 
+    def dfs(node: int, parent: int) -> int:
+        nonlocal count
+        subtree_sum = values[node]
+        
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                subtree_sum += dfs(neighbor, node)
+        
+        if subtree_sum % k == 0:
+            count += 1
+            return 0  # 如果当前子树的和可以被 k 整除，返回 0
+        
+        return subtree_sum
 
-Solution = create_solution(solution_function_name)
+    dfs(0, -1)
+    return count
+
+Solution = create_solution(max_k_divisible_components)

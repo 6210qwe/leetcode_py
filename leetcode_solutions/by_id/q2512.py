@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个布尔数组来记录每个视频是否已上传，并使用一个变量来跟踪当前的最长上传前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔数组 `uploaded` 来记录每个视频是否已上传，并初始化一个变量 `max_prefix` 来跟踪当前的最长上传前缀。
+2. 在 `upload` 方法中，将对应的视频标记为已上传，并更新 `max_prefix`。
+3. 在 `longest` 方法中，返回当前的 `max_prefix`。
 
 关键点:
-- [TODO]
+- 使用布尔数组来高效地记录每个视频的上传状态。
+- 使用一个变量来跟踪当前的最长上传前缀，避免每次调用 `longest` 时都进行全量检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - `upload` 和 `longest` 方法的时间复杂度都是常数级。
+空间复杂度: O(n) - 使用了一个大小为 n 的布尔数组来记录每个视频的上传状态。
 """
 
 # ============================================================================
@@ -48,13 +50,19 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class LUPrefix:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, n: int):
+        self.uploaded = [False] * (n + 1)
+        self.max_prefix = 0
+
+    def upload(self, video: int) -> None:
+        self.uploaded[video] = True
+        while self.max_prefix + 1 < len(self.uploaded) and self.uploaded[self.max_prefix + 1]:
+            self.max_prefix += 1
+
+    def longest(self) -> int:
+        return self.max_prefix
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(LUPrefix)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个掩码的最大值，然后遍历所有可能的掩码组合，找到最大乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `mask_to_max`，用于存储每个掩码对应的最大值。
+2. 遍历数组 `nums`，对于每个数 `num`，计算其掩码 `mask`，并更新 `mask_to_max` 中对应掩码的最大值。
+3. 遍历所有可能的掩码组合 `(mask1, mask2)`，确保 `mask1 & mask2 == 0`，计算乘积并更新最大乘积。
 
 关键点:
-- [TODO]
+- 使用掩码来表示二进制位的组合。
+- 通过哈希表快速查找每个掩码的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^k)，其中 n 是数组长度，k 是整数的二进制位数（最多 20 位）。
+空间复杂度: O(2^k)，用于存储哈希表 `mask_to_max`。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个没有公共位的整数的最大乘积
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表记录每个掩码的最大值
+    mask_to_max = {}
+    
+    for num in nums:
+        mask = 0
+        temp = num
+        while temp > 0:
+            mask |= 1 << (temp & -temp).bit_length() - 1
+            temp &= temp - 1
+        if mask not in mask_to_max:
+            mask_to_max[mask] = num
+        else:
+            mask_to_max[mask] = max(mask_to_max[mask], num)
+    
+    max_product = 0
+    for mask1 in mask_to_max:
+        for mask2 in mask_to_max:
+            if mask1 & mask2 == 0:
+                max_product = max(max_product, mask_to_max[mask1] * mask_to_max[mask2])
+    
+    return max_product
 
 
 Solution = create_solution(solution_function_name)

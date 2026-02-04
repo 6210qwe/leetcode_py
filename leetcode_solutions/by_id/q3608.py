@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算满足条件的子序列对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历所有可能的 GCD 值。
+2. 对于每个 GCD 值，找到所有能生成该 GCD 的子序列。
+3. 计算这些子序列的数量，并使用组合数学公式计算满足条件的子序列对的数量。
+4. 对结果取模 10^9 + 7。
 
 关键点:
-- [TODO]
+- 使用动态规划预处理所有可能的 GCD 值。
+- 使用组合数学公式计算子序列对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log(max(nums)))
+空间复杂度: O(n * max(nums))
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
+from collections import defaultdict
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[int]) -> int:
+    n = len(nums)
+    max_num = max(nums)
+    
+    # 动态规划预处理所有可能的 GCD 值
+    dp = [[0] * (max_num + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, max_num + 1):
+            dp[i][j] = dp[i - 1][j]
+            if nums[i - 1] % j == 0:
+                dp[i][j] += 1
+    
+    # 计算每个 GCD 值对应的子序列数量
+    gcd_count = defaultdict(int)
+    for i in range(1, n + 1):
+        for j in range(i, n + 1):
+            current_gcd = gcd(nums[i - 1], nums[j - 1])
+            for k in range(i + 1, j):
+                current_gcd = gcd(current_gcd, nums[k - 1])
+            gcd_count[current_gcd] += 1
+    
+    # 计算满足条件的子序列对的数量
+    result = 0
+    for g in gcd_count:
+        count = gcd_count[g]
+        result += (count * (count - 1) // 2) % MOD
+        result %= MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

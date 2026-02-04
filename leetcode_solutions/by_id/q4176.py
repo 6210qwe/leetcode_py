@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到满足条件的最小 k 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 在每次迭代中，计算中间值 mid。
+3. 计算将所有元素变为非正数所需的最小操作次数。
+4. 如果操作次数小于等于 mid^2，则更新右边界；否则，更新左边界。
+5. 最终返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地找到满足条件的最小 k 值。
+- 计算操作次数时，可以使用 `math.ceil` 来确保每个元素都能被减少到非正数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def minimum_k_to_reduce_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到满足条件的最小 k 值
     """
-    # TODO: 实现最优解法
-    pass
+    def operations_needed(k: int) -> int:
+        return sum(math.ceil(num / k) for num in nums)
 
+    left, right = 1, max(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if operations_needed(mid) <= mid * mid:
+            right = mid
+        else:
+            left = mid + 1
 
-Solution = create_solution(solution_function_name)
+    return left
+
+Solution = create_solution(minimum_k_to_reduce_array)

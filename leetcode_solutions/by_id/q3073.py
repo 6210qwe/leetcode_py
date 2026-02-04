@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 的 melt 函数将宽格式的数据重塑为长格式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 pandas 的 melt 函数将数据从宽格式转换为长格式。
+2. 设置 id_vars 参数为 'product'，value_vars 参数为各个季度的列名。
+3. 将生成的长格式 DataFrame 返回。
 
 关键点:
-- [TODO]
+- 使用 pandas 库中的 melt 函数进行数据重塑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 中的元素总数。
+空间复杂度: O(n)，生成的长格式 DataFrame 所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def reshape_data_melt(report: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    将宽格式的数据重塑为长格式。
+    
+    :param report: 宽格式的 DataFrame
+    :return: 长格式的 DataFrame
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 melt 函数将数据从宽格式转换为长格式
+    melted_report = pd.melt(report, id_vars=['product'], 
+                             value_vars=['quarter_1', 'quarter_2', 'quarter_3', 'quarter_4'],
+                             var_name='quarter', value_name='sales')
+    return melted_report
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reshape_data_melt)

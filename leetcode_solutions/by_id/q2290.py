@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和前缀和计算最小需要移除的魔法豆数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前缀和数组。
+3. 遍历每个可能的剩余魔法豆数量，计算需要移除的魔法豆数量，并更新最小值。
 
 关键点:
-- [TODO]
+- 排序后，我们可以利用前缀和快速计算每个位置的总和。
+- 通过遍历每个可能的剩余魔法豆数量，可以找到最小的移除数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_beans(beans: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算需要移除的最少魔法豆数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(beans)
+    beans.sort()
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + beans[i]
+    
+    min_remove = float('inf')
+    
+    # 遍历每个可能的剩余魔法豆数量
+    for i in range(n):
+        current_beans = beans[i]
+        remove_count = (prefix_sum[i] - current_beans * i) + (prefix_sum[n] - prefix_sum[i + 1] - current_beans * (n - i - 1))
+        min_remove = min(min_remove, remove_count)
+    
+    return min_remove
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_beans)

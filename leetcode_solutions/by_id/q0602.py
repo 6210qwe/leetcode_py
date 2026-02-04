@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个用户的好友数量，并找出最多的好友数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表，将 `requester_id` 和 `accepter_id` 合并到一列。
+2. 使用 `GROUP BY` 和 `COUNT` 统计每个用户的好友数量。
+3. 找出最大好友数量的用户。
 
 关键点:
-- [TODO]
+- 使用 `UNION ALL` 将 `requester_id` 和 `accepter_id` 合并到一列。
+- 使用 `GROUP BY` 和 `COUNT` 统计每个用户的好友数量。
+- 使用子查询找出最大好友数量的用户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(request_accepted):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 合并 requester_id 和 accepter_id 到一列
+    combined = request_accepted.withColumn("user_id", F.col("requester_id")).unionAll(
+        request_accepted.withColumn("user_id", F.col("accepter_id"))
+    )
+    
+    # 统计每个用户的好友数量
+    friend_counts = combined.groupBy("user_id").count()
+    
+    # 找出最大好友数量的用户
+    max_friends = friend_counts.agg(F.max("count").alias("max_count"))
+    result = friend_counts.join(max_friends, friend_counts["count"] == max_friends["max_count"]).select("user_id", "count")
+    
+    return result
 
 Solution = create_solution(solution_function_name)

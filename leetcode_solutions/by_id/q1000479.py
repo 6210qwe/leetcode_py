@@ -21,22 +21,29 @@ LCP 64. 二叉树灯饰 - 「力扣嘉年华」的中心广场放置了一个巨
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和深度优先搜索 (DFS) 来解决这个问题。我们定义一个递归函数来处理每个节点，并记录四种状态下的最小操作次数：
+- 当前节点及其子树全部关闭
+- 当前节点关闭，子树全部打开
+- 当前节点打开，子树全部关闭
+- 当前节点及其子树全部打开
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，它接受一个节点并返回一个四元组，表示上述四种状态下的最小操作次数。
+2. 在递归函数中，根据当前节点的值和其子节点的状态，计算出四种状态下的最小操作次数。
+3. 通过递归调用 `dfs` 处理左子树和右子树，将结果合并到当前节点的结果中。
+4. 最终返回根节点在所有灯都关闭状态下的最小操作次数。
 
 关键点:
-- [TODO]
+- 使用动态规划的思想，通过递归和状态转移来减少重复计算。
+- 通过递归函数处理每个节点，并记录四种状态下的最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +51,43 @@ LCP 64. 二叉树灯饰 - 「力扣嘉年华」的中心广场放置了一个巨
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_operations_to_turn_off_lights(root: Optional[TreeNode]) -> int:
+    def dfs(node: Optional[TreeNode]) -> List[int]:
+        if not node:
+            return [0, 0, 0, 0]
+        
+        left = dfs(node.left)
+        right = dfs(node.right)
+        
+        res = [float('inf')] * 4
+        
+        # 当前节点及其子树全部关闭
+        res[0] = min(left[0], left[1] + 1, left[2] + 1, left[3] + 2) + min(right[0], right[1] + 1, right[2] + 1, right[3] + 2)
+        if node.val == 1:
+            res[0] += 1
+        
+        # 当前节点关闭，子树全部打开
+        res[1] = min(left[0] + 1, left[1], left[2] + 2, left[3] + 1) + min(right[0] + 1, right[1], right[2] + 2, right[3] + 1)
+        if node.val == 0:
+            res[1] += 1
+        
+        # 当前节点打开，子树全部关闭
+        res[2] = min(left[0] + 1, left[1] + 2, left[2], left[3] + 1) + min(right[0] + 1, right[1] + 2, right[2], right[3] + 1)
+        if node.val == 1:
+            res[2] += 1
+        
+        # 当前节点及其子树全部打开
+        res[3] = min(left[0] + 2, left[1] + 1, left[2] + 1, left[3]) + min(right[0] + 2, right[1] + 1, right[2] + 1, right[3])
+        if node.val == 0:
+            res[3] += 1
+        
+        return res
+    
+    return dfs(root)[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_turn_off_lights)

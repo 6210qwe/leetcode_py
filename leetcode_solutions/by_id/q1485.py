@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点 (0, 0) 到终点 (m-1, n-1) 的最小代价路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将起点 (0, 0) 和初始代价 0 加入队列。
+2. 初始化一个二维数组 `dist` 来记录从起点到每个格子的最小代价，初始值设为无穷大。
+3. 从优先队列中取出当前代价最小的格子，更新其相邻格子的最小代价。
+4. 如果当前格子是终点 (m-1, n-1)，则返回当前代价。
+5. 如果当前格子不是终点，继续处理队列中的下一个格子，直到队列为空。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次处理的是当前代价最小的格子。
+- 更新相邻格子的代价时，如果沿着当前格子的方向走，则代价不变；否则代价加 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n)) - 优先队列的操作时间复杂度为 O(log(m * n))，最多处理 m * n 个格子。
+空间复杂度: O(m * n) - 优先队列和 `dist` 数组的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def min_cost(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    
+    # 优先队列，存储 (代价, 行, 列)
+    pq = [(0, 0, 0)]
+    # 记录从起点到每个格子的最小代价
+    dist = [[float('inf')] * n for _ in range(m)]
+    dist[0][0] = 0
+    
+    while pq:
+        cost, r, c = heapq.heappop(pq)
+        
+        if r == m - 1 and c == n - 1:
+            return cost
+        
+        for i, (dr, dc) in enumerate(directions):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < m and 0 <= nc < n:
+                new_cost = cost if grid[r][c] == i + 1 else cost + 1
+                if new_cost < dist[nr][nc]:
+                    dist[nr][nc] = new_cost
+                    heapq.heappush(pq, (new_cost, nr, nc))
+    
+    return -1  # 应该不会到达这里
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

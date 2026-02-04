@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的括号位置，计算每个位置的结果，选择最小的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到 '+' 的位置。
+2. 枚举所有可能的左括号位置（从 0 到 '+' 的前一个位置）。
+3. 枚举所有可能的右括号位置（从 '+' 的后一个位置到字符串末尾）。
+4. 对于每种括号位置组合，计算表达式的值。
+5. 选择最小值对应的括号位置，构造最终表达式。
 
 关键点:
-- [TODO]
+- 使用嵌套循环枚举所有可能的括号位置。
+- 通过字符串切片和转换来计算表达式的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 expression 的长度。需要枚举所有可能的括号位置。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(expression: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    plus_index = expression.index('+')
+    min_value = float('inf')
+    best_expression = ""
+
+    for i in range(plus_index):
+        for j in range(plus_index + 1, len(expression)):
+            left_part = expression[:i] if i > 0 else ""
+            mid_part = expression[i:plus_index] + "+" + expression[plus_index + 1:j + 1]
+            right_part = expression[j + 1:] if j < len(expression) - 1 else ""
+            value = int(left_part or "1") * (int(mid_part.split('+')[0]) + int(mid_part.split('+')[1])) * int(right_part or "1")
+            if value < min_value:
+                min_value = value
+                best_expression = f"{left_part}({mid_part}){right_part}"
+
+    return best_expression
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,79 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和优先队列来维护当前窗口内的最小值，并确保窗口大小不超过 dist。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个大顶堆和一个小顶堆，分别用于维护当前窗口内的最小值和最大值。
+2. 初始化一个变量 `min_cost` 来记录最小总代价。
+3. 遍历数组，使用滑动窗口技术，确保窗口大小不超过 dist。
+4. 在每次移动窗口时，更新大顶堆和小顶堆，并计算当前窗口内的最小值。
+5. 更新 `min_cost`，并返回最终结果。
 
 关键点:
-- [TODO]
+- 使用大顶堆和小顶堆来高效地维护当前窗口内的最小值。
+- 滑动窗口技术确保窗口大小不超过 dist。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是数组长度，k 是子数组数量。每次插入和删除堆的时间复杂度为 O(log k)。
+空间复杂度: O(k)，堆的大小最多为 k。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[int], k: int, dist: int) -> int:
+    n = len(nums)
+    min_cost = float('inf')
+    
+    # 大顶堆和小顶堆
+    max_heap = []
+    min_heap = []
+    
+    # 初始窗口
+    for i in range(1, k):
+        heapq.heappush(max_heap, -nums[i])
+        heapq.heappush(min_heap, nums[i])
+    
+    # 计算初始窗口的最小值
+    min_sum = sum(nums[i] for i in range(1, k))
+    
+    for i in range(k - 1, n):
+        if i - (k - 2) > dist:
+            # 移除超出窗口范围的元素
+            if -max_heap[0] == nums[i - dist - 1]:
+                heapq.heappop(max_heap)
+            else:
+                min_sum += nums[i - dist - 1]
+                while min_heap and min_heap[0] != nums[i - dist - 1]:
+                    heapq.heappop(min_heap)
+                heapq.heappop(min_heap)
+        
+        # 添加新元素到窗口
+        if i < n:
+            heapq.heappush(max_heap, -nums[i])
+            heapq.heappush(min_heap, nums[i])
+            min_sum += nums[i]
+        
+        # 更新最小总代价
+        min_cost = min(min_cost, nums[0] + min_sum + -max_heap[0])
+        
+        # 调整堆
+        while max_heap and -max_heap[0] > min_heap[0]:
+            max_val = -heapq.heappop(max_heap)
+            min_val = heapq.heappop(min_heap)
+            heapq.heappush(max_heap, -min_val)
+            heapq.heappush(min_heap, max_val)
+            min_sum += max_val - min_val
+    
+    return min_cost
 
 Solution = create_solution(solution_function_name)

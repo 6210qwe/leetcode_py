@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算所有点对之间的距离，并检查是否有四条等边和两条对角线相等来判断是否构成正方形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有点对之间的距离。
+2. 将这些距离排序。
+3. 检查前四个距离是否相等（即四条边）。
+4. 检查后两个距离是否相等且大于前四个距离（即两条对角线）。
 
 关键点:
-- [TODO]
+- 使用欧几里得距离公式计算两点之间的距离。
+- 排序后的距离数组应满足特定条件以验证正方形。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def valid_square(p1: List[int], p2: List[int], p3: List[int], p4: List[int]) -> bool:
+    def dist(point1, point2):
+        return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算所有点对之间的距离
+    distances = [
+        dist(p1, p2), dist(p1, p3), dist(p1, p4),
+        dist(p2, p3), dist(p2, p4),
+        dist(p3, p4)
+    ]
 
+    # 排序距离
+    distances.sort()
 
-Solution = create_solution(solution_function_name)
+    # 检查前四个距离是否相等（四条边）
+    if distances[0] == 0 or distances[0] != distances[1] or distances[1] != distances[2] or distances[2] != distances[3]:
+        return False
+
+    # 检查后两个距离是否相等且大于前四个距离（两条对角线）
+    if distances[4] != distances[5] or distances[4] != 2 * distances[0]:
+        return False
+
+    return True
+
+Solution = create_solution(valid_square)

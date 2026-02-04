@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在遍历过程中计算每个节点的有效祖先个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个辅助函数 `is_perfect_square` 来检查一个数是否是完全平方数。
+3. 定义一个递归函数 `dfs` 来遍历树，并在遍历过程中计算每个节点的有效祖先个数。
+4. 从根节点开始调用 `dfs` 函数，并返回结果。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，确保每个节点的祖先都被正确计算。
+- 使用 `is_perfect_square` 函数来检查乘积是否为完全平方数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(max(nums)))，其中 n 是节点数，max(nums) 是 nums 数组中的最大值。
+空间复杂度: O(n)，存储树的邻接表和递归栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def is_perfect_square(x):
+    """检查 x 是否是完全平方数"""
+    root = int(math.sqrt(x))
+    return root * root == x
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def dfs(node, parent, adj_list, nums, result):
+    """深度优先搜索遍历树，并计算每个节点的有效祖先个数"""
+    for neighbor in adj_list[node]:
+        if neighbor != parent:
+            count = 0
+            if is_perfect_square(nums[node] * nums[neighbor]):
+                count += 1
+            result[0] += count
+            dfs(neighbor, node, adj_list, nums, result)
 
+def sum_of_perfect_square_ancestors(n: int, edges: List[List[int]], nums: List[int]) -> int:
+    # 构建树的邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+    
+    result = [0]
+    dfs(0, -1, adj_list, nums, result)
+    return result[0]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_perfect_square_ancestors)

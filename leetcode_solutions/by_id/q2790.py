@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过动态创建一个新的函数并将其绑定到指定的上下文对象上，然后调用这个新函数来实现 callPolyfill 方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个新的函数，该函数将调用原始函数并将上下文对象作为 this。
+2. 使用 apply 方法将上下文对象和附加参数传递给新函数。
+3. 返回新函数的执行结果。
 
 关键点:
-- [TODO]
+- 动态创建新函数并绑定上下文对象。
+- 使用 apply 方法传递上下文对象和附加参数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(fn, args):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 callPolyfill 方法
     """
-    # TODO: 实现最优解法
-    pass
+    # 获取上下文对象
+    context = args[0]
+    # 获取附加参数
+    additional_args = args[1:]
+    
+    # 动态创建新函数并绑定上下文对象
+    def bound_fn(*args):
+        return fn.apply(context, args)
+    
+    # 调用新函数并返回结果
+    return bound_fn(*additional_args)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示 nums1 的前 i 个元素和 nums2 的前 j 个元素的最大点积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示 nums1 的前 i 个元素和 nums2 的前 j 个元素的最大点积。
+2. 遍历 nums1 和 nums2，更新 dp 数组。
+3. 对于每个 dp[i][j]，我们有以下几种选择：
+   - 不选择 nums1[i-1] 和 nums2[j-1]，则 dp[i][j] = max(dp[i-1][j], dp[i][j-1])。
+   - 选择 nums1[i-1] 和 nums2[j-1]，则 dp[i][j] = max(dp[i][j], dp[i-1][j-1] + nums1[i-1] * nums2[j-1])。
+4. 最终结果保存在 dp[m][n] 中，其中 m 和 n 分别是 nums1 和 nums2 的长度。
 
 关键点:
-- [TODO]
+- 处理边界情况，确保 dp 数组初始化正确。
+- 动态规划的状态转移方程要正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个数组的非空子序列的最大点积
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(nums1), len(nums2)
+    dp = [[float('-inf')] * (n + 1) for _ in range(m + 1)]
+    
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            dp[i][j] = max(
+                dp[i - 1][j],
+                dp[i][j - 1],
+                dp[i - 1][j - 1] + nums1[i - 1] * nums2[j - 1],
+                nums1[i - 1] * nums2[j - 1]
+            )
+    
+    return dp[m][n]
 
 
 Solution = create_solution(solution_function_name)

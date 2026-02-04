@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算从根节点到每个叶节点的路径长度，并使用动态规划 (DP) 来计算路径权重为奇数的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树结构。
+2. 使用 DFS 遍历树，计算从根节点到每个叶节点的路径长度。
+3. 使用 DP 计算路径权重为奇数的方案数。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算路径长度。
+- 使用 DP 计算路径权重为奇数的方案数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。DFS 和 DP 都是线性时间复杂度。
+空间复杂度: O(n)，用于存储邻接表和 DP 数组。
 """
 
 # ============================================================================
@@ -48,13 +50,27 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def dfs(node: int, parent: int, adj: List[List[int]], dp: List[List[int]]) -> None:
+    for neighbor in adj[node]:
+        if neighbor != parent:
+            dfs(neighbor, node, adj, dp)
+            dp[node][0] = (dp[node][0] * (dp[neighbor][0] + dp[neighbor][1])) % MOD
+            dp[node][1] = (dp[node][1] * (dp[neighbor][0] + dp[neighbor][1]) + dp[node][0] * dp[neighbor][1]) % MOD
 
+def solution_function_name(edges: List[List[int]]) -> int:
+    n = len(edges) + 1
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        adj[u-1].append(v-1)
+        adj[v-1].append(u-1)
+    
+    dp = [[0, 0] for _ in range(n)]
+    dp[0][0], dp[0][1] = 1, 1  # 根节点的初始状态
+    
+    dfs(0, -1, adj, dp)
+    
+    return dp[0][1]
 
 Solution = create_solution(solution_function_name)

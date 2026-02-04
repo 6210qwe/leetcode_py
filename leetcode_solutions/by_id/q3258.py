@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 根据三角形的三边长度判断其类型（等边、等腰或普通）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入的三条边是否能构成一个三角形。
+2. 如果能构成三角形，根据边长关系判断其类型：
+   - 如果三条边相等，则为等边三角形。
+   - 如果两条边相等，则为等腰三角形。
+   - 否则为普通三角形。
 
 关键点:
-- [TODO]
+- 判断三角形的条件：任意两边之和大于第三边。
+- 判断等边和等腰三角形的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def classify_triangle(a: int, b: int, c: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据三角形的三边长度分类三角形
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查是否能构成三角形
+    if a + b <= c or a + c <= b or b + c <= a:
+        return "Not a triangle"
+
+    # 判断三角形类型
+    if a == b == c:
+        return "Equilateral"
+    elif a == b or b == c or a == c:
+        return "Isosceles"
+    else:
+        return "Scalene"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(classify_triangle)

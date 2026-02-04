@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按照会议的结束时间对会议进行排序。
+2. 使用动态规划数组 dp[i][j] 表示前 i 个会议中选择 j 个会议的最大价值。
+3. 对于每个会议，使用二分查找找到最后一个结束时间小于当前会议开始时间的会议索引。
+4. 更新 dp 数组。
 
 关键点:
-- [TODO]
+- 动态规划状态转移方程：dp[i][j] = max(dp[i-1][j], dp[prev][j-1] + value)
+- 二分查找用于快速找到最后一个结束时间小于当前会议开始时间的会议索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k * log n)，其中 n 是 events 的长度，k 是最大会议数量。排序的时间复杂度是 O(n log n)，每次更新 dp 数组需要 O(k) 时间，并且需要进行二分查找 O(log n)。
+空间复杂度: O(n * k)，dp 数组的空间复杂度。
 """
 
 # ============================================================================
@@ -47,14 +50,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import bisect
 
-
-def solution_function_name(params):
+def max_value(events: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最多可以参加的会议价值最大和
     """
-    # TODO: 实现最优解法
-    pass
+    # 按结束时间排序
+    events.sort(key=lambda x: x[1])
+    
+    n = len(events)
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(1, k + 1):
+            # 二分查找找到最后一个结束时间小于当前会议开始时间的会议索引
+            prev = bisect.bisect_left([e[1] for e in events], events[i-1][0]) - 1
+            dp[i][j] = max(dp[i-1][j], dp[prev+1][j-1] + events[i-1][2])
+    
+    return dp[n][k]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_value)

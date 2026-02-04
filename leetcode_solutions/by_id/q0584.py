@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据，筛选出符合条件的客户姓名。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的 DataFrame。
+2. 筛选出 `referee_id` 不等于 2 或者为 `null` 的记录。
+3. 提取这些记录中的 `name` 列并返回。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的条件筛选功能来实现高效的查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Customer 表的行数。因为我们需要遍历整个表来筛选符合条件的记录。
+空间复杂度: O(1)，除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def find_customer_referee(customers: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Pandas 处理数据，筛选出符合条件的客户姓名。
     """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出 referee_id 不等于 2 或者为 null 的记录
+    filtered_customers = customers[(customers['referee_id'] != 2) | (customers['referee_id'].isnull())]
+    
+    # 提取这些记录中的 name 列并返回
+    result = filtered_customers[['name']]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_customer_referee)

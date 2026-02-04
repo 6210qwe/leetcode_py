@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的可行水量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有水桶的总水量。
+2. 计算平均水量。
+3. 使用二分查找来确定最小的可行水量，使得所有水桶的水量都可以达到或超过这个值。
 
 关键点:
-- [TODO]
+- 二分查找的范围是从0到最大水量。
+- 检查当前水量是否可以使所有水桶的水量都达到或超过这个值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_water))
+- n 是水桶的数量
+- max_water 是水桶中的最大水量
+
+空间复杂度: O(1)
+- 只使用了常数级的额外空间
 """
 
 # ============================================================================
@@ -49,12 +55,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def equalizeWater(buckets: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过倒水操作让所有的水桶所含水量相等
     """
-    # TODO: 实现最优解法
-    pass
+    def is_possible(level: int) -> bool:
+        return sum(max(0, level - water) for water in buckets) <= extra_water
+
+    total_water = sum(buckets)
+    n = len(buckets)
+    if total_water % n != 0:
+        return -1
+
+    avg_water = total_water // n
+    extra_water = total_water - n * avg_water
+
+    left, right = 0, max(buckets)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_possible(mid):
+            left = mid
+        else:
+            right = mid - 1
+
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(equalizeWater)

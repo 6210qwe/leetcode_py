@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用类来封装数组，并实现加法和字符串表示方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在构造函数中初始化数组并计算数组的总和。
+2. 重载 `__add__` 方法，使两个实例相加时返回它们数组总和的和。
+3. 重载 `__str__` 方法，返回数组的字符串表示形式。
 
 关键点:
-- [TODO]
+- 使用 `__init__` 初始化数组并计算总和。
+- 使用 `__add__` 实现加法操作。
+- 使用 `__str__` 返回数组的字符串表示。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 构造函数需要遍历整个数组来计算总和。
+空间复杂度: O(1) - 除了存储数组和总和外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+class ArrayWrapper:
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+        self.sum = sum(nums)
+
+    def __add__(self, other):
+        return self.sum + other.sum
+
+    def __str__(self):
+        return "[" + ",".join(map(str, self.nums)) + "]"
+
+
+def create_solution():
     """
-    函数式接口 - [TODO] 实现
+    工厂函数 - 创建并返回 ArrayWrapper 类的实例
     """
-    # TODO: 实现最优解法
-    pass
+    return ArrayWrapper
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution()

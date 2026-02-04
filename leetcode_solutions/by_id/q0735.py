@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来模拟小行星的碰撞过程。当遇到向右移动的小行星时，将其压入栈中；当遇到向左移动的小行星时，检查栈顶是否有向右移动的小行星并进行碰撞处理。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历小行星数组：
+   - 如果当前小行星向右移动，直接将其压入栈中。
+   - 如果当前小行星向左移动，检查栈顶是否有向右移动的小行星并进行碰撞处理：
+     - 如果栈顶小行星比当前小行星小，则栈顶小行星爆炸，继续检查下一个栈顶小行星。
+     - 如果栈顶小行星和当前小行星大小相同，则两者都爆炸。
+     - 如果栈顶小行星比当前小行星大，则当前小行星爆炸。
+3. 最终栈中的小行星即为碰撞后剩下的小行星。
 
 关键点:
-- [TODO]
+- 使用栈来模拟小行星的碰撞过程。
+- 只有向右移动的小行星和向左移动的小行星才会发生碰撞。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是小行星数组的长度。每个小行星最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下所有小行星都不会发生碰撞，全部压入栈中。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def asteroidCollision(asteroids: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    
+    for asteroid in asteroids:
+        while stack and asteroid < 0 < stack[-1]:
+            if stack[-1] < -asteroid:
+                stack.pop()
+                continue
+            elif stack[-1] == -asteroid:
+                stack.pop()
+            break
+        else:
+            stack.append(asteroid)
+    
+    return stack
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(asteroidCollision)

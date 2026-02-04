@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二维前缀和来高效计算子矩阵的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算二维前缀和数组 prefix_sum。
+2. 使用前缀和数组计算每个子矩阵的和，得到结果矩阵 answer。
 
 关键点:
-- [TODO]
+- 通过前缀和数组可以在 O(1) 时间内计算任意子矩阵的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def matrix_block_sum(mat: List[List[int]], k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    计算矩阵中每个元素的子矩阵和。
+    
+    :param mat: 二维矩阵
+    :param k: 子矩阵范围
+    :return: 结果矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    # 初始化前缀和数组
+    prefix_sum = [[0] * (n + 1) for _ in range(m + 1)]
+    
+    # 计算前缀和
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix_sum[i][j] = mat[i - 1][j - 1] + prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1]
+    
+    # 计算结果矩阵
+    answer = [[0] * n for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            r1, c1 = max(0, i - k), max(0, j - k)
+            r2, c2 = min(m - 1, i + k), min(n - 1, j + k)
+            r1, c1, r2, c2 = r1 + 1, c1 + 1, r2 + 1, c2 + 1
+            answer[i][j] = prefix_sum[r2][c2] - prefix_sum[r2][c1 - 1] - prefix_sum[r1 - 1][c2] + prefix_sum[r1 - 1][c1 - 1]
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(matrix_block_sum)

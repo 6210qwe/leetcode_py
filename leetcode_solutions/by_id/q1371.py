@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来记录未匹配的左括号的位置，并在遍历过程中移除多余的右括号。最后再移除所有未匹配的左括号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈和一个结果列表。
+2. 遍历字符串 s：
+   - 如果遇到左括号 '(', 将其索引加入栈。
+   - 如果遇到右括号 ')', 检查栈是否为空：
+     - 如果栈不为空，弹出栈顶元素，表示匹配成功。
+     - 如果栈为空，将当前右括号标记为需要移除。
+3. 遍历结束后，如果栈中还有元素，表示这些左括号没有匹配，也需要移除。
+4. 构建最终结果字符串，移除所有标记为需要移除的括号。
 
 关键点:
-- [TODO]
+- 使用栈来记录未匹配的左括号的位置。
+- 在遍历过程中标记需要移除的右括号。
+- 最后移除所有未匹配的左括号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +57,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_remove_to_make_valid(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除最少数量的无效括号，使得输入字符串有效。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    remove_indices = set()
+    
+    # 遍历字符串，标记需要移除的右括号
+    for i, char in enumerate(s):
+        if char == '(':
+            stack.append(i)
+        elif char == ')':
+            if stack:
+                stack.pop()
+            else:
+                remove_indices.add(i)
+    
+    # 标记所有未匹配的左括号
+    while stack:
+        remove_indices.add(stack.pop())
+    
+    # 构建最终结果字符串
+    result = [char for i, char in enumerate(s) if i not in remove_indices]
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_remove_to_make_valid)

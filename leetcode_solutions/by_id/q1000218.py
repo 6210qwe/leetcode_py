@@ -21,40 +21,77 @@ LCP 31. 变换的迷宫 - 某解密游戏中，有一个 N\*M 的迷宫，迷宫
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三维动态规划来记录每个时刻、每个位置的状态，并结合广度优先搜索来遍历所有可能的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 `dp`，其中 `dp[t][i][j]` 表示在时刻 `t` 时，位置 `(i, j)` 是否可达。
+2. 使用队列进行广度优先搜索，从起点 `(0, 0, 0)` 开始，探索所有可能的路径。
+3. 在每个位置，考虑四种移动方式（上、下、左、右）和两种魔法卷轴的使用情况。
+4. 更新 `dp` 数组，并在找到终点时返回 `True`。
+5. 如果遍历完所有可能的路径仍未找到终点，则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用三维数组 `dp` 来记录每个时刻、每个位置的状态。
+- 考虑魔法卷轴的使用情况，确保在使用卷轴后更新 `dp` 数组。
+- 使用广度优先搜索来遍历所有可能的路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(T * N * M)，其中 T 是时间长度，N 和 M 分别是迷宫的行数和列数。
+空间复杂度: O(T * N * M)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def solution(maze: List[List[str]]) -> bool:
+    T = len(maze)
+    N = len(maze[0])
+    M = len(maze[0][0])
+    
+    # dp[t][i][j] 表示在时刻 t 时，位置 (i, j) 是否可达
+    dp = [[[False] * M for _ in range(N)] for _ in range(T)]
+    dp[0][0][0] = True
+    
+    # 方向数组，表示上下左右四个方向
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    # 广度优先搜索
+    queue = deque([(0, 0, 0)])  # (t, i, j)
+    
+    while queue:
+        t, i, j = queue.popleft()
+        
+        if t == T - 1 and i == N - 1 and j == M - 1:
+            return True
+        
+        for dt, di, dj in [(1, 0, 0)] + [(0, di, dj) for di, dj in directions]:
+            new_t = t + dt
+            new_i = i + di
+            new_j = j + dj
+            
+            if 0 <= new_t < T and 0 <= new_i < N and 0 <= new_j < M:
+                if maze[new_t][new_i][new_j] == '.' and not dp[new_t][new_i][new_j]:
+                    dp[new_t][new_i][new_j] = True
+                    queue.append((new_t, new_i, new_j))
+                    
+                # 使用临时消除术
+                if dt == 1 and maze[t][new_i][new_j] == '#' and not dp[new_t][new_i][new_j]:
+                    dp[new_t][new_i][new_j] = True
+                    queue.append((new_t, new_i, new_j))
+                    
+                # 使用永久消除术
+                if maze[t][new_i][new_j] == '#' and not dp[t][new_i][new_j]:
+                    dp[t][new_i][new_j] = True
+                    queue.append((t, new_i, new_j))
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

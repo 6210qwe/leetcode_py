@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个元素作为结尾的好子序列的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp` 来存储以每个元素结尾的好子序列的和。
+2. 遍历数组 `nums`，对于每个元素 `num`，更新 `dp[num]` 和 `dp[num+1]`。
+3. 最后，将 `dp` 中所有值的和取模 10^9 + 7 作为结果。
 
 关键点:
-- [TODO]
+- 使用字典 `dp` 来存储以每个元素结尾的好子序列的和。
+- 动态更新 `dp` 字典，确保每个元素作为结尾的好子序列的和被正确计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。
+空间复杂度: O(m)，其中 m 是数组 `nums` 中不同元素的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_good_subsequences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算数组中所有可能存在的好子序列的元素之和。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = {}
+    count = {}
+
+    for num in nums:
+        # 更新当前元素的计数
+        count[num] = count.get(num, 0) + 1
+
+        # 初始化 dp[num]
+        if num not in dp:
+            dp[num] = 0
+
+        # 更新 dp[num] 和 dp[num+1]
+        dp[num] = (dp[num] + num * count[num]) % MOD
+        if num - 1 in dp:
+            dp[num] = (dp[num] + dp[num - 1]) % MOD
+        if num + 1 in dp:
+            dp[num + 1] = (dp[num + 1] + dp[num]) % MOD
+
+    # 计算所有好子序列的和
+    result = sum(dp.values()) % MOD
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_good_subsequences)

@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示前 i 个区域使用 j 支箭能获得的最大分数。通过递推公式更新 dp 数组，并记录路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示前 i 个区域使用 j 支箭能获得的最大分数。
+2. 通过递推公式更新 dp 数组：
+   - 如果不选择当前区域，则 dp[i][j] = dp[i-1][j]
+   - 如果选择当前区域，则 dp[i][j] = dp[i-1][j - (aliceArrows[i] + 1)] + i
+3. 通过 dp 数组回溯路径，找到最优解。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 回溯路径找到最优解
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(12 * numArrows) = O(numArrows)
+空间复杂度: O(12 * numArrows) = O(numArrows)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maximum_bob_points(num_arrows: int, alice_arrows: List[int]) -> List[int]:
+    # 定义 dp 数组
+    dp = [[0] * (num_arrows + 1) for _ in range(12)]
+    path = [[0] * (num_arrows + 1) for _ in range(12)]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 动态规划填充 dp 数组
+    for i in range(1, 12):
+        for j in range(1, num_arrows + 1):
+            if j >= alice_arrows[i] + 1:
+                if dp[i - 1][j] < dp[i - 1][j - (alice_arrows[i] + 1)] + i:
+                    dp[i][j] = dp[i - 1][j - (alice_arrows[i] + 1)] + i
+                    path[i][j] = 1
+                else:
+                    dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = dp[i - 1][j]
 
+    # 回溯路径找到最优解
+    bob_arrows = [0] * 12
+    remaining_arrows = num_arrows
+    for i in range(11, 0, -1):
+        if path[i][remaining_arrows] == 1:
+            bob_arrows[i] = alice_arrows[i] + 1
+            remaining_arrows -= alice_arrows[i] + 1
 
-Solution = create_solution(solution_function_name)
+    # 将剩余的箭分配到任意区域
+    if remaining_arrows > 0:
+        bob_arrows[0] = remaining_arrows
+
+    return bob_arrows
+
+Solution = create_solution(maximum_bob_points)

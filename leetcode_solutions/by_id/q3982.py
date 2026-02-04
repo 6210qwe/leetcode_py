@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 将所有机器人和墙壁的位置进行排序。
+2. 使用一个有序列表来维护当前可以摧毁的墙壁。
+3. 对于每个机器人，计算其向左和向右发射子弹可以摧毁的墙壁数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将机器人和墙壁的位置合并并排序。
+2. 使用有序列表来维护当前可以摧毁的墙壁。
+3. 对于每个机器人，计算其向左和向右发射子弹可以摧毁的墙壁数量。
+4. 更新最大摧毁墙壁数量。
 
 关键点:
-- [TODO]
+- 使用有序列表来高效地维护当前可以摧毁的墙壁。
+- 对于每个机器人，分别计算向左和向右发射子弹可以摧毁的墙壁数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + m) log (n + m))，其中 n 是机器人的数量，m 是墙壁的数量。
+空间复杂度: O(n + m)，用于存储合并后的机器人和墙壁位置。
 """
 
 # ============================================================================
@@ -47,14 +53,35 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def max_walls_destroyed(robots: List[int], distance: List[int], walls: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算机器人可以摧毁的最大墙壁数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 将机器人和墙壁的位置合并并排序
+    events = []
+    for i, pos in enumerate(robots):
+        events.append((pos, 'robot', i))
+    for pos in walls:
+        events.append((pos, 'wall'))
+    events.sort()
 
+    # 使用有序列表来维护当前可以摧毁的墙壁
+    active_walls = SortedList()
+    max_destroyed = 0
 
-Solution = create_solution(solution_function_name)
+    for pos, event_type, *args in events:
+        if event_type == 'robot':
+            robot_idx = args[0]
+            left_range = (pos - distance[robot_idx], pos)
+            right_range = (pos, pos + distance[robot_idx])
+            left_destroyed = active_walls.bisect_left(left_range[1]) - active_walls.bisect_left(left_range[0])
+            right_destroyed = active_walls.bisect_right(right_range[1]) - active_walls.bisect_left(right_range[0])
+            max_destroyed = max(max_destroyed, left_destroyed, right_destroyed)
+        else:
+            active_walls.add(pos)
+
+    return max_destroyed
+
+Solution = create_solution(max_walls_destroyed)

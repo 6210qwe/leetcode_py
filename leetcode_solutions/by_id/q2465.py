@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来高效地处理区间更新，并通过前缀和计算最终的移位值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的差分数组 diff，用于记录每个位置的移位变化。
+2. 遍历 shifts 数组，根据方向更新差分数组。
+3. 计算前缀和，得到每个位置的最终移位值。
+4. 根据最终移位值更新字符串 s。
 
 关键点:
-- [TODO]
+- 使用差分数组可以高效地处理区间更新。
+- 通过前缀和计算最终的移位值。
+- 字符移位时需要考虑模 26 的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是 shifts 数组的长度。
+空间复杂度: O(n)，用于存储差分数组和前缀和。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def shifting_letters(s: str, shifts: List[List[int]]) -> str:
+    n = len(s)
+    diff = [0] * (n + 1)
+    
+    for start, end, direction in shifts:
+        shift = 1 if direction == 1 else -1
+        diff[start] += shift
+        diff[end + 1] -= shift
+    
+    prefix_sum = 0
+    result = []
+    for i in range(n):
+        prefix_sum += diff[i]
+        new_char = chr(((ord(s[i]) - ord('a') + prefix_sum) % 26) + ord('a'))
+        result.append(new_char)
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shifting_letters)

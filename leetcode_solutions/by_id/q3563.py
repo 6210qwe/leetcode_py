@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二进制掩码来表示每一行的状态，并使用动态规划来记录每种状态下的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化动态规划数组 dp，其中 dp[mask] 表示当前状态为 mask 时的最大得分。
+2. 遍历每一行，对于每一行的所有可能状态，计算其得分并更新 dp 数组。
+3. 最终返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用二进制掩码来表示每一行的状态。
+- 动态规划数组 dp 用于记录每种状态下的最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * m)，其中 n 是列数，m 是行数。因为每一行有 2^n 种状态，需要遍历 m 行。
+空间复杂度: O(2^n)，因为我们需要存储每种状态的最大得分。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_sum(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中单元格的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    max_val = max(max(row) for row in grid)
+    dp = [-float('inf')] * (1 << n)
+    dp[0] = 0
+    
+    for row in grid:
+        new_dp = [-float('inf')] * (1 << n)
+        for mask in range(1 << n):
+            if dp[mask] == -float('inf'):
+                continue
+            for j in range(n):
+                if mask & (1 << j) == 0 and row[j] > 0:
+                    new_mask = mask | (1 << j)
+                    new_dp[new_mask] = max(new_dp[new_mask], dp[mask] + row[j])
+        dp = new_dp
+    
+    return max(dp)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历 logs 数组，计算每个任务的持续时间，并记录最长任务的员工 id。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 max_duration 为 0，用于记录最长任务的持续时间。
+2. 初始化变量 employee_id 为 None，用于记录处理最长任务的员工 id。
+3. 遍历 logs 数组，对于每个任务：
+   - 计算任务的持续时间。
+   - 如果当前任务的持续时间大于 max_duration，更新 max_duration 和 employee_id。
+   - 如果当前任务的持续时间等于 max_duration 且当前员工 id 小于 employee_id，更新 employee_id。
+4. 返回 employee_id。
 
 关键点:
-- [TODO]
+- 使用一次遍历即可找到最长任务的员工 id。
+- 在更新最长任务时，需要同时考虑持续时间和员工 id。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是 logs 的长度。我们只需要遍历一次 logs 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_longest_task_employee(n: int, logs: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到处理用时最长的那个任务的员工 id
     """
-    # TODO: 实现最优解法
-    pass
+    max_duration = 0
+    employee_id = None
+    
+    for i in range(len(logs)):
+        if i == 0:
+            duration = logs[i][1]
+        else:
+            duration = logs[i][1] - logs[i - 1][1]
+        
+        if duration > max_duration or (duration == max_duration and logs[i][0] < employee_id):
+            max_duration = duration
+            employee_id = logs[i][0]
+    
+    return employee_id
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_longest_task_employee)

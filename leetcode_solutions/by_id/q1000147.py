@@ -21,22 +21,24 @@ LCP 27. 黑盒光线反射 - 秋日市集上有个奇怪的黑盒，黑盒的主
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个小孔的状态，并通过模拟光线的路径来确定光线最终射出的小孔。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个小孔的状态（打开或关闭）。
+2. 对于 `open` 操作，更新哈希表中小孔的状态，并模拟光线的路径，找到光线最终射出的小孔。
+3. 对于 `close` 操作，更新哈希表中小孔的状态。
 
 关键点:
-- [TODO]
+- 使用哈希表高效记录和查询小孔的状态。
+- 通过模拟光线的路径来确定光线最终射出的小孔。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是黑盒的行数和列数。每次操作的时间复杂度为 O(1)。
+空间复杂度: O(n + m)，用于存储每个小孔的状态。
 """
 
 # ============================================================================
@@ -48,6 +50,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class BlackBox:
+    def __init__(self, n: int, m: int):
+        self.n = n
+        self.m = m
+        self.holes = [False] * (2 * (n + m))
+    
+    def open(self, index: int, direction: int) -> int:
+        self.holes[index] = True
+        return self._shoot(index, direction)
+    
+    def close(self, index: int) -> None:
+        self.holes[index] = False
+    
+    def _shoot(self, index: int, direction: int) -> int:
+        n, m = self.n, self.m
+        total_holes = 2 * (n + m)
+        
+        while True:
+            next_index = (index + direction * (n + m)) % total_holes
+            if self.holes[next_index]:
+                return next_index
+            index = next_index
 
 def solution_function_name(params):
     """
@@ -55,6 +79,5 @@ def solution_function_name(params):
     """
     # TODO: 实现最优解法
     pass
-
 
 Solution = create_solution(solution_function_name)

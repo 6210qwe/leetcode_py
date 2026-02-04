@@ -21,22 +21,32 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用子查询和聚合函数来找到评论电影数量最多的用户名。
+2. 使用子查询和聚合函数来找到在 February 2020 平均评分最高的电影名称。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到评论电影数量最多的用户名：
+   - 计算每个用户评论的电影数量。
+   - 按评论数量降序排序，取第一个用户。
+   - 如果有多个用户评论数量相同，按用户名字典序排序取第一个。
+2. 找到在 February 2020 平均评分最高的电影名称：
+   - 过滤出在 February 2020 的评分记录。
+   - 计算每部电影的平均评分。
+   - 按平均评分降序排序，取第一个电影。
+   - 如果有多部电影平均评分相同，按电影名字典序排序取第一个。
 
 关键点:
-- [TODO]
+- 使用 SQL 子查询和聚合函数来实现高效的查询。
+- 确保在处理平局时按字典序排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 MovieRating 表中的记录数。主要的时间开销在于排序操作。
+空间复杂度: O(1)，不使用额外的空间，只使用常数级的变量。
 """
 
 # ============================================================================
@@ -48,13 +58,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(movies, users, movie_rating):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 查询评论电影数量最多的用户名
+    user_query = """
+    SELECT u.name
+    FROM (
+        SELECT user_id, COUNT(movie_id) AS review_count
+        FROM movie_rating
+        GROUP BY user_id
+        ORDER BY review_count DESC, u.name ASC
+        LIMIT 1
+    ) AS subquery
+    JOIN users u ON subquery.user_id = u.user_id
+    """
 
+    # 查询在 February 2020 平均评分最高的电影名称
+    movie_query = """
+    SELECT m.title
+    FROM (
+        SELECT movie_id, AVG(rating) AS avg_rating
+        FROM movie_rating
+        WHERE created_at BETWEEN '2020-02-01' AND '2020-02-29'
+        GROUP BY movie_id
+        ORDER BY avg_rating DESC, m.title ASC
+        LIMIT 1
+    ) AS subquery
+    JOIN movies m ON subquery.movie_id = m.movie_id
+    """
+
+    # 执行查询
+    user_result = users.execute(user_query).fetchone()[0]
+    movie_result = movies.execute(movie_query).fetchone()[0]
+
+    return [user_result, movie_result]
 
 Solution = create_solution(solution_function_name)

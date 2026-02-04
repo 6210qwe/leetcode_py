@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从后向前遍历字符串，处理退格字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 s 和 t 的末尾。
+2. 从后向前遍历字符串，处理退格字符：
+   - 如果当前字符是 '#'，则跳过并增加退格计数。
+   - 如果当前字符不是 '#' 且退格计数大于 0，则跳过当前字符并减少退格计数。
+   - 否则，比较当前字符。
+3. 如果所有字符都匹配，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 从后向前遍历可以避免多次遍历字符串。
+- 使用退格计数来处理连续的退格字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是字符串 s 和 t 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def backspace_compare(s: str, t: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 比较含退格的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def process_backspaces(text: str, index: int) -> int:
+        skip = 0
+        while index >= 0:
+            if text[index] == '#':
+                skip += 1
+            elif skip > 0:
+                skip -= 1
+            else:
+                break
+            index -= 1
+        return index
+
+    i, j = len(s) - 1, len(t) - 1
+    while i >= 0 or j >= 0:
+        i = process_backspaces(s, i)
+        j = process_backspaces(t, j)
+
+        if i >= 0 and j >= 0 and s[i] != t[j]:
+            return False
+
+        if (i >= 0) != (j >= 0):
+            return False
+
+        i -= 1
+        j -= 1
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(backspace_compare)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理相邻字符的移除操作。通过遍历字符串，将字符压入栈中，并在压入前检查栈顶元素是否与当前字符相邻。如果是，则弹出栈顶元素并跳过当前字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串中的每个字符：
+   - 如果栈不为空且栈顶元素与当前字符相邻，则弹出栈顶元素并跳过当前字符。
+   - 否则，将当前字符压入栈中。
+3. 最后，将栈中的字符拼接成结果字符串并返回。
 
 关键点:
-- [TODO]
+- 使用栈来处理相邻字符的移除操作。
+- 字母表是循环的，因此 'a' 和 'z' 也视为连续。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下，栈中可能会存储所有的字符。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除相邻字符
     """
-    # TODO: 实现最优解法
-    pass
+    def is_adjacent(a: str, b: str) -> bool:
+        return abs(ord(a) - ord(b)) == 1 or (a == 'a' and b == 'z') or (a == 'z' and b == 'a')
+
+    stack = []
+    for char in s:
+        if stack and is_adjacent(stack[-1], char):
+            stack.pop()
+        else:
+            stack.append(char)
+    
+    return ''.join(stack)
 
 
 Solution = create_solution(solution_function_name)

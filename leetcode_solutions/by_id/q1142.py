@@ -14,29 +14,33 @@
 # 问题描述
 # ============================================================================
 """
-1197. 进击的骑士 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+在一个无限大的国际象棋棋盘上，骑士从点 (0, 0) 开始移动。骑士的移动规则是：它可以向八个方向之一移动两步然后转 90 度再移动一步。求骑士到达目标位置 (x, y) 的最小移动次数。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点 (0, 0) 到终点 (x, y) 的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将起点 (0, 0) 和移动次数 0 加入队列。
+2. 使用一个集合来记录已经访问过的节点，避免重复访问。
+3. 从队列中取出一个节点，检查是否到达目标位置 (x, y)，如果是则返回当前移动次数。
+4. 否则，将该节点的所有合法后继节点加入队列，并标记为已访问。
+5. 重复上述过程直到找到目标位置或队列为空。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以保证找到最短路径。
+- 通过剪枝减少不必要的搜索空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(min(x, y)^2)
+空间复杂度: O(min(x, y)^2)
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_knight_moves(x: int, y: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算骑士从 (0, 0) 到 (x, y) 的最小移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将目标位置转换为正数，因为棋盘是对称的
+    x, y = abs(x), abs(y)
+    
+    # 定义骑士的移动方向
+    directions = [(-2, -1), (-2, 1), (-1, 2), (1, 2), (2, 1), (2, -1), (1, -2), (-1, -2)]
+    
+    # 初始化队列和访问集合
+    queue = [(0, 0, 0)]  # (current_x, current_y, moves)
+    visited = set([(0, 0)])
+    
+    while queue:
+        current_x, current_y, moves = queue.pop(0)
+        
+        # 检查是否到达目标位置
+        if current_x == x and current_y == y:
+            return moves
+        
+        # 遍历所有可能的移动方向
+        for dx, dy in directions:
+            next_x, next_y = current_x + dx, current_y + dy
+            if (next_x, next_y) not in visited and -2 <= next_x <= x + 2 and -2 <= next_y <= y + 2:
+                visited.add((next_x, next_y))
+                queue.append((next_x, next_y, moves + 1))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_knight_moves)

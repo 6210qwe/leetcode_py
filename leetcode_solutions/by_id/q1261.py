@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和计数器来找到最长的单字符重复子串，并考虑一次交换的可能性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 来记录每个字符的出现次数。
+2. 使用滑动窗口遍历字符串，维护当前窗口内的字符和其最大连续长度。
+3. 对于每个字符，计算其在窗口内的最大连续长度，并检查是否可以通过一次交换来增加长度。
+4. 更新结果为当前窗口内最大连续长度的最大值。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地找到最长的单字符重复子串。
+- 考虑一次交换的可能性来增加子串的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为只有小写字母，所以计数器的空间是固定的）
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maxRepOpt1(text: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的单字符重复子串，并考虑一次交换的可能性
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(text)
+    count = [0] * 26
+    for c in text:
+        count[ord(c) - ord('a')] += 1
+
+    res = i = 0
+    while i < n:
+        j = i
+        while j < n and text[j] == text[i]:
+            j += 1
+        left_length = j - i
+
+        k = j + 1
+        while k < n and text[k] == text[i]:
+            k += 1
+        right_length = k - j - 1
+
+        total_length = min(left_length + right_length + 1, count[ord(text[i]) - ord('a')])
+        res = max(res, total_length)
+
+        i = j
+
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxRepOpt1)

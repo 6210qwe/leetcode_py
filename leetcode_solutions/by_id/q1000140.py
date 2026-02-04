@@ -21,22 +21,24 @@ LCP 22. 黑白方格画 - 小扣注意到秋日市集上有一个创作黑白方
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过组合数学计算所有可能的行和列的选择，使得黑色格子的数量等于 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历所有可能的行选择数量 r 和列选择数量 c。
+2. 计算选择 r 行和 c 列后黑色格子的数量。
+3. 如果黑色格子的数量等于 k，则累加该方案的数量。
 
 关键点:
-- [TODO]
+- 使用组合数公式 C(n, k) 计算从 n 个元素中选择 k 个元素的方案数。
+- 通过双重循环遍历所有可能的行和列的选择。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +50,35 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def combination(n, k):
+    """计算组合数 C(n, k)"""
+    if k > n:
+        return 0
+    if k == 0 or k == n:
+        return 1
+    k = min(k, n - k)  # 取较小的值以减少计算量
+    result = 1
+    for i in range(k):
+        result *= (n - i)
+        result //= (i + 1)
+    return result
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算涂色方案数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    if k == 0:
+        return 1  # 不涂任何格子也是一种方案
+    if k == n * n:
+        return 1  # 涂满整个画板也是一种方案
+    
+    total_ways = 0
+    for r in range(n + 1):  # 遍历所有可能的行选择数量
+        for c in range(n + 1):  # 遍历所有可能的列选择数量
+            black_cells = r * n + c * n - r * c  # 计算黑色格子的数量
+            if black_cells == k:
+                total_ways += combination(n, r) * combination(n, c)
+    
+    return total_ways
 
 Solution = create_solution(solution_function_name)

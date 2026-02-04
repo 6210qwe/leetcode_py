@@ -14,47 +14,83 @@
 # 问题描述
 # ============================================================================
 """
-2331. 计算布尔二叉树的值 - 给你一棵 完整二叉树 的根，这棵树有以下特征： * 叶子节点 要么值为 0 要么值为 1 ，其中 0 表示 False ，1 表示 True 。 * 非叶子节点 要么值为 2 要么值为 3 ，其中 2 表示逻辑或 OR ，3 表示逻辑与 AND 。 计算 一个节点的值方式如下： * 如果节点是个叶子节点，那么节点的 值 为它本身，即 True 或者 False 。 * 否则，计算 两个孩子的节点值，然后将该节点的运算符对两个孩子值进行 运算 。 返回根节点 root 的布尔运算值。 完整二叉树 是每个节点有 0 个或者 2 个孩子的二叉树。 叶子节点 是没有孩子的节点。 示例 1： [https://assets.leetcode.com/uploads/2022/05/16/example1drawio1.png] 输入：root = [2,1,3,null,null,0,1] 输出：true 解释：上图展示了计算过程。 AND 与运算节点的值为 False AND True = False 。 OR 运算节点的值为 True OR False = True 。 根节点的值为 True ，所以我们返回 true 。 示例 2： 输入：root = [0] 输出：false 解释：根节点是叶子节点，且值为 false，所以我们返回 false 。 提示： * 树中节点数目在 [1, 1000] 之间。 * 0 <= Node.val <= 3 * 每个节点的孩子数为 0 或 2 。 * 叶子节点的值为 0 或 1 。 * 非叶子节点的值为 2 或 3 。
+2331. 计算布尔二叉树的值 - 给你一棵 完整二叉树 的根，这棵树有以下特征：
+* 叶子节点 要么值为 0 要么值为 1 ，其中 0 表示 False ，1 表示 True 。
+* 非叶子节点 要么值为 2 要么值为 3 ，其中 2 表示逻辑或 OR ，3 表示逻辑与 AND 。
+计算 一个节点的值方式如下：
+* 如果节点是个叶子节点，那么节点的 值 为它本身，即 True 或者 False 。
+* 否则，计算 两个孩子的节点值，然后将该节点的运算符对两个孩子值进行 运算 。
+返回根节点 root 的布尔运算值。
+完整二叉树 是每个节点有 0 个或者 2 个孩子的二叉树。
+叶子节点 是没有孩子的节点。
+
+示例 1：
+[https://assets.leetcode.com/uploads/2022/05/16/example1drawio1.png]
+输入：root = [2,1,3,null,null,0,1]
+输出：true
+解释：上图展示了计算过程。
+AND 与运算节点的值为 False AND True = False 。
+OR 运算节点的值为 True OR False = True 。
+根节点的值为 True ，所以我们返回 true 。
+
+示例 2：
+输入：root = [0]
+输出：false
+解释：根节点是叶子节点，且值为 false，所以我们返回 false 。
+
+提示：
+* 树中节点数目在 [1, 1000] 之间。
+* 0 <= Node.val <= 3
+* 每个节点的孩子数为 0 或 2 。
+* 叶子节点的值为 0 或 1 。
+* 非叶子节点的值为 2 或 3 。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来递归地计算每个节点的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点是叶子节点，直接返回其布尔值。
+2. 如果当前节点是非叶子节点，递归计算其左右子节点的值。
+3. 根据当前节点的值（2 或 3），使用相应的逻辑运算符（OR 或 AND）来计算当前节点的值。
+4. 返回根节点的值。
 
 关键点:
-- [TODO]
+- 递归地处理每个节点，并根据节点的值选择合适的逻辑运算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def evaluate_tree(root: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    递归地计算布尔二叉树的值。
     """
-    # TODO: 实现最优解法
-    pass
+    if root is None:
+        return False
+    if root.val == 0:
+        return False
+    if root.val == 1:
+        return True
+    if root.val == 2:
+        return evaluate_tree(root.left) or evaluate_tree(root.right)
+    if root.val == 3:
+        return evaluate_tree(root.left) and evaluate_tree(root.right)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(evaluate_tree)

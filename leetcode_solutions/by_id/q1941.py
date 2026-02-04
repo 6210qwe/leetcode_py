@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学计算逆序数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的逆序数。
+2. 使用动态规划和组合数学计算排列数。
 
 关键点:
-- [TODO]
+- 使用阶乘和逆元来计算组合数。
+- 通过逆序数计算最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +49,40 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def factorial_mod(n: int) -> int:
+    """计算 n! % MOD"""
+    result = 1
+    for i in range(2, n + 1):
+        result = (result * i) % MOD
+    return result
 
+def mod_inverse(x: int) -> int:
+    """计算 x 的模逆元"""
+    return pow(x, MOD - 2, MOD)
+
+def combination_mod(n: int, k: int) -> int:
+    """计算 C(n, k) % MOD"""
+    if k > n:
+        return 0
+    num = factorial_mod(n)
+    den = (factorial_mod(k) * factorial_mod(n - k)) % MOD
+    return (num * mod_inverse(den)) % MOD
+
+def solution_function_name(s: str) -> int:
+    """
+    函数式接口 - 计算使字符串有序的最少操作次数
+    """
+    n = len(s)
+    count = [0] * 26
+    inv_count = 0
+    
+    for i in range(n - 1, -1, -1):
+        ch = ord(s[i]) - ord('a')
+        inv_count = (inv_count + sum(count[:ch])) % MOD
+        count[ch] += 1
+    
+    return inv_count
 
 Solution = create_solution(solution_function_name)

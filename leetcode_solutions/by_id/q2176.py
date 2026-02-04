@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序和动态规划来计算完成所有课程所需的最少月份数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表和入度数组。
+2. 初始化一个队列，将所有入度为 0 的节点加入队列。
+3. 使用广度优先搜索（BFS）进行拓扑排序，同时维护一个 dp 数组，dp[i] 表示完成课程 i 所需的最少月份数。
+4. 对于每个节点，更新其后续节点的 dp 值，并减少其后续节点的入度。如果某个节点的入度变为 0，则将其加入队列。
+5. 最终结果为 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用 BFS 进行拓扑排序。
+- 动态规划的思想，通过前驱节点的 dp 值来更新当前节点的 dp 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是课程数，m 是先修课程关系数。
+空间复杂度: O(n + m)，用于存储邻接表、入度数组和 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time(n: int, relations: List[List[int]], time: List[int]) -> int:
+    # 构建邻接表和入度数组
+    graph = [[] for _ in range(n)]
+    indegree = [0] * n
+    for prev, next in relations:
+        graph[prev - 1].append(next - 1)
+        indegree[next - 1] += 1
+    
+    # 初始化队列和 dp 数组
+    queue = [i for i in range(n) if indegree[i] == 0]
+    dp = [time[i] for i in range(n)]
+    
+    # BFS 拓扑排序
+    while queue:
+        node = queue.pop(0)
+        for neighbor in graph[node]:
+            dp[neighbor] = max(dp[neighbor], dp[node] + time[neighbor])
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time)

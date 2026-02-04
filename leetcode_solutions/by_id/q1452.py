@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数和聚合函数来计算每个日期的7天总金额和平均金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按 `visited_on` 对数据进行排序。
+2. 使用窗口函数 `SUM` 和 `AVG` 计算每个日期及其前6天的总金额和平均金额。
+3. 过滤出第7天及以后的数据。
+4. 格式化输出结果。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `SUM` 和 `AVG` 来计算7天的总金额和平均金额。
+- 确保只返回第7天及以后的数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是记录的数量。主要的时间开销在于对数据进行排序。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
@@ -51,10 +54,39 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH DailyAmount AS (
+        SELECT
+            visited_on,
+            SUM(amount) AS daily_amount
+        FROM
+            Customer
+        GROUP BY
+            visited_on
+    ),
+    SevenDayWindow AS (
+        SELECT
+            visited_on,
+            SUM(daily_amount) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS amount,
+            ROUND(AVG(daily_amount) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS average_amount
+        FROM
+            DailyAmount
+    )
+    SELECT
+        visited_on,
+        amount,
+        average_amount
+    FROM
+        SevenDayWindow
+    WHERE
+        visited_on >= (SELECT MIN(visited_on) + INTERVAL '6 DAY' FROM DailyAmount)
+    ORDER BY
+        visited_on;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

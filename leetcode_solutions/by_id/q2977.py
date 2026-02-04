@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查字符串 s 是否等于 words 中每个字符串的第一个字符的串联。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 result。
+2. 遍历 words 数组，将每个字符串的第一个字符添加到 result 中。
+3. 比较 result 和 s 是否相等，如果相等则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 通过遍历 words 数组并提取每个字符串的第一个字符来构建结果字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 words 数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_acronym(words: List[str], s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串 s 是否是 words 的首字母缩略词
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建结果字符串
+    result = ''.join(word[0] for word in words)
+    
+    # 比较结果字符串和 s
+    return result == s
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_acronym)

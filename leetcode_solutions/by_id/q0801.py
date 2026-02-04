@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 或广度优先搜索 (BFS) 来检查图是否为二分图。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化颜色数组，用于记录每个节点的颜色（0 表示未着色，1 表示一种颜色，-1 表示另一种颜色）。
+2. 遍历每个节点，如果该节点未着色，则进行 DFS 或 BFS 着色。
+3. 在 DFS 或 BFS 过程中，尝试将当前节点着色，并将其相邻节点着相反颜色。
+4. 如果发现相邻节点已经着了相同的颜色，则说明图不是二分图，返回 False。
+5. 如果遍历完所有节点均未发现冲突，则返回 True。
 
 关键点:
-- [TODO]
+- 使用 DFS 或 BFS 进行图的遍历和着色。
+- 通过颜色数组来记录每个节点的颜色。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(V)，存储颜色数组所需的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_bipartite(graph: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的无向图是否为二分图。
+    
+    :param graph: 无向图的邻接表表示
+    :return: 如果图是二分图，返回 True；否则，返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, color: int) -> bool:
+        colors[node] = color
+        for neighbor in graph[node]:
+            if colors[neighbor] == color:
+                return False
+            if colors[neighbor] == 0 and not dfs(neighbor, -color):
+                return False
+        return True
+
+    n = len(graph)
+    colors = [0] * n  # 0: 未着色, 1: 一种颜色, -1: 另一种颜色
+
+    for i in range(n):
+        if colors[i] == 0 and not dfs(i, 1):
+            return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_bipartite)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个产品的总销售额，并按销售额降序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `GROUP BY` 子句按产品 ID 分组。
+2. 使用 `SUM` 函数计算每个产品的总销售额。
+3. 使用 `ORDER BY` 子句按总销售额降序排列。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `SUM` 函数来聚合数据。
+- 使用 `ORDER BY` 来排序结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是销售记录的数量。`GROUP BY` 操作的时间复杂度是 O(n)，而 `ORDER BY` 操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，不考虑输出结果的空间占用。
 """
 
 # ============================================================================
@@ -51,10 +53,16 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来获取每个产品的总销售额，并按销售额降序排列。
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT product_id, SUM(quantity * price) AS total_sales
+    FROM Sales
+    GROUP BY product_id
+    ORDER BY total_sales DESC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

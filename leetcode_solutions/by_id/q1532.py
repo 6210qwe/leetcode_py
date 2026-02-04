@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字母和数字分别存储在两个列表中，然后交替合并这两个列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表，一个存储字母，一个存储数字。
+2. 遍历输入字符串，将字母和数字分别添加到对应的列表中。
+3. 检查字母和数字的数量差是否超过1，如果是则返回空字符串。
+4. 交替合并两个列表，确保字母和数字交替出现。
 
 关键点:
-- [TODO]
+- 使用两个列表分别存储字母和数字。
+- 交替合并时，确保数量较多的列表先开始。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串一次，并进行一次线性合并。
+空间复杂度: O(n)，我们使用了额外的两个列表来存储字母和数字。
 """
 
 # ============================================================================
@@ -49,12 +52,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reformat_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新格式化字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 存储字母和数字
+    letters = []
+    digits = []
+
+    # 分类存储字母和数字
+    for char in s:
+        if char.isalpha():
+            letters.append(char)
+        else:
+            digits.append(char)
+
+    # 检查数量差是否超过1
+    if abs(len(letters) - len(digits)) > 1:
+        return ""
+
+    # 交替合并两个列表
+    result = []
+    if len(letters) > len(digits):
+        longer, shorter = letters, digits
+    else:
+        longer, shorter = digits, letters
+
+    for i in range(len(shorter)):
+        result.append(longer[i])
+        result.append(shorter[i])
+
+    if len(longer) > len(shorter):
+        result.append(longer[-1])
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reformat_string)

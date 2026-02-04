@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来克隆 N 叉树。通过递归的方式，逐个节点进行复制。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `clone_tree`，接收当前节点作为参数。
+2. 如果当前节点为空，返回 None。
+3. 创建一个新的节点，值与当前节点相同。
+4. 递归地克隆当前节点的所有子节点，并将它们添加到新节点的子节点列表中。
+5. 返回新节点。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索，确保每个节点及其子节点都被正确复制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为树的高度，最坏情况下为 n。
 """
 
 # ============================================================================
@@ -44,17 +47,25 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from leetcode_solutions.utils.tree import Node
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Solution:
+    def cloneTree(self, root: 'Node') -> 'Node':
+        """
+        函数式接口 - 克隆 N 叉树
+        """
+        if not root:
+            return None
+        
+        # 创建新节点
+        new_node = Node(root.val)
+        
+        # 递归克隆子节点
+        for child in root.children:
+            new_node.children.append(self.cloneTree(child))
+        
+        return new_node
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

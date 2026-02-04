@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和有序集合来维护当前最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，其中 dp[i] 表示从城市 0 到城市 i 的最短路径长度。
+2. 使用一个有序集合来存储当前可以到达的城市及其最短路径长度。
+3. 对于每个查询，更新 dp 数组，并更新有序集合。
+4. 每次查询后，返回 dp[n-1] 作为结果。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地更新和查询最短路径。
+- 动态规划数组 dp 用于存储从城市 0 到每个城市的最短路径长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)，其中 n 是城市的数量，m 是查询的数量。
+空间复杂度: O(n + m)，其中 n 是城市的数量，m 是查询的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
-
-def solution_function_name(params):
+def shortest_distance_after_queries(n: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现新增道路查询后的最短距离
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = list(range(n))
+    
+    # 有序集合，存储 (距离, 城市) 对
+    reachable = [(0, 0)]
+    
+    result = []
+    
+    for u, v in queries:
+        # 更新 dp 数组
+        if dp[v] > dp[u] + 1:
+            dp[v] = dp[u] + 1
+            # 在有序集合中插入新的 (距离, 城市) 对
+            bisect.insort(reachable, (dp[v], v))
+        
+        # 更新从城市 0 到城市 n-1 的最短路径
+        while reachable and reachable[0][1] < n - 1:
+            dist, city = reachable.pop(0)
+            if dp[city + 1] > dist + 1:
+                dp[city + 1] = dist + 1
+                bisect.insort(reachable, (dp[city + 1], city + 1))
+        
+        result.append(dp[-1])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_distance_after_queries)

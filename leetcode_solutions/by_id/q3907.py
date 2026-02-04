@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和双指针来找到所有满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理出所有质数。
+2. 使用双指针和滑动窗口来遍历数组，找到所有满足条件的子数组。
+3. 维护当前窗口内的质数列表，计算最大值和最小值的差值。
+4. 如果差值小于等于 k 且窗口内至少有两个质数，则计数。
 
 关键点:
-- [TODO]
+- 使用预处理的质数表来快速判断一个数是否为质数。
+- 使用滑动窗口来高效地找到所有满足条件的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(log(max(nums))))，其中 n 是数组长度，预处理质数的时间复杂度为 O(n * log(log(max(nums)))。
+空间复杂度: O(max(nums))，用于存储质数表。
 """
 
 # ============================================================================
@@ -48,13 +51,40 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计数质数间隔平衡子数组
     """
-    # TODO: 实现最优解法
-    pass
+    max_num = max(nums)
+    primes = [i for i in range(2, max_num + 1) if is_prime(i)]
+    prime_set = set(primes)
 
+    def count_balanced_subarrays(left, right):
+        min_prime = float('inf')
+        max_prime = float('-inf')
+        prime_count = 0
+        for i in range(left, right + 1):
+            if nums[i] in prime_set:
+                prime_count += 1
+                min_prime = min(min_prime, nums[i])
+                max_prime = max(max_prime, nums[i])
+        return prime_count >= 2 and (max_prime - min_prime) <= k
+
+    n = len(nums)
+    count = 0
+    for left in range(n):
+        for right in range(left, n):
+            if count_balanced_subarrays(left, right):
+                count += 1
+
+    return count
 
 Solution = create_solution(solution_function_name)

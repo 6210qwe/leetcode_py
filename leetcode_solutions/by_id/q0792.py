@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找算法来查找目标值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，分别指向数组的起始位置和结束位置。
+2. 进入循环，条件是 left 不大于 right。
+3. 计算中间位置 mid。
+4. 如果 nums[mid] 等于 target，则返回 mid。
+5. 如果 nums[mid] 小于 target，则将 left 移动到 mid + 1。
+6. 如果 nums[mid] 大于 target，则将 right 移动到 mid - 1。
+7. 如果循环结束仍未找到目标值，返回 -1。
 
 关键点:
-- [TODO]
+- 通过不断缩小搜索范围，可以在 O(log n) 时间内找到目标值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def binary_search(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    二分查找 - 在有序数组中查找目标值的索引。
+    :param nums: 有序数组
+    :param target: 目标值
+    :return: 目标值的索引，如果不存在则返回 -1
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(nums) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(binary_search)

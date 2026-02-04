@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来表示内存数组，并使用一个字典来记录每个 mID 对应的内存单元位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个大小为 n 的内存数组，并创建一个字典来记录每个 mID 对应的内存单元位置。
+2. 在 allocate 方法中，遍历内存数组，找到第一个满足条件的连续空闲内存单元块，将其分配给 mID，并更新内存数组和字典。
+3. 在 freeMemory 方法中，根据字典中的记录，释放 mID 对应的所有内存单元，并更新内存数组和字典。
 
 关键点:
-- [TODO]
+- 使用字典来记录每个 mID 对应的内存单元位置，便于快速释放内存。
+- 在 allocate 方法中，通过遍历内存数组找到第一个满足条件的连续空闲内存单元块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 在最坏情况下，allocate 方法需要遍历整个内存数组。
+空间复杂度: O(n) - 需要一个大小为 n 的内存数组和一个字典来记录每个 mID 对应的内存单元位置。
 """
 
 # ============================================================================
@@ -44,17 +46,54 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Allocator:
+
+    def __init__(self, n: int):
+        self.memory = [0] * n  # 内存数组
+        self.mID_map = {}  # 记录每个 mID 对应的内存单元位置
+
+    def allocate(self, size: int, mID: int) -> int:
+        start = 0
+        while start < len(self.memory):
+            if self.memory[start] == 0:
+                end = start + size
+                if end > len(self.memory):
+                    break
+                if all(self.memory[i] == 0 for i in range(start, end)):
+                    for i in range(start, end):
+                        self.memory[i] = mID
+                    if mID not in self.mID_map:
+                        self.mID_map[mID] = []
+                    self.mID_map[mID].extend(range(start, end))
+                    return start
+                else:
+                    start = end
+            else:
+                start += 1
+        return -1
+
+    def freeMemory(self, mID: int) -> int:
+        if mID not in self.mID_map:
+            return 0
+        for index in self.mID_map[mID]:
+            self.memory[index] = 0
+        freed_count = len(self.mID_map[mID])
+        del self.mID_map[mID]
+        return freed_count
 
 
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    allocator = Allocator(10)
+    print(allocator.allocate(1, 1))  # 0
+    print(allocator.allocate(1, 2))  # 1
+    print(allocator.allocate(1, 3))  # 2
+    print(allocator.freeMemory(2))   # 1
+    print(allocator.allocate(3, 4))  # 3
+    print(allocator.allocate(1, 1))  # 1
+    print(allocator.allocate(1, 1))  # 6
+    print(allocator.freeMemory(1))   # 3
+    print(allocator.allocate(10, 2)) # -1
+    print(allocator.freeMemory(7))   # 0

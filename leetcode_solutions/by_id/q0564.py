@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过生成三个候选回文数来找到最近的回文数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成中间部分减一的回文数。
+2. 生成中间部分加一的回文数。
+3. 生成中间部分不变的回文数。
+4. 比较这三个回文数与原数的差值，选择差值最小且不等于原数的回文数。
 
 关键点:
-- [TODO]
+- 生成回文数时，需要考虑长度为奇数和偶数的情况。
+- 处理特殊情况，如所有9或所有0的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,67 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest_palindrome(n: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找最近的回文数
     """
-    # TODO: 实现最优解法
-    pass
+    # 特殊情况处理
+    if len(n) == 1:
+        return str(int(n) - 1)
+    
+    # 将字符串转换为列表以便操作
+    n_list = list(n)
+    length = len(n_list)
+    
+    # 生成中间部分减一的回文数
+    mid = (length - 1) // 2
+    left = n_list[:mid + 1]
+    if length % 2 == 0:
+        left[-1] = str(int(left[-1]) - 1)
+    else:
+        left[mid] = str(int(left[mid]) - 1)
+    
+    if left[0] == '0':
+        left = ['9'] * (len(left) - 1)
+    else:
+        for i in range(len(left) - 1, -1, -1):
+            if left[i] < '0':
+                left[i] = '9'
+                left[i - 1] = str(int(left[i - 1]) - 1)
+            else:
+                break
+    
+    candidate1 = left + left[:-1][::-1] if length % 2 == 0 else left + left[::-1]
+    
+    # 生成中间部分加一的回文数
+    left = n_list[:mid + 1]
+    if length % 2 == 0:
+        left[-1] = str(int(left[-1]) + 1)
+    else:
+        left[mid] = str(int(left[mid]) + 1)
+    
+    if left[0] > '9':
+        left = ['0'] + ['0'] * (len(left) - 1)
+        left[0] = '1'
+    else:
+        for i in range(len(left)):
+            if left[i] > '9':
+                left[i] = '0'
+                left[i + 1] = str(int(left[i + 1]) + 1)
+            else:
+                break
+    
+    candidate2 = left + left[:-1][::-1] if length % 2 == 0 else left + left[::-1]
+    
+    # 生成中间部分不变的回文数
+    left = n_list[:mid + 1]
+    candidate3 = left + left[:-1][::-1] if length % 2 == 0 else left + left[::-1]
+    
+    # 比较三个候选回文数
+    candidates = [candidate1, candidate2, candidate3]
+    closest = min(candidates, key=lambda x: (abs(int(''.join(x)) - int(n)), int(''.join(x))))
+    
+    return ''.join(closest)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_palindrome)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个计数器分别记录每一行和每一列的增量次数，然后计算最终矩阵中奇数值单元格的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `row_counts` 和 `col_counts`，分别记录每一行和每一列的增量次数。
+2. 遍历 `indices`，对于每个索引 `[ri, ci]`，将 `row_counts[ri]` 和 `col_counts[ci]` 增加 1。
+3. 遍历整个矩阵，对于每个单元格 `(i, j)`，其值为 `row_counts[i] + col_counts[j]`，如果该值为奇数，则计数器 `odd_count` 增加 1。
+4. 返回 `odd_count`。
 
 关键点:
-- [TODO]
+- 使用两个计数器来避免直接构建矩阵，从而节省空间。
+- 通过遍历矩阵并计算每个单元格的值来确定奇数值单元格的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n + len(indices))
+空间复杂度: O(m + n)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def oddCells(m: int, n: int, indices: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算矩阵中奇数值单元格的数量
     """
-    # TODO: 实现最优解法
-    pass
+    row_counts = [0] * m
+    col_counts = [0] * n
+    
+    for ri, ci in indices:
+        row_counts[ri] += 1
+        col_counts[ci] += 1
+    
+    odd_count = 0
+    for i in range(m):
+        for j in range(n):
+            if (row_counts[i] + col_counts[j]) % 2 == 1:
+                odd_count += 1
+    
+    return odd_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(oddCells)

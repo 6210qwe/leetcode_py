@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来模拟测试过程，对于每个电池百分比大于0的设备，增加已测试设备的计数，并将后续设备的电池百分比减1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化已测试设备的计数器 `tested_count` 为 0。
+2. 遍历数组 `batteryPercentages`，对于每个元素：
+   - 如果当前设备的电池百分比大于0，则增加 `tested_count`。
+   - 将后续设备的电池百分比减1，但确保不低于0。
+3. 返回 `tested_count`。
 
 关键点:
-- [TODO]
+- 通过一次遍历完成所有操作，时间复杂度为 O(n^2)，但由于 n 最大为 100，可以接受。
+- 空间复杂度为 O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_tested_devices(battery_percentages: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计已测试设备的数量
     """
-    # TODO: 实现最优解法
-    pass
+    tested_count = 0
+    n = len(battery_percentages)
+    
+    for i in range(n):
+        if battery_percentages[i] > 0:
+            tested_count += 1
+            for j in range(i + 1, n):
+                battery_percentages[j] = max(0, battery_percentages[j] - 1)
+    
+    return tested_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_tested_devices)

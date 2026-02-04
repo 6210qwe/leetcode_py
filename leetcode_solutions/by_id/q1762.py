@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来记录每次需要使用的砖块数量，当砖块不够时，使用梯子替换最大的砖块需求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，用于存储每次需要使用的砖块数量。
+2. 遍历建筑物高度，计算每一步需要的砖块数量。
+3. 如果需要的砖块数量大于当前剩余的砖块数量，且还有梯子可用，则使用梯子替换最大的砖块需求。
+4. 如果没有梯子可用且砖块不足，则返回当前建筑物的下标。
+5. 如果遍历完所有建筑物，则返回最后一个建筑物的下标。
 
 关键点:
-- [TODO]
+- 使用最小堆来动态维护砖块需求，确保每次使用梯子时替换的是最大的砖块需求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是建筑物的数量，k 是梯子的数量。
+空间复杂度: O(k)，用于存储最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def furthest_building(heights: List[int], bricks: int, ladders: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回可以到达的最远建筑物的下标。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(heights)
+    brick_heap = []  # 最小堆，存储每次需要使用的砖块数量
+    
+    for i in range(n - 1):
+        height_diff = heights[i + 1] - heights[i]
+        
+        if height_diff > 0:
+            heapq.heappush(brick_heap, height_diff)
+            
+            if len(brick_heap) > ladders:
+                bricks -= heapq.heappop(brick_heap)
+                
+            if bricks < 0:
+                return i
+    
+    return n - 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(furthest_building)

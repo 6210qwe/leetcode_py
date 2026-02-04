@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组找到所有相邻的两个人之间的最大距离，并考虑两端的特殊情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `prev` 和 `curr`，分别记录上一个人的位置和当前人的位置。
+2. 遍历数组，更新 `prev` 和 `curr` 的位置，并计算它们之间的距离。
+3. 计算两端的特殊情况，即第一个空座位和最后一个空座位到最近的人的距离。
+4. 返回最大距离。
 
 关键点:
-- [TODO]
+- 处理两端的特殊情况。
+- 使用双指针法计算相邻两人之间的最大距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 seats 的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(seats: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(seats)
+    prev, curr, max_distance = -1, 0, 0
+
+    # 遍历数组，找到相邻两人之间的最大距离
+    while curr < n:
+        if seats[curr] == 1:
+            if prev == -1:
+                # 第一个空座位到最近的人的距离
+                max_distance = max(max_distance, curr)
+            else:
+                # 中间空座位到最近的人的距离
+                max_distance = max(max_distance, (curr - prev) // 2)
+            prev = curr
+        curr += 1
+
+    # 最后一个空座位到最近的人的距离
+    max_distance = max(max_distance, n - 1 - prev)
+
+    return max_distance
 
 
 Solution = create_solution(solution_function_name)

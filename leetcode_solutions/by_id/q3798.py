@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在遍历过程中维护路径的长度和节点数。使用哈希表来记录每个节点值的出现次数，以确保路径中所有节点值都是唯一的，最多允许有一个值出现两次。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个递归的 DFS 函数，该函数返回当前节点的最长特殊路径的长度和最少节点数。
+3. 在 DFS 过程中，维护一个哈希表来记录路径中每个节点值的出现次数。
+4. 对于每个节点，计算其子节点的最长特殊路径，并更新结果。
+5. 返回最终的结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录路径中每个节点值的出现次数，确保路径中所有节点值都是唯一的，最多允许有一个值出现两次。
+- 在 DFS 过程中，动态更新最长路径的长度和最少节点数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from collections import defaultdict
 
+def longest_special_path(edges: List[List[int]], nums: List[int]) -> List[int]:
+    def dfs(node: int, parent: int) -> Tuple[int, int]:
+        max_length = 0
+        min_nodes = float('inf')
+        value_count[nums[node]] += 1
+        
+        for neighbor, length in graph[node]:
+            if neighbor == parent:
+                continue
+            child_length, child_nodes = dfs(neighbor, node)
+            if value_count[nums[node]] <= 2:
+                max_length = max(max_length, child_length + length)
+                min_nodes = min(min_nodes, child_nodes + 1)
+        
+        value_count[nums[node]] -= 1
+        return max_length, min_nodes
+    
+    n = len(nums)
+    graph = defaultdict(list)
+    for u, v, length in edges:
+        graph[u].append((v, length))
+        graph[v].append((u, length))
+    
+    value_count = defaultdict(int)
+    result = dfs(0, -1)
+    return [result[0], result[1]]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_special_path)

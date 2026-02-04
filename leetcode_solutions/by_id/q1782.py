@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从后向前构建字符串，尽量使用较小的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果字符串 `result`。
+2. 从后向前遍历字符串的位置，计算当前剩余的数值 `k`。
+3. 在每个位置上，选择尽可能大的字符，但不能超过剩余的数值 `k`。
+4. 将选择的字符添加到结果字符串中，并更新剩余的数值 `k`。
+5. 最后返回结果字符串。
 
 关键点:
-- [TODO]
+- 从后向前构建字符串，确保每次选择的字符尽可能大，从而保证字典序最小。
+- 每次选择字符时，需要确保剩余的数值 `k` 足够分配给前面的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_smallest_string(n: int, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回长度等于 n 且数值等于 k 的字典序最小的字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(n):
+        # 计算剩余的数值
+        remaining = k - (n - i - 1)
+        if remaining >= 26:
+            result.append('z')
+            k -= 26
+        else:
+            result.append(chr(remaining + 96))
+            k -= remaining
+    return ''.join(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_smallest_string)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历操作列表，根据每个操作的类型更新变量 X 的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 X 为 0。
+2. 遍历操作列表，对于每个操作：
+   - 如果操作是 "++X" 或 "X++"，则将 X 增加 1。
+   - 如果操作是 "--X" 或 "X--"，则将 X 减少 1。
+3. 返回最终的 X 值。
 
 关键点:
-- [TODO]
+- 使用简单的条件判断来处理每种操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是操作列表的长度。我们需要遍历整个操作列表。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def final_value_after_operations(operations: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算执行所有操作后的变量 X 的最终值
     """
-    # TODO: 实现最优解法
-    pass
+    x = 0
+    for op in operations:
+        if op in {"++X", "X++"}:
+            x += 1
+        elif op in {"--X", "X--"}:
+            x -= 1
+    return x
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(final_value_after_operations)

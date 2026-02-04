@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次遍历，分别计算每个元素左边和右边相同元素的间隔之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `left_sum` 和 `right_sum`，用于存储每个元素左边和右边的间隔之和。
+2. 第一次遍历数组，计算每个元素左边相同元素的间隔之和，并存储在 `left_sum` 中。
+3. 第二次遍历数组，计算每个元素右边相同元素的间隔之和，并存储在 `right_sum` 中。
+4. 最后，将 `left_sum` 和 `right_sum` 相加得到结果。
 
 关键点:
-- [TODO]
+- 使用字典记录每个元素上次出现的位置，以便计算间隔之和。
+- 通过两次遍历，分别处理左边和右边的间隔之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要两次遍历数组。
+空间复杂度: O(n)，使用了两个字典来存储每个元素的间隔之和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_intervals(arr: List[int]) -> List[int]:
+    n = len(arr)
+    left_sum = [0] * n
+    right_sum = [0] * n
+    last_seen_left = {}
+    last_seen_right = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算左边的间隔之和
+    for i in range(n):
+        if arr[i] in last_seen_left:
+            left_sum[i] = left_sum[last_seen_left[arr[i]]] + (i - last_seen_left[arr[i]]) * (last_seen_left[arr[i]] + 1)
+        last_seen_left[arr[i]] = i
 
+    # 计算右边的间隔之和
+    for i in range(n - 1, -1, -1):
+        if arr[i] in last_seen_right:
+            right_sum[i] = right_sum[last_seen_right[arr[i]]] + (last_seen_right[arr[i]] - i) * (n - last_seen_right[arr[i]])
+        last_seen_right[arr[i]] = i
 
-Solution = create_solution(solution_function_name)
+    # 合并左边和右边的间隔之和
+    result = [left_sum[i] + right_sum[i] for i in range(n)]
+    return result
+
+Solution = get_intervals

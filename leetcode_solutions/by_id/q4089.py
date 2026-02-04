@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 为了最大化总分数，我们需要在满足 k 个任务使用技巧 1 的前提下，尽可能多地使用技巧 2。
+- 先计算每个任务使用技巧 2 的得分，并记录每个任务使用技巧 1 比技巧 2 多的得分差值。
+- 对这些差值进行降序排序，选择前 k 个任务使用技巧 1，其余任务使用技巧 2。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个任务使用技巧 2 的得分，并记录每个任务使用技巧 1 比技巧 2 多的得分差值。
+2. 对这些差值进行降序排序。
+3. 选择前 k 个任务使用技巧 1，其余任务使用技巧 2。
+4. 计算总分数并返回。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略来最大化总分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+- 排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)
+- 需要额外的空间来存储差值数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maximize_points(technique1: List[int], technique2: List[int], k: int) -> int:
+    n = len(technique1)
+    # 计算每个任务使用技巧 2 的得分，并记录每个任务使用技巧 1 比技巧 2 多的得分差值
+    diff = [t1 - t2 for t1, t2 in zip(technique1, technique2)]
+    # 对这些差值进行降序排序
+    sorted_diff = sorted(diff, reverse=True)
+    
+    # 选择前 k 个任务使用技巧 1，其余任务使用技巧 2
+    total_score = sum(technique2)  # 初始总分为所有任务使用技巧 2 的得分
+    for i in range(k):
+        total_score += sorted_diff[i]
+    
+    return total_score
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_points)

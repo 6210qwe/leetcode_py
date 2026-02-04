@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每一列进行检查，如果某一列不是按字典序非严格递增排列，则需要删除该列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `delete_count` 用于记录需要删除的列数。
+2. 遍历每一列，对于每一列，检查是否所有字符都按字典序非严格递增排列。
+3. 如果某一列不满足条件，则将 `delete_count` 增加 1。
+4. 返回 `delete_count`。
 
 关键点:
-- [TODO]
+- 通过遍历每一列来检查是否按字典序非严格递增排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串的数量，m 是每个字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def delete_columns_to_make_sorted(strs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除不按字典序非严格递增排列的列，并返回需要删除的列数。
     """
-    # TODO: 实现最优解法
-    pass
+    if not strs:
+        return 0
+
+    num_rows = len(strs)
+    num_cols = len(strs[0])
+    delete_count = 0
+
+    for col in range(num_cols):
+        for row in range(1, num_rows):
+            if strs[row][col] < strs[row - 1][col]:
+                delete_count += 1
+                break
+
+    return delete_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(delete_columns_to_make_sorted)

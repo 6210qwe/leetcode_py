@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来统计每个字符的出现次数，然后比较两个字符串的字符计数是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果两个字符串长度不同，直接返回 False。
+2. 使用一个哈希表来统计第一个字符串中每个字符的出现次数。
+3. 遍历第二个字符串，减少哈希表中对应字符的计数。
+4. 检查哈希表中的所有计数是否都为零。
 
 关键点:
-- [TODO]
+- 通过哈希表统计字符出现次数，可以在线性时间内完成字符频率的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历两个字符串各一次。
+空间复杂度: O(1)，因为字母表的大小是固定的（26个小写字母），所以哈希表的空间复杂度是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s1: str, s2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断两个字符串是否互为字符重排
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s1) != len(s2):
+        return False
+
+    char_count = [0] * 26
+
+    for char in s1:
+        char_count[ord(char) - ord('a')] += 1
+
+    for char in s2:
+        char_count[ord(char) - ord('a')] -= 1
+        if char_count[ord(char) - ord('a')] < 0:
+            return False
+
+    return True
 
 
 Solution = create_solution(solution_function_name)

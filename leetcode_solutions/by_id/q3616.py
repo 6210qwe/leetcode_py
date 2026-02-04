@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来判断从某个零点出发是否可以将所有元素变为零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 遍历每个零点，检查从该零点出发是否可以将所有元素变为零。
+3. 对于每个零点，分别检查向左和向右两种情况。
 
 关键点:
-- [TODO]
+- 前缀和可以帮助快速判断某个区间内的元素总和。
+- 通过前缀和判断从某个零点出发是否可以将所有元素变为零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。需要遍历每个零点，并对每个零点进行两次遍历。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组元素等于零的有效选择方案数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    def can_make_zero(start: int, direction: int) -> bool:
+        curr = start
+        while 0 <= curr < n:
+            if nums[curr] == 0:
+                curr += direction
+            else:
+                nums[curr] -= 1
+                direction *= -1
+                curr += direction
+        return all(x == 0 for x in nums)
+    
+    count = 0
+    for i in range(n):
+        if nums[i] == 0:
+            # 检查从当前零点向左移动的情况
+            if can_make_zero(i, -1):
+                count += 1
+            # 检查从当前零点向右移动的情况
+            if can_make_zero(i, 1):
+                count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

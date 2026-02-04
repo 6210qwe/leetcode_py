@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到最优的插入区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入的区间列表进行排序。
+2. 使用双指针遍历区间列表，找到可以合并的区间。
+3. 计算插入区间的最优位置，使得连通组的数量最小化。
 
 关键点:
-- [TODO]
+- 通过排序和双指针，可以有效地找到可以合并的区间。
+- 插入区间的最优位置可以通过计算当前区间的右边界和下一个区间的左边界来确定。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是区间的数量。排序操作的时间复杂度是 O(n log n)，后续的遍历操作是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimize_connected_groups(intervals: List[List[int]], new_interval: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过插入区间最小化连通组
     """
-    # TODO: 实现最优解法
-    pass
+    # 对区间进行排序
+    intervals.sort()
+    
+    # 初始化指针和结果计数器
+    i = 0
+    n = len(intervals)
+    result = 0
+    
+    # 找到插入区间的最优位置
+    while i < n and intervals[i][1] < new_interval[0]:
+        if i + 1 < n and intervals[i][1] < intervals[i + 1][0]:
+            result += 1
+        i += 1
+    
+    # 插入新区间
+    intervals.insert(i, new_interval)
+    n += 1
+    
+    # 合并区间
+    merged_intervals = [intervals[0]]
+    for j in range(1, n):
+        if merged_intervals[-1][1] >= intervals[j][0]:
+            merged_intervals[-1][1] = max(merged_intervals[-1][1], intervals[j][1])
+        else:
+            merged_intervals.append(intervals[j])
+    
+    # 计算连通组的数量
+    return len(merged_intervals)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_connected_groups)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个字符串，判断其是否只包含数字。如果是，则将其转换为整数；否则，取其长度。最后返回这些值中的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_value` 为 0，用于存储当前找到的最大值。
+2. 遍历字符串数组 `strs`，对于每个字符串：
+   - 如果字符串只包含数字，则将其转换为整数并更新 `max_value`。
+   - 否则，取字符串的长度并更新 `max_value`。
+3. 返回 `max_value`。
 
 关键点:
-- [TODO]
+- 使用 `str.isdigit()` 方法来判断字符串是否只包含数字。
+- 使用 `int(str)` 将字符串转换为整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是字符串的平均长度。我们需要遍历每个字符串并进行判断和转换。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_string_value(strs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串数组中字符串的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    max_value = 0
+    for s in strs:
+        if s.isdigit():
+            value = int(s)
+        else:
+            value = len(s)
+        max_value = max(max_value, value)
+    return max_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_string_value)

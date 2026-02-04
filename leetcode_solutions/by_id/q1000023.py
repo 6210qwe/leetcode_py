@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示前 i 个预约的最大总时长。状态转移方程为：
+dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，长度为 n+1，其中 n 是预约请求的长度。
+2. 设置初始条件：dp[0] = 0, dp[1] = nums[0]。
+3. 遍历预约请求，更新 dp 数组。
+4. 返回 dp[n] 作为结果。
 
 关键点:
-- [TODO]
+- 使用 dp 数组来存储中间结果，避免重复计算。
+- 状态转移方程确保了不接受相邻的预约。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是预约请求的长度。我们只需要遍历一次预约请求。
+空间复杂度: O(n)，我们需要一个长度为 n+1 的 dp 数组来存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    n = len(nums)
+    if n == 1:
+        return nums[0]
+
+    dp = [0] * (n + 1)
+    dp[1] = nums[0]
+
+    for i in range(2, n + 1):
+        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i - 1])
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

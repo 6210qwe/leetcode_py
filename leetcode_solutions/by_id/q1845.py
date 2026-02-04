@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 计算每列的高度，然后对高度进行排序，找到最大的全 1 子矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个高度数组 `heights`，记录每一列的高度。
+2. 对于每一行，更新 `heights` 数组，并将其排序。
+3. 计算当前行的最大全 1 子矩阵面积。
+4. 更新全局最大面积。
 
 关键点:
-- [TODO]
+- 使用动态规划计算每列的高度。
+- 通过排序找到可能的最大子矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log n)，其中 m 是矩阵的行数，n 是矩阵的列数。每次排序的时间复杂度是 O(n * log n)。
+空间复杂度: O(n)，用于存储高度数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def largest_submatrix(matrix: List[List[int]]) -> int:
+    if not matrix or not matrix[0]:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(matrix), len(matrix[0])
+    heights = [0] * n
+    max_area = 0
 
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == 1:
+                heights[j] += 1
+            else:
+                heights[j] = 0
 
-Solution = create_solution(solution_function_name)
+        sorted_heights = sorted(heights, reverse=True)
+        for k in range(n):
+            max_area = max(max_area, sorted_heights[k] * (k + 1))
+
+    return max_area
+
+Solution = create_solution(largest_submatrix)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个赛事的注册百分比，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总用户数。
+2. 统计每个赛事的注册用户数。
+3. 计算每个赛事的注册百分比。
+4. 按注册百分比降序和赛事ID升序排序。
 
 关键点:
-- [TODO]
+- 使用子查询来获取总用户数。
+- 使用 COUNT 和 GROUP BY 来统计每个赛事的注册用户数。
+- 使用 ROUND 函数来保留两位小数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是注册表的行数。主要开销在排序操作上。
+空间复杂度: O(n)，存储中间结果和最终结果。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(users: List[List[int]], register: List[List[int]]) -> List[List[float]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算各赛事的用户注册百分比
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    import pandas as pd
+
+    # 将输入转换为 DataFrame
+    users_df = pd.DataFrame(users, columns=['user_id', 'user_name'])
+    register_df = pd.DataFrame(register, columns=['contest_id', 'user_id'])
+
+    # 计算总用户数
+    total_users = len(users_df)
+
+    # 统计每个赛事的注册用户数
+    contest_counts = register_df.groupby('contest_id').size().reset_index(name='count')
+
+    # 计算每个赛事的注册百分比
+    contest_counts['percentage'] = (contest_counts['count'] / total_users * 100).round(2)
+
+    # 按注册百分比降序和赛事ID升序排序
+    result = contest_counts.sort_values(by=['percentage', 'contest_id'], ascending=[False, True])
+
+    # 返回结果
+    return result[['contest_id', 'percentage']].values.tolist()
 
 
 Solution = create_solution(solution_function_name)

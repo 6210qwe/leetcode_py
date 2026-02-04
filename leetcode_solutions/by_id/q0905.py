@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个可能的斐波那契子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `dp`，其中 `dp[(a, b)]` 表示以 `a` 和 `b` 结尾的斐波那契子序列的长度。
+2. 遍历数组中的每个元素 `c`，对于每个 `c`，再遍历其之前的所有元素 `b`，并检查 `c - b` 是否在数组中。
+3. 如果 `c - b` 在数组中，更新 `dp[(b, c)]` 为 `dp[(c - b, b)] + 1`。
+4. 记录最长的斐波那契子序列的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表来快速查找 `c - b` 是否在数组中。
+- 动态规划的状态转移方程为 `dp[(b, c)] = dp[(c - b, b)] + 1`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。我们需要遍历数组中的每对元素。
+空间复杂度: O(n^2)，哈希表 `dp` 的大小最多为 n^2。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def lenLongestFibSubseq(arr: List[int]) -> int:
+    n = len(arr)
+    if n < 3:
+        return 0
+    
+    # 哈希表用于快速查找
+    index_map = {arr[i]: i for i in range(n)}
+    
+    # 动态规划表
+    dp = {}
+    max_length = 0
+    
+    for k in range(2, n):
+        for j in range(1, k):
+            i = index_map.get(arr[k] - arr[j], -1)
+            if 0 <= i < j:
+                dp[(j, k)] = dp.get((i, j), 2) + 1
+                max_length = max(max_length, dp[(j, k)])
+    
+    return max_length if max_length >= 3 else 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(lenLongestFibSubseq)

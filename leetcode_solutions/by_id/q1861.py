@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学公式来计算最少接触地面的盒子数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算可以放置的最大层数 k，使得 1 + 2^2 + 3^2 + ... + k^2 <= n。
+2. 计算剩余的盒子数量 m = n - (1 + 2^2 + 3^2 + ... + k^2)。
+3. 返回 k + max(0, m - k) 作为结果。
 
 关键点:
-- [TODO]
+- 使用平方和公式来计算最大层数 k。
+- 剩余的盒子数量 m 通过减去已经放置的盒子数量得到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_boxes_touching_floor(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少接触地面的盒子数量
     """
-    # TODO: 实现最优解法
-    pass
+    k = 0
+    total_boxes = 0
+    while total_boxes + (k + 1) ** 2 <= n:
+        k += 1
+        total_boxes += k ** 2
+    
+    remaining_boxes = n - total_boxes
+    return k + max(0, remaining_boxes - k)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_boxes_touching_floor)

@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择当前最小的切割线进行切割。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有水平切割线和垂直切割线的开销放入一个列表中。
+2. 对这个列表进行排序，按开销从小到大排序。
+3. 依次选择开销最小的切割线进行切割，直到所有切割线都被使用。
 
 关键点:
-- [TODO]
+- 通过排序来确保每次选择的都是当前最小的切割线。
+- 由于每次切割都会将蛋糕分成更小的部分，因此总开销是所有切割线开销的累加。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) log (m + n))，因为排序的时间复杂度是 O((m + n) log (m + n))。
+空间复杂度: O(m + n)，用于存储所有的切割线及其开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimum_cost_for_cutting_cake(m: int, n: int, horizontal_cut: List[int], vertical_cut: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回将蛋糕全部切成 1 x 1 的蛋糕块的最小总开销。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有切割线的开销放入一个列表中
+    cuts = [(cost, 'h') for cost in horizontal_cut] + [(cost, 'v') for cost in vertical_cut]
+    
+    # 按开销从小到大排序
+    cuts.sort()
+    
+    # 初始化水平和垂直切割线的数量
+    h_count = m - 1
+    v_count = n - 1
+    
+    total_cost = 0
+    
+    # 依次选择开销最小的切割线进行切割
+    for cost, direction in cuts:
+        if direction == 'h' and h_count > 0:
+            total_cost += cost * v_count
+            h_count -= 1
+        elif direction == 'v' and v_count > 0:
+            total_cost += cost * h_count
+            v_count -= 1
+    
+    return total_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_for_cutting_cake)

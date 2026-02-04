@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接计算每个元素并进行异或操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 result 为 0。
+2. 遍历从 0 到 n-1 的每个索引 i，计算当前元素 nums[i] = start + 2*i。
+3. 将当前元素与结果变量 result 进行异或操作。
+4. 返回最终的结果 result。
 
 关键点:
-- [TODO]
+- 通过直接计算每个元素并进行异或操作，避免了显式构建整个数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def xor_operation(n: int, start: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中所有元素按位异或后的结果
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    for i in range(n):
+        result ^= start + 2 * i
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(xor_operation)

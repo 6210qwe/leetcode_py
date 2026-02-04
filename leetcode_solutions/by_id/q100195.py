@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储多个栈，每个栈是一个列表。当一个栈达到最大容量时，创建一个新的栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的栈列表。
+2. push 操作时，如果当前栈已满或没有栈，则创建一个新的栈。
+3. pop 操作时，从最后一个栈中弹出元素，如果该栈为空则删除该栈。
+4. popAt 操作时，从指定索引的栈中弹出元素，如果该栈为空则删除该栈。
 
 关键点:
-- [TODO]
+- 使用列表来存储多个栈，每个栈是一个列表。
+- 在 push 和 popAt 操作时，确保栈的管理和删除是正确的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) 对于 push 和 pop 操作，O(n) 对于 popAt 操作（n 是栈的数量）。
+空间复杂度: O(n) 其中 n 是所有元素的总数。
 """
 
 # ============================================================================
@@ -44,17 +47,45 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class StackOfPlates:
+
+    def __init__(self, cap: int):
+        self.cap = cap
+        self.stacks = []
+
+    def push(self, val: int) -> None:
+        if self.cap == 0:
+            return
+        if not self.stacks or len(self.stacks[-1]) == self.cap:
+            self.stacks.append([])
+        self.stacks[-1].append(val)
+
+    def pop(self) -> int:
+        if not self.stacks:
+            return -1
+        val = self.stacks[-1].pop()
+        if not self.stacks[-1]:
+            self.stacks.pop()
+        return val
+
+    def popAt(self, index: int) -> int:
+        if index < 0 or index >= len(self.stacks) or not self.stacks[index]:
+            return -1
+        val = self.stacks[index].pop()
+        if not self.stacks[index]:
+            self.stacks.pop(index)
+        return val
 
 
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    stack = StackOfPlates(2)
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    print(stack.pop())  # 输出 3
+    print(stack.popAt(0))  # 输出 2
+    print(stack.pop())  # 输出 1
+    print(stack.pop())  # 输出 -1

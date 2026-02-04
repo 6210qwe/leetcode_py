@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个 target 的出现次数，并找到出现次数最多的 target。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `count` 来记录每个 target 的出现次数。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`，如果 `nums[i] == key`，则更新 `count[nums[i + 1]]`。
+3. 找到 `count` 中出现次数最多的 target 并返回。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个 target 的出现次数，时间复杂度为 O(n)。
+- 一次遍历即可完成统计，空间复杂度为 O(1)（因为 target 的取值范围有限）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def most_frequent_number_following_key(nums: List[int], key: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中紧跟 key 之后出现最频繁的数字
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    for i in range(len(nums) - 1):
+        if nums[i] == key:
+            if nums[i + 1] in count:
+                count[nums[i + 1]] += 1
+            else:
+                count[nums[i + 1]] = 1
+    
+    # 找到出现次数最多的 target
+    max_count = 0
+    result = None
+    for target, cnt in count.items():
+        if cnt > max_count:
+            max_count = cnt
+            result = target
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_frequent_number_following_key)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用反向中序遍历（右-根-左）来累加节点值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个累加器 `total` 为 0。
+2. 从根节点开始进行反向中序遍历：
+   - 递归遍历右子树。
+   - 更新当前节点的值为当前节点值加上累加器 `total` 的值。
+   - 更新累加器 `total` 为当前节点的新值。
+   - 递归遍历左子树。
+3. 返回根节点。
 
 关键点:
-- [TODO]
+- 反向中序遍历确保了我们先处理较大的节点值，从而可以正确累加。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是树中节点的数量。每个节点访问一次。
+空间复杂度: O(h) - 其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def bst_to_greater_tree(root: Optional[TreeNode]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    将二叉搜索树转换为更大和树
     """
-    # TODO: 实现最优解法
-    pass
+    total = 0
+
+    def reverse_inorder(node: Optional[TreeNode]):
+        nonlocal total
+        if node is None:
+            return
+        # 递归遍历右子树
+        reverse_inorder(node.right)
+        # 更新当前节点的值
+        node.val += total
+        # 更新累加器
+        total = node.val
+        # 递归遍历左子树
+        reverse_inorder(node.left)
+
+    reverse_inorder(root)
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bst_to_greater_tree)

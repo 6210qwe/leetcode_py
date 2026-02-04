@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择一个值 x，更新所有极大连续段，直到 nums 和 target 相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `operations` 用于记录操作次数。
+2. 遍历数组，找到所有需要更新的极大连续段。
+3. 对于每个极大连续段，更新 nums 中的值，并增加操作次数。
+4. 重复上述步骤，直到 nums 和 target 相等。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到所有极大连续段，并进行更新。
+- 每次更新后重新检查数组，确保所有极大连续段都被处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_reach_target(nums: List[int], target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 nums 等于 target 所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    n = len(nums)
+    
+    while nums != target:
+        for i in range(n):
+            if nums[i] != target[i]:
+                # 找到极大连续段的起始和结束位置
+                start = i
+                while i < n and nums[i] == nums[start]:
+                    i += 1
+                end = i - 1
+                
+                # 更新极大连续段
+                for j in range(start, end + 1):
+                    nums[j] = target[j]
+                
+                # 增加操作次数
+                operations += 1
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_reach_target)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）进行层序遍历。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 当队列不为空时，依次处理每一层的节点：
+   - 记录当前层的节点数。
+   - 遍历当前层的所有节点，将它们的值加入当前层的结果列表中，并将它们的子节点加入队列。
+   - 将当前层的结果列表加入最终结果列表。
+3. 返回最终结果列表。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每次处理一层节点，确保按层顺序输出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点总数。每个节点都被访问一次。
+空间复杂度: O(n)，队列在最坏情况下需要存储所有节点。
 """
 
 # ============================================================================
@@ -44,17 +49,32 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from leetcode_solutions.utils.tree import Node
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def levelOrder(root: 'Node') -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 N 叉树的层序遍历结果
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
+
+    result = []
+    queue = [root]
+
+    while queue:
+        level_size = len(queue)
+        level_nodes = []
+
+        for _ in range(level_size):
+            node = queue.pop(0)
+            level_nodes.append(node.val)
+            queue.extend(node.children)
+
+        result.append(level_nodes)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(levelOrder)

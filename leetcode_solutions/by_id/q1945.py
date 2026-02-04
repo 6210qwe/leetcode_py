@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个用户的活跃分钟数，然后统计每个活跃分钟数的用户数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `user_minutes` 来记录每个用户的活跃分钟数。
+2. 遍历 `logs`，将每个用户的操作时间添加到对应的集合中。
+3. 初始化一个长度为 `k` 的答案数组 `answer`，所有元素初始化为 0。
+4. 遍历 `user_minutes`，根据每个用户的活跃分钟数更新 `answer` 数组。
 
 关键点:
-- [TODO]
+- 使用集合来去重用户的操作时间。
+- 使用字典来记录每个用户的活跃分钟数。
+- 最后统计每个活跃分钟数的用户数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是 logs 的长度，k 是给定的 k 值。
+空间复杂度: O(n)，用于存储每个用户的活跃分钟数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def finding_users_active_minutes(logs: List[List[int]], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找用户活跃分钟数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用字典记录每个用户的活跃分钟数
+    user_minutes = {}
+    
+    # 遍历 logs，将每个用户的操作时间添加到对应的集合中
+    for user_id, time in logs:
+        if user_id not in user_minutes:
+            user_minutes[user_id] = set()
+        user_minutes[user_id].add(time)
+    
+    # 初始化答案数组
+    answer = [0] * k
+    
+    # 遍历 user_minutes，根据每个用户的活跃分钟数更新 answer 数组
+    for minutes in user_minutes.values():
+        if 1 <= len(minutes) <= k:
+            answer[len(minutes) - 1] += 1
+    
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(finding_users_active_minutes)

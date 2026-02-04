@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和贪心算法来更新最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `dist`，表示从城市 0 到每个城市的最短路径长度。
+2. 遍历每个查询，更新 `dist` 数组。
+3. 对于每个查询，检查是否可以通过新添加的道路缩短从城市 0 到城市 n-1 的路径长度。
+4. 更新结果数组 `answer`。
 
 关键点:
-- [TODO]
+- 动态更新 `dist` 数组以保持最短路径。
+- 使用贪心算法在每次查询后更新最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是城市的数量，q 是查询的数量。
+空间复杂度: O(n)，用于存储 `dist` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def shortest_distance_after_queries(n: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算新增道路查询后的最短距离。
+    
+    :param n: 城市数量
+    :param queries: 查询列表
+    :return: 每次查询后的最短路径长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最短路径数组
+    dist = [float('inf')] * n
+    dist[0] = 0  # 从城市 0 到城市 0 的距离为 0
+    
+    # 初始化结果数组
+    answer = []
+    
+    # 遍历每个查询
+    for u, v in queries:
+        # 更新从城市 0 到城市 v 的最短路径
+        dist[v] = min(dist[v], dist[u] + 1)
+        
+        # 更新从城市 v 到后续城市的最短路径
+        for i in range(v + 1, n):
+            dist[i] = min(dist[i], dist[i - 1] + 1)
+        
+        # 记录当前查询后的最短路径
+        answer.append(dist[n - 1])
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_distance_after_queries)

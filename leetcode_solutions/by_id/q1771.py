@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和二分查找来最大化总价值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将库存中的球按数量从大到小排序。
+2. 使用二分查找确定可以卖出的最大球数，并计算总价值。
+3. 逐步减少库存中的球数，直到满足订单要求。
 
 关键点:
-- [TODO]
+- 通过二分查找确定可以卖出的最大球数。
+- 计算每次卖出球的总价值，并使用模运算防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 inventory 的长度。排序操作的时间复杂度为 O(n log n)，二分查找和遍历的时间复杂度为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_profit(inventory: List[int], orders: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    inventory.sort(reverse=True)
+    inventory.append(0)  # 添加一个哨兵节点
+    n = len(inventory)
+    total = 0
+    k = 1
+    
+    for i in range(n - 1):
+        if inventory[i] > inventory[i + 1]:
+            diff = inventory[i] - inventory[i + 1]
+            if k * diff < orders:
+                total += (inventory[i] + inventory[i + 1] + 1) * diff // 2 * k
+                orders -= k * diff
+            else:
+                q, r = divmod(orders, k)
+                total += (inventory[i] + inventory[i] - q + 1) * q // 2 * k
+                total += (inventory[i] - q) * r
+                return total % MOD
+        k += 1
+    return total % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_profit)

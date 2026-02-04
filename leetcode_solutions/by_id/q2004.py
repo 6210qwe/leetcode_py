@@ -21,40 +21,39 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将给定的日期字符串从 "yyyy-mm-dd" 格式转换为 "dd-mm-yyyy" 格式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用字符串分割方法将输入字符串按 "-" 分割成年、月、日三个部分。
+2. 重新组合这三个部分，形成新的日期字符串 "dd-mm-yyyy"。
 
 关键点:
-- [TODO]
+- 使用 Python 的字符串操作方法来分割和重组字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 字符串分割和重组操作的时间复杂度是常数级的。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(date: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将给定的日期字符串从 "yyyy-mm-dd" 格式转换为 "dd-mm-yyyy" 格式。
     """
-    # TODO: 实现最优解法
-    pass
+    # 分割日期字符串
+    parts = date.split('-')
+    
+    # 重新组合成 "dd-mm-yyyy" 格式
+    new_date = f"{parts[2]}-{parts[1]}-{parts[0]}"
+    
+    return new_date
 
 
 Solution = create_solution(solution_function_name)

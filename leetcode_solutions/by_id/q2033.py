@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将时间转换为分钟数，然后计算完整的15分钟对局数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 startTime 和 finishTime 转换为分钟数。
+2. 如果 finishTime 早于 startTime，说明跨过了午夜，将 finishTime 加上 24 小时。
+3. 计算从 startTime 到 finishTime 之间的完整对局数。
 
 关键点:
-- [TODO]
+- 使用分钟数来简化时间计算。
+- 处理跨午夜的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_full_rounds(start_time: str, finish_time: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算从 startTime 到 finishTime 之间的完整对局数。
     """
-    # TODO: 实现最优解法
-    pass
+    def time_to_minutes(time: str) -> int:
+        """将时间字符串转换为分钟数。"""
+        hours, minutes = map(int, time.split(':'))
+        return hours * 60 + minutes
+
+    start_minutes = time_to_minutes(start_time)
+    finish_minutes = time_to_minutes(finish_time)
+
+    # 如果 finishTime 早于 startTime，说明跨过了午夜
+    if finish_minutes < start_minutes:
+        finish_minutes += 24 * 60
+
+    # 计算从 startTime 到 finishTime 之间的完整对局数
+    start_round = (start_minutes + 14) // 15
+    finish_round = finish_minutes // 15
+
+    return max(0, finish_round - start_round)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_full_rounds)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个哈希表来记录每个节点的边积分，然后遍历哈希表找到边积分最高的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `edge_scores`，用于存储每个节点的边积分。
+2. 遍历 `edges` 数组，对于每个节点 `i`，将其编号 `i` 加到 `edges[i]` 对应的边积分中。
+3. 遍历 `edge_scores` 哈希表，找到边积分最高的节点。如果有多个节点的边积分相同，选择编号最小的那个。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和查找每个节点的边积分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `edges` 的长度。我们需要遍历 `edges` 数组一次，并遍历哈希表一次。
+空间复杂度: O(n)，哈希表 `edge_scores` 在最坏情况下需要存储 n 个节点的边积分。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(edges: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到边积分最高的节点
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表来记录每个节点的边积分
+    edge_scores = {}
+    
+    # 遍历 edges 数组，计算每个节点的边积分
+    for i, edge in enumerate(edges):
+        if edge not in edge_scores:
+            edge_scores[edge] = 0
+        edge_scores[edge] += i
+    
+    # 找到边积分最高的节点
+    max_score = -1
+    max_node = -1
+    for node, score in edge_scores.items():
+        if score > max_score or (score == max_score and node < max_node):
+            max_score = score
+            max_node = node
+    
+    return max_node
 
 
 Solution = create_solution(solution_function_name)

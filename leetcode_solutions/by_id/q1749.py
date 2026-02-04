@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录有销售记录的卖家，并找出没有销售记录的卖家。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Sales` 表中提取所有有销售记录的卖家 ID，并存入一个集合。
+2. 从 `Seller` 表中提取所有卖家 ID，并存入另一个集合。
+3. 通过集合差集操作找出没有销售记录的卖家 ID。
+4. 返回这些卖家的详细信息。
 
 关键点:
-- [TODO]
+- 使用集合操作来提高查找效率。
+- 确保返回的卖家信息符合题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `Sales` 表的行数，m 是 `Seller` 表的行数。
+空间复杂度: O(n + m)，用于存储两个集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def find_sellers_with_no_sales(sales: pd.DataFrame, seller: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出没有销售记录的卖家
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取有销售记录的卖家 ID
+    sold_sellers = set(sales['seller_id'])
+    
+    # 提取所有卖家 ID
+    all_sellers = set(seller['seller_id'])
+    
+    # 找出没有销售记录的卖家 ID
+    no_sales_sellers = all_sellers - sold_sellers
+    
+    # 返回这些卖家的详细信息
+    return seller[seller['seller_id'].isin(no_sales_sellers)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_sellers_with_no_sales)

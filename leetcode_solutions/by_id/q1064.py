@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用模运算和循环来找到最小的由 1 组成且能被 k 整除的数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化余数 remainder 为 0。
+2. 遍历从 1 到 k 的每个数 i，更新 remainder 为 (remainder * 10 + 1) % k。
+3. 如果 remainder 为 0，返回当前的 i。
+4. 如果遍历完所有数仍未找到，则返回 -1。
 
 关键点:
-- [TODO]
+- 通过模运算避免大数溢出。
+- 由于 k 的最大值为 10^5，最多需要 k 次迭代。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_integer_divisible_by_k(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到可以被 k 整除的、仅包含数字 1 的最小正整数 n 的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    if k % 2 == 0 or k % 5 == 0:
+        return -1
+
+    remainder = 0
+    for i in range(1, k + 1):
+        remainder = (remainder * 10 + 1) % k
+        if remainder == 0:
+            return i
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_integer_divisible_by_k)

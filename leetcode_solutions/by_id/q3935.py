@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来找到数组中只出现一次和出现两次的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `one` 和 `two` 分别用于记录只出现一次和出现两次的元素。
+2. 遍历数组中的每个元素，使用位运算更新 `one` 和 `two`。
+3. 最后返回 `one` 和 `two`。
 
 关键点:
-- [TODO]
+- 使用位运算可以在线性时间内找到只出现一次和出现两次的元素。
+- 通过 `one & ~two` 和 `~one & two` 来分别更新 `one` 和 `two`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中只出现一次和出现两次的元素
     """
-    # TODO: 实现最优解法
-    pass
+    one, two = 0, 0
+    for num in nums:
+        one = (one ^ num) & ~two
+        two = (two ^ num) & ~one
+    return [one, two]
 
 
 Solution = create_solution(solution_function_name)

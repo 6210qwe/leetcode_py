@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到矩阵中的中位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为矩阵中的最小值，right 为矩阵中的最大值。
+2. 在每次迭代中，计算中间值 mid，并统计矩阵中小于等于 mid 的元素个数 count。
+3. 如果 count 小于 (m * n) // 2 + 1，则说明中位数在 mid 的右边，更新 left 为 mid + 1。
+4. 否则，更新 right 为 mid。
+5. 最终 left 即为矩阵的中位数。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小搜索范围，确保时间复杂度最优。
+- 统计小于等于 mid 的元素个数时，利用行排序的特性，可以使用二分查找加速。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log(max-min) log n)，其中 m 是矩阵的行数，n 是列数，max 和 min 分别是矩阵中的最大值和最小值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(matrix: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到行排序矩阵的中位数
     """
-    # TODO: 实现最优解法
-    pass
+    def count_le_mid(mid: int) -> int:
+        """统计矩阵中小于等于 mid 的元素个数"""
+        count = 0
+        for row in matrix:
+            count += bisect_right(row, mid)
+        return count
 
+    m, n = len(matrix), len(matrix[0])
+    left, right = matrix[0][0], matrix[-1][-1]
+    
+    while left < right:
+        mid = (left + right) // 2
+        if count_le_mid(mid) < (m * n) // 2 + 1:
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left
 
 Solution = create_solution(solution_function_name)

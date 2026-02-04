@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用数学方法计算路径。首先找到给定 label 所在的层级，然后通过反向计算其父节点的方式逐步向上回溯到根节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 label 所在的层级 level。
+2. 从 label 开始，逐步向上回溯到根节点，计算每一层的父节点。
+3. 由于树是“之”字形标记的，需要根据层级的奇偶性调整父节点的计算方式。
+4. 将路径反转，得到从根节点到 label 的路径。
 
 关键点:
-- [TODO]
+- 通过位运算和数学公式快速计算父节点。
+- 根据层级的奇偶性调整父节点的计算方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是 label 的值。因为每次回溯都减少一层。
+空间复杂度: O(log n)，存储路径所需的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def pathInZigZagTree(label: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回从根节点到 label 节点的路径
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 label 所在的层级
+    level = label.bit_length()
+    
+    # 初始化路径
+    path = []
+    
+    # 从 label 开始向上回溯
+    while label >= 1:
+        path.append(label)
+        level -= 1
+        # 计算父节点
+        if level % 2 == 0:
+            label = (2 ** (level + 1) - 1 - label) // 2
+        else:
+            label = (2 ** level - 1 - label) // 2
+    
+    # 反转路径
+    path.reverse()
+    return path
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pathInZigZagTree)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序和组合数学来生成第 k 小的回文排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的出现次数。
+2. 计算回文排列的数量。
+3. 通过组合数学的方法找到第 k 小的回文排列。
 
 关键点:
-- [TODO]
+- 使用计数排序来快速统计字符频率。
+- 利用组合数学公式计算排列数量。
+- 通过递归或迭代方法生成第 k 小的回文排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +51,59 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def factorial(n: int) -> int:
+    """计算阶乘"""
+    if n == 0 or n == 1:
+        return 1
+    return n * factorial(n - 1)
 
-def solution_function_name(params):
+def combination(n: int, r: int) -> int:
+    """计算组合数 C(n, r)"""
+    return factorial(n) // (factorial(r) * factorial(n - r))
+
+def find_kth_palindrome(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    找到第 k 小的回文排列
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的出现次数
+    char_count = [0] * 26
+    for char in s:
+        char_count[ord(char) - ord('a')] += 1
+    
+    # 计算回文排列的数量
+    def count_palindromes(counts):
+        total = 1
+        for count in counts:
+            if count % 2 == 1:
+                total *= combination(count // 2, 1)
+        return total
+    
+    # 生成第 k 小的回文排列
+    def generate_palindrome(counts, k):
+        half = []
+        for i in range(26):
+            while counts[i] > 0 and k > 0:
+                if counts[i] % 2 == 1:
+                    counts[i] -= 1
+                    half.append(chr(i + ord('a')))
+                    k -= 1
+                else:
+                    counts[i] -= 2
+                    half.append(chr(i + ord('a')))
+                    k -= combination(len(half), 1)
+        
+        mid = ''
+        for i in range(26):
+            if counts[i] == 1:
+                mid = chr(i + ord('a'))
+                break
+        
+        return ''.join(half) + mid + ''.join(half[::-1])
+    
+    total_palindromes = count_palindromes(char_count)
+    if k > total_palindromes:
+        return ""
+    
+    return generate_palindrome(char_count, k)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_palindrome)

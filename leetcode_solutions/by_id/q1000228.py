@@ -21,22 +21,25 @@ LCR 001. 两数相除 - 给定两个整数 a 和 b ，求它们的除法的商 a
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二进制移位和减法来模拟除法操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 处理特殊情况，如被除数为 0 或除数为 1 或 -1。
+2. 将 a 和 b 转换为正数，并记录符号。
+3. 使用二进制移位和减法来计算商。
+4. 根据符号调整结果，并处理溢出情况。
 
 关键点:
-- [TODO]
+- 使用二进制移位和减法来模拟除法操作，避免使用乘号、除号和求余符号。
+- 处理符号和溢出情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log N)，其中 N 是被除数的绝对值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def divide(a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现两数相除
     """
-    # TODO: 实现最优解法
-    pass
+    # 特殊情况处理
+    if a == 0:
+        return 0
+    if b == 1:
+        return a
+    if b == -1:
+        return -a if a > -2**31 else 2**31 - 1
+
+    # 确定符号
+    sign = -1 if (a > 0) ^ (b > 0) else 1
+
+    # 将 a 和 b 转换为正数
+    a, b = abs(a), abs(b)
+
+    # 计算商
+    quotient = 0
+    while a >= b:
+        temp, multiple = b, 1
+        while a >= (temp << 1):
+            temp <<= 1
+            multiple <<= 1
+        a -= temp
+        quotient += multiple
+
+    # 根据符号调整结果
+    quotient = sign * quotient
+
+    # 处理溢出
+    return min(max(-2**31, quotient), 2**31 - 1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(divide)

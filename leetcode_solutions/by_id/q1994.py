@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算两种可能的交替字符串（以 '0' 开头和以 '1' 开头）与原字符串的差异，来确定最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算以 '0' 开头和以 '1' 开头的交替字符串。
+2. 比较这两种交替字符串与原字符串的差异，统计需要交换的字符数量。
+3. 返回最小的交换次数，如果无法转换则返回 -1。
 
 关键点:
-- [TODO]
+- 使用计数器来统计字符差异，避免逐个字符比较。
+- 考虑奇偶位置上的字符分布。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_swaps(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将二进制字符串转换为交替字符串所需的最小交换次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n % 2 == 0:
+        # 偶数长度
+        count_0 = s.count('0')
+        count_1 = s.count('1')
+        if abs(count_0 - count_1) > 1:
+            return -1
+    else:
+        # 奇数长度
+        count_0 = s.count('0')
+        count_1 = s.count('1')
+        if abs(count_0 - count_1) != 1:
+            return -1
+    
+    # 计算以 '0' 开头和以 '1' 开头的交替字符串
+    alt_0 = ['0' if i % 2 == 0 else '1' for i in range(n)]
+    alt_1 = ['1' if i % 2 == 0 else '0' for i in range(n)]
+    
+    # 计算差异
+    diff_0 = sum(1 for i in range(n) if s[i] != alt_0[i])
+    diff_1 = sum(1 for i in range(n) if s[i] != alt_1[i])
+    
+    # 选择最小的交换次数
+    if diff_0 % 2 == 0 and diff_1 % 2 == 0:
+        return min(diff_0 // 2, diff_1 // 2)
+    elif diff_0 % 2 == 0:
+        return diff_0 // 2
+    elif diff_1 % 2 == 0:
+        return diff_1 // 2
+    else:
+        return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swaps)

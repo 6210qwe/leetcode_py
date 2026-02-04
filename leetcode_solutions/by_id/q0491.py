@@ -21,24 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用回溯法生成所有非递减子序列，并使用集合去重
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 定义一个递归函数 `backtrack` 来生成子序列
+2. 使用一个临时列表 `temp` 存储当前子序列
+3. 使用一个集合 `result_set` 存储所有生成的子序列以去重
+4. 在递归过程中，如果当前子序列长度大于等于2，则加入结果集
+5. 对于每个元素，选择加入或不加入当前子序列，继续递归
+6. 最后将结果集转换为列表返回
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用集合去重，确保结果唯一
+- 通过递归和回溯生成所有可能的子序列
+- 优化时间和空间复杂度
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(2^n) - 每个元素都有两种选择（加入或不加入子序列）
+空间复杂度: O(n * 2^n) - 结果集的大小最多为 2^n，每个子序列的长度最多为 n
 """
 
 # ============================================================================
@@ -51,25 +55,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def non_decreasing_subsequences(params):
+def non_decreasing_subsequences(nums: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [待实现]
-    
+    函数式接口 - 找出并返回所有非递减子序列，递增子序列中至少有两个元素
+
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    使用回溯法生成所有非递减子序列，并使用集合去重
+
     Args:
-        params: [待实现] 参数说明
+        nums (List[int]): 输入的整数数组
         
     Returns:
-        [待实现] 返回值说明
+        List[List[int]]: 所有非递减子序列的列表
         
     Example:
-        >>> non_decreasing_subsequences([待实现])
-        [待实现]
+        >>> non_decreasing_subsequences([4,6,7,7])
+        [[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(start, temp):
+        if len(temp) >= 2:
+            result_set.add(tuple(temp))
+        for i in range(start, len(nums)):
+            if not temp or nums[i] >= temp[-1]:
+                temp.append(nums[i])
+                backtrack(i + 1, temp)
+                temp.pop()
+
+    result_set = set()
+    backtrack(0, [])
+    return [list(seq) for seq in result_set]
 
 
 # 自动生成Solution类（无需手动编写）

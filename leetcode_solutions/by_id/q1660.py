@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将整数转换为字符串，然后从右向左每三位插入一个点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为字符串。
+2. 从右向左每隔三位插入一个点。
+3. 返回处理后的字符串。
 
 关键点:
-- [TODO]
+- 从右向左处理字符串，确保点的位置正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 因为字符串的长度与 n 的对数成正比。
+空间复杂度: O(log n) - 需要存储转换后的字符串。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def thousand_separator(n: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将整数 n 转换为带有千位分隔符的字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数转换为字符串
+    s = str(n)
+    
+    # 从右向左每隔三位插入一个点
+    result = []
+    for i in range(len(s)):
+        if i > 0 and (len(s) - i) % 3 == 0:
+            result.append('.')
+        result.append(s[i])
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(thousand_separator)

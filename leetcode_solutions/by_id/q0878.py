@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和从后向前计算每个字符的总移位次数，然后逐个字符进行移位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算从后向前的前缀和，这样可以避免重复计算。
+2. 从后向前遍历字符串，根据前缀和计算每个字符的最终移位次数。
+3. 对每个字符进行移位操作，并构建结果字符串。
 
 关键点:
-- [TODO]
+- 使用前缀和优化移位次数的计算。
+- 从后向前遍历字符串，避免重复移位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输入输出）
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def shiftingLetters(s: str, shifts: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现字母移位
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算从后向前的前缀和
+    total_shift = 0
+    for i in range(len(shifts) - 1, -1, -1):
+        total_shift += shifts[i]
+        shifts[i] = total_shift % 26
+    
+    # 从后向前遍历字符串，进行移位操作
+    result = []
+    for i in range(len(s)):
+        char = s[i]
+        shifted_char = chr((ord(char) - ord('a') + shifts[i]) % 26 + ord('a'))
+        result.append(shifted_char)
+    
+    return ''.join(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = shiftingLetters

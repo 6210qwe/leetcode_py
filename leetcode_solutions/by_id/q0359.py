@@ -54,25 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def logger_rate_limiter(params):
+class Logger:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> logger_rate_limiter([待实现])
-        [待实现]
+    日志速率限制器：同一条 message 在 10 秒内只允许打印一次。
+
+    使用哈希表记录每条 message 上次打印时间戳。
     """
-    # TODO: 实现最优解法
-    pass
+
+    def __init__(self):
+        self.last_time: dict[str, int] = {}
+
+    def shouldPrintMessage(self, timestamp: int, message: str) -> bool:
+        if message not in self.last_time or timestamp - self.last_time[message] >= 10:
+            self.last_time[message] = timestamp
+            return True
+        return False
+
+
+def logger_rate_limiter() -> Logger:
+    """
+    函数式接口 - 返回 Logger 实例，便于在测试中进行方法调用。
+    """
+    return Logger()
 
 
 # 自动生成Solution类（无需手动编写）

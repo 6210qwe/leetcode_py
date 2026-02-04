@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算字符串中每个字符的出现次数，判断是否可以构造 k 个回文字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串中每个字符的出现次数。
+2. 计算出现奇数次的字符数量。
+3. 如果出现奇数次的字符数量大于 k，则无法构造 k 个回文字符串；否则可以。
 
 关键点:
-- [TODO]
+- 一个回文字符串最多只能有一个字符出现奇数次。
+- 如果出现奇数次的字符数量大于 k，则无法构造 k 个回文字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，因为字符集大小固定为 26。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_construct_k_palindromes(s: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以用字符串 s 中的所有字符构造 k 个回文字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) < k:
+        return False
+
+    # 统计每个字符的出现次数
+    char_count = [0] * 26
+    for char in s:
+        char_count[ord(char) - ord('a')] += 1
+
+    # 计算出现奇数次的字符数量
+    odd_count = sum(count % 2 for count in char_count)
+
+    # 判断是否可以构造 k 个回文字符串
+    return odd_count <= k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_construct_k_palindromes)

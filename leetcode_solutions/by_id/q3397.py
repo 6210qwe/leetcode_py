@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较两个数组中对应元素的差值来找到整数 x。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 和 nums2 中任意一对对应元素的差值。
+2. 返回该差值作为结果。
 
 关键点:
-- [TODO]
+- 由于题目保证存在一个整数 x 使得 nums1 中的每个元素都与 x 相加后，nums1 与 nums2 相等，因此只需要计算一次差值即可。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_integer_added_to_array(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出与数组相加的整数 x
     """
-    # TODO: 实现最优解法
-    pass
+    # 通过比较两个数组中第一个元素的差值来找到整数 x
+    return nums2[0] - nums1[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_integer_added_to_array)

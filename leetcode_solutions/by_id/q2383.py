@@ -21,22 +21,21 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接将两个整数相加
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 返回 num1 和 num2 的和
 
 关键点:
-- [TODO]
+- 无需额外处理，直接使用加法操作
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +48,11 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回两个整数的和
     """
-    # TODO: 实现最优解法
-    pass
+    return num1 + num2
 
 
 Solution = create_solution(solution_function_name)

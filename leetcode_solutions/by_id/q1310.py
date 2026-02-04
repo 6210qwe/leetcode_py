@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历，计算每个植物浇水所需的步数，并在需要时返回河边重新装满水罐。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化步数 `steps` 和当前水罐中的水量 `current_water`。
+2. 遍历每株植物，如果当前水罐中的水量不足以浇灌当前植物，则返回河边重新装满水罐，并更新步数。
+3. 更新当前水罐中的水量，并增加步数。
+4. 返回总步数。
 
 关键点:
-- [TODO]
+- 只有在当前水罐中的水量不足以浇灌当前植物时，才返回河边重新装满水罐。
+- 每次返回河边重新装满水罐时，步数会增加两倍的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是植物的数量。我们需要遍历整个植物数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def watering_plants(plants: List[int], capacity: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算浇灌所有植物所需的步数
     """
-    # TODO: 实现最优解法
-    pass
+    steps = 0
+    current_water = capacity
+    
+    for i, plant in enumerate(plants):
+        if current_water < plant:
+            # 如果当前水罐中的水量不足以浇灌当前植物，返回河边重新装满水罐
+            steps += 2 * i + 1  # 返回河边再回来的步数
+            current_water = capacity
+        
+        # 浇灌当前植物
+        current_water -= plant
+        steps += 1
+    
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(watering_plants)

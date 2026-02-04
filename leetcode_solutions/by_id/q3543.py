@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来统计满足条件的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示当前窗口的左右边界。
+2. 使用两个计数器 zero_count 和 one_count 分别记录当前窗口内 '0' 和 '1' 的数量。
+3. 移动右指针扩展窗口，更新计数器。
+4. 当窗口内的 '0' 或 '1' 的数量超过 k 时，移动左指针收缩窗口，直到窗口内的 '0' 和 '1' 的数量都小于等于 k。
+5. 在每次移动右指针时，计算当前窗口内的有效子字符串数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以高效地统计满足条件的子字符串。
+- 通过调整窗口大小，确保窗口内的 '0' 和 '1' 的数量都小于等于 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_substrings_with_k_constraint(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计满足 K 约束的子字符串数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    result = 0
+    left = 0
+    zero_count = 0
+    one_count = 0
+
+    for right in range(n):
+        if s[right] == '0':
+            zero_count += 1
+        else:
+            one_count += 1
+
+        while zero_count > k or one_count > k:
+            if s[left] == '0':
+                zero_count -= 1
+            else:
+                one_count -= 1
+            left += 1
+
+        # 计算当前窗口内的有效子字符串数量
+        result += right - left + 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_substrings_with_k_constraint)

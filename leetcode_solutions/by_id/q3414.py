@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来计算到达第 k 级台阶的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp(i, j)` 表示从台阶 i 出发，当前跳跃次数为 j 时到达第 k 级台阶的方案数。
+2. 如果 i == k，则返回 1，表示找到了一种方案。
+3. 如果 i > k 或 i < 0，则返回 0，表示无法到达。
+4. 递归计算两种操作的结果：
+   - 向下走一级到 i - 1（但不能连续使用）。
+   - 向上走到台阶 i + 2^j，并将 j 增加 1。
+5. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归过程，减少重复计算。
+- 递归函数需要考虑边界条件和操作限制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log k)
+空间复杂度: O(k log k)
 """
 
 # ============================================================================
@@ -47,14 +53,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def solution_function_name(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算到达第 k 级台阶的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(maxsize=None)
+    def dp(i: int, j: int) -> int:
+        if i == k:
+            return 1
+        if i > k or i < 0:
+            return 0
+        # 向下走一级到 i - 1
+        down = dp(i - 1, j) if i - 1 >= 0 else 0
+        # 向上走到台阶 i + 2^j
+        up = dp(i + (1 << j), j + 1)
+        return down + up
 
+    return dp(1, 0)
 
 Solution = create_solution(solution_function_name)

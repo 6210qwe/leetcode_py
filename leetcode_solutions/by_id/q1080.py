@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来匹配每个查询字符串和模式字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个查询字符串，使用两个指针分别遍历查询字符串和模式字符串。
+2. 如果查询字符串的当前字符是大写字母且不等于模式字符串的当前字符，则返回 False。
+3. 如果查询字符串的当前字符是大写字母且等于模式字符串的当前字符，则同时移动两个指针。
+4. 如果查询字符串的当前字符是小写字母，则只移动查询字符串的指针。
+5. 最后，检查模式字符串的指针是否已经遍历完所有字符。
 
 关键点:
-- [TODO]
+- 使用双指针方法来匹配字符串。
+- 重点在于处理大写字母的匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 queries 的长度，m 是每个查询字符串的平均长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def camelMatch(queries: List[str], pattern: str) -> List[bool]:
+    def is_match(query: str, pattern: str) -> bool:
+        p_idx, q_idx = 0, 0
+        while q_idx < len(query):
+            if p_idx < len(pattern) and query[q_idx] == pattern[p_idx]:
+                p_idx += 1
+            elif query[q_idx].isupper():
+                return False
+            q_idx += 1
+        return p_idx == len(pattern)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    return [is_match(query, pattern) for query in queries]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(camelMatch)

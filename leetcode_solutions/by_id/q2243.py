@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串，检查是否存在 'b' 出现在 'a' 之前的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个标志变量 found_b 为 False。
+2. 遍历字符串 s 中的每个字符：
+   - 如果当前字符是 'b'，将 found_b 置为 True。
+   - 如果当前字符是 'a' 且 found_b 为 True，返回 False。
+3. 如果遍历完整个字符串都没有发现 'a' 出现在 'b' 之后的情况，返回 True。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可完成检查，时间复杂度为 O(n)。
+- 使用常数空间存储标志变量，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_string(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查字符串 s 是否满足所有 'a' 都出现在所有 'b' 之前。
     """
-    # TODO: 实现最优解法
-    pass
+    found_b = False
+    for char in s:
+        if char == 'b':
+            found_b = True
+        elif char == 'a' and found_b:
+            return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_string)

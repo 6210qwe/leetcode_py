@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个嵌套循环来枚举所有可能的 xi + yj 组合，并使用集合来去重。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合来存储结果。
+2. 使用两个嵌套循环分别枚举 i 和 j，计算 xi + yj。
+3. 如果 xi + yj 小于等于 bound，则将其加入集合。
+4. 将集合转换为列表并返回。
 
 关键点:
-- [TODO]
+- 使用集合来去重。
+- 通过提前终止循环来减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log_x(bound) * log_y(bound))
+空间复杂度: O(log_x(bound) * log_y(bound))
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def powerful_integers(x: int, y: int, bound: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回值小于或等于 bound 的所有强整数组成的列表。
     """
-    # TODO: 实现最优解法
-    pass
+    result = set()
+    # 枚举 i
+    for i in range(20):  # log_2(10^6) < 20
+        if x ** i > bound:
+            break
+        # 枚举 j
+        for j in range(20):
+            if y ** j > bound:
+                break
+            value = x ** i + y ** j
+            if value <= bound:
+                result.add(value)
+    return list(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(powerful_integers)

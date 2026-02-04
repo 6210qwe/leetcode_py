@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法结合有序集合来计算矩形的总面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有矩形的左边界和右边界分别作为事件加入到一个列表中，并标记它们是进入还是离开。
+2. 按照 x 坐标对事件进行排序，如果 x 坐标相同，则进入事件优先于离开事件。
+3. 使用一个有序集合来维护当前活动的 y 区间，并在处理每个事件时更新区间。
+4. 在处理每个事件时，计算当前活动的 y 区间的总长度，并乘以当前事件与前一个事件之间的 x 距离，累加到总面积中。
+5. 最后返回总面积对 10^9 + 7 取模的结果。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地维护和更新当前活动的 y 区间。
+- 通过扫描线算法，将二维问题转化为一维问题，从而简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是矩形的数量。排序操作的时间复杂度为 O(n log n)，每次插入和删除有序集合的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储事件和有序集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import sortedcontainers
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(rectangles: List[List[int]]) -> int:
+    events = []
+    for x1, y1, x2, y2 in rectangles:
+        events.append((x1, 1, y1, y2))  # 进入事件
+        events.append((x2, -1, y1, y2))  # 离开事件
+    events.sort()
 
+    active_y_intervals = sortedcontainers.SortedSet()
+    prev_x = 0
+    total_area = 0
+
+    for x, typ, y1, y2 in events:
+        if prev_x < x:
+            total_length = 0
+            prev_y = -1
+            for y in active_y_intervals:
+                if y > prev_y:
+                    total_length += y - prev_y
+                prev_y = y
+            total_area += total_length * (x - prev_x)
+            total_area %= MOD
+            prev_x = x
+
+        if typ == 1:
+            active_y_intervals.add(y1)
+            active_y_intervals.add(y2)
+        else:
+            active_y_intervals.discard(y1)
+            active_y_intervals.discard(y2)
+
+    return total_area
 
 Solution = create_solution(solution_function_name)

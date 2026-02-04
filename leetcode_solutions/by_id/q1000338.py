@@ -21,22 +21,24 @@ LCR 074. 合并区间 - 以数组 intervals 表示若干个区间的集合，其
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对区间按起始位置进行排序，然后遍历排序后的区间，合并重叠的区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对区间按起始位置进行排序。
+2. 初始化一个结果列表，将第一个区间加入结果列表。
+3. 遍历剩余的区间，如果当前区间与结果列表中的最后一个区间重叠，则合并这两个区间；否则，将当前区间加入结果列表。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 排序后，只需比较当前区间的起始位置和结果列表中最后一个区间的结束位置来判断是否重叠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是区间的数量。排序操作的时间复杂度是 O(n log n)，后续的遍历操作是 O(n)。
+空间复杂度: O(log n)，排序操作的空间复杂度取决于排序算法的实现，通常是 O(log n)。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_intervals(intervals: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 合并区间
     """
-    # TODO: 实现最优解法
-    pass
+    if not intervals:
+        return []
+
+    # 按区间的起始位置进行排序
+    intervals.sort(key=lambda x: x[0])
+
+    merged = [intervals[0]]
+    for interval in intervals[1:]:
+        # 如果当前区间的起始位置小于等于结果列表中最后一个区间的结束位置，则合并这两个区间
+        if interval[0] <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], interval[1])
+        else:
+            # 否则，将当前区间加入结果列表
+            merged.append(interval)
+
+    return merged
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_intervals)

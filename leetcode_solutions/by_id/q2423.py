@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 来找到 numsDivide 中所有元素的 GCD，然后在 nums 中找到能整除该 GCD 的最小元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 numsDivide 中所有元素的最大公约数 (GCD)。
+2. 对 nums 进行排序。
+3. 遍历排序后的 nums，找到第一个能整除 GCD 的元素。
+4. 返回该元素在原数组中的索引作为删除次数，如果找不到则返回 -1。
 
 关键点:
-- [TODO]
+- 使用 GCD 来简化问题。
+- 排序后遍历以找到最小的满足条件的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log k)，其中 n 是 nums 的长度，m 是 numsDivide 的长度，k 是 numsDivide 中的最大值。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def min_deletions_to_make_array_divisible(nums: List[int], nums_divide: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组可以被整除的最少删除次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 numsDivide 中所有元素的最大公约数 (GCD)
+    gcd = nums_divide[0]
+    for num in nums_divide[1:]:
+        gcd = math.gcd(gcd, num)
+    
+    # 对 nums 进行排序
+    nums.sort()
+    
+    # 遍历排序后的 nums，找到第一个能整除 GCD 的元素
+    for i, num in enumerate(nums):
+        if gcd % num == 0:
+            return i
+    
+    # 如果找不到则返回 -1
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletions_to_make_array_divisible)

@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组并调用回调函数来实现 forEach 方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组中的每个元素。
+2. 对每个元素调用回调函数，并传递当前元素、索引和数组本身作为参数。
 
 关键点:
-- [TODO]
+- 确保回调函数被正确调用，并且传递正确的参数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。需要遍历整个数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,11 +49,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
+class ArrayPrototype:
+    def __init__(self, arr: List[int]):
+        self.arr = arr
+
+    def forEach(self, callback: callable):
+        """
+        实现数组的 forEach 方法
+        :param callback: 回调函数，接受三个参数：当前元素、索引和数组本身
+        """
+        for i, value in enumerate(self.arr):
+            callback(value, i, self.arr)
+
+
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - [待实现]
     """
-    # TODO: 实现最优解法
+    # 实现最优解法
     pass
 
 

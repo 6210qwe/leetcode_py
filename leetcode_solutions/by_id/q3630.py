@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用矩阵快速幂来计算多次转换后的总长度。
+- 通过矩阵乘法来模拟每次转换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 26x26 的矩阵 M，其中 M[i][j] 表示将字符 i 转换为字符 j 后的长度。
+2. 使用矩阵快速幂计算 M^t。
+3. 计算初始字符串 s 中每个字符的转换后的总长度。
 
 关键点:
-- [TODO]
+- 矩阵快速幂可以将时间复杂度从 O(t) 降低到 O(log t)。
+- 通过矩阵乘法来模拟字符转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(26^3 * log t)
+空间复杂度: O(26^2)
 """
 
 # ============================================================================
@@ -49,12 +53,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def matrix_multiply(A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
+    n = len(A)
+    C = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % (10**9 + 7)
+    return C
 
+def matrix_power(M: List[List[int]], t: int) -> List[List[int]]:
+    n = len(M)
+    result = [[0] * n for _ in range(n)]
+    for i in range(n):
+        result[i][i] = 1
+    while t > 0:
+        if t % 2 == 1:
+            result = matrix_multiply(result, M)
+        M = matrix_multiply(M, M)
+        t //= 2
+    return result
+
+def solution_function_name(s: str, t: int, nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(s)
+    M = [[0] * 26 for _ in range(26)]
+    
+    # 构建矩阵 M
+    for i in range(26):
+        for j in range(nums[i]):
+            M[i][(i + j + 1) % 26] += 1
+    
+    # 计算 M^t
+    M_t = matrix_power(M, t)
+    
+    # 计算初始字符串 s 中每个字符的转换后的总长度
+    total_length = 0
+    for char in s:
+        idx = ord(char) - ord('a')
+        for i in range(26):
+            total_length = (total_length + M_t[idx][i]) % MOD
+    
+    return total_length
 
 Solution = create_solution(solution_function_name)

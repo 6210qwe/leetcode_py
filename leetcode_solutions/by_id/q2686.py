@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将起点加入队列，距离为 0。
+2. 初始化一个字典来记录每个点的最小距离。
+3. 从优先队列中取出当前距离最小的点，更新其相邻点的距离。
+4. 如果当前点是终点，返回其距离。
+5. 如果当前点不是终点，继续处理优先队列中的下一个点。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次处理的都是当前距离最小的点。
+- 更新相邻点的距离时，考虑普通路径和特殊路径两种情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log V)，其中 E 是边的数量，V 是顶点的数量。
+空间复杂度: O(V + E)，存储图和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+import heapq
 
+def min_cost_path(start: List[int], target: List[int], specialRoads: List[List[int]]) -> int:
+    # 定义曼哈顿距离函数
+    def manhattan_distance(p1: Tuple[int, int], p2: Tuple[int, int]) -> int:
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化优先队列和距离字典
+    pq = [(0, tuple(start))]
+    distances = {tuple(start): 0}
+    
+    while pq:
+        current_distance, current_point = heapq.heappop(pq)
+        
+        if current_point == tuple(target):
+            return current_distance
+        
+        for x1, y1, x2, y2, cost in specialRoads:
+            start_point = (x1, y1)
+            end_point = (x2, y2)
+            
+            # 计算通过特殊路径到达终点的距离
+            special_road_distance = current_distance + manhattan_distance(current_point, start_point) + cost
+            
+            # 如果通过特殊路径到达终点的距离更小，更新距离并加入优先队列
+            if special_road_distance < distances.get(end_point, float('inf')):
+                distances[end_point] = special_road_distance
+                heapq.heappush(pq, (special_road_distance, end_point))
+        
+        # 计算直接到达终点的距离
+        direct_distance = current_distance + manhattan_distance(current_point, tuple(target))
+        
+        # 如果直接到达终点的距离更小，更新距离并加入优先队列
+        if direct_distance < distances.get(tuple(target), float('inf')):
+            distances[tuple(target)] = direct_distance
+            heapq.heappush(pq, (direct_distance, tuple(target)))
 
+    return distances[tuple(target)]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_path)

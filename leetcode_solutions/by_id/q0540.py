@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到唯一出现一次的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 mid 是偶数且 nums[mid] == nums[mid + 1]，则目标元素在右半部分。
+   - 如果 mid 是奇数且 nums[mid] == nums[mid - 1]，则目标元素在右半部分。
+   - 否则，目标元素在左半部分。
+3. 当 left 和 right 相遇时，left 指向的就是唯一出现一次的元素。
 
 关键点:
-- [TODO]
+- 通过检查 mid 与相邻元素的关系来确定目标元素的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到唯一出现一次的元素
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(nums) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        # 确保 mid 是偶数
+        if mid % 2 == 1:
+            mid -= 1
+        
+        # 检查 mid 与相邻元素的关系
+        if nums[mid] == nums[mid + 1]:
+            left = mid + 2
+        else:
+            right = mid
+    
+    return nums[left]
 
 
 Solution = create_solution(solution_function_name)

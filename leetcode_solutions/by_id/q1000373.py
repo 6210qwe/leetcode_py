@@ -21,40 +21,64 @@ LCP 46. 志愿者调配 - 「力扣挑战赛」有 `n` 个比赛场馆（场馆�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逆向操作恢复初始状态
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图结构。
+2. 初始化每个场馆的志愿者人数，第 0 个场馆设为一个变量 x，其余场馆设为其最终人数。
+3. 逆序遍历调配计划，根据调配方案逆向操作恢复初始状态。
+4. 通过总人数和已知的场馆人数计算出第 0 个场馆的初始人数 x。
+5. 返回初始每个场馆的志愿者人数。
 
 关键点:
-- [TODO]
+- 逆向操作时需要考虑每种调配方案的影响。
+- 通过总人数和已知的场馆人数来解出第 0 个场馆的初始人数 x。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是场馆数量，m 是调配计划的数量。
+空间复杂度: O(n + m)，存储邻接表和调配计划所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def solution(finalCnt: List[int], totalNum: int, edges: List[List[int]], plans: List[List[int]]) -> List[int]:
+    n = len(finalCnt) + 1
+    adj_list = [[] for _ in range(n)]
+    
+    # 构建邻接表
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+    
+    # 初始化每个场馆的志愿者人数
+    initial_cnt = [0] * n
+    initial_cnt[0] = 1  # 设为 1，方便后续计算
+    for i in range(1, n):
+        initial_cnt[i] = finalCnt[i - 1]
+    
+    # 逆序遍历调配计划
+    for num, idx in reversed(plans):
+        if num == 1:
+            initial_cnt[idx] *= 2
+        elif num == 2:
+            for neighbor in adj_list[idx]:
+                initial_cnt[neighbor] -= initial_cnt[idx]
+        elif num == 3:
+            for neighbor in adj_list[idx]:
+                initial_cnt[neighbor] += initial_cnt[idx]
+    
+    # 计算第 0 个场馆的初始人数
+    sum_initial = sum(initial_cnt)
+    initial_cnt[0] = totalNum - (sum_initial - initial_cnt[0])
+    
+    return initial_cnt
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

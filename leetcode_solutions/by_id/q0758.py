@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为排序的双向链表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `inorder` 进行中序遍历。
+2. 在中序遍历过程中，维护一个 `prev` 指针来连接前一个节点和当前节点。
+3. 最后返回双向链表的头节点。
 
 关键点:
-- [TODO]
+- 中序遍历保证了节点按从小到大的顺序访问。
+- 使用 `prev` 指针连接前一个节点和当前节点，形成双向链表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-def solution_function_name(params):
+def tree_to_doubly_list(root: 'Node') -> 'Node':
     """
-    函数式接口 - [TODO] 实现
+    将二叉搜索树转化为排序的双向链表
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
 
+    def inorder(node: 'Node'):
+        nonlocal prev, head
+        if node:
+            inorder(node.left)
+            
+            if prev:
+                prev.right = node
+                node.left = prev
+            else:
+                head = node  # 记录头节点
+            
+            prev = node
+            inorder(node.right)
 
-Solution = create_solution(solution_function_name)
+    prev = None
+    head = None
+    inorder(root)
+    
+    # 连接头尾节点
+    head.left = prev
+    prev.right = head
+    
+    return head
+
+Solution = create_solution(tree_to_doubly_list)

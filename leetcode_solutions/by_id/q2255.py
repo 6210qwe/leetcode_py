@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口技术来找到包含所有 1 的最小窗口，并计算所需的最少交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中 1 的总数 `k`。
+2. 初始化一个长度为 `k` 的滑动窗口，计算窗口内 0 的数量 `zero_count`。
+3. 移动滑动窗口，更新 `zero_count`，并记录最小的 `zero_count`。
+4. 返回最小的 `zero_count` 作为最少交换次数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来高效地找到包含所有 1 的最小窗口。
+- 利用数组的环形特性，通过扩展数组来处理边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_swaps_to_group_ones(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回在任意位置将数组中的所有 1 聚集在一起需要的最少交换次数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    k = sum(nums)  # 计算数组中 1 的总数
+    if k == 0 or k == n:
+        return 0  # 如果没有 1 或者全是 1，不需要交换
 
+    # 扩展数组以处理环形特性
+    extended_nums = nums + nums
+    zero_count = extended_nums[:k].count(0)  # 初始窗口内 0 的数量
+    min_swaps = zero_count  # 初始化最少交换次数
 
-Solution = create_solution(solution_function_name)
+    for i in range(k, n + k):
+        # 更新窗口内的 0 的数量
+        if extended_nums[i] == 0:
+            zero_count += 1
+        if extended_nums[i - k] == 0:
+            zero_count -= 1
+        min_swaps = min(min_swaps, zero_count)
+
+    return min_swaps
+
+Solution = create_solution(min_swaps_to_group_ones)

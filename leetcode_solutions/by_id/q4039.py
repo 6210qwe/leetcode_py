@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将整数 n 按位拆解，每个位上的数字乘以相应的 10 的幂次，得到 10 进制分量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 result 用于存储结果。
+2. 从最高位到最低位遍历 n 的每一位。
+3. 对于每一位，计算其对应的 10 进制分量，并将其添加到 result 中。
+4. 返回 result。
 
 关键点:
-- [TODO]
+- 通过取模和整除操作逐位处理 n。
+- 每一位的 10 进制分量是该位上的数字乘以 10 的相应幂次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 因为我们在处理 n 的每一位，而 n 的位数是 log n。
+空间复杂度: O(log n) - 结果列表的长度最多为 n 的位数。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将整数 n 表示为若干 10 进制分量组成的和，并返回这些分量的列表。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    power_of_ten = 1
+    while n > 0:
+        digit = n % 10
+        if digit > 0:
+            result.append(digit * power_of_ten)
+        n //= 10
+        power_of_ten *= 10
+    return result[::-1]
 
 
 Solution = create_solution(solution_function_name)

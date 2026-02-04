@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 为了最大化交替平方和，我们需要将绝对值较大的数放在偶数索引位置（加法），绝对值较小的数放在奇数索引位置（减法）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组按绝对值从大到小排序。
+2. 遍历排序后的数组，依次将绝对值较大的数放在偶数索引位置，绝对值较小的数放在奇数索引位置。
+3. 计算交替平方和。
 
 关键点:
-- [TODO]
+- 按绝对值排序可以确保我们优先选择绝对值较大的数进行加法操作。
+- 交替放置确保了最大化的交替平方和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_alternating_sum_of_squares(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最大可能的交替平方和
     """
-    # TODO: 实现最优解法
-    pass
+    # 按绝对值从大到小排序
+    nums.sort(key=abs, reverse=True)
+    
+    # 计算交替平方和
+    score = 0
+    for i in range(len(nums)):
+        if i % 2 == 0:
+            score += nums[i] ** 2
+        else:
+            score -= nums[i] ** 2
+    
+    return score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_alternating_sum_of_squares)

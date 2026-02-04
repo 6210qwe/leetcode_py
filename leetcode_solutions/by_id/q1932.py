@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个选手的大满贯数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表来存储每个选手在每个大满贯赛事中的成绩。
+2. 使用 GROUP BY 和 COUNT 来统计每个选手在每个大满贯赛事中的获胜次数。
+3. 最后，将结果汇总并返回。
 
 关键点:
-- [TODO]
+- 使用 UNION ALL 将多个查询结果合并。
+- 使用 GROUP BY 和 COUNT 来统计每个选手的获胜次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数据表中的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -58,3 +60,36 @@ def solution_function_name(params):
 
 
 Solution = create_solution(solution_function_name)
+
+# SQL 查询实现
+def get_grand_slam_titles():
+    query = """
+    SELECT player_id, player_name, SUM(wins) AS total_wins
+    FROM (
+        SELECT player_id, player_name, COUNT(*) AS wins
+        FROM wimbledon
+        WHERE result = 'W'
+        GROUP BY player_id, player_name
+        UNION ALL
+        SELECT player_id, player_name, COUNT(*) AS wins
+        FROM us_open
+        WHERE result = 'W'
+        GROUP BY player_id, player_name
+        UNION ALL
+        SELECT player_id, player_name, COUNT(*) AS wins
+        FROM french_open
+        WHERE result = 'W'
+        GROUP BY player_id, player_name
+        UNION ALL
+        SELECT player_id, player_name, COUNT(*) AS wins
+        FROM australian_open
+        WHERE result = 'W'
+        GROUP BY player_id, player_name
+    ) AS combined_results
+    GROUP BY player_id, player_name
+    ORDER BY total_wins DESC, player_name ASC;
+    """
+    return query
+
+# 示例调用
+print(get_grand_slam_titles())

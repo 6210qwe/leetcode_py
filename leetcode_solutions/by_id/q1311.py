@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算子矩阵的行、列和对角线的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算行前缀和。
+2. 计算列前缀和。
+3. 计算主对角线前缀和。
+4. 计算副对角线前缀和。
+5. 从大到小枚举可能的幻方尺寸，检查每个子矩阵是否满足幻方条件。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子矩阵的行、列和对角线的和。
+- 从大到小枚举尺寸可以尽早找到最大的幻方。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * min(m, n))
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def largest_magic_square(grid: List[List[int]]) -> int:
+    def is_magic_square(r1, c1, r2, c2):
+        target = row_sum[r1][c2 + 1] - row_sum[r1][c1]
+        for r in range(r1, r2 + 1):
+            if row_sum[r][c2 + 1] - row_sum[r][c1] != target:
+                return False
+        for c in range(c1, c2 + 1):
+            if col_sum[r2 + 1][c] - col_sum[r1][c] != target:
+                return False
+        if diag_sum[r2][c2] - (diag_sum[r1 - 1][c1 - 1] if r1 > 0 and c1 > 0 else 0) != target:
+            return False
+        if anti_diag_sum[r2][c1] - (anti_diag_sum[r1 - 1][c2 + 1] if r1 > 0 and c2 < n - 1 else 0) != target:
+            return False
+        return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    row_sum = [[0] * (n + 1) for _ in range(m)]
+    col_sum = [[0] * n for _ in range(m + 1)]
+    diag_sum = [[0] * n for _ in range(m)]
+    anti_diag_sum = [[0] * (n + 1) for _ in range(m)]
 
+    for r in range(m):
+        for c in range(n):
+            row_sum[r][c + 1] = row_sum[r][c] + grid[r][c]
+            col_sum[r + 1][c] = col_sum[r][c] + grid[r][c]
+            diag_sum[r][c] = (diag_sum[r - 1][c - 1] if r > 0 and c > 0 else 0) + grid[r][c]
+            anti_diag_sum[r][c] = (anti_diag_sum[r - 1][c + 1] if r > 0 and c < n - 1 else 0) + grid[r][c]
 
-Solution = create_solution(solution_function_name)
+    for size in range(min(m, n), 0, -1):
+        for r in range(m - size + 1):
+            for c in range(n - size + 1):
+                if is_magic_square(r, c, r + size - 1, c + size - 1):
+                    return size
+    return 1
+
+Solution = create_solution(largest_magic_square)

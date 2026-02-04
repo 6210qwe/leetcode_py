@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过记录每个节点的入度来找到唯一的冠军。如果某个节点的入度为0且只有一个这样的节点，则该节点为冠军。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个入度数组，记录每个节点的入度。
+2. 遍历所有边，更新每个节点的入度。
+3. 检查入度数组，找到入度为0的节点。
+4. 如果入度为0的节点数量不为1，则返回-1，否则返回该节点。
 
 关键点:
-- [TODO]
+- 使用入度数组来记录每个节点的入度。
+- 通过遍历入度数组来找到唯一的冠军。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。我们需要遍历所有节点和边。
+空间复杂度: O(n)，用于存储入度数组。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_champion(n: int, edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到唯一冠军
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化入度数组
+    in_degree = [0] * n
+    
+    # 更新每个节点的入度
+    for u, v in edges:
+        in_degree[v] += 1
+    
+    # 找到入度为0的节点
+    champions = [i for i in range(n) if in_degree[i] == 0]
+    
+    # 如果有多个或没有入度为0的节点，返回-1
+    if len(champions) != 1:
+        return -1
+    else:
+        return champions[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_champion)

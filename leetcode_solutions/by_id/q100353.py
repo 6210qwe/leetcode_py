@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算两个正方形的中心点，找到平分两个正方形的直线。这条直线要么是水平线，要么是垂直线，或者斜率为正或负。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算两个正方形的中心点。
+2. 根据中心点的位置关系，确定平分直线的方向。
+3. 计算平分直线与两个正方形的交点。
+4. 返回距离最远的两个交点作为结果。
 
 关键点:
-- [TODO]
+- 中心点的计算。
+- 交点的计算。
+- 选择斜率最大的直线。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,57 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def bisect_squares(square1: List[int], square2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到平分两个正方形的直线，并返回四个交点中最远的两个点。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算两个正方形的中心点
+    center1 = (square1[0] + square1[2] / 2, square1[1] + square1[2] / 2)
+    center2 = (square2[0] + square2[2] / 2, square2[1] + square2[2] / 2)
+
+    # 判断平分直线的方向
+    if center1[1] == center2[1]:
+        # 水平线
+        y = center1[1]
+        x1 = min(square1[0], square2[0])
+        x2 = max(square1[0] + square1[2], square2[0] + square2[2])
+        return [x1, y, x2, y]
+    elif center1[0] == center2[0]:
+        # 垂直线
+        x = center1[0]
+        y1 = min(square1[1], square2[1])
+        y2 = max(square1[1] + square1[2], square2[1] + square2[2])
+        return [x, y1, x, y2]
+    else:
+        # 斜率为正或负
+        slope = (center2[1] - center1[1]) / (center2[0] - center1[0])
+        intercept = center1[1] - slope * center1[0]
+
+        def intersect(x1, y1, x2, y2):
+            if slope == 0:
+                return (intercept, y1) if x1 <= intercept <= x2 else None
+            if slope == float('inf'):
+                return (x1, intercept) if y1 <= intercept <= y2 else None
+            x_intersect = (y1 - intercept) / slope
+            if x1 <= x_intersect <= x2:
+                return (x_intersect, y1)
+            y_intersect = slope * x1 + intercept
+            if y1 <= y_intersect <= y2:
+                return (x1, y_intersect)
+            return None
+
+        points = []
+        for square in [square1, square2]:
+            x1, y1, side = square
+            x2, y2 = x1 + side, y1 + side
+            for p in [(x1, y1), (x2, y1), (x1, y2), (x2, y2)]:
+                point = intersect(*p, *p)
+                if point:
+                    points.append(point)
+
+        # 选择距离最远的两个点
+        points.sort(key=lambda p: (p[0], p[1]))
+        return [points[0][0], points[0][1], points[-1][0], points[-1][1]]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bisect_squares)

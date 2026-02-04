@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组（Fenwick Tree）来高效地计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个映射，记录每个元素在 nums2 中的位置。
+2. 遍历 nums1，使用树状数组来维护当前遍历到的元素之前已经出现的元素数量。
+3. 对于每个元素，计算其左边和右边的元素数量，从而计算出满足条件的三元组数量。
 
 关键点:
-- [TODO]
+- 使用树状数组来高效地进行区间查询和更新。
+- 通过两次遍历来分别计算左边和右边的元素数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+class FenwickTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (n + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def update(self, i, delta):
+        while i <= self.n:
+            self.tree[i] += delta
+            i += i & -i
 
+    def query(self, i):
+        result = 0
+        while i > 0:
+            result += self.tree[i]
+            i -= i & -i
+        return result
 
-Solution = create_solution(solution_function_name)
+def count_good_triplets(nums1: List[int], nums2: List[int]) -> int:
+    n = len(nums1)
+    pos_in_nums2 = {num: i for i, num in enumerate(nums2)}
+    fenwick_tree = FenwickTree(n)
+    left_counts = [0] * n
+    right_counts = [0] * n
+
+    # First pass to calculate left counts
+    for i, num in enumerate(nums1):
+        index_in_nums2 = pos_in_nums2[num]
+        left_counts[i] = fenwick_tree.query(index_in_nums2 + 1)
+        fenwick_tree.update(index_in_nums2 + 1, 1)
+
+    fenwick_tree = FenwickTree(n)
+
+    # Second pass to calculate right counts and the final result
+    result = 0
+    for i in range(n - 1, -1, -1):
+        num = nums1[i]
+        index_in_nums2 = pos_in_nums2[num]
+        right_counts[i] = fenwick_tree.query(index_in_nums2 + 1)
+        fenwick_tree.update(index_in_nums2 + 1, 1)
+        result += left_counts[i] * right_counts[i]
+
+    return result
+
+Solution = create_solution(count_good_triplets)

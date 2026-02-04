@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到指定层级的好友，然后统计这些好友观看的视频频率，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 BFS 从给定的 id 开始遍历，直到达到指定的 level。
+2. 在达到指定 level 时，记录该层级的所有好友。
+3. 统计这些好友观看的视频频率。
+4. 按照观看频率升序和字母顺序对视频进行排序。
 
 关键点:
-- [TODO]
+- 使用队列进行 BFS 遍历。
+- 使用集合来记录已经访问过的好友，避免重复访问。
+- 使用字典来统计视频的观看频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)，其中 n 是节点数，m 是视频数量。BFS 的时间复杂度是 O(n)，排序的时间复杂度是 O(m log m)。
+空间复杂度: O(n + m)，其中 n 是节点数，m 是视频数量。需要存储节点和视频的频率。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def watched_videos_by_friends(watched_videos: List[List[str]], friends: List[List[int]], id: int, level: int) -> List[str]:
+    # 初始化队列和访问集合
+    queue = deque([id])
+    visited = {id}
+    current_level = 0
+    
+    # 进行 BFS 遍历
+    while queue and current_level < level:
+        for _ in range(len(queue)):
+            current_id = queue.popleft()
+            for friend_id in friends[current_id]:
+                if friend_id not in visited:
+                    visited.add(friend_id)
+                    queue.append(friend_id)
+        current_level += 1
+    
+    # 统计指定层级好友观看的视频频率
+    video_count = defaultdict(int)
+    for friend_id in queue:
+        for video in watched_videos[friend_id]:
+            video_count[video] += 1
+    
+    # 按照观看频率和字母顺序排序
+    sorted_videos = sorted(video_count.items(), key=lambda x: (x[1], x[0]))
+    
+    return [video for video, count in sorted_videos]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(watched_videos_by_friends)

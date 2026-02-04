@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和双指针来合并重叠的活动
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将活动按开始时间进行排序。
+2. 初始化一个结果列表，将第一个活动添加到结果列表中。
+3. 遍历排序后的活动列表，使用双指针来检查当前活动是否与结果列表中的最后一个活动重叠。
+4. 如果重叠，则更新结果列表中最后一个活动的结束时间。
+5. 如果不重叠，则将当前活动添加到结果列表中。
 
 关键点:
-- [TODO]
+- 按开始时间排序以确保活动顺序正确。
+- 使用双指针来检查和合并重叠的活动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是活动的数量。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(1)，除了结果列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_overlapping_events(events: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 合并在同一个大厅重叠的活动
     """
-    # TODO: 实现最优解法
-    pass
+    if not events:
+        return []
+
+    # 按开始时间排序
+    events.sort(key=lambda x: x[0])
+
+    # 初始化结果列表
+    merged = [events[0]]
+
+    for current_start, current_end in events[1:]:
+        last_end = merged[-1][1]
+
+        # 检查当前活动是否与结果列表中的最后一个活动重叠
+        if current_start <= last_end:
+            # 更新结果列表中最后一个活动的结束时间
+            merged[-1][1] = max(last_end, current_end)
+        else:
+            # 当前活动不重叠，添加到结果列表中
+            merged.append([current_start, current_end])
+
+    return merged
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_overlapping_events)

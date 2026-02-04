@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和滑动窗口来解决这个问题。我们维护一个布尔数组 dp，其中 dp[i] 表示是否可以从起点到达下标 i。通过滑动窗口来更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化布尔数组 dp，长度与 s 相同，dp[0] = True。
+2. 使用一个变量 left 来记录当前窗口的左边界。
+3. 遍历字符串 s，对于每个下标 i：
+   - 如果 dp[i] 为 True，则更新窗口的右边界 right。
+   - 对于在 [left, right] 范围内的所有下标 j，如果 s[j] == '0'，则 dp[j] = True。
+   - 更新 left 边界。
+4. 返回 dp[-1]。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来优化时间复杂度，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_reach_end(s: str, minJump: int, maxJump: int) -> bool:
+    n = len(s)
+    if s[n - 1] != '0':
+        return False
+
+    dp = [False] * n
+    dp[0] = True
+    left = 0
+
+    for i in range(1, n):
+        if i >= minJump:
+            left = max(left, i - maxJump)
+            if dp[left]:
+                dp[i] = True
+            while left < i and not dp[left]:
+                left += 1
+        if dp[i] and s[i] == '0':
+            dp[i] = True
+        else:
+            dp[i] = False
+
+    return dp[-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_reach_end)

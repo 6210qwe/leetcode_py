@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来计算所有可能的结果，并使用集合来存储这些结果。然后根据学生的答案进行评分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个记忆化搜索函数 `dp`，用于计算表达式的所有可能结果。
+2. 在 `dp` 函数中，递归地计算子表达式的可能结果，并根据运算符进行组合。
+3. 使用集合存储所有可能的结果。
+4. 计算表达式的正确结果。
+5. 遍历学生的答案，根据评分规则进行评分并累加总分。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算。
+- 使用集合存储所有可能的结果，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是表达式的长度。记忆化搜索的时间复杂度为 O(n^3)。
+空间复杂度: O(n^3)，记忆化搜索的空间复杂度为 O(n^3)。
 """
 
 # ============================================================================
@@ -48,13 +52,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def score_of_students(s: str, answers: List[int]) -> int:
+    def dp(lo: int, hi: int) -> set:
+        if (lo, hi) in memo:
+            return memo[(lo, hi)]
+        if lo == hi:
+            return {int(s[lo])}
+        
+        res = set()
+        for mid in range(lo + 1, hi, 2):
+            left = dp(lo, mid - 1)
+            right = dp(mid + 1, hi)
+            for l in left:
+                for r in right:
+                    if s[mid] == '+':
+                        res.add(l + r)
+                    elif s[mid] == '*':
+                        res.add(l * r)
+        
+        memo[(lo, hi)] = res
+        return res
+    
+    # 计算表达式的正确结果
+    correct_result = eval(s)
+    
+    # 使用记忆化搜索计算所有可能的结果
+    memo = {}
+    possible_results = dp(0, len(s) - 1)
+    
+    # 计算总分
+    total_score = 0
+    for ans in answers:
+        if ans == correct_result:
+            total_score += 5
+        elif ans in possible_results:
+            total_score += 2
+    
+    return total_score
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(score_of_students)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，从高位到低位依次设置 x 的每一位，使得 x 的置位数与 num2 相同，并且 x XOR num1 的值最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 num2 的置位数 count。
+2. 初始化 x 为 0。
+3. 从高位到低位遍历 num1 的每一位：
+   - 如果当前位是 1 且 count > 0，则将 x 的对应位置 1，并减少 count。
+   - 如果当前位是 0 且 count > 0，则将 x 的对应位置 1，并减少 count。
+4. 返回 x。
 
 关键点:
-- [TODO]
+- 从高位到低位设置 x 的每一位，确保 x XOR num1 的值最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(num1))，因为我们需要遍历 num1 的每一位。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_xor(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出满足条件的正整数 x
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 num2 的置位数
+    count = bin(num2).count('1')
+    
+    # 初始化 x 为 0
+    x = 0
+    bit = 1 << 30  # 从最高位开始
+    
+    while bit > 0:
+        if count == 0:
+            break
+        if num1 & bit:
+            x |= bit
+            count -= 1
+        elif count > 0:
+            x |= bit
+            count -= 1
+        bit >>= 1
+    
+    return x
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_xor)

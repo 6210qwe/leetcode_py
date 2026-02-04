@@ -21,40 +21,54 @@ LCP 77. 符文储备 - 远征队在出发前需要携带一些「符文」，作
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和计数排序来找到最长的连续子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用计数数组统计每个魔力值的出现次数。
+2. 遍历计数数组，找到最长的连续子序列。
 
 关键点:
-- [TODO]
+- 使用计数数组可以快速统计每个魔力值的出现次数。
+- 通过遍历计数数组，可以找到最长的连续子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是 runes 的长度，k 是魔力值的范围（10^4）。
+空间复杂度: O(k)，用于存储计数数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(runes: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回能够携带的符文最大数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计数数组，统计每个魔力值的出现次数
+    count = [0] * 10001
+    for rune in runes:
+        count[rune] += 1
+    
+    max_length = 0
+    current_length = 0
+    
+    # 遍历计数数组，找到最长的连续子序列
+    for i in range(10001):
+        if count[i] > 0:
+            current_length += count[i]
+        else:
+            max_length = max(max_length, current_length)
+            current_length = 0
+    
+    # 最后一次连续子序列的长度
+    max_length = max(max_length, current_length)
+    
+    return max_length
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算 K-Free 子集的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序，找到所有长度为 k 的等差子序列。
+2. 对于每个等差子序列，使用动态规划计算其 K-Free 子集的数量。
+3. 将所有等差子序列的 K-Free 子集数量相乘，得到最终结果。
 
 关键点:
-- [TODO]
+- 通过排序和双指针找到所有长度为 k 的等差子序列。
+- 使用动态规划计算每个等差子序列的 K-Free 子集数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_k_free_subsets(nums: List[int], k: int) -> int:
+    MOD = 10**9 + 7
+    nums.sort()
+    n = len(nums)
+    
+    def dp(length: int) -> int:
+        if length == 0:
+            return 1
+        if length == 1:
+            return 2
+        a, b = 1, 2
+        for _ in range(2, length + 1):
+            a, b = b, (a + b) % MOD
+        return b
+    
+    result = 1
+    i = 0
+    while i < n:
+        j = i + 1
+        while j < n and nums[j] - nums[i] < k:
+            j += 1
+        length = j - i
+        result = (result * dp(length)) % MOD
+        i = j
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_k_free_subsets)

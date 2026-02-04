@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个队列分别存储 Radiant 和 Dire 参议员的索引。每次从两个队列中取出索引较小的参议员，并将其重新加入队列，同时将索引较大的参议员移除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个队列，分别存储 Radiant 和 Dire 参议员的索引。
+2. 进入循环，直到其中一个队列为空：
+   - 从两个队列中分别取出索引最小的参议员。
+   - 如果 Radiant 参议员的索引小于 Dire 参议员的索引，则将 Radiant 参议员的索引加上 n 并重新加入队列，否则将 Dire 参议员的索引加上 n 并重新加入队列。
+3. 返回非空队列对应的阵营。
 
 关键点:
-- [TODO]
+- 使用队列来存储参议员的索引，确保每次都能取出索引最小的参议员。
+- 通过比较索引来决定哪个参议员可以继续投票。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def predict_party_victory(senate: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 预测 Dota2 参议院的胜利方
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(senate)
+    radiant_queue = []
+    dire_queue = []
+
+    # 初始化两个队列
+    for i, s in enumerate(senate):
+        if s == 'R':
+            radiant_queue.append(i)
+        else:
+            dire_queue.append(i)
+
+    # 模拟投票过程
+    while radiant_queue and dire_queue:
+        r_index = radiant_queue.pop(0)
+        d_index = dire_queue.pop(0)
+        if r_index < d_index:
+            radiant_queue.append(r_index + n)
+        else:
+            dire_queue.append(d_index + n)
+
+    return "Radiant" if radiant_queue else "Dire"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(predict_party_victory)

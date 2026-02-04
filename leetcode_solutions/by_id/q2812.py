@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过每次操作将 x 的值增加或减少 1，同时可以选择将 num 的值增加或减少 1，我们可以计算出 x 的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 x 的最大值，即 num + 2 * t。
+2. 返回计算结果。
 
 关键点:
-- [TODO]
+- 每次操作可以将 x 的值增加 1，并且可以将 num 的值增加 1，因此 x 的最大值为 num + 2 * t。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只需要常数时间进行计算。
+空间复杂度: O(1) - 只需要常数空间存储结果。
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int, t: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算并返回最大可达成数字 x。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 x 的最大值
+    max_achievable_number = num + 2 * t
+    return max_achievable_number
 
 
 Solution = create_solution(solution_function_name)

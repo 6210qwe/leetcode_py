@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点 K 到所有其他节点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用优先队列（最小堆）进行 Dijkstra 算法。
+3. 初始化距离数组，将起点的距离设为 0，其他节点的距离设为无穷大。
+4. 从起点开始，不断更新相邻节点的最短距离。
+5. 最后检查所有节点是否都能到达，如果能则返回最大距离，否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用优先队列优化 Dijkstra 算法的时间复杂度。
+- 通过邻接表存储图结构，方便快速访问相邻节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log V)，其中 E 是边的数量，V 是节点的数量。
+空间复杂度: O(V + E)，用于存储图的邻接表和距离数组。
 """
 
 # ============================================================================
@@ -44,17 +48,35 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
+def network_delay_time(times: List[List[int]], n: int, k: int) -> int:
+    # 构建图的邻接表
+    graph = {i: [] for i in range(1, n + 1)}
+    for u, v, w in times:
+        graph[u].append((v, w))
+    
+    # 初始化距离数组
+    dist = {i: float('inf') for i in range(1, n + 1)}
+    dist[k] = 0
+    
+    # 优先队列（最小堆）
+    min_heap = [(0, k)]
+    
+    while min_heap:
+        current_dist, u = heapq.heappop(min_heap)
+        
+        if current_dist > dist[u]:
+            continue
+        
+        for v, w in graph[u]:
+            new_dist = current_dist + w
+            if new_dist < dist[v]:
+                dist[v] = new_dist
+                heapq.heappush(min_heap, (new_dist, v))
+    
+    # 检查所有节点是否都能到达
+    max_dist = max(dist.values())
+    return max_dist if max_dist < float('inf') else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(network_delay_time)

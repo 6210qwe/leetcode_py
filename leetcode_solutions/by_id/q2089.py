@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过将所有负数变为正数来最大化矩阵和。如果负数的数量为偶数，则可以将所有负数变为正数。如果负数的数量为奇数，则需要保留一个最小的绝对值作为负数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算矩阵中所有元素的绝对值之和。
+2. 统计矩阵中的负数数量。
+3. 如果负数数量为奇数，则从总和中减去两倍的最小绝对值。
 
 关键点:
-- [TODO]
+- 通过绝对值之和来计算最大可能的矩阵和。
+- 根据负数数量的奇偶性来决定是否需要减去最小绝对值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的维度。我们需要遍历整个矩阵来计算绝对值之和和统计负数数量。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_matrix_sum(matrix: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵的最大和
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = 0
+    negative_count = 0
+    min_abs_value = float('inf')
+    
+    for row in matrix:
+        for num in row:
+            total_sum += abs(num)
+            if num < 0:
+                negative_count += 1
+            min_abs_value = min(min_abs_value, abs(num))
+    
+    if negative_count % 2 != 0:
+        total_sum -= 2 * min_abs_value
+    
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_matrix_sum)

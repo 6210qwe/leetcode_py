@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针方法来找到最大优雅度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按照利润从高到低对项目进行排序。
+2. 选择前 k 个项目，计算其总利润和不同类别的数量。
+3. 如果存在重复类别，使用双指针方法替换重复类别项目，以增加不同类别的数量，从而提高优雅度。
 
 关键点:
-- [TODO]
+- 按利润排序后，优先选择利润高的项目。
+- 使用双指针方法替换重复类别项目，以增加不同类别的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 items 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储排序后的项目和类别集合。
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_elegance(items: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 按利润从高到低排序
+    items.sort(key=lambda x: -x[0])
+    
+    # 选择前 k 个项目
+    selected = items[:k]
+    total_profit = sum(item[0] for item in selected)
+    categories = set(item[1] for item in selected)
+    distinct_categories = len(categories)
+    
+    # 计算初始优雅度
+    max_elegance = total_profit + distinct_categories ** 2
+    
+    # 使用双指针方法替换重复类别项目
+    j = k
+    for i in range(k):
+        if selected[i][1] in categories:
+            while j < len(items) and items[j][1] in categories:
+                j += 1
+            if j == len(items):
+                break
+            # 替换重复类别项目
+            total_profit -= selected[i][0]
+            total_profit += items[j][0]
+            categories.remove(selected[i][1])
+            categories.add(items[j][1])
+            distinct_categories = len(categories)
+            max_elegance = max(max_elegance, total_profit + distinct_categories ** 2)
+            j += 1
+    
+    return max_elegance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_elegance)

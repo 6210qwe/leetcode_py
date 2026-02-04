@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个子字符串的字符频率，并检查其是否为平衡子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个动态规划数组 dp，其中 dp[i] 表示前 i 个字符最少能分割成多少个平衡子字符串。
+2. 遍历字符串 s，对于每个位置 i，检查从 j 到 i 的子字符串是否为平衡子字符串。
+3. 如果是平衡子字符串，则更新 dp[i] 为 min(dp[i], dp[j-1] + 1)。
+4. 返回 dp[n]，其中 n 是字符串 s 的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录子字符串的字符频率。
+- 动态规划数组 dp 用于存储最小分割数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。我们需要遍历字符串的每个子字符串。
+空间复杂度: O(n)，动态规划数组 dp 的大小为 n。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_substring_partition(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串 s 最少能分割成多少个平衡子字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+
+    for i in range(1, n + 1):
+        freq = {}
+        for j in range(i, 0, -1):
+            if s[j - 1] in freq:
+                freq[s[j - 1]] += 1
+            else:
+                freq[s[j - 1]] = 1
+
+            if len(set(freq.values())) == 1:
+                dp[i] = min(dp[i], dp[j - 1] + 1)
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_substring_partition)

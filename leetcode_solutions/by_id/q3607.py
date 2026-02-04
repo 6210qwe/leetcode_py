@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右遍历数组，确保每个元素不大于其前一个元素。如果当前元素大于前一个元素，则尝试将其除以最大真因数，直到满足条件或无法再除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数为 0。
+2. 从左到右遍历数组，对于每个元素，检查其是否大于前一个元素。
+3. 如果当前元素大于前一个元素，则尝试将其除以最大真因数，直到满足条件或无法再除。
+4. 如果无法使当前元素不大于前一个元素，则返回 -1。
+5. 返回总的操作次数。
 
 关键点:
-- [TODO]
+- 使用最大真因数进行除法操作。
+- 贪心地从左到右处理数组，确保每个元素不大于其前一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是数组长度，m 是数组中的最大值。每次查找最大真因数的时间复杂度为 O(sqrt(m))。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_division_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组非递减的最少除法操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    def max_proper_divisor(x: int) -> int:
+        """找到 x 的最大真因数"""
+        for i in range(int(x ** 0.5), 0, -1):
+            if x % i == 0 and x // i < x:
+                return x // i
+        return 1
+
+    operations = 0
+    for i in range(1, len(nums)):
+        while nums[i] < nums[i - 1]:
+            divisor = max_proper_divisor(nums[i])
+            if divisor == 1:
+                return -1
+            nums[i] //= divisor
+            operations += 1
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_division_operations)

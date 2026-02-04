@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过逆序遍历数组来计算最小生命值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从后向前遍历数组，计算在每个位置上需要的最小生命值。
+2. 维护一个变量 `min_health` 来记录当前最小生命值。
+3. 更新 `min_health` 为 `max(1, min_health - damage + shield)`，其中 `damage` 是当前的伤害值，`shield` 是当前的护盾值。
+4. 最终返回 `min_health` 作为结果。
 
 关键点:
-- [TODO]
+- 逆序遍历数组可以确保在每个位置上都能得到最小的生命值。
+- 使用 `max(1, ...)` 确保生命值不会小于 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimum_health(damage: List[int], armor: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算通关游戏所需的最小生命值。
+    
+    :param damage: 每个关卡的伤害值列表
+    :param armor: 护盾值
+    :return: 通关游戏所需的最小生命值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(damage)
+    min_health = 1
+    
+    for i in range(n - 1, -1, -1):
+        if i == 0 or damage[i] > damage[i - 1]:
+            min_health = max(1, min_health - damage[i] + (armor if i == 0 else 0))
+        else:
+            min_health = max(1, min_health - damage[i])
+    
+    return sum(damage) - min(armor, max(damage)) + min_health
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_health)

@@ -21,24 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用动态规划来解决这个问题。将问题转换为子集和问题，即找到一个子集，使其和为 (sum(nums) + target) / 2。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 计算数组的总和 sum(nums)。
+2. 检查 (sum(nums) + target) 是否为偶数，如果不是则返回 0。
+3. 定义 dp[i][j] 为使用前 i 个元素能否组成和为 j 的子集的数量。
+4. 初始化 dp 数组，dp[0][0] = 1。
+5. 填充 dp 数组，对于每个元素 nums[i-1]，更新 dp[i][j]。
+6. 返回 dp[n][target_sum]，其中 n 是数组长度，target_sum 是 (sum(nums) + target) // 2。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 将问题转换为子集和问题。
+- 使用二维 dp 数组来存储中间结果。
+- 注意边界条件和初始化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n * m) - 其中 n 是数组长度，m 是 (sum(nums) + target) // 2。
+空间复杂度: O(n * m) - 使用了二维 dp 数组。
 """
 
 # ============================================================================
@@ -51,25 +55,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def target_sum(params):
+def target_sum(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算通过添加 '+' 或 '-' 可以构造出目标和的不同表达式的数目。
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用动态规划将问题转换为子集和问题，找到一个子集，使其和为 (sum(nums) + target) / 2。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 非负整数数组
+        target: 目标和
         
     Returns:
-        [待实现] 返回值说明
+        不同表达式的数目
         
     Example:
-        >>> target_sum([待实现])
-        [待实现]
+        >>> target_sum([1, 1, 1, 1, 1], 3)
+        5
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(nums)
+    if (total_sum + target) % 2 != 0 or total_sum < abs(target):
+        return 0
+    
+    target_sum = (total_sum + target) // 2
+    n = len(nums)
+    dp = [[0] * (target_sum + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(target_sum + 1):
+            dp[i][j] = dp[i - 1][j]
+            if j >= nums[i - 1]:
+                dp[i][j] += dp[i - 1][j - nums[i - 1]]
+    
+    return dp[n][target_sum]
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,40 +21,44 @@ LCR 145. 判断对称二叉树 - 请设计一个函数判断一棵二叉树是�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法，比较左子树和右子树是否镜像对称。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_mirror`，用于判断两个子树是否镜像对称。
+2. 在 `is_mirror` 函数中，如果两个子树都为空，则返回 True；如果其中一个为空，则返回 False。
+3. 如果两个子树的根节点值相等，则递归比较左子树的左子节点和右子树的右子节点，以及左子树的右子节点和右子树的左子节点。
+4. 最终调用 `is_mirror` 函数，传入根节点的左右子树进行比较。
 
 关键点:
-- [TODO]
+- 递归地比较两棵子树是否镜像对称。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点最多被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_symmetric(root: Optional[TreeNode]) -> bool:
+    def is_mirror(left: Optional[TreeNode], right: Optional[TreeNode]) -> bool:
+        if not left and not right:
+            return True
+        if not left or not right:
+            return False
+        return (left.val == right.val and
+                is_mirror(left.left, right.right) and
+                is_mirror(left.right, right.left))
+    
+    return is_mirror(root, root)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_symmetric)

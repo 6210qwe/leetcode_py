@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的乘积等价子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 来表示当前窗口的左右边界。
+2. 使用一个变量 max_length 来记录最长的乘积等价子数组的长度。
+3. 在每次移动右指针时，计算当前窗口内的乘积、最大公约数和最小公倍数。
+4. 如果当前窗口满足乘积等价条件，则更新 max_length。
+5. 如果不满足条件，则移动左指针以缩小窗口，直到满足条件或窗口为空。
+6. 返回 max_length。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地找到最长的乘积等价子数组。
+- 通过维护当前窗口内的乘积、最大公约数和最小公倍数来判断是否满足乘积等价条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的乘积等价子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    def gcd(a: int, b: int) -> int:
+        return math.gcd(a, b)
 
+    def lcm(a: int, b: int) -> int:
+        return a * b // gcd(a, b)
+
+    n = len(nums)
+    max_length = 0
+
+    for left in range(n):
+        product = 1
+        current_gcd = nums[left]
+        current_lcm = nums[left]
+
+        for right in range(left, n):
+            product *= nums[right]
+            current_gcd = gcd(current_gcd, nums[right])
+            current_lcm = lcm(current_lcm, nums[right])
+
+            if product == current_lcm * current_gcd:
+                max_length = max(max_length, right - left + 1)
+
+    return max_length
 
 Solution = create_solution(solution_function_name)

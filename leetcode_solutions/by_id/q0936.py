@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个指针分别指向当前处理的频次和值，并在每次调用 next 时更新这两个指针。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 index 和 count，分别指向当前处理的频次和值。
+2. 在 next 方法中，根据 n 更新 index 和 count，直到消耗完 n 个元素或没有剩余元素。
+3. 返回最后一个消耗的元素或 -1。
 
 关键点:
-- [TODO]
+- 使用两个指针简化对编码数组的遍历。
+- 在 next 方法中逐步更新指针，确保每次操作的时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用 next 的时间复杂度为 O(1)。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class RLEIterator:
+
+    def __init__(self, encoding: List[int]):
+        self.encoding = encoding
+        self.index = 0
+        self.count = 0
+
+    def next(self, n: int) -> int:
+        while self.index < len(self.encoding):
+            if self.count + n > self.encoding[self.index]:
+                n -= self.encoding[self.index] - self.count
+                self.index += 2
+                self.count = 0
+            else:
+                self.count += n
+                return self.encoding[self.index + 1]
+        return -1
 
 
-Solution = create_solution(solution_function_name)
+# 示例用法
+if __name__ == "__main__":
+    rLEIterator = RLEIterator([3, 8, 0, 9, 2, 5])
+    print(rLEIterator.next(2))  # 输出 8
+    print(rLEIterator.next(1))  # 输出 8
+    print(rLEIterator.next(1))  # 输出 5
+    print(rLEIterator.next(2))  # 输出 -1

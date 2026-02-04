@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左上角开始逐个填充矩阵，每次取当前行和列的最小值作为当前元素，并更新剩余的行和列的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个全零矩阵。
+2. 从左上角开始遍历矩阵，对于每个位置 (i, j)，取 rowSum[i] 和 colSum[j] 的最小值作为当前元素。
+3. 更新 rowSum[i] 和 colSum[j]，减去当前元素的值。
+4. 重复步骤 2 和 3，直到遍历完整个矩阵。
 
 关键点:
-- [TODO]
+- 每次取当前行和列的最小值，确保不会超过行和列的和。
+- 逐步更新行和列的和，确保最终结果满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是 rowSum 的长度，n 是 colSum 的长度。
+空间复杂度: O(m * n)，用于存储结果矩阵。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(rowSum: List[int], colSum: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足 rowSum 和 colSum 的非负整数矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(rowSum), len(colSum)
+    matrix = [[0] * n for _ in range(m)]
+    
+    for i in range(m):
+        for j in range(n):
+            value = min(rowSum[i], colSum[j])
+            matrix[i][j] = value
+            rowSum[i] -= value
+            colSum[j] -= value
+    
+    return matrix
 
 
 Solution = create_solution(solution_function_name)

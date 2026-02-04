@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算每个查询的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前缀和数组。
+3. 对于每个查询，使用二分查找找到目标值的位置，并计算操作次数。
 
 关键点:
-- [TODO]
+- 通过前缀和和二分查找，可以在 O(log n) 时间内找到目标值的位置，并在 O(1) 时间内计算操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 nums 的长度，m 是 queries 的长度。排序的时间复杂度是 O(n log n)，每个查询的时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
-
-def solution_function_name(params):
+def min_operations(nums: List[int], queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算将数组中的所有元素变为查询值所需的最小操作次数。
+    
+    :param nums: 初始数组
+    :param queries: 查询数组
+    :return: 每个查询的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    nums.sort()
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    def get_operations(target: int) -> int:
+        idx = bisect.bisect_left(nums, target)
+        left_sum = target * idx - prefix_sum[idx]
+        right_sum = (prefix_sum[n] - prefix_sum[idx]) - target * (n - idx)
+        return left_sum + right_sum
+    
+    return [get_operations(q) for q in queries]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

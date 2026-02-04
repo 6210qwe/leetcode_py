@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将对象转换为不可变类型，例如元组或 frozenset。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入对象的类型。
+2. 如果是列表，转换为元组。
+3. 如果是字典，转换为 frozenset。
+4. 如果是集合，转换为 frozenset。
+5. 如果已经是不可变类型，直接返回。
 
 关键点:
-- [TODO]
+- 使用内置函数将可变类型转换为不可变类型。
+- 递归处理嵌套结构。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是对象中的元素总数。
+空间复杂度: O(n)，因为需要创建新的不可变对象。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any
 
 
-def solution_function_name(params):
+def make_immutable(obj: Any) -> Any:
     """
-    函数式接口 - [TODO] 实现
+    将对象转换为不可变类型。
     """
-    # TODO: 实现最优解法
-    pass
+    if isinstance(obj, list):
+        return tuple(make_immutable(item) for item in obj)
+    elif isinstance(obj, dict):
+        return frozenset((key, make_immutable(value)) for key, value in obj.items())
+    elif isinstance(obj, set):
+        return frozenset(make_immutable(item) for item in obj)
+    elif isinstance(obj, (tuple, frozenset)):
+        return type(obj)(make_immutable(item) for item in obj)
+    else:
+        return obj
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(make_immutable)

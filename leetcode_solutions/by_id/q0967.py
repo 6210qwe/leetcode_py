@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以在原矩阵上进行修改，从而节省空间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与输入矩阵大小相同的二维数组 dp，dp[i][j] 表示从第一行到第 i 行，且第 i 行选择第 j 列的最小路径和。
+2. 对于第一行，dp[0][j] 就是 matrix[0][j]。
+3. 对于其他行，dp[i][j] = matrix[i][j] + min(dp[i-1][j-1], dp[i-1][j], dp[i-1][j+1])，其中需要处理边界情况。
+4. 最后返回 dp[n-1] 中的最小值。
 
 关键点:
-- [TODO]
+- 在原矩阵上进行修改，避免额外的空间开销。
+- 处理边界情况时，确保索引不越界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的边长。我们需要遍历整个矩阵。
+空间复杂度: O(1)，我们在原矩阵上进行修改，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(matrix: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回矩阵的最小下降路径和
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return 0
+
+    n = len(matrix)
+
+    for i in range(1, n):
+        for j in range(n):
+            # 处理边界情况
+            left = matrix[i-1][j-1] if j > 0 else float('inf')
+            up = matrix[i-1][j]
+            right = matrix[i-1][j+1] if j < n-1 else float('inf')
+
+            # 更新当前单元格的值
+            matrix[i][j] += min(left, up, right)
+
+    # 返回最后一行的最小值
+    return min(matrix[-1])
 
 
 Solution = create_solution(solution_function_name)

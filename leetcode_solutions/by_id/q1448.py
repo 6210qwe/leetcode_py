@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 尽可能将第一个出现的 6 翻转为 9，以获得最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字转换为字符串形式。
+2. 查找第一个出现的 6 并将其替换为 9。
+3. 将修改后的字符串转换回整数并返回。
 
 关键点:
-- [TODO]
+- 通过字符串操作来实现高效的查找和替换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数字的位数。最坏情况下需要遍历整个数字。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将一个 6 翻转为 9 后的最大数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数字转换为字符串
+    num_str = str(num)
+    
+    # 查找第一个出现的 6 并将其替换为 9
+    for i in range(len(num_str)):
+        if num_str[i] == '6':
+            num_str = num_str[:i] + '9' + num_str[i+1:]
+            break
+    
+    # 将修改后的字符串转换回整数并返回
+    return int(num_str)
 
 
 Solution = create_solution(solution_function_name)

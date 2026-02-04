@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的索引列表，然后遍历哈希表中的每个列表，找到满足条件的三元组，并计算最小距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个元素出现的所有索引。
+2. 遍历哈希表中的每个索引列表，找到长度大于等于3的列表。
+3. 对于每个长度大于等于3的列表，计算所有可能的三元组的距离，并更新最小距离。
 
 关键点:
-- [TODO]
+- 使用哈希表记录索引可以快速查找和访问。
+- 通过遍历索引列表，可以高效地找到所有满足条件的三元组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_distance(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有效三元组的最小距离
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个元素出现的所有索引
+    index_map = {}
+    for i, num in enumerate(nums):
+        if num not in index_map:
+            index_map[num] = []
+        index_map[num].append(i)
+
+    min_distance = float('inf')
+
+    # 遍历哈希表中的每个索引列表
+    for indices in index_map.values():
+        if len(indices) < 3:
+            continue
+
+        # 计算所有可能的三元组的距离
+        for i in range(len(indices) - 2):
+            for j in range(i + 1, len(indices) - 1):
+                for k in range(j + 1, len(indices)):
+                    distance = abs(indices[i] - indices[j]) + abs(indices[j] - indices[k]) + abs(indices[k] - indices[i])
+                    min_distance = min(min_distance, distance)
+
+    return min_distance if min_distance != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_distance)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数位和对应的最大两个数，然后遍历哈希表找到最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `digit_sum` 计算一个数的数位和。
+2. 使用一个哈希表 `max_pairs` 来记录每个数位和对应的最大的两个数。
+3. 遍历数组 `nums`，对于每个数，计算其数位和，并更新哈希表 `max_pairs`。
+4. 遍历哈希表 `max_pairs`，找到数位和相等的两个数的最大和。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个数位和对应的最大两个数，这样可以在 O(1) 时间内更新和查找。
+- 通过一次遍历数组即可完成所有操作，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def digit_sum(num: int) -> int:
+    """计算一个数的数位和"""
+    return sum(int(digit) for digit in str(num))
+
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    max_pairs = {}
+    
+    for num in nums:
+        ds = digit_sum(num)
+        if ds not in max_pairs:
+            max_pairs[ds] = [num]
+        else:
+            max_pairs[ds].append(num)
+            max_pairs[ds].sort(reverse=True)
+            if len(max_pairs[ds]) > 2:
+                max_pairs[ds].pop()
+    
+    max_sum = -1
+    for pair in max_pairs.values():
+        if len(pair) == 2:
+            max_sum = max(max_sum, sum(pair))
+    
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

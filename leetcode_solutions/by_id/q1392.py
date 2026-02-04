@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储两个数组中的元素，然后通过集合操作找出不同元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums1 和 nums2 转换为集合 set1 和 set2。
+2. 使用集合差集操作找到 set1 中不在 set2 中的元素，即 set1 - set2。
+3. 使用集合差集操作找到 set2 中不在 set1 中的元素，即 set2 - set1。
+4. 返回结果列表 [list(set1 - set2), list(set2 - set1)]。
 
 关键点:
-- [TODO]
+- 使用集合操作可以高效地找到不同元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。集合操作的时间复杂度接近 O(1)。
+空间复杂度: O(n + m)，需要额外的空间来存储两个集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_difference(nums1: List[int], nums2: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    返回两个数组的不同元素。
     """
-    # TODO: 实现最优解法
-    pass
+    set1 = set(nums1)
+    set2 = set(nums2)
+    
+    diff1 = list(set1 - set2)
+    diff2 = list(set2 - set1)
+    
+    return [diff1, diff2]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_difference)

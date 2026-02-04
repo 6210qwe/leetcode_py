@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合操作来找出在 Employees 表和 Salaries 表中缺失的 employee_id。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 Employees 表中的 employee_id 放入一个集合。
+2. 将 Salaries 表中的 employee_id 放入另一个集合。
+3. 找出两个集合的对称差集，即为缺失信息的 employee_id。
+4. 对结果进行排序并返回。
 
 关键点:
-- [TODO]
+- 使用集合操作可以高效地找出缺失的 employee_id。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是员工的数量。集合操作的时间复杂度为 O(n)，排序的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储两个集合。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(employees: List[List[str]], salaries: List[List[str]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 Employees 表中的 employee_id 放入一个集合
+    employees_set = {int(row[0]) for row in employees}
+    
+    # 将 Salaries 表中的 employee_id 放入另一个集合
+    salaries_set = {int(row[0]) for row in salaries}
+    
+    # 找出两个集合的对称差集
+    missing_ids = sorted(employees_set ^ salaries_set)
+    
+    return missing_ids
 
 
 Solution = create_solution(solution_function_name)

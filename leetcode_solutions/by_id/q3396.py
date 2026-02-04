@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查字符串是否满足有效单词的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查字符串长度是否至少为3。
+2. 检查字符串是否只包含数字和英文字母。
+3. 检查字符串是否包含至少一个元音字母。
+4. 检查字符串是否包含至少一个辅音字母。
 
 关键点:
-- [TODO]
+- 使用正则表达式检查字符集。
+- 遍历字符串检查元音和辅音。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_valid_word(word: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查字符串是否是有效单词。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(word) < 3:
+        return False
+
+    vowels = set('aeiouAEIOU')
+    has_vowel = False
+    has_consonant = False
+
+    for char in word:
+        if not (char.isalnum() and (char.isdigit() or char.isalpha())):
+            return False
+        if char in vowels:
+            has_vowel = True
+        elif char.isalpha():
+            has_consonant = True
+
+    return has_vowel and has_consonant
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_valid_word)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用异或运算找到两个重复的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对所有数字进行异或运算，得到两个重复数字的异或结果。
+2. 找到异或结果中任意一位为1的位，将数字分成两组。
+3. 分别对两组进行异或运算，得到两个重复的数字。
 
 关键点:
-- [TODO]
+- 异或运算的性质：a ^ a = 0, a ^ 0 = a
+- 通过异或运算可以找到两个重复的数字
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用异或运算找到两个重复的数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算所有数字的异或结果
+    xor_result = 0
+    for num in nums:
+        xor_result ^= num
+    
+    # 找到异或结果中任意一位为1的位
+    diff_bit = xor_result & -xor_result
+    
+    # 将数字分成两组
+    num1, num2 = 0, 0
+    for num in nums:
+        if num & diff_bit:
+            num1 ^= num
+        else:
+            num2 ^= num
+    
+    return [num1, num2]
 
 
 Solution = create_solution(solution_function_name)

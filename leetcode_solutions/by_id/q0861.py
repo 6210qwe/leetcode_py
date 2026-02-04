@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过双指针方法对每一行进行水平翻转，并在翻转过程中同时进行反转操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每一行。
+2. 使用双指针从行的两端向中间移动，交换元素并进行反转。
+3. 返回处理后的图像。
 
 关键点:
-- [TODO]
+- 使用双指针可以同时完成翻转和反转操作，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是图像的边长。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def flip_and_invert_image(image: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 翻转并反转图像
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(image)
+    for row in image:
+        left, right = 0, n - 1
+        while left < right:
+            # 交换并反转
+            row[left], row[right] = 1 - row[right], 1 - row[left]
+            left += 1
+            right -= 1
+        if left == right:
+            # 如果行长度为奇数，中间元素需要单独反转
+            row[left] = 1 - row[left]
+    return image
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(flip_and_invert_image)

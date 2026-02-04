@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每种等价多米诺骨牌的数量，然后计算等价对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `count` 来记录每种等价多米诺骨牌的数量。
+2. 遍历每个多米诺骨牌，将其转换为一个标准化的形式（例如 `[min(a, b), max(a, b)]`），并更新字典中的计数。
+3. 计算等价对的数量。对于每种等价多米诺骨牌，如果其数量为 `n`，则等价对的数量为 `n * (n - 1) // 2`。
 
 关键点:
-- [TODO]
+- 使用标准化形式来表示多米诺骨牌，确保 `[a, b]` 和 `[b, a]` 被视为相同的。
+- 使用组合公式 `n * (n - 1) // 2` 来计算等价对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是多米诺骨牌的数量。我们只需要遍历一次多米诺骨牌数组。
+空间复杂度: O(n)，在最坏情况下，所有多米诺骨牌都是不同的，需要存储每个骨牌的信息。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_equiv_domino_pairs(dominoes: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算等价多米诺骨牌对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    result = 0
+    
+    for domino in dominoes:
+        # 标准化多米诺骨牌
+        key = tuple(sorted(domino))
+        
+        if key in count:
+            result += count[key]
+            count[key] += 1
+        else:
+            count[key] = 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_equiv_domino_pairs)

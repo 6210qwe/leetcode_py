@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和动态规划来找到三个无重叠子数组的最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个长度为 k 的子数组的和。
+2. 使用动态规划计算从左到右和从右到左的最优解。
+3. 结合左右两个方向的最优解，找到三个无重叠子数组的最大和及其起始位置。
 
 关键点:
-- [TODO]
+- 使用滑动窗口计算子数组和。
+- 动态规划记录从左到右和从右到左的最优解。
+- 结合左右最优解找到最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_sum_of_three_subarrays(nums: List[int], k: int) -> List[int]:
+    n = len(nums)
+    subarray_sums = [sum(nums[i:i + k]) for i in range(n - k + 1)]
+    
+    # 从左到右的动态规划
+    left_dp = [0] * (n - k + 1)
+    left_pos = [0] * (n - k + 1)
+    max_sum = 0
+    for i in range(n - k + 1):
+        if subarray_sums[i] > max_sum:
+            max_sum = subarray_sums[i]
+            left_pos[i] = i
+        else:
+            left_pos[i] = left_pos[i - 1]
+        left_dp[i] = max_sum
+    
+    # 从右到左的动态规划
+    right_dp = [0] * (n - k + 1)
+    right_pos = [n - k] * (n - k + 1)
+    max_sum = 0
+    for i in range(n - k, -1, -1):
+        if subarray_sums[i] >= max_sum:
+            max_sum = subarray_sums[i]
+            right_pos[i] = i
+        else:
+            right_pos[i] = right_pos[i + 1]
+        right_dp[i] = max_sum
+    
+    # 找到三个无重叠子数组的最大和及其起始位置
+    max_total = 0
+    result = [0, 0, 0]
+    for j in range(k, n - 2 * k + 1):
+        total = left_dp[j - k] + subarray_sums[j] + right_dp[j + k]
+        if total > max_total:
+            max_total = total
+            result = [left_pos[j - k], j, right_pos[j + k]]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_of_three_subarrays)

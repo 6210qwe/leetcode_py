@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到连续 k 个袋子的最大硬币数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个区间展开成单个袋子，并计算每个袋子的硬币数量。
+2. 使用滑动窗口来找到连续 k 个袋子的最大硬币数量。
 
 关键点:
-- [TODO]
+- 展开区间时，使用前缀和来快速计算每个袋子的硬币数量。
+- 滑动窗口用于高效地找到最大硬币数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_coins_from_k_consecutive_bags(coins: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回通过收集连续 k 个袋子可以获得的最多硬币数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 展开区间并计算每个袋子的硬币数量
+    bags = []
+    for li, ri, ci in coins:
+        for i in range(li, ri + 1):
+            bags.append((i, ci))
+    
+    # 按坐标排序
+    bags.sort(key=lambda x: x[0])
+    
+    # 计算前缀和
+    prefix_sum = [0]
+    for _, ci in bags:
+        prefix_sum.append(prefix_sum[-1] + ci)
+    
+    # 使用滑动窗口找到最大硬币数量
+    max_coins = 0
+    for i in range(k, len(prefix_sum)):
+        max_coins = max(max_coins, prefix_sum[i] - prefix_sum[i - k])
+    
+    return max_coins
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_coins_from_k_consecutive_bags)

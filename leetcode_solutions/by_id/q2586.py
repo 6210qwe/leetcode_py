@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字及其平方数的存在情况，并通过递归计算最长的方波。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有数字存入集合中，以便快速查找。
+2. 遍历每个数字，尝试找到以该数字为起点的最长方波。
+3. 对于每个数字，递归地检查其平方数是否存在，并更新最长方波的长度。
 
 关键点:
-- [TODO]
+- 使用集合存储数字，以便 O(1) 时间复杂度的查找。
+- 递归地检查每个数字的平方数，直到找不到为止。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度为 O(n log n)，遍历和递归的时间复杂度为 O(n)。
+空间复杂度: O(n)，使用集合存储数字，递归调用栈的空间复杂度为 O(log n)。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_square_streak(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中最长的方波长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有数字存入集合中
+    num_set = set(nums)
+    
+    def find_longest_streak(num: int) -> int:
+        if num * num not in num_set:
+            return 1
+        return 1 + find_longest_streak(num * num)
+    
+    max_streak = -1
+    for num in nums:
+        if num * num in num_set:
+            max_streak = max(max_streak, find_longest_streak(num))
+    
+    return max_streak if max_streak >= 2 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_square_streak)

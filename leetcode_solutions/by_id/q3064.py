@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 的 concat 函数来垂直连接两个 DataFrame。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 使用 pd.concat 函数将两个 DataFrame 垂直连接。
+3. 返回连接后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 pd.concat 函数时，设置 axis=0 表示垂直连接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是两个 DataFrame 的总行数。
+空间复杂度: O(n)，因为需要存储合并后的 DataFrame。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def concatenate_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    将两个 DataFrame 垂直连接成一个 DataFrame。
+
+    :param df1: 第一个 DataFrame
+    :param df2: 第二个 DataFrame
+    :return: 连接后的 DataFrame
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 pd.concat 函数将两个 DataFrame 垂直连接
+    concatenated_df = pd.concat([df1, df2], axis=0)
+    return concatenated_df
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(concatenate_dataframes)

@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出符合条件的电影，并按 rating 降序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 cinema 表中选择 id 为奇数且 description 不为 'boring' 的电影。
+2. 按 rating 降序排列结果。
 
 关键点:
-- [TODO]
+- 使用 `WHERE` 子句来过滤条件。
+- 使用 `ORDER BY` 子句来排序结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 cinema 表中的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询本身不需要额外的空间，只返回结果集。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(cinema):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询语句
+    query = """
+    SELECT *
+    FROM cinema
+    WHERE id % 2 = 1 AND description != 'boring'
+    ORDER BY rating DESC
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

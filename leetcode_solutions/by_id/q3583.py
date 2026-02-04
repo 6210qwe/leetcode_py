@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个可能的最大公约数值及其出现次数，然后通过前缀和来快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有可能的最大公约数值及其出现次数。
+2. 使用前缀和数组来存储每个最大公约数值的累积数量。
+3. 对于每个查询，使用二分查找在前缀和数组中找到对应的值。
 
 关键点:
-- [TODO]
+- 使用哈希表记录最大公约数值及其出现次数。
+- 使用前缀和数组加速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n + q log n)，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n^2)，用于存储所有可能的最大公约数值及其出现次数。
 """
 
 # ============================================================================
@@ -47,14 +49,45 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def gcd(x, y):
+        return math.gcd(x, y)
 
+    n = len(nums)
+    max_val = max(nums)
+    gcd_counts = [0] * (max_val + 1)
+    
+    # 计算所有可能的最大公约数值及其出现次数
+    for i in range(n):
+        for j in range(i + 1, n):
+            gcd_val = gcd(nums[i], nums[j])
+            gcd_counts[gcd_val] += 1
+    
+    # 前缀和数组
+    prefix_sum = [0] * (max_val + 2)
+    for i in range(1, max_val + 1):
+        prefix_sum[i + 1] = prefix_sum[i] + gcd_counts[i]
+    
+    # 对于每个查询，使用二分查找在前缀和数组中找到对应的值
+    def binary_search(target):
+        left, right = 0, max_val + 1
+        while left < right:
+            mid = (left + right) // 2
+            if prefix_sum[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left - 1
+    
+    result = []
+    for query in queries:
+        result.append(binary_search(query + 1))
+    
+    return result
 
 Solution = create_solution(solution_function_name)

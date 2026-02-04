@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来处理山脉的可见性问题。首先对山脉进行排序，然后使用单调栈来判断每个山脉是否可见。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将山脉按照 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标降序排序。
+2. 初始化一个空的单调栈。
+3. 遍历排序后的山脉列表，对于每个山脉：
+   - 如果栈为空，或者当前山脉的 x 坐标大于栈顶山脉的 x 坐标且 y 坐标大于栈顶山脉的 y 坐标，则将当前山脉入栈。
+   - 否则，跳过当前山脉。
+4. 最后栈中的元素即为可见的山脉数量。
 
 关键点:
-- [TODO]
+- 排序是关键，确保 x 坐标相同的山脉中较高的在前。
+- 使用单调栈来维护可见的山脉。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是山脉的数量。排序操作的时间复杂度为 O(n log n)，遍历和栈操作的时间复杂度为 O(n)。
+空间复杂度: O(n)，最坏情况下栈中可能包含所有的山脉。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_visible_mountains(peaks: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可见的山脉数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标降序排序
+    peaks.sort(key=lambda p: (p[0], -p[1]))
+    
+    # 初始化单调栈
+    stack = []
+    
+    for peak in peaks:
+        # 如果栈为空，或者当前山脉的 x 坐标大于栈顶山脉的 x 坐标且 y 坐标大于栈顶山脉的 y 坐标
+        if not stack or (peak[0] > stack[-1][0] and peak[1] > stack[-1][1]):
+            stack.append(peak)
+    
+    return len(stack)
 
-
-Solution = create_solution(solution_function_name)
+Solution = count_visible_mountains

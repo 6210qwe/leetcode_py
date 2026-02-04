@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历字符串数组，检查每个字符串是否为回文字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_palindrome` 来判断一个字符串是否为回文。
+2. 遍历字符串数组 `words`，使用 `is_palindrome` 函数检查每个字符串。
+3. 返回第一个回文字符串，如果没有找到则返回空字符串。
 
 关键点:
-- [TODO]
+- 使用双指针方法来判断一个字符串是否为回文。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是字符串的平均长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +49,25 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def is_palindrome(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断一个字符串是否为回文字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
 
+def solution_function_name(words: List[str]) -> str:
+    """
+    函数式接口 - 找出数组中的第一个回文字符串
+    """
+    for word in words:
+        if is_palindrome(word):
+            return word
+    return ""
 
 Solution = create_solution(solution_function_name)

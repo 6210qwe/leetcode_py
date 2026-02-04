@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从起始位置到目标位置的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，其中每个节点表示数组中的一个索引，边表示可以进行的跳跃。
+2. 使用一个队列来进行 BFS，初始时将起始位置 (0) 放入队列。
+3. 使用一个集合来记录已经访问过的节点，避免重复访问。
+4. 对于队列中的每个节点，检查其所有可能的跳跃位置，如果到达目标位置则返回当前步数。
+5. 如果队列为空且未到达目标位置，则返回 -1（但根据题目要求，这种情况不会发生）。
 
 关键点:
-- [TODO]
+- 使用字典来存储相同值的索引，以便快速查找可以跳跃的位置。
+- 使用 BFS 确保找到的是最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个节点最多被访问一次。
+空间复杂度: O(n)，用于存储图和队列。
 """
 
 # ============================================================================
@@ -49,12 +53,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_jumps(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回到达数组最后一个元素的下标处所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if len(arr) <= 1:
+        return 0
+
+    # 构建图
+    graph = {}
+    for i, value in enumerate(arr):
+        if value not in graph:
+            graph[value] = []
+        graph[value].append(i)
+
+    # 初始化 BFS
+    queue = [(0, 0)]  # (index, steps)
+    visited = set([0])
+    target = len(arr) - 1
+
+    while queue:
+        index, steps = queue.pop(0)
+        if index == target:
+            return steps
+
+        # 跳到相邻位置
+        for next_index in [index - 1, index + 1]:
+            if 0 <= next_index < len(arr) and next_index not in visited:
+                visited.add(next_index)
+                queue.append((next_index, steps + 1))
+
+        # 跳到相同值的位置
+        if arr[index] in graph:
+            for next_index in graph[arr[index]]:
+                if next_index not in visited:
+                    visited.add(next_index)
+                    queue.append((next_index, steps + 1))
+
+        # 清除已访问的值，避免重复处理
+        graph[arr[index]] = []
+
+    return -1  # 根据题目要求，这种情况不会发生
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_jumps)

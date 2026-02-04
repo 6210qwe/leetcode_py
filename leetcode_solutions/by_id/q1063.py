@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的最大值，并在遍历过程中更新最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`max_i_plus_val` 用于记录 `values[i] + i` 的最大值，`max_score` 用于记录当前的最大得分。
+2. 遍历数组，对于每个 `j`，计算 `values[j] + j` 并与 `max_i_plus_val` 结合，更新 `max_score`。
+3. 更新 `max_i_plus_val` 为 `values[j] + j` 和 `max_i_plus_val` 中的较大值。
+4. 返回 `max_score`。
 
 关键点:
-- [TODO]
+- 通过维护 `max_i_plus_val` 来减少重复计算，从而提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为只需要一次遍历。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(values: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    max_i_plus_val = 0
+    max_score = float('-inf')
+    
+    for j in range(len(values)):
+        max_score = max(max_score, max_i_plus_val + values[j] - j)
+        max_i_plus_val = max(max_i_plus_val, values[j] + j)
+    
+    return max_score
 
 
 Solution = create_solution(solution_function_name)

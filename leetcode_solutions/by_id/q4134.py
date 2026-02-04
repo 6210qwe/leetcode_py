@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 计算数组的整体按位或。
+- 使用动态规划和组合数学计算每个子序列的影响。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的按位或。
+2. 使用动态规划和组合数学计算每个子序列的影响。
+3. 通过组合数学计算有效子序列的数量。
 
 关键点:
-- [TODO]
+- 动态规划用于计算每个子序列的影响。
+- 组合数学用于计算子序列的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))
+空间复杂度: O(log(max(nums)))
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_effective_subsequences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算有效子序列的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算整个数组的按位或
+    total_or = 0
+    for num in nums:
+        total_or |= num
+    
+    # 初始化计数器
+    bit_count = [0] * 20  # 最多 20 位
+    for num in nums:
+        for i in range(20):
+            if num & (1 << i):
+                bit_count[i] += 1
+    
+    # 动态规划计算有效子序列的数量
+    dp = [1] * (len(nums) + 1)
+    for i in range(1, len(dp)):
+        dp[i] = (dp[i - 1] * 2) % MOD
+    
+    # 计算有效子序列的数量
+    result = 0
+    for i in range(20):
+        if total_or & (1 << i):
+            result = (result + dp[bit_count[i]]) % MOD
+    
+    return (dp[len(nums)] - 1 - result) % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_effective_subsequences)

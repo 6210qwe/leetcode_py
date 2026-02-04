@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用多源BFS来计算每个单元格到最近的障碍物的距离，然后计算所有单元格的远离程度之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有的障碍物加入队列，并标记为已访问。
+2. 使用BFS从所有障碍物同时开始遍历，计算每个单元格到最近的障碍物的距离。
+3. 计算所有单元格的远离程度之和。
 
 关键点:
-- [TODO]
+- 使用多源BFS可以有效地计算每个单元格到最近的障碍物的距离。
+- 通过维护一个距离矩阵来记录每个单元格到最近的障碍物的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中m是矩阵的行数，n是矩阵的列数。每个单元格最多被访问一次。
+空间复杂度: O(m * n)，用于存储距离矩阵和队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def sum_of_remoteness(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有单元格的远离程度之和
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    # 初始化距离矩阵
+    distance = [[float('inf')] * n for _ in range(m)]
+    queue = deque()
+    
+    # 将所有障碍物加入队列，并初始化距离为0
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                distance[i][j] = 0
+                queue.append((i, j))
+    
+    # 多源BFS
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and distance[nx][ny] > distance[x][y] + 1:
+                distance[nx][ny] = distance[x][y] + 1
+                queue.append((nx, ny))
+    
+    # 计算所有单元格的远离程度之和
+    total_remoteness = sum(sum(row) for row in distance)
+    return total_remoteness
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_remoteness)

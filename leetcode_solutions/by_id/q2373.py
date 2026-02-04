@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式匹配价格，并应用折扣。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用正则表达式匹配句子中的所有价格。
+2. 对每个匹配到的价格应用折扣，并格式化为保留两位小数的字符串。
+3. 将处理后的价格替换回原句子中。
 
 关键点:
-- [TODO]
+- 使用正则表达式来匹配价格。
+- 使用字符串格式化来保留两位小数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是句子的长度。正则表达式匹配和替换操作的时间复杂度都是线性的。
+空间复杂度: O(n)，需要存储匹配到的价格和处理后的句子。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
 
-
-def solution_function_name(params):
+def apply_discount_to_prices(sentence: str, discount: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    应用折扣到句子中的价格。
+    
+    :param sentence: 包含价格的句子
+    :param discount: 折扣百分比
+    :return: 修改后的句子
     """
-    # TODO: 实现最优解法
-    pass
+    def apply_discount(match):
+        price = float(match.group(1))
+        discounted_price = price * (1 - discount / 100)
+        return f"${discounted_price:.2f}"
 
+    # 使用正则表达式匹配价格
+    pattern = re.compile(r'\$(\d+(\.\d+)?)')
+    result = pattern.sub(apply_discount, sentence)
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(apply_discount_to_prices)

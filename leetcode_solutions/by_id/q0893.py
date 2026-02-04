@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 构建从每个节点到其父节点的映射，然后使用广度优先搜索 (BFS) 找到距离目标节点 k 的所有节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 构建从每个节点到其父节点的映射。
+2. 使用 BFS 从目标节点开始，找到距离为 k 的所有节点。
 
 关键点:
-- [TODO]
+- 使用字典存储每个节点的父节点，以便在 BFS 中能够向上遍历。
+- 使用集合记录已经访问过的节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。构建父节点映射和 BFS 都需要遍历所有节点。
+空间复杂度: O(n)，用于存储父节点映射和访问记录。
 """
 
 # ============================================================================
@@ -44,17 +45,34 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_nodes_distance_k(root: TreeNode, target: TreeNode, k: int) -> List[int]:
+    # 构建从每个节点到其父节点的映射
+    parent_map = {}
+    def dfs(node: TreeNode, parent: Optional[TreeNode]):
+        if node:
+            parent_map[node] = parent
+            dfs(node.left, node)
+            dfs(node.right, node)
+    
+    dfs(root, None)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 使用 BFS 从目标节点开始，找到距离为 k 的所有节点
+    queue = [(target, 0)]
+    visited = {target}
+    result = []
 
+    while queue:
+        node, distance = queue.pop(0)
+        if distance == k:
+            result.append(node.val)
+        for neighbor in (node.left, node.right, parent_map.get(node)):
+            if neighbor and neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, distance + 1))
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_nodes_distance_k)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将帽子映射到人，即记录每个帽子被哪些人喜欢。
+2. 使用动态规划，定义 dp[hat][mask] 表示前 hat 个帽子在当前状态下（用 mask 表示）的方案数。
+3. 初始化 dp 数组，dp[0][0] = 1，表示没有帽子时，没有人戴帽子的方案数为 1。
+4. 遍历每个帽子和每个状态，更新 dp 数组。
+5. 最终结果是 dp[40][(1 << n) - 1]，表示所有帽子都被分配且所有人都戴了帽子的方案数。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示每个人的帽子分配情况。
+- 动态规划的状态转移方程：dp[hat][mask] = dp[hat-1][mask] + sum(dp[hat-1][mask ^ (1 << person)] for person in people_who_like_hat[hat])。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(40 * 2^n * n)，其中 n 是人数，40 是帽子数量。
+空间复杂度: O(40 * 2^n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def number_of_ways_to_wear_hats(hats: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    n = len(hats)
+    max_mask = 1 << n
+    dp = [[0] * max_mask for _ in range(41)]
+    dp[0][0] = 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 将帽子映射到人
+    hat_to_people = [[] for _ in range(41)]
+    for i, hat_list in enumerate(hats):
+        for hat in hat_list:
+            hat_to_people[hat].append(i)
 
+    for hat in range(1, 41):
+        for mask in range(max_mask):
+            dp[hat][mask] = dp[hat-1][mask]
+            for person in hat_to_people[hat]:
+                if mask & (1 << person):
+                    dp[hat][mask] += dp[hat-1][mask ^ (1 << person)]
+                    dp[hat][mask] %= MOD
 
-Solution = create_solution(solution_function_name)
+    return dp[40][max_mask - 1]
+
+Solution = create_solution(number_of_ways_to_wear_hats)

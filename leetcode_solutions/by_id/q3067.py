@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库直接修改 DataFrame 中的 salary 列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 Pandas 库。
+2. 读取输入的 DataFrame。
+3. 将 salary 列的值乘以 2。
+4. 返回修改后的 DataFrame。
 
 关键点:
-- [TODO]
+- 直接在 DataFrame 上进行操作，避免创建新的 DataFrame 以节省空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。遍历每一行的时间复杂度是 O(n)。
+空间复杂度: O(1)，不使用额外的空间，直接在原 DataFrame 上进行修改。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def modify_columns(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 修改 DataFrame 中的 salary 列，将其值乘以 2。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 salary 列的值乘以 2
+    employees['salary'] = employees['salary'] * 2
+    return employees
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(modify_columns)

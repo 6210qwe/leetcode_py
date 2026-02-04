@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到字典序最小的合法下标序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 word1 和 word2 的起始位置。
+2. 遍历 word1，对于每个字符，检查是否可以匹配 word2[j] 或者通过修改一个字符来匹配。
+3. 如果可以匹配，则将当前下标加入结果数组，并移动指针 j。
+4. 如果遍历完 word1 后，j 没有到达 word2 的末尾，则返回空数组。
+5. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用双指针来遍历两个字符串，确保下标序列是升序的。
+- 通过贪心选择字典序最小的下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 word1 的长度。
+空间复杂度: O(m)，其中 m 是 word2 的长度，用于存储结果数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_smallest_sequence(word1: str, word2: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    找到字典序最小的合法下标序列。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(word1), len(word2)
+    result = []
+    j = 0
+    
+    for i in range(m):
+        if j < n and (word1[i] == word2[j] or (result and word1[i] != word2[j])):
+            result.append(i)
+            j += 1
+        elif j < n and word1[i] == word2[j]:
+            result[-1] = i
+            j += 1
+    
+    return result if j == n else []
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_smallest_sequence)

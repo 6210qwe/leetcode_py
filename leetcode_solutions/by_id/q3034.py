@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来计算每个点的覆盖情况
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 101 的差分数组 diff，用于记录每个点的覆盖变化。
+2. 遍历每辆车的起始点和结束点，更新差分数组。
+3. 通过前缀和计算每个点的实际覆盖情况。
+4. 统计覆盖点的数量。
 
 关键点:
-- [TODO]
+- 使用差分数组可以高效地处理区间更新问题。
+- 通过前缀和计算最终的覆盖情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是数轴的最大范围（本题中为 100）。
+空间复杂度: O(m)，用于存储差分数组和前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算与车相交的点的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化差分数组
+    diff = [0] * 101
+    
+    # 更新差分数组
+    for start, end in nums:
+        diff[start] += 1
+        diff[end + 1] -= 1
+    
+    # 通过前缀和计算实际覆盖情况
+    prefix_sum = 0
+    count = 0
+    for i in range(101):
+        prefix_sum += diff[i]
+        if prefix_sum > 0:
+            count += 1
+    
+    return count
 
 Solution = create_solution(solution_function_name)

@@ -21,56 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用双指针方法遍历矩阵的对角线，并根据对角线的方向调整遍历顺序。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化结果列表 `result` 和方向标志 `direction`。
+2. 使用双指针 `row` 和 `col` 遍历矩阵。
+3. 根据当前方向标志 `direction` 决定遍历顺序：
+   - 如果 `direction` 为 1，从左下到右上遍历。
+   - 如果 `direction` 为 -1，从右上到左下遍历。
+4. 每次遍历完一条对角线后，更新指针位置并切换方向。
+5. 返回结果列表 `result`。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 注意边界条件，确保指针在矩阵范围内。
+- 优化时间和空间复杂度，使用 O(1) 额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(m * n) - 需要遍历整个矩阵。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def diagonal_traverse(params):
+def diagonal_traverse(mat: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 对角线遍历矩阵
     
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    使用双指针方法遍历矩阵的对角线，并根据对角线的方向调整遍历顺序。
+
     Args:
-        params: [待实现] 参数说明
+        mat (List[List[int]]): 输入矩阵
         
     Returns:
-        [待实现] 返回值说明
+        List[int]: 对角线遍历的结果列表
         
     Example:
-        >>> diagonal_traverse([待实现])
-        [待实现]
+        >>> diagonal_traverse([[1,2,3],[4,5,6],[7,8,9]])
+        [1,2,4,7,5,3,6,8,9]
     """
-    # TODO: 实现最优解法
-    pass
+    if not mat or not mat[0]:
+        return []
 
+    m, n = len(mat), len(mat[0])
+    result = []
+    row, col = 0, 0
+    direction = 1  # 1 for up, -1 for down
+
+    while row < m and col < n:
+        result.append(mat[row][col])
+
+        new_row = row + (-direction)
+        new_col = col + direction
+
+        if new_row < 0 or new_row >= m or new_col < 0 or new_col >= n:
+            if direction == 1:
+                if col + 1 < n:
+                    col += 1
+                else:
+                    row += 1
+            else:
+                if row + 1 < m:
+                    row += 1
+                else:
+                    col += 1
+            direction *= -1
+        else:
+            row, col = new_row, new_col
+
+    return result
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(diagonal_traverse)

@@ -21,24 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 0-1 背包问题变形 —— 判断能否选出若干元素使其和恰好等于总和的一半
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 计算数组总和 total；若 total 为奇数，则不可能均分，直接返回 False
+2. 目标 target = total // 2，问题转化为：是否存在子集，其元素和等于 target
+3. 使用动态规划：dp[j] 表示是否能凑出和为 j 的子集（布尔数组）
+   - 初始化 dp[0] = True（和为 0 总是可以实现，选空集）
+   - 对每个 num，从后往前更新 dp[j] = dp[j] or dp[j - num]（避免重复使用同一元素）
+4. 返回 dp[target]
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 注意边界条件：total 为奇数时直接返回 False；target=0 时返回 True（但 nums 非空且全正，target=0 仅当 nums 为空，题目保证非空，故无需特判）
+- 空间优化：使用一维滚动数组，逆序遍历避免覆盖未更新状态
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n * target) - 其中 n 为数组长度，target = sum(nums)//2；最坏情况下 target ≈ 100*200/2 = 10000，可接受
+空间复杂度: O(target) - 仅需一维布尔数组存储状态
 """
 
 # ============================================================================
@@ -51,25 +54,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def partition_equal_subset_sum(params):
+def partition_equal_subset_sum(nums: List[int]) -> bool:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 判断数组能否分割成两个等和子集
     
     实现思路:
-    [待实现] 简要说明实现思路
+    将问题转化为 0-1 背包可行性问题：是否存在子集和等于总和的一半。
+    使用一维动态规划数组 dp，dp[j] 表示能否凑出和为 j 的子集。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 只包含正整数的非空数组
         
     Returns:
-        [待实现] 返回值说明
+        bool: 若可分割为两个等和子集返回 True，否则返回 False
         
     Example:
-        >>> partition_equal_subset_sum([待实现])
-        [待实现]
+        >>> partition_equal_subset_sum([1,5,11,5])
+        True
+        >>> partition_equal_subset_sum([1,2,3,5])
+        False
     """
-    # TODO: 实现最优解法
-    pass
+    total = sum(nums)
+    if total % 2 != 0:
+        return False
+    target = total // 2
+
+    # dp[j] 表示能否凑出和为 j 的子集
+    dp = [False] * (target + 1)
+    dp[0] = True  # 和为 0 总是可以实现（空集）
+
+    for num in nums:
+        # 从大到小遍历，避免重复使用当前 num
+        for j in range(target, num - 1, -1):
+            if dp[j - num]:
+                dp[j] = True
+
+    return dp[target]
 
 
 # 自动生成Solution类（无需手动编写）

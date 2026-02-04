@@ -21,40 +21,87 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来找到每条旅行路径上的节点，并计算每个节点的访问次数。然后使用动态规划 (DP) 来决定哪些节点的价格需要减半以最小化总价格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 对于每条旅行路径，使用 DFS 找到路径上的所有节点，并记录每个节点的访问次数。
+3. 计算每个节点的总价格（即访问次数乘以节点价格）。
+4. 使用 DP 来决定哪些节点的价格需要减半，以确保非相邻节点的价格减半。
+5. 返回最小化后的总价格。
 
 关键点:
-- [TODO]
+- 使用 DFS 找到每条路径上的节点。
+- 使用 DP 来决定哪些节点的价格需要减半。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是旅行路径数。构建邻接表和处理每条旅行路径的时间复杂度是 O(n + m)。
+空间复杂度: O(n)，用于存储邻接表、访问次数和 DP 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_path(graph, node, end, path, visited):
+    if node == end:
+        return True
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            visited.add(neighbor)
+            path.append(neighbor)
+            if find_path(graph, neighbor, end, path, visited):
+                return True
+            path.pop()
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def dfs(graph, node, parent, count, freq):
+    for neighbor in graph[node]:
+        if neighbor != parent:
+            freq[neighbor] += count
+            dfs(graph, neighbor, node, count, freq)
 
+def dp(node, parent, price, freq, memo):
+    if (node, parent) in memo:
+        return memo[(node, parent)]
+    half_price = (price[node] // 2) * freq[node]
+    full_price = price[node] * freq[node]
+    
+    for neighbor in graph[node]:
+        if neighbor != parent:
+            half_price += dp(neighbor, node, price, freq, memo)[0]
+            full_price += min(dp(neighbor, node, price, freq, memo))
+    
+    memo[(node, parent)] = (half_price, full_price)
+    return (half_price, full_price)
+
+def solution_function_name(n: int, edges: List[List[int]], price: List[int], trips: List[List[int]]) -> int:
+    # 构建邻接表
+    global graph
+    graph = {i: [] for i in range(n)}
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # 记录每个节点的访问次数
+    freq = [0] * n
+    for start, end in trips:
+        path = [start]
+        visited = {start}
+        if find_path(graph, start, end, path, visited):
+            for node in path:
+                freq[node] += 1
+    
+    # 动态规划求解
+    memo = {}
+    root = 0
+    total_cost = min(dp(root, -1, price, freq, memo))
+    return total_cost
 
 Solution = create_solution(solution_function_name)

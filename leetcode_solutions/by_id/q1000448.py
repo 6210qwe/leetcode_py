@@ -21,22 +21,28 @@ LCP 58. 积木拼接 - 欢迎各位勇者来到力扣城，本次试炼主题为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 回溯法 + 状态压缩
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每片积木的所有可能旋转和翻转状态存储在一个集合中。
+2. 使用状态压缩表示当前已经使用的积木片，并使用回溯法尝试所有可能的组合。
+3. 检查每种组合是否能形成一个完整的正方体。
 
 关键点:
-- [TODO]
+- 通过状态压缩减少状态空间。
+- 通过预处理积木的所有可能状态减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(6! * 8^6)
+- 6! 是排列组合的总数。
+- 每片积木最多有 8 种状态（4 种旋转 + 4 种翻转）。
+
+空间复杂度: O(8^6)
+- 存储每片积木的所有可能状态。
 """
 
 # ============================================================================
@@ -48,13 +54,54 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def rotate(shape: List[str]) -> List[str]:
+    """顺时针旋转 90 度"""
+    return ["".join(row[i] for row in shape[::-1]) for i in range(len(shape))]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def flip(shape: List[str]) -> List[str]:
+    """水平翻转"""
+    return [row[::-1] for row in shape]
 
+def get_all_transforms(shape: List[str]) -> set:
+    """获取所有可能的旋转和翻转状态"""
+    transforms = set()
+    for _ in range(4):
+        shape = rotate(shape)
+        transforms.add(tuple(shape))
+        transforms.add(tuple(flip(shape)))
+    return transforms
+
+def can_form_cube(shapes: List[List[str]]) -> bool:
+    n = len(shapes[0])
+    all_shapes = [get_all_transforms(shape) for shape in shapes]
+    
+    def backtrack(index: int, used: int, current: List[List[str]]) -> bool:
+        if index == 6:
+            return True
+        for i in range(6):
+            if (used & (1 << i)) == 0:
+                for shape in all_shapes[i]:
+                    if is_valid(current, shape):
+                        current.append(list(shape))
+                        if backtrack(index + 1, used | (1 << i), current):
+                            return True
+                        current.pop()
+        return False
+    
+    def is_valid(current: List[List[str]], new_shape: List[str]) -> bool:
+        if not current:
+            return True
+        for i in range(n):
+            if current[-1][i] + new_shape[i] != "1" * n:
+                return False
+        return True
+    
+    return backtrack(0, 0, [])
+
+def solution_function_name(shapes: List[List[str]]) -> bool:
+    """
+    函数式接口 - 判断是否能拼接成一个严丝合缝的正方体
+    """
+    return can_form_cube(shapes)
 
 Solution = create_solution(solution_function_name)

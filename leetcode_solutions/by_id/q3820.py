@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储所有可能的异或结果，并利用双重循环来生成这些结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `xor_results` 来存储所有的异或结果。
+2. 使用双重循环遍历数组中的每一对元素 (i, j)，计算它们的异或值 `xor_ij`。
+3. 对于每个 `xor_ij`，再遍历数组中的每个元素 k，计算 `xor_ij ^ nums[k]` 并将其加入 `xor_results`。
+4. 最后返回 `xor_results` 的大小，即不同异或值的数量。
 
 关键点:
-- [TODO]
+- 使用集合来去重，确保每个异或结果只被记录一次。
+- 通过双重循环和额外的一层循环来生成所有可能的三元组异或结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同 XOR 三元组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    xor_results = set()
+    n = len(nums)
+    
+    for i in range(n):
+        for j in range(i, n):
+            xor_ij = nums[i] ^ nums[j]
+            for k in range(j, n):
+                xor_results.add(xor_ij ^ nums[k])
+    
+    return len(xor_results)
 
 
 Solution = create_solution(solution_function_name)

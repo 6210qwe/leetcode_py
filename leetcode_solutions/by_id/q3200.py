@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算满足条件的字符串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义状态 dp[i][j] 表示前 i 个字符中，已经包含了 "leet" 的前 j 个字符的数量。
+2. 初始化 dp 数组，dp[0][0] = 1。
+3. 迭代更新 dp 数组，考虑每一步选择 'l', 'e', 't' 或其他字符的情况。
+4. 最终结果是 dp[n][4]，表示长度为 n 的字符串中包含 "leet" 的数量。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 使用组合数学来优化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +51,34 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的好字符串总数目
     """
-    # TODO: 实现最优解法
-    pass
+    if n < 4:
+        return 0
 
+    # 动态规划数组
+    dp = [0] * 5
+    dp[0] = 1
+
+    for i in range(1, n + 1):
+        new_dp = [0] * 5
+        for j in range(5):
+            if j == 0:
+                new_dp[j] = (23 * dp[j]) % MOD  # 选择其他字符
+            elif j == 1:
+                new_dp[j] = (dp[j - 1] + 23 * dp[j]) % MOD  # 选择 'l'
+            elif j == 2:
+                new_dp[j] = (dp[j - 1] + 23 * dp[j]) % MOD  # 选择 'e'
+            elif j == 3:
+                new_dp[j] = (dp[j - 1] + 23 * dp[j]) % MOD  # 选择 'e'
+            else:
+                new_dp[j] = (dp[j - 1] + 23 * dp[j]) % MOD  # 选择 't'
+        dp = new_dp
+
+    return dp[4]
 
 Solution = create_solution(solution_function_name)

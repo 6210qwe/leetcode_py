@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用稳定排序算法（如归并排序）对单词按长度进行排序，同时保持原有顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子按空格分割成单词列表。
+2. 使用稳定排序算法对单词列表按长度进行排序。
+3. 将排序后的单词列表重新组合成句子，并确保首字母大写。
 
 关键点:
-- [TODO]
+- 使用稳定排序算法保证相同长度的单词保持原有顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是单词的数量。稳定排序的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储单词列表和排序过程中使用的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def rearrange_words(text: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新排列句子中的单词
     """
-    # TODO: 实现最优解法
-    pass
+    # 将句子按空格分割成单词列表
+    words = text.split()
+    
+    # 使用稳定排序算法对单词列表按长度进行排序
+    words.sort(key=len)
+    
+    # 将排序后的单词列表重新组合成句子，并确保首字母大写
+    new_text = ' '.join(words).capitalize()
+    
+    return new_text
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_words)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将整数转换为字符串，移除其中的 '0'，再将结果转换回整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 n 转换为字符串。
+2. 使用字符串的 replace 方法移除所有的 '0'。
+3. 将处理后的字符串转换回整数并返回。
 
 关键点:
-- [TODO]
+- 利用字符串操作来简化移除零的过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是 n 的十进制表示的位数。
+空间复杂度: O(d)，因为需要存储转换后的字符串。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除十进制表示中的所有零
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数转换为字符串
+    n_str = str(n)
+    # 移除字符串中的所有 '0'
+    n_str_no_zeros = n_str.replace('0', '')
+    # 将处理后的字符串转换回整数
+    result = int(n_str_no_zeros)
+    return result
 
 
 Solution = create_solution(solution_function_name)

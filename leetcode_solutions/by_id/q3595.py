@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来验证每个子字符串的字符频率是否匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 s 和 t 是否具有相同的字符频率。
+2. 计算每个子字符串的长度。
+3. 将 s 和 t 分割成 k 个子字符串。
+4. 对每个子字符串进行字符频率计数。
+5. 比较 s 和 t 的子字符串字符频率是否相同。
 
 关键点:
-- [TODO]
+- 使用计数器来验证字符频率。
+- 确保每个子字符串的长度相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k * (n/k) * log(n/k)) = O(n + n * log(n/k)) = O(n * log(n/k))
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -47,14 +51,34 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def can_rearrange_substrings(s: str, t: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以将字符串 s 分割成 k 个等长的子字符串，然后重新排列这些子字符串，并以任意顺序连接它们，使得最终得到的新字符串与给定的字符串 t 相匹配。
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查 s 和 t 是否具有相同的字符频率
+    if Counter(s) != Counter(t):
+        return False
+    
+    n = len(s)
+    if n % k != 0:
+        return False
+    
+    sub_len = n // k
+    s_substrings = [s[i * sub_len : (i + 1) * sub_len] for i in range(k)]
+    t_substrings = [t[i * sub_len : (i + 1) * sub_len] for i in range(k)]
+    
+    # 对每个子字符串进行字符频率计数
+    s_counts = [Counter(sub) for sub in s_substrings]
+    t_counts = [Counter(sub) for sub in t_substrings]
+    
+    # 比较 s 和 t 的子字符串字符频率是否相同
+    s_counts.sort()
+    t_counts.sort()
+    
+    return s_counts == t_counts
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_rearrange_substrings)

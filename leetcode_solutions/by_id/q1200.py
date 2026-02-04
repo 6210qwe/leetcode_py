@@ -14,47 +14,56 @@
 # 问题描述
 # ============================================================================
 """
-1272. 删除区间 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个非重叠的区间列表 intervals，其中每个区间以 [start, end] 的形式表示。再给定一个区间 toBeRemoved，从 intervals 中移除与 toBeRemoved 有重叠的部分，并返回剩余的区间。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每一个区间，检查其是否与 toBeRemoved 有重叠。如果有重叠，则将该区间分成最多两个不重叠的子区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 res。
+2. 遍历 intervals 中的每一个区间 [start, end]：
+   - 如果 [start, end] 与 toBeRemoved 没有重叠，直接将其加入 res。
+   - 如果 [start, end] 与 toBeRemoved 有重叠，根据重叠情况将 [start, end] 分成最多两个不重叠的子区间，并将这些子区间加入 res。
+3. 返回结果列表 res。
 
 关键点:
-- [TODO]
+- 使用条件判断来处理区间的重叠情况。
+- 注意处理边界情况，确保生成的子区间是有效的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 intervals 的长度。我们只需要遍历一次 intervals。
+空间复杂度: O(1)，除了输出结果外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def remove_intervals(intervals: List[List[int]], to_be_removed: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除与 toBeRemoved 有重叠的部分，并返回剩余的区间
     """
-    # TODO: 实现最优解法
-    pass
+    res = []
+    for start, end in intervals:
+        if end <= to_be_removed[0] or start >= to_be_removed[1]:
+            # 当前区间与 toBeRemoved 没有重叠
+            res.append([start, end])
+        else:
+            # 当前区间与 toBeRemoved 有重叠
+            if start < to_be_removed[0]:
+                res.append([start, to_be_removed[0]])
+            if end > to_be_removed[1]:
+                res.append([to_be_removed[1], end])
+    return res
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_intervals)

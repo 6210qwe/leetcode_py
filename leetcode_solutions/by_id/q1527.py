@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每行的涂色方案数。我们定义两种状态：
+- a 表示当前行的三个格子颜色都不同的方案数。
+- b 表示当前行有两个格子颜色相同，另一个格子颜色不同的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化第一行的 a 和 b。
+2. 通过递推公式计算每一行的 a 和 b。
+3. 最后一行的 a 和 b 之和即为最终结果。
 
 关键点:
-- [TODO]
+- 递推公式：a[i] = (3 * b[i-1]) % MOD, b[i] = (2 * (a[i-1] + b[i-1])) % MOD
+- 初始值：a[0] = 6, b[0] = 6
+- 结果：(a[n-1] + b[n-1]) % MOD
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n x 3 网格图的涂色方案数
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    if n == 1:
+        return 12
+    
+    a, b = 6, 6
+    for i in range(2, n + 1):
+        new_a = (3 * b) % MOD
+        new_b = (2 * (a + b)) % MOD
+        a, b = new_a, new_b
+    
+    return (a + b) % MOD
 
 
 Solution = create_solution(solution_function_name)

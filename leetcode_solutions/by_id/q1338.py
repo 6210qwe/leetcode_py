@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库进行数据处理和计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个查询的 quality。
+2. 计算每个查询的 poor_query_percentage。
+3. 合并结果并四舍五入到小数点后两位。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行高效的数据处理。
+- 使用 groupby 和 agg 方法进行分组聚合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(queries: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每个查询的 quality 和 poor_query_percentage
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个查询的 quality
+    queries['quality'] = queries['rating'] / queries['position']
+    quality_df = queries.groupby('query_name')['quality'].mean().reset_index()
+
+    # 计算每个查询的 poor_query_percentage
+    poor_queries = queries[queries['rating'] < 3]
+    poor_query_count = poor_queries.groupby('query_name').size()
+    total_query_count = queries.groupby('query_name').size()
+    poor_query_percentage = (poor_query_count / total_query_count * 100).round(2).reset_index(name='poor_query_percentage')
+
+    # 合并结果
+    result = pd.merge(quality_df, poor_query_percentage, on='query_name')
+    result['quality'] = result['quality'].round(2)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

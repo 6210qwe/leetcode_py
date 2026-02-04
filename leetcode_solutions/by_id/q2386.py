@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断缩小数组的大小，最终找到最后一个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查数组长度是否为1，如果是则直接返回该元素。
+2. 创建一个新的数组 newNums，长度为原数组的一半。
+3. 遍历原数组，对于偶数下标取最小值，奇数下标取最大值，填充到 newNums。
+4. 用 newNums 替换 nums，重复上述步骤直到数组长度为1。
 
 关键点:
-- [TODO]
+- 通过不断缩小数组的大小，最终找到最后一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。每次操作将数组长度减半，总共需要进行 log n 次操作。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现极大极小游戏
     """
-    # TODO: 实现最优解法
-    pass
-
+    while len(nums) > 1:
+        new_nums = []
+        for i in range(len(nums) // 2):
+            if i % 2 == 0:
+                new_nums.append(min(nums[2 * i], nums[2 * i + 1]))
+            else:
+                new_nums.append(max(nums[2 * i], nums[2 * i + 1]))
+        nums = new_nums
+    return nums[0]
 
 Solution = create_solution(solution_function_name)

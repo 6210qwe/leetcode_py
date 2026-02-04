@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个子数组的起始元素及其在 pieces 中的位置，然后遍历 arr 检查是否能按顺序匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表，键为 pieces 中每个子数组的第一个元素，值为该子数组。
+2. 遍历 arr，对于每个元素，检查其是否在哈希表中：
+   - 如果在哈希表中，获取对应的子数组并检查该子数组是否与 arr 中的相应部分匹配。
+   - 如果匹配失败，返回 False。
+3. 如果遍历完 arr 且所有子数组都匹配成功，返回 True。
 
 关键点:
-- [TODO]
+- 使用哈希表快速查找 pieces 中的子数组。
+- 逐个检查子数组是否与 arr 中的相应部分匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 arr 的长度。我们只需遍历 arr 一次，并在常数时间内查找和比较子数组。
+空间复杂度: O(m)，其中 m 是 pieces 的长度。我们需要存储 pieces 中的每个子数组的起始元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def canFormArray(arr: List[int], pieces: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以通过连接 pieces 中的数组来形成 arr。
+    
+    :param arr: 目标数组
+    :param pieces: 子数组列表
+    :return: 是否可以连接形成 arr
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建哈希表，键为子数组的第一个元素，值为子数组
+    piece_map = {piece[0]: piece for piece in pieces}
+    
+    i = 0
+    while i < len(arr):
+        if arr[i] not in piece_map:
+            return False
+        piece = piece_map[arr[i]]
+        for num in piece:
+            if i >= len(arr) or arr[i] != num:
+                return False
+            i += 1
+    
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(canFormArray)

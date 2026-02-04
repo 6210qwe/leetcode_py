@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以通过预处理来计算每个位置的前缀和，然后使用动态规划来找到最小的矩形面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置的前缀和。
+2. 使用动态规划来枚举所有可能的矩形组合，并记录最小的面积和。
+3. 返回最小的矩形面积和。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算矩形内的 1 的数量。
+- 动态规划的状态转移方程需要仔细设计，以确保不重叠的矩形组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^4 * m^2)，其中 n 和 m 分别是 grid 的行数和列数。我们需要枚举所有可能的矩形组合。
+空间复杂度: O(n * m)，用于存储前缀和数组。
 """
 
 # ============================================================================
@@ -48,13 +50,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def min_area_rectangles(grid: List[List[int]]) -> int:
+    n, m = len(grid), len(grid[0])
+    
+    # 计算前缀和
+    prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            prefix_sum[i][j] = prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1] + grid[i - 1][j - 1]
+    
+    # 动态规划
+    dp = [[[float('inf')] * m for _ in range(m)] for _ in range(4)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            for k in range(j + 1, m + 1):
+                count = prefix_sum[i][k] - prefix_sum[i][j - 1] - prefix_sum[i - 1][k] + prefix_sum[i - 1][j - 1]
+                if count > 0:
+                    dp[1][j][k] = min(dp[1][j][k], (i - 1) * (k - j))
+                    for l in range(1, j):
+                        dp[2][l][k] = min(dp[2][l][k], dp[1][l][j] + (i - 1) * (k - j))
+                        for p in range(1, l):
+                            dp[3][p][k] = min(dp[3][p][k], dp[2][p][l] + (i - 1) * (k - j))
+    
+    return min(min(row) for row in dp[3])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_area_rectangles)

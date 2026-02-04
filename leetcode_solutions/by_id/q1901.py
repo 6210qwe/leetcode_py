@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先选择能够带来最大收益的操作，即每次选择能最大化减少或增加差值的操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算两个数组的和，并确定哪个数组的和更大。
+2. 使用计数器统计每个数组中每个数字的出现次数。
+3. 优先选择能够带来最大收益的操作，即每次选择能最大化减少或增加差值的操作。
+4. 逐步减少差值，直到差值为0或无法再减少为止。
 
 关键点:
-- [TODO]
+- 优先选择能够带来最大收益的操作。
+- 使用计数器统计每个数组中每个数字的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(1)，因为计数器的大小固定为 6。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations(nums1: List[int], nums2: List[int]) -> int:
+    sum1, sum2 = sum(nums1), sum(nums2)
+    if sum1 == sum2:
+        return 0
+    if sum1 > sum2:
+        nums1, nums2 = nums2, nums1
+        sum1, sum2 = sum2, sum1
+    
+    count1, count2 = [0] * 7, [0] * 7
+    for num in nums1:
+        count1[num] += 1
+    for num in nums2:
+        count2[num] += 1
+    
+    diff = abs(sum1 - sum2)
+    operations = 0
+    for i in range(5, 0, -1):
+        max_change = min(count1[6 - i], count2[i + 1])
+        while max_change > 0 and diff > 0:
+            diff -= (6 - i) + (i + 1) - 6
+            max_change -= 1
+            operations += 1
+        if diff <= 0:
+            break
+    
+    if diff > 0:
+        for i in range(1, 6):
+            while count1[i] > 0 and diff > 0:
+                diff -= 6 - i
+                count1[i] -= 1
+                operations += 1
+            if diff <= 0:
+                break
+            while count2[6 - i] > 0 and diff > 0:
+                diff -= i - 1
+                count2[6 - i] -= 1
+                operations += 1
+            if diff <= 0:
+                break
+    
+    return operations if diff <= 0 else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用斜率公式判断所有点是否在同一条直线上。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前两个点之间的斜率。
+2. 遍历剩余的点，检查它们与第一个点之间的斜率是否相同。
+3. 如果所有点的斜率都相同，则这些点在同一条直线上。
 
 关键点:
-- [TODO]
+- 使用斜率公式 (y2 - y1) / (x2 - x1)，为了避免除法运算中的精度问题，可以使用乘法形式 (y2 - y1) * (x3 - x1) == (y3 - y1) * (x2 - x1) 进行比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是坐标点的数量。我们需要遍历所有点来检查斜率。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_straight_line(coordinates: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的坐标点是否在同一条直线上。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(coordinates) < 2:
+        return False
+
+    # 计算前两个点之间的斜率
+    (x0, y0), (x1, y1) = coordinates[0], coordinates[1]
+    for i in range(2, len(coordinates)):
+        (x, y) = coordinates[i]
+        # 检查当前点与第一个点之间的斜率是否与前两个点的斜率相同
+        if (y1 - y0) * (x - x0) != (y - y0) * (x1 - x0):
+            return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_straight_line)

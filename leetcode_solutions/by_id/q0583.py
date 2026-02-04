@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示 word1 的前 i 个字符和 word2 的前 j 个字符的最小删除次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 (m+1) x (n+1) 的二维数组 dp，其中 m 和 n 分别是 word1 和 word2 的长度。
+2. 如果 word1 的前 i 个字符和 word2 的前 j 个字符相同，则 dp[i][j] = dp[i-1][j-1]。
+3. 否则，dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + 1，表示删除一个字符。
+4. 最终结果保存在 dp[m][n] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 边界条件的处理
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 word1 和 word2 的长度。
+空间复杂度: O(m * n)，使用了一个 (m+1) x (n+1) 的二维数组。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word1: str, word2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使两个字符串相同的最小删除次数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(word1), len(word2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    # 初始化边界条件
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+
+    # 填充 dp 数组
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + 1
+
+    return dp[m][n]
 
 
 Solution = create_solution(solution_function_name)

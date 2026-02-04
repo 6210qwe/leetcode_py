@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历二叉树，同时维护当前路径的二进制数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，参数包括当前节点和当前路径的二进制数。
+2. 如果当前节点为空，返回 0。
+3. 更新当前路径的二进制数，左移一位并加上当前节点的值。
+4. 如果当前节点是叶子节点，返回当前路径的二进制数。
+5. 递归调用 `dfs` 函数处理左子树和右子树，并返回它们的和。
 
 关键点:
-- [TODO]
+- 使用位运算来更新当前路径的二进制数。
+- 递归终止条件是遇到叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def sum_root_to_leaf(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算从根到叶的二进制数之和
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], current_value: int) -> int:
+        if not node:
+            return 0
+        current_value = (current_value << 1) | node.val
+        if not node.left and not node.right:
+            return current_value
+        return dfs(node.left, current_value) + dfs(node.right, current_value)
+    
+    return dfs(root, 0)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_root_to_leaf)

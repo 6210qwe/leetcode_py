@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的三元组，并计算每个三元组的度数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表和节点度数数组。
+2. 枚举所有可能的三元组 (u, v, w)，检查它们是否形成连通三元组。
+3. 计算每个连通三元组的度数，并记录最小值。
 
 关键点:
-- [TODO]
+- 使用邻接表来快速查找节点之间的连接。
+- 通过预处理节点度数来减少计算量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_trio_degree(n: int, edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有连通三元组中度数的最小值
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    adj_list = [set() for _ in range(n + 1)]
+    degree = [0] * (n + 1)
+    
+    for u, v in edges:
+        adj_list[u].add(v)
+        adj_list[v].add(u)
+        degree[u] += 1
+        degree[v] += 1
+    
+    min_degree = float('inf')
+    
+    # 枚举所有可能的三元组
+    for u in range(1, n + 1):
+        for v in range(u + 1, n + 1):
+            if v not in adj_list[u]:
+                continue
+            for w in range(v + 1, n + 1):
+                if w not in adj_list[u] or w not in adj_list[v]:
+                    continue
+                # 计算三元组的度数
+                trio_degree = degree[u] + degree[v] + degree[w] - 6
+                min_degree = min(min_degree, trio_degree)
+    
+    return min_degree if min_degree != float('inf') else -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_trio_degree)

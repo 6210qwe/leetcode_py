@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 统计不匹配的字符对，并根据字符对的类型计算最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计 s1 和 s2 中不匹配的字符对 (x, y) 和 (y, x) 的数量。
+2. 根据不匹配字符对的数量和类型计算最小交换次数：
+   - 如果 (x, y) 和 (y, x) 的数量都是偶数，则每对 (x, y) 和 (y, x) 需要 1 次交换。
+   - 如果 (x, y) 和 (y, x) 的数量都是奇数，则需要额外的 2 次交换来处理剩余的一对。
+   - 如果 (x, y) 和 (y, x) 的数量一个是奇数一个是偶数，则无法通过交换使两个字符串相等，返回 -1。
 
 关键点:
-- [TODO]
+- 通过统计不匹配的字符对来简化问题。
+- 根据字符对的类型和数量计算最小交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_swap(s1: str, s2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使 s1 和 s2 相同的最小交换次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计不匹配的字符对
+    xy_count = 0
+    yx_count = 0
+    for c1, c2 in zip(s1, s2):
+        if c1 != c2:
+            if c1 == 'x':
+                xy_count += 1
+            else:
+                yx_count += 1
+    
+    # 检查是否可以交换成功
+    if (xy_count + yx_count) % 2 != 0:
+        return -1
+    
+    # 计算最小交换次数
+    swaps = xy_count // 2 + yx_count // 2
+    if xy_count % 2 != 0:
+        swaps += 2
+    
+    return swaps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_swap)

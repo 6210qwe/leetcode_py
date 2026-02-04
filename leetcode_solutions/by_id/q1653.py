@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并记录每个节点到其所有叶子节点的距离。然后在每个非叶子节点处，检查左子树和右子树中的叶子节点对是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，它返回从当前节点到其所有叶子节点的距离列表。
+2. 在 `dfs` 函数中，如果当前节点是叶子节点，则返回 `[1]`（表示距离为 1）。
+3. 否则，递归调用 `dfs` 函数处理左子树和右子树，并获取它们的叶子节点距离列表。
+4. 对于每个左子树中的叶子节点距离 `l_dist` 和右子树中的叶子节点距离 `r_dist`，如果 `l_dist + r_dist <= distance`，则计数器加一。
+5. 返回当前节点到其所有叶子节点的距离列表（将左子树和右子树的距离列表中的每个距离加 1）。
+6. 在主函数中调用 `dfs` 函数并返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用递归 DFS 遍历树，并记录每个节点到其所有叶子节点的距离。
+- 在每个非叶子节点处，检查左子树和右子树中的叶子节点对是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +49,32 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_good_leaf_pairs(root: Optional[TreeNode], distance: int) -> int:
+    def dfs(node: Optional[TreeNode]) -> List[int]:
+        if not node:
+            return []
+        
+        if not node.left and not node.right:
+            return [1]
+        
+        left_distances = dfs(node.left)
+        right_distances = dfs(node.right)
+        
+        for l_dist in left_distances:
+            for r_dist in right_distances:
+                if l_dist + r_dist <= distance:
+                    nonlocal count
+                    count += 1
+        
+        return [dist + 1 for dist in left_distances + right_distances]
+    
+    count = 0
+    dfs(root)
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_leaf_pairs)

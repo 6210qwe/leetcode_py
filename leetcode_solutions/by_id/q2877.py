@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的字符串组合顺序，并找到最短且字典序最小的组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `merge` 用于合并两个字符串，确保第二个字符串尽可能多地重叠到第一个字符串的末尾。
+2. 枚举所有可能的字符串组合顺序（共 6 种）。
+3. 对每种组合顺序，使用 `merge` 函数逐步合并字符串，得到最终的组合字符串。
+4. 记录所有组合字符串中最短且字典序最小的一个。
 
 关键点:
-- [TODO]
+- 使用 `merge` 函数来最大化重叠部分，从而减少最终字符串的长度。
+- 通过枚举所有可能的组合顺序，确保找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的最大长度。因为需要枚举 6 种组合顺序，并且每次合并操作的时间复杂度为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge(s1: str, s2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    合并两个字符串，确保 s2 尽可能多地重叠到 s1 的末尾。
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(s1)):
+        if s1[i:] == s2[:len(s1) - i]:
+            return s1 + s2[len(s1) - i:]
+    return s1 + s2
+
+
+def solution_function_name(a: str, b: str, c: str) -> str:
+    """
+    找到包含三个字符串的最短字符串，且字典序最小。
+    """
+    # 枚举所有可能的组合顺序
+    orders = [(a, b, c), (a, c, b), (b, a, c), (b, c, a), (c, a, b), (c, b, a)]
+    
+    min_str = None
+    
+    for order in orders:
+        merged_str = order[0]
+        for i in range(1, len(order)):
+            merged_str = merge(merged_str, order[i])
+        
+        if min_str is None or len(merged_str) < len(min_str) or (len(merged_str) == len(min_str) and merged_str < min_str):
+            min_str = merged_str
+    
+    return min_str
 
 
 Solution = create_solution(solution_function_name)

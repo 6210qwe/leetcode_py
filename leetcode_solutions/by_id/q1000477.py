@@ -21,22 +21,25 @@ LCP 62. 交通枢纽 - 为了缓解「力扣嘉年华」期间的人流压力，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个集合分别记录所有起点和终点，然后找到满足条件的交通枢纽。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个集合 `start_set` 和 `end_set`，分别记录所有起点和终点。
+2. 遍历路径列表 `path`，将每个路径的起点加入 `start_set`，将每个路径的终点加入 `end_set`。
+3. 检查 `end_set` 中是否存在一个节点，它不在 `start_set` 中，并且 `end_set` 的大小等于 `start_set` 的大小加一。
+4. 如果存在这样的节点，返回该节点；否则返回 `-1`。
 
 关键点:
-- [TODO]
+- 使用集合来高效地记录和查找起点和终点。
+- 确保交通枢纽的定义：所有其他节点都有一条单向专线直接通往该节点，且该节点没有通往其他节点的专线。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是路径的数量。我们需要遍历路径列表一次。
+空间复杂度: O(m)，其中 m 是节点的数量。我们需要存储起点和终点集合。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_transport_hub(paths: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到交通枢纽
     """
-    # TODO: 实现最优解法
-    pass
+    start_set = set()
+    end_set = set()
+
+    for start, end in paths:
+        start_set.add(start)
+        end_set.add(end)
+
+    # 交通枢纽的条件：end_set 中存在一个节点，它不在 start_set 中，并且 end_set 的大小等于 start_set 的大小加一
+    for end in end_set:
+        if end not in start_set and len(end_set) == len(start_set) + 1:
+            return end
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_transport_hub)

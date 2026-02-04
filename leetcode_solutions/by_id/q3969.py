@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自定义排序函数对威胁进行排序
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个比较函数，根据严重性和可利用性进行排序
+2. 使用 Python 的内置排序函数 `sorted` 对威胁列表进行排序
 
 关键点:
-- [TODO]
+- 自定义排序函数的实现
+- 使用 `sorted` 函数进行排序
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是威胁的数量。排序的时间复杂度为 O(n log n)
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(threats: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按严重性和可利用性排序威胁
     """
-    # TODO: 实现最优解法
-    pass
+    # 自定义排序函数
+    def custom_sort(threat):
+        severity, exploitability = threat
+        return (-severity, -exploitability)
 
+    # 使用 sorted 进行排序
+    return sorted(threats, key=custom_sort)
 
 Solution = create_solution(solution_function_name)

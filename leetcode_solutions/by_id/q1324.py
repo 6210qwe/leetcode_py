@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 模拟球的运动路径，逐行检查球是否会被卡住或从底部掉出。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `answer`，长度为 `n`，初始值为 -1。
+2. 对于每一列，从顶部开始逐行模拟球的运动路径。
+3. 如果球被卡住（即当前单元格和下一个单元格的挡板方向相反），则停止模拟并将结果设为 -1。
+4. 如果球从底部掉出，则记录掉出的列，并停止模拟。
+5. 返回结果数组 `answer`。
 
 关键点:
-- [TODO]
+- 检查球是否会被卡住时，需要考虑当前单元格和下一个单元格的挡板方向。
+- 模拟过程中，需要更新球的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是网格的行数，n 是网格的列数。每个球最多需要遍历 m 行。
+空间复杂度: O(1)，除了结果数组外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_ball(grid: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    模拟球的运动路径，返回球从底部掉出的列或被卡住的情况。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    answer = [-1] * n
+    
+    for col in range(n):
+        current_col = col
+        for row in range(m):
+            next_col = current_col + grid[row][current_col]
+            if next_col < 0 or next_col >= n or grid[row][next_col] != grid[row][current_col]:
+                break
+            current_col = next_col
+        else:
+            answer[col] = current_col
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_ball)

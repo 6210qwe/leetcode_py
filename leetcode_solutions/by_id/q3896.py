@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个状态表示当前哪些人已经渡河，哪些人还在营地。通过递归和记忆化搜索来找到最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp(state, current_stage)`，其中 `state` 是一个二进制数，表示哪些人已经渡河，`current_stage` 是当前的阶段。
+2. 如果所有人都已经渡河，返回 0。
+3. 对于每个可能的渡河组合，计算渡河时间和返回时间，并更新状态和阶段。
+4. 递归调用 `dp` 函数，取最小值。
+5. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示哪些人已经渡河。
+- 递归和记忆化搜索来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n * k * m)，其中 n 是人数，k 是船的最大容量，m 是阶段数。
+空间复杂度: O(2^n * m)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -47,14 +51,33 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
+def minimum_time_to_transport(n: int, k: int, m: int, time: List[int], mul: List[float]) -> float:
+    if k == 1 and n > 1:
+        return -1.0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(None)
+    def dp(state: int, current_stage: int) -> float:
+        if state == (1 << n) - 1:
+            return 0.0
 
+        min_time = float('inf')
+        for group in range(1, 1 << n):
+            if bin(group).count('1') <= k and group & state == 0:
+                max_time = max(time[i] for i in range(n) if group & (1 << i))
+                cross_time = max_time * mul[current_stage]
+                next_state = state | group
+                next_stage = (current_stage + int(cross_time)) % m
 
-Solution = create_solution(solution_function_name)
+                if next_state != (1 << n) - 1:
+                    return_time = min(time[i] for i in range(n) if group & (1 << i)) * mul[next_stage]
+                    next_next_stage = (next_stage + int(return_time)) % m
+                    min_time = min(min_time, cross_time + return_time + dp(next_state, next_next_stage))
+
+        return min_time
+
+    result = dp(0, 0)
+    return result if result != float('inf') else -1.0
+
+Solution = create_solution(minimum_time_to_transport)

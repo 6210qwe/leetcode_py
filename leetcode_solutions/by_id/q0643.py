@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算长度为 k 的子数组的和，并在滑动过程中更新最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化第一个窗口的和。
+2. 滑动窗口，每次移动一步，更新当前窗口的和。
+3. 在每次滑动过程中，更新最大和。
+4. 最后返回最大和除以 k 的结果。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，可以在 O(n) 时间复杂度内解决问题。
+- 只需要常数级别的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 k 的子数组的最大平均数
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums or k <= 0:
+        return 0.0
+
+    n = len(nums)
+    if k > n:
+        return 0.0
+
+    # 初始化第一个窗口的和
+    window_sum = sum(nums[:k])
+    max_sum = window_sum
+
+    # 滑动窗口
+    for i in range(k, n):
+        window_sum += nums[i] - nums[i - k]
+        max_sum = max(max_sum, window_sum)
+
+    return max_sum / k
 
 
 Solution = create_solution(solution_function_name)

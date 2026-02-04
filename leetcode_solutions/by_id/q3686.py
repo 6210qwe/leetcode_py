@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和哈希表来记录前缀和后缀匹配情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 nums1 和 nums2 的起始位置。
+2. 使用一个哈希表 prefix_count 来记录 nums1 的前缀出现次数。
+3. 遍历数组，更新哈希表并检查当前前缀是否与 nums2 的前缀或 nums3 的前缀匹配。
+4. 计算美丽分割的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀出现次数，减少重复计算。
+- 双指针遍历数组，确保每个可能的分割都被检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组长度。最坏情况下需要检查所有可能的分割。
+空间复杂度: O(n)，哈希表存储前缀出现次数。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_beautiful_splits(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计数组中的美丽分割
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    beautiful_splits = 0
+
+    for i in range(1, n - 1):
+        prefix_count = {}
+        for j in range(i):
+            prefix = tuple(nums[:j + 1])
+            if prefix in prefix_count:
+                prefix_count[prefix] += 1
+            else:
+                prefix_count[prefix] = 1
+
+        for k in range(i, n - 1):
+            suffix = tuple(nums[k + 1:])
+            if suffix in prefix_count:
+                beautiful_splits += prefix_count[suffix]
+
+            prefix = tuple(nums[i:k + 1])
+            if prefix in prefix_count:
+                beautiful_splits += prefix_count[prefix]
+
+    return beautiful_splits
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_splits)

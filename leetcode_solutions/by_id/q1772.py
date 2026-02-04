@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组（Fenwick Tree）来高效地计算小于和大于当前元素的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个大小为 max(instructions) + 1 的树状数组。
+2. 遍历 instructions 数组，对于每个元素：
+   - 计算小于该元素的数量。
+   - 计算大于该元素的数量。
+   - 计算插入代价，并更新总代价。
+   - 更新树状数组以包含当前元素。
+3. 返回总代价对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 树状数组可以在 O(log n) 时间内进行单点更新和区间查询。
+- 通过树状数组可以高效地计算小于和大于当前元素的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log M)，其中 n 是 instructions 的长度，M 是 instructions 中的最大值。
+空间复杂度: O(M)，用于存储树状数组。
 """
 
 # ============================================================================
@@ -48,13 +54,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FenwickTree:
+    def __init__(self, size):
+        self.size = size
+        self.tree = [0] * (size + 1)
 
+    def update(self, index, value):
+        while index <= self.size:
+            self.tree[index] += value
+            index += index & -index
 
-Solution = create_solution(solution_function_name)
+    def query(self, index):
+        result = 0
+        while index > 0:
+            result += self.tree[index]
+            index -= index & -index
+        return result
+
+def create_sorted_array(instructions: List[int]) -> int:
+    max_val = max(instructions)
+    tree = FenwickTree(max_val)
+    total_cost = 0
+
+    for num in instructions:
+        less_than = tree.query(num - 1)
+        greater_than = tree.query(max_val) - tree.query(num)
+        cost = min(less_than, greater_than)
+        total_cost = (total_cost + cost) % MOD
+        tree.update(num, 1)
+
+    return total_cost
+
+Solution = create_solution(create_sorted_array)

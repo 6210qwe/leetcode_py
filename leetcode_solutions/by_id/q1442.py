@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集（Union-Find）来解决这个问题。我们需要找到所有的连通分量，并计算需要多少次操作才能将所有节点连通。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，记录每个节点的父节点和秩。
+2. 遍历所有连接，将连接的两个节点进行合并。
+3. 计算连通分量的数量。
+4. 如果连接数小于 n-1，说明线缆数量不足，返回 -1。
+5. 否则，返回连通分量的数量减 1，即为所需的操作次数。
 
 关键点:
-- [TODO]
+- 使用路径压缩和按秩合并优化并查集操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * α(m, n))，其中 n 是节点数，m 是连接数，α 是阿克曼函数的反函数。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
@@ -49,12 +52,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
+
+    def get_count(self):
+        return self.count
+
+
+def solution_function_name(n: int, connections: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使所有计算机都连通所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if len(connections) < n - 1:
+        return -1
+
+    uf = UnionFind(n)
+    for a, b in connections:
+        uf.union(a, b)
+
+    return uf.get_count() - 1
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法来判断一个字符串的排列是否可以打破另一个字符串的排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 s1 和 s2 分别排序。
+2. 检查 s1 是否可以打破 s2，即对于所有 i，s1[i] >= s2[i]。
+3. 如果 s1 不能打破 s2，则检查 s2 是否可以打破 s1，即对于所有 i，s2[i] >= s1[i]。
+4. 如果上述任一条件成立，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 排序后，可以通过逐个比较字符来判断是否可以打破。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_can_break(s1: str, s2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查一个字符串是否可以打破另一个字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 s1 和 s2 分别排序
+    sorted_s1 = sorted(s1)
+    sorted_s2 = sorted(s2)
+
+    # 检查 s1 是否可以打破 s2
+    can_break_1 = all(c1 >= c2 for c1, c2 in zip(sorted_s1, sorted_s2))
+
+    # 如果 s1 不能打破 s2，则检查 s2 是否可以打破 s1
+    if not can_break_1:
+        can_break_2 = all(c2 >= c1 for c1, c2 in zip(sorted_s1, sorted_s2))
+        return can_break_2
+
+    return can_break_1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_can_break)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数数组记录每个字符的出现次数，然后按照题目要求构建结果字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为26的计数数组，记录每个字符的出现次数。
+2. 构建结果字符串：
+   - 从 'a' 到 'z' 依次添加字符（上升部分）。
+   - 从 'z' 到 'a' 依次添加字符（下降部分）。
+3. 重复步骤2，直到所有字符都被添加到结果字符串中。
 
 关键点:
-- [TODO]
+- 使用计数数组来高效地记录和处理字符。
+- 通过两次遍历（上升和下降）来构建结果字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串一次来统计字符频率，然后通过两次遍历计数数组来构建结果字符串。
+空间复杂度: O(1)，因为计数数组的大小是固定的（26个字母）。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    根据题目要求重新构造字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计数数组
+    count = [0] * 26
+    for char in s:
+        count[ord(char) - ord('a')] += 1
+    
+    result = []
+    while len(result) < len(s):
+        # 上升部分
+        for i in range(26):
+            if count[i] > 0:
+                result.append(chr(i + ord('a')))
+                count[i] -= 1
+        
+        # 下降部分
+        for i in range(25, -1, -1):
+            if count[i] > 0:
+                result.append(chr(i + ord('a')))
+                count[i] -= 1
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_string)

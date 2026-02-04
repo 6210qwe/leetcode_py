@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先处理能量值较小的敌人，以最大化得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将敌人能量数组按升序排序。
+2. 初始化当前能量和得分为初始值。
+3. 遍历排序后的敌人能量数组：
+   - 如果当前能量大于等于敌人能量，则进行第一种操作，增加得分并减少当前能量。
+   - 如果当前得分大于等于1，则进行第二种操作，增加当前能量并将敌人标记。
+4. 返回最终得分。
 
 关键点:
-- [TODO]
+- 通过排序确保优先处理能量值较小的敌人，从而最大化得分。
+- 动态调整当前能量和得分，确保在每一步都能做出最优选择。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 enemyEnergies 的长度，主要由排序操作决定。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(enemy_energies: List[int], current_energy: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将敌人能量数组按升序排序
+    enemy_energies.sort()
+    
+    points = 0
+    for energy in enemy_energies:
+        if current_energy >= energy:
+            # 进行第一种操作，增加得分并减少当前能量
+            points += 1
+            current_energy -= energy
+        elif points > 0:
+            # 进行第二种操作，增加当前能量并将敌人标记
+            current_energy += energy
+            points -= 1
+    
+    return points
 
 Solution = create_solution(solution_function_name)

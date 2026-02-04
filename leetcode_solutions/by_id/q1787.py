@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个位置的绝对差值之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 对于每个位置 i，使用前缀和公式计算 result[i]：
+   - 左侧部分: (i * nums[i] - prefix_sum[i])
+   - 右侧部分: (prefix_sum[-1] - prefix_sum[i] - (n - i - 1) * nums[i])
+3. 将左侧部分和右侧部分相加得到 result[i]。
 
 关键点:
-- [TODO]
+- 前缀和的使用可以将时间复杂度降低到 O(n)。
+- 通过前缀和公式避免了双重循环，提高了效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有序数组中差绝对值之和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return []
+
+    # 计算前缀和
+    prefix_sum = [0] * n
+    prefix_sum[0] = nums[0]
+    for i in range(1, n):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i]
+
+    # 计算结果数组
+    result = [0] * n
+    for i in range(n):
+        left_part = (i * nums[i] - prefix_sum[i])
+        right_part = (prefix_sum[-1] - prefix_sum[i] - (n - i - 1) * nums[i])
+        result[i] = left_part + right_part
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

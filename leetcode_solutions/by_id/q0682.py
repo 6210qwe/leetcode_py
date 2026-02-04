@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理每种操作，并计算最终得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈 `scores` 来存储每回合的得分。
+2. 遍历 `ops` 列表，根据每个操作的类型进行相应的处理：
+   - 如果操作是整数，则将其转换为整数并压入栈中。
+   - 如果操作是 "C"，则弹出栈顶元素。
+   - 如果操作是 "D"，则将栈顶元素的两倍压入栈中。
+   - 如果操作是 "+"，则将栈顶两个元素的和压入栈中。
+3. 最后，返回栈中所有元素的和作为最终得分。
 
 关键点:
-- [TODO]
+- 使用栈来维护每回合的得分，便于处理 "C"、"D" 和 "+" 操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `ops` 的长度。每个操作都是 O(1) 的时间复杂度。
+空间复杂度: O(n)，在最坏情况下，栈中会存储所有的得分。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def calPoints(ops: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算棒球比赛的得分。
+    :param ops: 操作列表
+    :return: 得分总和
     """
-    # TODO: 实现最优解法
-    pass
+    scores = []
+    for op in ops:
+        if op == "C":
+            scores.pop()
+        elif op == "D":
+            scores.append(2 * scores[-1])
+        elif op == "+":
+            scores.append(scores[-1] + scores[-2])
+        else:
+            scores.append(int(op))
+    return sum(scores)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calPoints)

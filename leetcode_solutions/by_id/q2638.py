@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算乘积为偶数的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`even_count` 用于记录当前以某个元素结尾的乘积为偶数的子数组数量，`odd_count` 用于记录当前以某个元素结尾的乘积为奇数的子数组数量。
+2. 遍历数组，对于每个元素：
+   - 如果当前元素是偶数，则 `even_count` 增加 1，并且所有以当前元素结尾的子数组都是偶数子数组。
+   - 如果当前元素是奇数，则 `even_count` 和 `odd_count` 交换值，并且 `even_count` 加上 `odd_count`。
+3. 累加 `even_count` 到结果中。
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算，时间复杂度和空间复杂度都得到优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def numberOfSubarraysHavingEvenProduct(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算乘积为偶数的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    even_count = 0
+    odd_count = 0
+    result = 0
+    
+    for num in nums:
+        if num % 2 == 0:
+            even_count += 1
+            result += even_count
+        else:
+            even_count, odd_count = odd_count + even_count, even_count
+            result += even_count
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numberOfSubarraysHavingEvenProduct)

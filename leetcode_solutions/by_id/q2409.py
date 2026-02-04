@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）结合记忆化搜索（Memoization）来计算每个格子的递增路径数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 `dp`，用于存储每个格子的递增路径数目。
+2. 对于每个格子 (i, j)，使用 DFS 计算其递增路径数目，并将结果存储在 `dp` 中。
+3. 在 DFS 过程中，如果当前格子的值大于相邻格子的值，则递归计算相邻格子的递增路径数目，并累加到当前格子的路径数目中。
+4. 最后，遍历整个 `dp` 数组，累加所有格子的递增路径数目，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算。
+- 递归过程中，确保路径是严格递增的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个格子最多被访问一次。
+空间复杂度: O(m * n)，用于存储 `dp` 数组和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_increasing_paths(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    
+    @lru_cache(maxsize=None)
+    def dfs(i: int, j: int) -> int:
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        paths = 1  # 自身也算一条路径
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < m and 0 <= nj < n and grid[ni][nj] > grid[i][j]:
+                paths += dfs(ni, nj)
+                paths %= MOD
+        return paths
+    
+    total_paths = 0
+    for i in range(m):
+        for j in range(n):
+            total_paths += dfs(i, j)
+            total_paths %= MOD
+    
+    return total_paths
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_increasing_paths)

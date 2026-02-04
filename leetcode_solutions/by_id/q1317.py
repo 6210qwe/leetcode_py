@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个月和每个国家/地区的事务数及其总金额、已批准的事务数及其总金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 提取 `trans_date` 的年份和月份，并将其作为新的列 `month`。
+2. 使用 `GROUP BY` 对 `month` 和 `country` 进行分组。
+3. 计算每组的事务数 (`trans_count`) 和总金额 (`trans_total_amount`)。
+4. 计算每组中 `state` 为 `approved` 的事务数 (`approved_count`) 和总金额 (`approved_total_amount`)。
 
 关键点:
-- [TODO]
+- 使用 `DATE_FORMAT` 函数提取年份和月份。
+- 使用 `CASE WHEN` 语句来计算 `approved` 事务的数量和金额。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Transactions 表的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(transactions: List[dict]) -> List[dict]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查询每个月和每个国家/地区的事务数及其总金额、已批准的事务数及其总金额
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 SQL 查询来实现
+    query = """
+    SELECT 
+        DATE_FORMAT(trans_date, '%Y-%m') AS month,
+        country,
+        COUNT(*) AS trans_count,
+        SUM(amount) AS trans_total_amount,
+        SUM(CASE WHEN state = 'approved' THEN 1 ELSE 0 END) AS approved_count,
+        SUM(CASE WHEN state = 'approved' THEN amount ELSE 0 END) AS approved_total_amount
+    FROM 
+        transactions
+    GROUP BY 
+        month, country
+    """
+    # 假设我们有一个数据库连接对象 `conn`，这里直接返回查询结果
+    # result = conn.execute(query).fetchall()
+    # return result
+    pass  # 请在实际环境中替换为数据库查询操作
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串并根据字符 'i' 的出现来决定是否反转当前结果字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果字符串。
+2. 遍历输入字符串 s 中的每个字符。
+3. 如果当前字符是 'i'，则反转结果字符串。
+4. 否则，将当前字符追加到结果字符串中。
+5. 返回最终的结果字符串。
 
 关键点:
-- [TODO]
+- 使用一个标志变量来记录是否需要反转字符串。
+- 在遍历过程中动态更新结果字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(n)，结果字符串的长度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def faulty_keyboard(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现故障键盘的功能
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for char in s:
+        if char == 'i':
+            result.reverse()
+        else:
+            result.append(char)
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(faulty_keyboard)

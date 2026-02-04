@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 找到整个数组的支配元素。
+2. 通过遍历数组，维护左右子数组的频率计数，检查每个可能的分割点是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Boyer-Moore 投票算法找到支配元素。
+2. 遍历数组，使用两个计数器分别记录左子数组和右子数组中支配元素的出现次数。
+3. 对于每个可能的分割点，检查左右子数组的支配元素是否相同，并且它们的出现次数是否超过各自子数组长度的一半。
+4. 返回第一个满足条件的分割点，如果没有找到则返回 -1。
 
 关键点:
-- [TODO]
+- 使用 Boyer-Moore 投票算法高效找到支配元素。
+- 通过一次遍历数组来检查每个可能的分割点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_index_of_valid_split(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到合法分割的最小下标
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 Boyer-Moore 投票算法找到支配元素
+    def find_dominant_element(arr: List[int]) -> int:
+        count = 0
+        candidate = None
+        for num in arr:
+            if count == 0:
+                candidate = num
+            count += (1 if num == candidate else -1)
+        return candidate
+
+    dominant = find_dominant_element(nums)
+    left_count = 0
+    right_count = nums.count(dominant)
+
+    for i in range(len(nums) - 1):
+        if nums[i] == dominant:
+            left_count += 1
+            right_count -= 1
+        if left_count * 2 > i + 1 and right_count * 2 > len(nums) - i - 1:
+            return i
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_index_of_valid_split)

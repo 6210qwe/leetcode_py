@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为前 i 本书的最小高度。对于每一本书，我们可以选择将其放在当前层或者新的一层。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0。
+2. 对于每本书，从后向前遍历，尝试将其放在当前层或新的一层。
+3. 更新 dp 数组，记录最小高度。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = min(dp[i], max_height + dp[j])，其中 j 是当前层的最后一本书的索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 books 的长度。我们需要遍历每本书，并且对于每本书，我们最多需要遍历之前的 n 本书。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_height_shelves(books: List[List[int]], shelf_width: int) -> int:
+    n = len(books)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, n + 1):
+        max_height, current_width = 0, 0
+        j = i - 1
+        while j >= 0 and current_width + books[j][0] <= shelf_width:
+            current_width += books[j][0]
+            max_height = max(max_height, books[j][1])
+            dp[i] = min(dp[i], dp[j] + max_height)
+            j -= 1
 
+    return dp[n]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_height_shelves)

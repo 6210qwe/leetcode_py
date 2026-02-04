@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符的镜像字符的位置，从左到右遍历字符串，查找每个字符的镜像字符的最近位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表，用于记录每个字符的镜像字符的位置。
+2. 从左到右遍历字符串，对于每个字符，查找其镜像字符的最近位置。
+3. 如果找到镜像字符的位置，更新总分并标记该位置。
+4. 更新哈希表中当前字符的位置。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个字符的镜像字符的位置，以便快速查找。
+- 从左到右遍历字符串，确保找到的是最近的镜像字符位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，因为哈希表的大小是固定的（26 个字母）。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_mirror_score(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算字符串的镜像分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 镜像字符映射
+    mirror_map = {chr(i): chr(219 - i) for i in range(97, 123)}
+    
+    # 哈希表记录每个字符的镜像字符的位置
+    char_positions = {}
+    score = 0
+    
+    for i, char in enumerate(s):
+        mirror_char = mirror_map[char]
+        if mirror_char in char_positions:
+            score += i - char_positions[mirror_char]
+            del char_positions[mirror_char]
+        else:
+            char_positions[char] = i
+    
+    return score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_mirror_score)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算顺时针和逆时针的距离，取最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 start > destination，则交换 start 和 destination。
+2. 计算顺时针方向的距离。
+3. 计算逆时针方向的距离。
+4. 返回两者中的最小值。
 
 关键点:
-- [TODO]
+- 通过一次遍历计算顺时针和逆时针的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(distance: List[int], start: int, destination: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算公交站间的最短距离
     """
-    # TODO: 实现最优解法
-    pass
+    if start > destination:
+        start, destination = destination, start
+
+    clockwise_distance = 0
+    for i in range(start, destination):
+        clockwise_distance += distance[i]
+
+    counterclockwise_distance = 0
+    for i in range(destination, len(distance)):
+        counterclockwise_distance += distance[i]
+    for i in range(0, start):
+        counterclockwise_distance += distance[i]
+
+    return min(clockwise_distance, counterclockwise_distance)
 
 
 Solution = create_solution(solution_function_name)

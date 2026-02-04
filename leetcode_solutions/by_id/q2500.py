@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][0] 表示到达第 i 个车站不使用特殊票的最小费用，dp[i][1] 表示到达第 i 个车站使用特殊票的最小费用。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] 为 regular[0]，dp[0][1] 为 express[0] + express_cost。
+2. 遍历每个车站，更新 dp 数组：
+   - 如果不使用特殊票，可以选择从前一个车站不使用特殊票过来，或者从当前车站开始使用特殊票。
+   - 如果使用特殊票，可以选择从前一个车站使用特殊票过来，或者从当前车站开始使用特殊票。
+3. 最后返回 dp[n-1][0] 和 dp[n-1][1] 中的最小值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：
+  - dp[i][0] = min(dp[i-1][0] + regular[i], dp[i-1][1] + regular[i])
+  - dp[i][1] = min(dp[i-1][1] + express[i], dp[i-1][0] + express[i] + express_cost)
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是车站的数量。我们需要遍历每个车站一次。
+空间复杂度: O(n)，我们需要一个大小为 n 的二维数组来存储 dp 值。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_costs(regular: List[int], express: List[int], express_cost: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算乘坐火车路线的最少费用
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(regular)
+    dp = [[0, 0] for _ in range(n)]
+    
+    # 初始化第一个车站的费用
+    dp[0][0] = regular[0]
+    dp[0][1] = express[0] + express_cost
+    
+    # 动态规划计算每个车站的最小费用
+    for i in range(1, n):
+        dp[i][0] = min(dp[i-1][0] + regular[i], dp[i-1][1] + regular[i])
+        dp[i][1] = min(dp[i-1][1] + express[i], dp[i-1][0] + express[i] + express_cost)
+    
+    # 返回最后一个车站的最小费用
+    return min(dp[n-1][0], dp[n-1][1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_costs)

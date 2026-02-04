@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j][k] 表示前 i 次投掷中，最后一次投掷的是 j，且连续投掷了 k 次的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][j][1] = 1，表示第一次投掷时，每个面都只有一种方案。
+2. 通过状态转移方程更新 dp 数组：
+   - 如果当前面与上一个面相同，则 dp[i][j][k] = dp[i-1][j][k-1]。
+   - 如果当前面与上一个面不同，则 dp[i][j][1] = sum(dp[i-1][x][y]) for x in range(6) and y in range(1, rollMax[x]+1) and x != j。
+3. 最终结果是所有 dp[n-1][j][k] 的和。
 
 关键点:
-- [TODO]
+- 使用三维数组来存储状态，减少重复计算。
+- 注意取模操作，防止结果溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 6 * 15) = O(n)
+空间复杂度: O(n * 6 * 15) = O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(n: int, rollMax: List[int]) -> int:
+    MOD = 10**9 + 7
+    dp = [[[0] * (rollMax[j] + 1) for j in range(6)] for _ in range(n)]
+    
+    # 初始化
+    for j in range(6):
+        dp[0][j][1] = 1
+    
+    # 动态规划
+    for i in range(1, n):
+        for j in range(6):
+            for k in range(1, rollMax[j] + 1):
+                if k > 1:
+                    dp[i][j][k] = dp[i-1][j][k-1]
+                else:
+                    dp[i][j][k] = sum(dp[i-1][x][y] for x in range(6) for y in range(1, rollMax[x] + 1) if x != j) % MOD
+    
+    # 计算最终结果
+    result = sum(sum(dp[n-1][j]) for j in range(6)) % MOD
+    return result
 
 Solution = create_solution(solution_function_name)

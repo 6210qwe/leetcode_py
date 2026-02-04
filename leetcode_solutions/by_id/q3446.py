@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历 nums1 和 nums2，检查每个数对是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用双重循环遍历 nums1 和 nums2。
+3. 对于每一对 (i, j)，检查 nums1[i] 是否可以整除 nums2[j] * k。
+4. 如果满足条件，增加计数器 count。
+5. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 直接使用双重循环进行检查，时间复杂度为 O(n * m)。
+- 空间复杂度为 O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算优质数对的总数
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for num1 in nums1:
+        for num2 in nums2:
+            if num1 % (num2 * k) == 0:
+                count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来尝试所有可能的单词组合，并计算每个组合的得分。通过剪枝来减少不必要的计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化字母计数器，记录字母表中每个字母的数量。
+2. 定义一个递归函数，用于尝试每个单词是否可以加入当前组合。
+3. 在递归函数中，更新字母计数器，并计算当前组合的得分。
+4. 如果当前组合的得分大于已知的最大得分，则更新最大得分。
+5. 递归调用，尝试下一个单词。
+6. 回溯时，恢复字母计数器的状态。
 
 关键点:
-- [TODO]
+- 使用回溯法来尝试所有可能的单词组合。
+- 通过剪枝来减少不必要的计算，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是 words 的长度。最坏情况下，我们需要尝试所有可能的单词组合。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def max_score_words(words: List[str], letters: List[str], score: List[int]) -> int:
+    def backtrack(index, current_letters, current_score):
+        nonlocal max_score
+        if index == len(words):
+            max_score = max(max_score, current_score)
+            return
+        
+        # 不选择当前单词
+        backtrack(index + 1, current_letters, current_score)
+        
+        # 选择当前单词
+        word = words[index]
+        word_count = Counter(word)
+        if all(current_letters[char] >= word_count[char] for char in word_count):
+            for char in word_count:
+                current_letters[char] -= word_count[char]
+            word_score = sum(score[ord(char) - ord('a')] * word_count[char] for char in word_count)
+            backtrack(index + 1, current_letters, current_score + word_score)
+            for char in word_count:
+                current_letters[char] += word_count[char]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    letter_count = Counter(letters)
+    max_score = 0
+    backtrack(0, letter_count, 0)
+    return max_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score_words)

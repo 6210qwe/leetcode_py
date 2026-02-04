@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和最大公因数 (GCD) 来找到最长的稳定子数组，并通过二分查找来确定最小的稳定性因子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `gcd` 来计算两个数的最大公因数。
+2. 使用滑动窗口技术来找到最长的稳定子数组。
+3. 通过二分查找来确定最小的稳定性因子。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态维护当前子数组的最大公因数。
+- 通过二分查找来优化寻找最小稳定性因子的过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组的长度，log(max(nums)) 是计算 GCD 的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_stability_factor(nums: List[int], maxC: int) -> int:
+    def is_valid(k):
+        left = 0
+        changes = 0
+        current_gcd = nums[0]
+        
+        for right in range(1, len(nums)):
+            current_gcd = gcd(current_gcd, nums[right])
+            
+            if right - left + 1 > k:
+                if current_gcd < 2:
+                    changes += 1
+                current_gcd = nums[left + 1]
+                left += 1
+            
+            if changes > maxC:
+                return False
+        
+        return True
+    
+    low, high = 1, len(nums)
+    result = 0
+    
+    while low <= high:
+        mid = (low + high) // 2
+        if is_valid(mid):
+            result = mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_stability_factor)

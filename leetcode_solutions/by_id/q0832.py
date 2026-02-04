@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）递归地遍历树，剪掉所有不包含 1 的子树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `prune_tree`，该函数接受一个节点作为参数。
+2. 如果当前节点为空，直接返回 None。
+3. 递归地调用 `prune_tree` 处理当前节点的左子树和右子树。
+4. 如果处理后的左子树或右子树为空且节点值为 0，则将该节点设为 None。
+5. 返回处理后的当前节点。
 
 关键点:
-- [TODO]
+- 递归地处理每个节点，并根据其子树是否包含 1 来决定是否剪枝。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def prune_tree(root: Optional[TreeNode]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 二叉树剪枝
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+    
+    # 递归地剪枝左子树和右子树
+    root.left = prune_tree(root.left)
+    root.right = prune_tree(root.right)
+    
+    # 如果当前节点值为 0 且左右子树都为空，则剪掉该节点
+    if root.val == 0 and not root.left and not root.right:
+        return None
+    
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(prune_tree)

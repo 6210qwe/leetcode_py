@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式提取所有数字，并检查这些数字是否严格递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用正则表达式提取字符串中的所有数字。
+2. 遍历提取出的数字，检查它们是否严格递增。
 
 关键点:
-- [TODO]
+- 使用正则表达式高效提取数字。
+- 逐个比较提取出的数字，确保它们严格递增。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。正则表达式的匹配和遍历操作都是线性的。
+空间复杂度: O(m)，其中 m 是字符串 s 中数字的数量。需要存储提取出的数字。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
 
-
-def solution_function_name(params):
+def are_numbers_ascending(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查句子中的数字是否递增
+    :param s: 表示句子的字符串
+    :return: 如果 s 中的全部数字从左到右严格递增，返回 True，否则返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用正则表达式提取所有数字
+    numbers = [int(num) for num in re.findall(r'\d+', s)]
+    
+    # 检查数字是否严格递增
+    for i in range(1, len(numbers)):
+        if numbers[i] <= numbers[i - 1]:
+            return False
+    
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(are_numbers_ascending)

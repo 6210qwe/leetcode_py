@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每对字符的最大波动值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示以字符 i 为最大频率字符，字符 j 为最小频率字符的子字符串的最大波动值。
+2. 遍历字符串 s，对于每一对字符 (i, j)，更新 dp[i][j] 的值。
+3. 对于每个字符 c，更新当前字符 c 作为最大频率字符和最小频率字符的情况。
+4. 记录并更新最大波动值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过遍历所有字符对来确保找到最大波动值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26^2) = O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(26 * 26) = O(1)，因为字符集大小是固定的。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串 s 的最大波动值
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return 0
+
+    n = len(s)
+    max_variance = 0
+    dp = [[-n for _ in range(26)] for _ in range(26)]
+
+    for i in range(n):
+        char_idx = ord(s[i]) - ord('a')
+        for j in range(26):
+            if j == char_idx:
+                continue
+            dp[char_idx][j] = max(dp[char_idx][j] + 1, 1)
+            dp[j][char_idx] = max(dp[j][char_idx] - 1, -1)
+            if dp[char_idx][j] > 0:
+                max_variance = max(max_variance, dp[char_idx][j])
+
+    return max_variance
 
 
 Solution = create_solution(solution_function_name)

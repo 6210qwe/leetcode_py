@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆（优先队列）来维护当前所有木棍的长度，并每次取出两个最短的木棍进行连接，将新的木棍长度重新加入堆中。这样可以确保每次连接的成本最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有木棍长度放入最小堆中。
+2. 每次从堆中取出两个最短的木棍，计算它们的连接成本，并将新的木棍长度重新加入堆中。
+3. 重复步骤2，直到堆中只剩下一个木棍为止。
+4. 累加所有连接成本，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取和更新当前最短的木棍。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是木棍的数量。每次插入和删除操作的时间复杂度是O(log n)，总共需要进行n-1次合并操作。
+空间复杂度: O(n)，用于存储堆中的所有木棍长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def connectSticks(sticks: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算连接木棍的最低费用
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有木棍长度放入最小堆中
+    heapq.heapify(sticks)
+    
+    total_cost = 0
+    while len(sticks) > 1:
+        # 取出两个最短的木棍
+        first = heapq.heappop(sticks)
+        second = heapq.heappop(sticks)
+        
+        # 计算连接成本
+        cost = first + second
+        total_cost += cost
+        
+        # 将新的木棍长度重新加入堆中
+        heapq.heappush(sticks, cost)
+    
+    return total_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(connectSticks)

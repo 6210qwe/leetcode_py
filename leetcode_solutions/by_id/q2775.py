@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用生成器来生成斐波那契数列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 a 和 b 分别为 0 和 1。
+2. 在每次生成器迭代中，先产生当前的 a 值。
+3. 更新 a 和 b 的值，a 变为 b，b 变为 a + b。
 
 关键点:
-- [TODO]
+- 生成器在每次迭代时只保存当前和下一个斐波那契数，因此空间复杂度很低。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次生成一个斐波那契数的时间复杂度是常数级别的。
+空间复杂度: O(1) - 生成器只保存了两个变量 a 和 b。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Generator
 
 
-def solution_function_name(params):
+def fibGenerator() -> Generator[int, None, None]:
     """
-    函数式接口 - [TODO] 实现
+    生成斐波那契数列的生成器函数。
     """
-    # TODO: 实现最优解法
-    pass
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
 
 
-Solution = create_solution(solution_function_name)
+Solution = fibGenerator

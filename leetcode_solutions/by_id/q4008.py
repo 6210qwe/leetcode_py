@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个朋友在 order 数组中的位置，然后按 order 数组的顺序重新排列朋友。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表，记录每个朋友在 order 数组中的位置。
+2. 遍历 order 数组，将朋友按顺序添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内查找朋友的位置。
+- 通过遍历 order 数组，确保朋友按完成顺序排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 order 数组的长度，m 是 friends 数组的长度。
+空间复杂度: O(m)，用于存储朋友的位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def restore_finishing_order(order: List[int], friends: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重排完成顺序
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希表，记录每个朋友在 order 数组中的位置
+    friend_positions = {friend: i for i, friend in enumerate(order)}
+    
+    # 按照 order 数组的顺序重新排列朋友
+    result = [friend for friend in order if friend in friends]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(restore_finishing_order)

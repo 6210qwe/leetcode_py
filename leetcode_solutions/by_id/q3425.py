@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最优的修复方案。首先计算每个路段的坑洼数量，然后按坑洼数量从大到小排序，优先修复坑洼最多的路段。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个路段的坑洼数量。
+2. 按坑洼数量从大到小排序。
+3. 依次修复坑洼最多的路段，直到材料用完。
 
 关键点:
-- [TODO]
+- 优先修复坑洼最多的路段，以最大化修复数量。
+- 使用贪心算法确保每次选择当前最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是路段的数量。主要时间开销在于排序操作。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(street: str, materials: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大数量的可修复坑洼
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将街道字符串分割成路段列表
+    segments = street.split('.')
+    
+    # 计算每个路段的坑洼数量
+    pothole_counts = [segment.count('x') for segment in segments]
+    
+    # 按坑洼数量从大到小排序
+    pothole_counts.sort(reverse=True)
+    
+    # 依次修复坑洼最多的路段
+    fixed_potholes = 0
+    for count in pothole_counts:
+        if materials >= count:
+            fixed_potholes += count
+            materials -= count
+        else:
+            fixed_potholes += materials
+            break
+    
+    return fixed_potholes
 
 Solution = create_solution(solution_function_name)

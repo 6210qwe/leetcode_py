@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用 Pandas 处理数据，首先合并 stores 和 inventory 表。
+2. 计算每个商店的最贵商品和最便宜商品。
+3. 计算不平衡比率，并过滤出至少有 3 个不同商品的商店。
+4. 按不平衡比率降序和商店名称升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 合并 stores 和 inventory 表。
+2. 分组计算每个商店的最贵商品和最便宜商品。
+3. 计算不平衡比率。
+4. 过滤出至少有 3 个不同商品的商店。
+5. 按不平衡比率降序和商店名称升序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 groupby 和 agg 函数进行分组聚合。
+- 使用 merge 函数合并表格。
+- 使用 sort_values 函数进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 inventory 表的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储合并后的表格和中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def find_stores_with_inventory_imbalance(stores: pd.DataFrame, inventory: pd.DataFrame) -> pd.DataFrame:
+    # 合并 stores 和 inventory 表
+    merged_df = pd.merge(inventory, stores, on='store_id')
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个商店的最贵商品和最便宜商品
+    exp_products = merged_df.groupby('store_id').apply(lambda x: x[x['price'] == x['price'].max()].sort_values(by='quantity', ascending=False).iloc[0])
+    cheap_products = merged_df.groupby('store_id').apply(lambda x: x[x['price'] == x['price'].min()].sort_values(by='quantity', ascending=False).iloc[0])
 
+    # 创建新的 DataFrame 来存储结果
+    result = pd.DataFrame({
+        'store_id': exp_products['store_id'],
+        'store_name': exp_products['store_name'],
+        'location': exp_products['location'],
+        'most_exp_product': exp_products['product_name'],
+        'cheapest_product': cheap_products['product_name'],
+        'imbalance_ratio': (cheap_products['quantity'] / exp_products['quantity']).round(2)
+    })
 
-Solution = create_solution(solution_function_name)
+    # 过滤出至少有 3 个不同商品的商店
+    store_counts = merged_df.groupby('store_id')['product_name'].nunique()
+    result = result[result['store_id'].isin(store_counts[store_counts >= 3].index)]
+
+    # 按不平衡比率降序和商店名称升序排序
+    result = result.sort_values(by=['imbalance_ratio', 'store_name'], ascending=[False, True])
+
+    return result
+
+Solution = create_solution(find_stores_with_inventory_imbalance)

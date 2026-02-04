@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来计算最小交换成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计两个篮子中每种水果的数量。
+2. 找出需要交换的水果种类及其数量。
+3. 计算最小交换成本，优先使用成本较低的水果进行交换。
 
 关键点:
-- [TODO]
+- 使用哈希表统计每种水果的数量。
+- 通过贪心算法选择成本最低的交换方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是篮子的长度。主要由排序操作决定。
+空间复杂度: O(n)，用于存储水果数量的哈希表。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_to_equal_baskets(basket1: List[int], basket2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使两个果篮相等的最小交换成本。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+    
+    # 统计两个篮子中每种水果的数量
+    count1 = Counter(basket1)
+    count2 = Counter(basket2)
+    
+    # 合并两个计数器，找出需要交换的水果种类及其数量
+    diff = (count1 - count2) + (count2 - count1)
+    
+    # 如果有奇数个需要交换的水果，则无法使两个果篮相等
+    if sum(diff.values()) % 2 != 0:
+        return -1
+    
+    # 将需要交换的水果按成本从小到大排序
+    to_swap = sorted(diff.elements())
+    
+    # 计算最小交换成本
+    cost = 0
+    half = len(to_swap) // 2
+    for i in range(half):
+        cost += min(to_swap[i], to_swap[-(i + 1)])
+    
+    return cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_equal_baskets)

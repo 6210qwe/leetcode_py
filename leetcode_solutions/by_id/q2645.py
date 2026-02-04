@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算时间 `time` 对 `2 * (n - 1)` 的余数来确定当前的方向和位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 `time` 对 `2 * (n - 1)` 的余数 `remainder`。
+2. 如果 `remainder < n`，则枕头在前向传递，直接返回 `remainder + 1`。
+3. 否则，枕头在反向传递，返回 `2 * n - remainder - 1`。
 
 关键点:
-- [TODO]
+- 通过取余运算减少不必要的循环，直接定位到最终位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def pass_the_pillow(n: int, time: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过计算时间 `time` 对 `2 * (n - 1)` 的余数来确定当前的方向和位置。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算时间对 2 * (n - 1) 的余数
+    remainder = time % (2 * (n - 1))
+    
+    # 如果余数小于 n，枕头在前向传递
+    if remainder < n:
+        return remainder + 1
+    # 否则，枕头在反向传递
+    else:
+        return 2 * n - remainder - 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pass_the_pillow)

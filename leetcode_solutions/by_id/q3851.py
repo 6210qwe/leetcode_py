@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个三维数组 dp 来存储中间结果，其中 dp[i][j][k] 表示前 i 个元素中选择 j 个元素且这些元素的二进制表示中有 k 个置位的总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][0] = 1。
+2. 遍历每个元素，更新 dp 数组。
+3. 最终结果在 dp[n][m][k] 中。
 
 关键点:
-- [TODO]
+- 使用状态压缩来减少空间复杂度。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * 2^m)
+空间复杂度: O(m * 2^m)
 """
 
 # ============================================================================
@@ -48,13 +50,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(m: int, k: int, nums: List[int]) -> int:
+    n = len(nums)
+    max_mask = 1 << m
+    dp = [[[0 for _ in range(m + 1)] for _ in range(max_mask)] for _ in range(n + 1)]
+    dp[0][0][0] = 1
 
+    for i in range(1, n + 1):
+        for mask in range(max_mask):
+            for j in range(m + 1):
+                dp[i][mask][j] = dp[i - 1][mask][j]
+                if j > 0 and (mask & (1 << (i - 1))) != 0:
+                    dp[i][mask][j] += dp[i - 1][mask ^ (1 << (i - 1))][j - 1] * nums[i - 1]
+                    dp[i][mask][j] %= MOD
+
+    result = 0
+    for mask in range(max_mask):
+        if bin(mask).count('1') == k:
+            result += dp[n][mask][m]
+            result %= MOD
+
+    return result
 
 Solution = create_solution(solution_function_name)

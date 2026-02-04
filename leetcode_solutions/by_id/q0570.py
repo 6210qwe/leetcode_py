@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理，通过groupby和count方法统计每个经理的直接下属数量，然后筛选出至少有五个直接下属的经理。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取Employee表。
+2. 使用groupby按managerId分组，并计算每个managerId的出现次数。
+3. 筛选出直接下属数量大于等于5的managerId。
+4. 通过这些managerId在原表中找到对应的经理名字。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和count方法进行高效的数据处理。
+- 确保筛选条件正确，避免遗漏或错误的经理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是Employee表的行数。因为我们需要遍历整个表来进行分组和计数操作。
+空间复杂度: O(n)，因为我们需要存储分组后的数据和最终的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def find_managers(employee: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    找出至少有五个直接下属的经理。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个经理的直接下属数量
+    manager_counts = employee.groupby('managerId').size().reset_index(name='count')
+    
+    # 筛选出至少有五个直接下属的经理
+    managers_with_five_or_more = manager_counts[manager_counts['count'] >= 5]['managerId']
+    
+    # 找到这些经理的名字
+    result = employee[employee['id'].isin(managers_with_five_or_more)]['name'].to_frame()
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_managers)

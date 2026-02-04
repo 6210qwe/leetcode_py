@@ -21,22 +21,21 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 由于石子总数是奇数且堆数是偶数，Alice 总是可以赢。Alice 可以通过选择最大值来确保自己总是能拿到更多的石子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 返回 True，因为 Alice 总是可以赢。
 
 关键点:
-- [TODO]
+- Alice 总是可以选择最优策略来确保自己获胜。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +48,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def stone_game(piles: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 Alice 是否能赢
     """
-    # TODO: 实现最优解法
-    pass
+    # Alice 总是可以赢
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stone_game)

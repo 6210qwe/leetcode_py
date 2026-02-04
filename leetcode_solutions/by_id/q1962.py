@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列来管理任务，并按时间顺序处理任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个任务与它的索引绑定，以便在处理时可以知道任务的原始索引。
+2. 按照任务的入队时间对任务进行排序。
+3. 使用一个优先队列来存储当前可以执行的任务，优先队列的元素是 (处理时间, 索引)。
+4. 初始化当前时间为第一个任务的入队时间。
+5. 遍历任务列表，将所有入队时间小于等于当前时间的任务加入优先队列。
+6. 从优先队列中取出处理时间最短的任务进行处理，并更新当前时间。
+7. 重复步骤5和6，直到所有任务都被处理完毕。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地获取处理时间最短的任务。
+- 通过维护当前时间来确保任务按时间顺序处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是任务的数量。排序操作的时间复杂度为 O(n log n)，而优先队列的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，优先队列最多存储 n 个任务。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def single_threaded_cpu(tasks: List[List[int]]) -> List[int]:
+    # 将每个任务与它的索引绑定
+    tasks = [(enqueue_time, processing_time, index) for index, (enqueue_time, processing_time) in enumerate(tasks)]
+    
+    # 按照任务的入队时间对任务进行排序
+    tasks.sort()
+    
+    result = []
+    min_heap = []
+    current_time = tasks[0][0]
+    
+    for enqueue_time, processing_time, index in tasks:
+        # 将所有入队时间小于等于当前时间的任务加入优先队列
+        while min_heap and current_time < enqueue_time:
+            process_time, task_index = heapq.heappop(min_heap)
+            result.append(task_index)
+            current_time += process_time
+        
+        # 更新当前时间
+        current_time = max(current_time, enqueue_time)
+        
+        # 将当前任务加入优先队列
+        heapq.heappush(min_heap, (processing_time, index))
+    
+    # 处理剩余的任务
+    while min_heap:
+        process_time, task_index = heapq.heappop(min_heap)
+        result.append(task_index)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(single_threaded_cpu)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用数学公式直接计算前 n 个奇数和偶数的总和，并使用欧几里得算法计算最大公约数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前 n 个奇数的总和 sumOdd。
+2. 计算前 n 个偶数的总和 sumEven。
+3. 使用欧几里得算法计算 sumOdd 和 sumEven 的最大公约数。
 
 关键点:
-- [TODO]
+- 前 n 个奇数的总和为 n^2。
+- 前 n 个偶数的总和为 n * (n + 1)。
+- 欧几里得算法用于计算两个数的最大公约数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(min(a, b)))，其中 a 和 b 是 sumOdd 和 sumEven。欧几里得算法的时间复杂度是 O(log(min(a, b)))。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def gcd_of_odd_and_even_sums(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算前 n 个奇数和偶数的总和的最大公约数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前 n 个奇数的总和
+    sum_odd = n * n
+    # 计算前 n 个偶数的总和
+    sum_even = n * (n + 1)
+    
+    # 使用欧几里得算法计算最大公约数
+    def gcd(a: int, b: int) -> int:
+        while b:
+            a, b = b, a % b
+        return a
+    
+    return gcd(sum_odd, sum_even)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(gcd_of_odd_and_even_sums)

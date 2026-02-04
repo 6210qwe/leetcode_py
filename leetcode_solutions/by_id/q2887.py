@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序对元音字母进行排序，并保持辅音字母在原位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个元音字母的集合。
+2. 遍历字符串，记录每个元音字母的出现次数。
+3. 再次遍历字符串，将元音字母按顺序替换为排序后的元音字母。
 
 关键点:
-- [TODO]
+- 使用计数排序来高效地对元音字母进行排序。
+- 保持辅音字母在原位置不变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要两次遍历字符串。
+空间复杂度: O(1)，因为元音字母的种类是固定的，所以额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_vowels(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串中的元音字母排序
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = "AEIOUaeiou"
+    vowel_count = [0] * 10  # 用于记录元音字母的出现次数
+    result = []
+
+    # 记录每个元音字母的出现次数
+    for char in s:
+        if char in vowels:
+            vowel_count[ord(char) - ord('A')] += 1
+
+    # 生成排序后的字符串
+    vowel_index = 0
+    for char in s:
+        if char in vowels:
+            while vowel_count[vowel_index] == 0:
+                vowel_index += 1
+            result.append(chr(vowel_index + ord('A')))
+            vowel_count[vowel_index] -= 1
+        else:
+            result.append(char)
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_vowels)

@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与二分查找来实现随机选择。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个矩形的面积，并计算前缀和。
+2. 使用前缀和进行二分查找，找到对应的矩形。
+3. 在选定的矩形中随机选择一个点。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速确定矩形的概率分布。
+- 使用二分查找来高效地找到目标矩形。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 二分查找的时间复杂度。
+空间复杂度: O(n) - 存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import random
+from bisect import bisect_left
+
+class Solution:
+
+    def __init__(self, rects: List[List[int]]):
+        self.rects = rects
+        self.areas = []
+        total_area = 0
+        for rect in rects:
+            x1, y1, x2, y2 = rect
+            area = (x2 - x1 + 1) * (y2 - y1 + 1)
+            total_area += area
+            self.areas.append(total_area)
+
+    def pick(self) -> List[int]:
+        # 生成一个在 [1, total_area] 范围内的随机数
+        target = random.randint(1, self.areas[-1])
+        
+        # 使用二分查找找到对应的矩形
+        idx = bisect_left(self.areas, target)
+        
+        # 如果 idx 为 0 或者 target 不在当前区间内，减 1
+        if idx > 0 and target > self.areas[idx - 1]:
+            idx -= 1
+        
+        # 在选定的矩形中随机选择一个点
+        x1, y1, x2, y2 = self.rects[idx]
+        return [random.randint(x1, x2), random.randint(y1, y2)]
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_solution(rects: List[List[int]]) -> Solution:
+    return Solution(rects)

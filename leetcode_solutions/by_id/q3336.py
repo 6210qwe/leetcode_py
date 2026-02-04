@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断喝掉满水瓶并用空水瓶交换新的满水瓶来最大化喝到的水瓶数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化喝掉的水瓶数量和空水瓶数量。
+2. 当有足够的空水瓶可以交换时，进行交换并将空水瓶数量减少，同时增加满水瓶数量。
+3. 将新获得的满水瓶喝掉，并更新空水瓶数量。
+4. 重复步骤2和3，直到没有足够的空水瓶可以交换为止。
 
 关键点:
-- [TODO]
+- 每次交换后，numExchange 会增加 1。
+- 只有当空水瓶数量大于等于 numExchange 时，才能进行交换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(numBottles) - 最坏情况下，每次交换只能得到一个新的满水瓶，最多需要进行 numBottles 次交换。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_water_bottles(num_bottles: int, num_exchange: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以喝到多少瓶水
     """
-    # TODO: 实现最优解法
-    pass
+    total_drunk = num_bottles  # 初始喝掉的水瓶数量
+    empty_bottles = num_bottles  # 初始空水瓶数量
+
+    while empty_bottles >= num_exchange:
+        new_full_bottles = empty_bottles // num_exchange
+        total_drunk += new_full_bottles
+        empty_bottles = empty_bottles % num_exchange + new_full_bottles
+        num_exchange += 1
+
+    return total_drunk
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_water_bottles)

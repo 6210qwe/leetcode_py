@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个数的平方根出现的次数，然后通过遍历数组来查找符合条件的三元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 中每个数的平方，并使用哈希表记录这些平方值。
+2. 遍历 nums2 的所有可能的 (j, k) 对，检查它们的乘积是否在哈希表中。如果存在，则累加相应的计数。
+3. 对于类型 2 的三元组，重复上述步骤，但这次计算 nums2 中每个数的平方，并检查 nums1 中的 (j, k) 对。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储平方值及其出现次数，以实现快速查找。
+- 通过双重循环遍历数组，找到符合条件的 (j, k) 对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 + m^2)，其中 n 是 nums1 的长度，m 是 nums2 的长度。
+空间复杂度: O(n + m)，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_triplets(nums1: List[int], nums2: List[int]) -> int:
+    def count_type1(nums1: List[int], nums2: List[int]) -> int:
+        square_count = {}
+        for num in nums1:
+            square = num * num
+            if square not in square_count:
+                square_count[square] = 0
+            square_count[square] += 1
+
+        count = 0
+        for j in range(len(nums2)):
+            for k in range(j + 1, len(nums2)):
+                product = nums2[j] * nums2[k]
+                if product in square_count:
+                    count += square_count[product]
+
+        return count
+
+    return count_type1(nums1, nums2) + count_type1(nums2, nums1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_triplets)

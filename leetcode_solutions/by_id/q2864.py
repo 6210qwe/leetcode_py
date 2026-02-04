@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接检查对象或数组是否为空。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入是否为字典类型，如果是，则检查其长度是否为0。
+2. 如果输入不是字典类型，则检查其是否为列表类型，并检查其长度是否为0。
 
 关键点:
-- [TODO]
+- 使用内置的 `len` 函数来检查对象或数组的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_object_empty(obj):
     """
-    函数式接口 - [TODO] 实现
+    判断给定的对象或数组是否为空。
     """
-    # TODO: 实现最优解法
-    pass
+    if isinstance(obj, dict):
+        return len(obj) == 0
+    elif isinstance(obj, list):
+        return len(obj) == 0
+    else:
+        raise ValueError("Input must be a dictionary or a list.")
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_object_empty)

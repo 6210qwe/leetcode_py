@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和滑动窗口来找到最小的包含 T 的 S 的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 S 和 T 的起始位置。
+2. 移动 i 指针遍历 S，如果 S[i] == T[j]，则移动 j 指针。
+3. 当 j 到达 T 的末尾时，记录当前窗口的结束位置，并尝试收缩窗口以找到更小的窗口。
+4. 重复上述步骤直到遍历完 S。
 
 关键点:
-- [TODO]
+- 使用双指针和滑动窗口来找到最小的包含 T 的 S 的子序列。
+- 在找到一个有效窗口后，尝试收缩窗口以找到更小的窗口。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 S 的长度，m 是 T 的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_window_subsequence(S: str, T: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到 S 中包含 T 的最小子序列
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(S), len(T)
+    if m > n:
+        return ""
+    
+    start, end = 0, n + 1
+    i, j = 0, 0
+    
+    while i < n:
+        if S[i] == T[j]:
+            j += 1
+            if j == m:
+                # 找到一个有效窗口，尝试收缩窗口
+                right = i + 1
+                while j > 0:
+                    if S[i] == T[j - 1]:
+                        j -= 1
+                    i -= 1
+                i += 1
+                if right - i < end - start:
+                    start, end = i, right
+        i += 1
+    
+    return S[start:end] if end - start <= n else ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_window_subsequence)

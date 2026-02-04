@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双端队列来模拟比赛过程，并记录每个玩家的胜利次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个双端队列 `queue`，将所有玩家编号加入队列。
+2. 初始化一个字典 `win_counts` 来记录每个玩家的胜利次数。
+3. 使用一个变量 `current_winner` 来记录当前连胜的玩家编号。
+4. 循环直到某个玩家连胜 `k` 场：
+   - 从队列中取出前两个玩家进行比赛。
+   - 技能等级高的玩家胜出，更新 `win_counts` 和 `current_winner`。
+   - 如果当前连胜的玩家连胜次数达到 `k`，返回该玩家编号。
+   - 将胜者放回队列头部，败者放回队列尾部。
+5. 返回最终的赢家编号。
 
 关键点:
-- [TODO]
+- 使用双端队列高效地模拟比赛过程。
+- 使用字典记录每个玩家的胜利次数。
+- 通过变量 `current_winner` 记录当前连胜的玩家。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是玩家数量，k 是连胜次数。最坏情况下需要进行 n + k 次比赛。
+空间复杂度: O(n)，使用双端队列和字典存储玩家信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def find_first_player_to_win_k_games(skills: List[int], k: int) -> int:
+    n = len(skills)
+    queue = deque(range(n))
+    win_counts = {i: 0 for i in range(n)}
+    current_winner = None
+    
+    while True:
+        player1 = queue.popleft()
+        player2 = queue.popleft()
+        
+        if skills[player1] > skills[player2]:
+            winner, loser = player1, player2
+        else:
+            winner, loser = player2, player1
+        
+        if winner == current_winner:
+            win_counts[winner] += 1
+        else:
+            win_counts[winner] = 1
+            current_winner = winner
+        
+        if win_counts[current_winner] == k:
+            return current_winner
+        
+        queue.appendleft(winner)
+        queue.append(loser)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_first_player_to_win_k_games)

@@ -21,40 +21,72 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来确定行和列的顺序，然后根据这些顺序构建矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建行和列的图，并计算每个节点的入度。
+2. 使用拓扑排序确定行和列的顺序。
+3. 如果拓扑排序失败（即存在环），则返回空矩阵。
+4. 根据行和列的顺序构建矩阵。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来确定行和列的顺序。
+- 检查是否存在环。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k + r + c)，其中 k 是矩阵的大小，r 是 rowConditions 的长度，c 是 colConditions 的长度。
+空间复杂度: O(k + r + c)，用于存储图和入度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def build_matrix(k: int, rowConditions: List[List[int]], colConditions: List[List[int]]) -> List[List[int]]:
+    def topological_sort(edges):
+        graph = defaultdict(list)
+        in_degree = [0] * (k + 1)
+        
+        for u, v in edges:
+            graph[u].append(v)
+            in_degree[v] += 1
+        
+        queue = deque([i for i in range(1, k + 1) if in_degree[i] == 0])
+        order = []
+        
+        while queue:
+            node = queue.popleft()
+            order.append(node)
+            for neighbor in graph[node]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        
+        if len(order) < k:
+            return []
+        return order
+    
+    row_order = topological_sort(rowConditions)
+    if not row_order:
+        return []
+    
+    col_order = topological_sort(colConditions)
+    if not col_order:
+        return []
+    
+    matrix = [[0] * k for _ in range(k)]
+    for num in range(1, k + 1):
+        row_idx = row_order.index(num)
+        col_idx = col_order.index(num)
+        matrix[row_idx][col_idx] = num
+    
+    return matrix
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(build_matrix)

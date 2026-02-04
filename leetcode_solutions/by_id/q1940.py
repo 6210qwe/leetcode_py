@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过前缀异或和来快速计算每个查询的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或和数组 prefix_xor。
+2. 对于每个查询，计算当前前缀异或和与最大可能值 (2^maximumBit - 1) 的异或结果。
+3. 将结果存储在答案数组中。
 
 关键点:
-- [TODO]
+- 使用前缀异或和可以快速计算任意子数组的异或和。
+- 最大可能值为 (2^maximumBit - 1)，与当前前缀异或和的异或结果即为最大化的 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_maximum_xor(nums: List[int], maximum_bit: int) -> List[int]:
+    n = len(nums)
+    prefix_xor = [0] * (n + 1)
+    
+    # 计算前缀异或和
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ nums[i]
+    
+    max_value = (1 << maximum_bit) - 1
+    result = []
+    
+    # 计算每个查询的结果
+    for i in range(n):
+        k = prefix_xor[n - i] ^ max_value
+        result.append(k)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_maximum_xor)

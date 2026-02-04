@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储每个单词及其位置索引，然后按索引排序并重建句子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子拆分成单词列表。
+2. 使用字典存储每个单词及其位置索引。
+3. 按位置索引对单词进行排序。
+4. 重建句子并删除位置索引。
 
 关键点:
-- [TODO]
+- 使用字典存储单词及其位置索引。
+- 按位置索引排序。
+- 重建句子时删除位置索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是单词的数量（最多 9 个），排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储字典和排序后的单词列表。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_sentence(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将打乱顺序的句子重新排序
     """
-    # TODO: 实现最优解法
-    pass
+    # 将句子拆分成单词列表
+    words = s.split()
+    
+    # 使用字典存储每个单词及其位置索引
+    word_dict = {}
+    for word in words:
+        index = int(word[-1])  # 获取单词的位置索引
+        word_dict[index] = word[:-1]  # 存储单词（去掉位置索引）
+    
+    # 按位置索引对单词进行排序
+    sorted_words = [word_dict[i] for i in range(1, len(words) + 1)]
+    
+    # 重建句子
+    return ' '.join(sorted_words)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_sentence)

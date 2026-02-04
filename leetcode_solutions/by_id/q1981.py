@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到每天的最大交易金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 子句按日期分组。
+2. 使用 MAX 函数找到每组中的最大交易金额。
 
 关键点:
-- [TODO]
+- 确保查询结果按日期排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(transactions: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到每天的最大交易金额
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from datetime import datetime
+
+    # 解析输入数据
+    transaction_dict = defaultdict(list)
+    for transaction in transactions:
+        date_str, amount_str = transaction[0], transaction[1]
+        date = datetime.strptime(date_str, "%Y-%m-%d")
+        amount = float(amount_str)
+        transaction_dict[date].append((amount, transaction))
+
+    # 找到每天的最大交易
+    result = []
+    for date, trans_list in transaction_dict.items():
+        max_trans = max(trans_list, key=lambda x: x[0])
+        result.append(max_trans[1])
+
+    # 按日期排序
+    result.sort(key=lambda x: x[0])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

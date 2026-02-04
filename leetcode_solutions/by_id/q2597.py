@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个查询，我们需要找到两个节点的最近公共祖先（LCA），然后计算从这两个节点到 LCA 的距离之和加 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个查询，找到两个节点的最近公共祖先。
+2. 计算从两个节点到 LCA 的距离。
+3. 返回距离之和加 1 作为环的长度。
 
 关键点:
-- [TODO]
+- 使用位运算快速找到最近公共祖先。
+- 计算节点深度时，使用对数函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * log(n))，其中 m 是查询的数量，n 是树的高度。
+空间复杂度: O(1)，只使用常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查询树中环的长度
     """
-    # TODO: 实现最优解法
-    pass
+    def get_depth(node: int) -> int:
+        """计算节点的深度"""
+        return (node).bit_length() - 1
 
+    def get_lca(a: int, b: int) -> int:
+        """找到两个节点的最近公共祖先"""
+        if a > b:
+            a, b = b, a
+        while a != b:
+            if a < b:
+                b //= 2
+            else:
+                a //= 2
+        return a
+
+    result = []
+    for a, b in queries:
+        lca = get_lca(a, b)
+        depth_a = get_depth(a)
+        depth_b = get_depth(b)
+        depth_lca = get_depth(lca)
+        cycle_length = (depth_a - depth_lca) + (depth_b - depth_lca) + 1
+        result.append(cycle_length)
+    
+    return result
 
 Solution = create_solution(solution_function_name)

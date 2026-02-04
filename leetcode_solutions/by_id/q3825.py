@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和记忆化搜索来处理字符串的替换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典，将每个模式映射到其对应的替换字符串。
+2. 定义一个递归函数 `dfs`，该函数接受当前字符串作为参数，并返回替换后的结果。
+3. 在递归函数中，遍历所有可能的模式匹配位置，如果找到匹配，则递归处理剩余部分。
+4. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用字典快速查找模式及其替换字符串。
+- 递归处理字符串的替换，确保所有可能的替换都被考虑。
+- 使用记忆化搜索优化性能。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串长度，m 是模式的数量。每个字符最多被处理一次。
+空间复杂度: O(n * m)，记忆化搜索需要存储中间结果。
 """
 
 # ============================================================================
@@ -47,14 +51,35 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def apply_substitutions(s: str, sub: List[List[str]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 应用替换
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建模式到替换字符串的映射
+    pattern_to_replacement = {pattern: replacement for pattern, replacement in sub}
+    
+    @lru_cache(maxsize=None)
+    def dfs(current_s: str) -> str:
+        if not current_s:
+            return ""
+        
+        result = ""
+        i = 0
+        while i < len(current_s):
+            found = False
+            for pattern in pattern_to_replacement:
+                if current_s.startswith(pattern, i):
+                    result += pattern_to_replacement[pattern]
+                    i += len(pattern)
+                    found = True
+                    break
+            if not found:
+                result += current_s[i]
+                i += 1
+        return result
+    
+    return dfs(s)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(apply_substitutions)

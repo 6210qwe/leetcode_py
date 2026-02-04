@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来解决这个问题。首先找到每个玩家的首次登录日期，然后检查这些玩家是否在首次登录的第二天再次登录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到每个玩家的首次登录日期。
+2. 检查这些玩家是否在首次登录的第二天再次登录。
+3. 计算符合条件的玩家数量与总玩家数量的比率。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `ROW_NUMBER()` 来找到每个玩家的首次登录日期。
+- 使用 `DATE_ADD()` 函数来计算首次登录的第二天。
+- 使用 `INNER JOIN` 来连接两个子查询结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 Activity 表的行数。主要的时间消耗在于排序和分组操作。
+空间复杂度: O(n)，存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(activity: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在首次登录的第二天再次登录的玩家的比率
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 找到每个玩家的首次登录日期
+    first_login = activity.groupby('player_id')['event_date'].min().reset_index()
+    first_login.columns = ['player_id', 'first_login_date']
+    
+    # 计算首次登录的第二天
+    first_login['next_day'] = first_login['first_login_date'] + pd.DateOffset(days=1)
+    
+    # 检查这些玩家是否在首次登录的第二天再次登录
+    next_day_login = activity.merge(first_login, on='player_id')
+    next_day_login = next_day_login[next_day_login['event_date'] == next_day_login['next_day']]
+    
+    # 计算符合条件的玩家数量与总玩家数量的比率
+    total_players = activity['player_id'].nunique()
+    next_day_players = next_day_login['player_id'].nunique()
+    fraction = round(next_day_players / total_players, 2)
+    
+    return pd.DataFrame({'fraction': [fraction]})
 
 Solution = create_solution(solution_function_name)

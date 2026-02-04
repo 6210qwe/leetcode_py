@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的除数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，左边界为1，右边界为数组中的最大值。
+2. 在每次迭代中，计算中间值 `mid` 作为当前的除数。
+3. 计算使用 `mid` 作为除数时，数组中所有元素除以 `mid` 后的和。
+4. 如果和小于等于阈值，则说明 `mid` 是一个可行的解，尝试更小的除数；否则，尝试更大的除数。
+5. 最终返回左边界，即为最小的除数。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度较低，适合处理大范围的搜索问题。
+- 使用 `math.ceil` 函数来确保每个数除以除数后向上取整。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是数组的长度，m 是数组中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def smallest_divisor(nums: List[int], threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到使结果不超过阈值的最小除数
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 1, max(nums)
+    
+    while left < right:
+        mid = (left + right) // 2
+        total = sum(math.ceil(num / mid) for num in nums)
+        
+        if total > threshold:
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_divisor)

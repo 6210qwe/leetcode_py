@@ -21,40 +21,83 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序和动态规划来解决这个问题。首先，我们需要检查图是否是二分图，如果不是，则无法分组。然后，我们使用拓扑排序来确定每个节点的最小组编号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 检查图是否是二分图。
+3. 使用拓扑排序来确定每个节点的最小组编号。
+4. 返回最大组编号。
 
 关键点:
-- [TODO]
+- 使用二分图检测来确保图可以被分组。
+- 使用拓扑排序来确定每个节点的最小组编号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。
+空间复杂度: O(n + m)，存储图的邻接表和访问状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def is_bipartite(graph: List[List[int]]) -> bool:
+    def bfs(start: int) -> bool:
+        color[start] = 0
+        queue = deque([start])
+        while queue:
+            node = queue.popleft()
+            for neighbor in graph[node]:
+                if color[neighbor] == -1:
+                    color[neighbor] = 1 - color[node]
+                    queue.append(neighbor)
+                elif color[neighbor] == color[node]:
+                    return False
+        return True
+    
+    n = len(graph)
+    color = [-1] * n
+    for i in range(n):
+        if color[i] == -1 and not bfs(i):
+            return False
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_groups(n: int, edges: List[List[int]]) -> int:
+    # 构建图的邻接表表示
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u - 1].append(v - 1)
+        graph[v - 1].append(u - 1)
+    
+    # 检查图是否是二分图
+    if not is_bipartite(graph):
+        return -1
+    
+    # 使用拓扑排序来确定每个节点的最小组编号
+    indegree = [0] * n
+    for u in graph:
+        for v in graph[u]:
+            indegree[v] += 1
+    
+    queue = deque([i for i in range(n) if indegree[i] == 0])
+    groups = [0] * n
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if groups[neighbor] < groups[node] + 1:
+                groups[neighbor] = groups[node] + 1
+                indegree[neighbor] -= 1
+                if indegree[neighbor] == 0:
+                    queue.append(neighbor)
+    
+    return max(groups) + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_groups)

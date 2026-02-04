@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从 1 开始选择尽可能小的数，并跳过与已选数之和为 k 的数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合 `used` 来记录已使用的数。
+2. 初始化一个变量 `sum` 来记录当前数组的总和。
+3. 从 1 开始遍历，直到找到 n 个数：
+   - 如果当前数 i 和已使用的数中的某个数 j 之和等于 k，则跳过当前数 i。
+   - 否则，将当前数 i 加入 `used` 集合，并将其加入 `sum`。
+4. 返回 `sum` 作为结果。
 
 关键点:
-- [TODO]
+- 使用集合来记录已使用的数，以便快速检查是否存在与当前数之和为 k 的数。
+- 从 1 开始选择尽可能小的数，确保总和最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的 k-avoiding 数组的最小总和
     """
-    # TODO: 实现最优解法
-    pass
+    used = set()
+    total_sum = 0
+    current_num = 1
+    
+    while len(used) < n:
+        if k - current_num not in used:
+            used.add(current_num)
+            total_sum += current_num
+        current_num += 1
+    
+    return total_sum
 
 
 Solution = create_solution(solution_function_name)

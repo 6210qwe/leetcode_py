@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来构建最短公共超序列，并统计每个字母的频率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建有向图和入度表，表示字符之间的依赖关系。
+2. 使用拓扑排序找到所有可能的最短公共超序列。
+3. 统计每个最短公共超序列的字母频率。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来处理字符之间的依赖关系。
+- 通过深度优先搜索 (DFS) 来生成所有可能的最短公共超序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(26 * 26 + n * 26)，其中 n 是 words 的长度。构建图的时间复杂度是 O(26 * 26)，拓扑排序的时间复杂度是 O(n * 26)。
+空间复杂度: O(26 * 26 + n * 26)，存储图和入度表的空间复杂度是 O(26 * 26)，存储结果的空间复杂度是 O(n * 26)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def find_shortest_supersequence_freqs(words: List[str]) -> List[List[int]]:
+    # 构建有向图和入度表
+    graph = defaultdict(list)
+    in_degree = defaultdict(int)
+    
+    for word in words:
+        for i in range(1, len(word)):
+            u, v = ord(word[i-1]) - ord('a'), ord(word[i]) - ord('a')
+            if v not in graph[u]:
+                graph[u].append(v)
+                in_degree[v] += 1
+    
+    # 初始化队列
+    queue = deque([i for i in range(26) if in_degree[i] == 0])
+    
+    # 拓扑排序
+    def dfs(node, path):
+        if node not in graph:
+            result.append(path[:])
+            return
+        for next_node in graph[node]:
+            in_degree[next_node] -= 1
+            if in_degree[next_node] == 0:
+                dfs(next_node, path + [next_node])
+            in_degree[next_node] += 1
+    
+    result = []
+    for start in queue:
+        dfs(start, [start])
+    
+    # 统计每个最短公共超序列的字母频率
+    freqs = []
+    for path in result:
+        freq = [0] * 26
+        for node in path:
+            freq[node] += 1
+        for word in words:
+            for char in word:
+                freq[ord(char) - ord('a')] += 1
+        freqs.append(freq)
+    
+    return freqs
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_shortest_supersequence_freqs)

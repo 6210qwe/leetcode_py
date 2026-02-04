@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检测突发行为
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个滑动窗口大小 k，用于检测突发行为。
+2. 遍历数据流，使用一个队列来维护当前窗口内的元素。
+3. 每次新元素进入窗口时，检查窗口内的元素是否满足突发行为的条件。
+4. 如果满足条件，则记录突发行为的时间段。
 
 关键点:
-- [TODO]
+- 使用队列来维护滑动窗口。
+- 通过比较窗口内的最大值和最小值来判断是否满足突发行为的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数据流的长度。每个元素最多只会被处理两次（进入和离开窗口）。
+空间复杂度: O(k)，其中 k 是滑动窗口的大小。队列中最多存储 k 个元素。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(data: List[int], k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用滑动窗口检测突发行为
     """
-    # TODO: 实现最优解法
-    pass
+    if not data or k <= 0:
+        return []
+
+    n = len(data)
+    bursty_intervals = []
+    window = []
+
+    for i in range(n):
+        # 维护滑动窗口
+        while window and data[window[-1]] < data[i]:
+            window.pop()
+        window.append(i)
+
+        # 移除不在窗口范围内的元素
+        if window[0] == i - k:
+            window.pop(0)
+
+        # 检查当前窗口是否满足突发行为的条件
+        if i >= k - 1:
+            if data[window[0]] - data[window[-1]] > 10:  # 假设突发行为的条件是最大值和最小值之差大于10
+                bursty_intervals.append([i - k + 1, i])
+
+    return bursty_intervals
 
 
 Solution = create_solution(solution_function_name)

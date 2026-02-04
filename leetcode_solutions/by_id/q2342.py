@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和计算每个位置的平均差，并找到最小的平均差对应的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的总和。
+2. 初始化前缀和为0。
+3. 遍历数组，逐步更新前缀和，并计算当前下标的平均差。
+4. 记录最小的平均差及其对应的下标。
 
 关键点:
-- [TODO]
+- 使用前缀和来避免重复计算。
+- 注意处理最后一个元素的情况，此时后半部分为空。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_average_difference(nums: List[int]) -> int:
+    n = len(nums)
+    total_sum = sum(nums)
+    min_diff = float('inf')
+    min_index = 0
+    prefix_sum = 0
+    
+    for i in range(n):
+        prefix_sum += nums[i]
+        left_avg = prefix_sum // (i + 1)
+        right_avg = (total_sum - prefix_sum) // (n - i - 1) if i < n - 1 else 0
+        diff = abs(left_avg - right_avg)
+        
+        if diff < min_diff:
+            min_diff = diff
+            min_index = i
+    
+    return min_index
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_average_difference)

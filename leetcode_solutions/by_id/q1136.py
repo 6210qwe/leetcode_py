@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理，通过groupby和count方法统计每个演员和导演的合作次数，然后筛选出合作次数大于等于3的组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据到Pandas DataFrame。
+2. 使用groupby对actor_id和director_id进行分组，并计算每组的行数。
+3. 筛选出合作次数大于等于3的组合。
+4. 返回结果DataFrame。
 
 关键点:
-- [TODO]
+- 使用Pandas库进行高效的数据处理。
+- 通过groupby和count方法统计合作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是ActorDirector表的行数。因为我们需要遍历整个表来进行分组和计数。
+空间复杂度: O(n)，因为我们需要存储分组后的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(actor_director: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出合作过至少三次的演员和导演的id对
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用groupby对actor_id和director_id进行分组，并计算每组的行数
+    cooperation_counts = actor_director.groupby(['actor_id', 'director_id']).size().reset_index(name='count')
+    
+    # 筛选出合作次数大于等于3的组合
+    result = cooperation_counts[cooperation_counts['count'] >= 3][['actor_id', 'director_id']]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

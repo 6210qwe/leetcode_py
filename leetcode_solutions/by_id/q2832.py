@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录每个元素的索引位置，通过双指针方法找到最长的等值子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `index_map` 来存储每个元素的索引列表。
+2. 遍历数组 `nums`，将每个元素的索引添加到 `index_map` 中。
+3. 对于每个元素的索引列表，使用滑动窗口方法找到最长的等值子数组。
+4. 在滑动窗口内，计算当前窗口内的元素数量和需要删除的元素数量。
+5. 更新最长等值子数组的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表存储每个元素的索引列表，方便快速查找。
+- 使用滑动窗口方法在索引列表上进行操作，找到最长的等值子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出最长等值子数组
     """
-    # TODO: 实现最优解法
-    pass
+    index_map = {}
+    for i, num in enumerate(nums):
+        if num not in index_map:
+            index_map[num] = []
+        index_map[num].append(i)
+
+    max_length = 0
+    for indices in index_map.values():
+        left = 0
+        for right in range(len(indices)):
+            while indices[right] - indices[left] + 1 > right - left + 1 + k:
+                left += 1
+            max_length = max(max_length, right - left + 1)
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

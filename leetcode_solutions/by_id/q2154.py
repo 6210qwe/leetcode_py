@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次遇到 'X' 时，将其和其后的两个字符（如果存在）一起转换为 'O'，并跳过这三个字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `moves` 为 0。
+2. 遍历字符串 `s`，每次遇到 'X' 时：
+   - 增加 `moves` 计数。
+   - 跳过接下来的两个字符（如果存在）。
+3. 返回 `moves`。
 
 关键点:
-- [TODO]
+- 通过贪心策略，每次尽可能多地转换字符，以减少操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_moves_to_convert_string(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将字符串 s 中所有字符均转换为 'O' 需要执行的最少操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    moves = 0
+    i = 0
+    while i < len(s):
+        if s[i] == 'X':
+            moves += 1
+            i += 3  # 跳过接下来的两个字符
+        else:
+            i += 1
+    return moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_moves_to_convert_string)

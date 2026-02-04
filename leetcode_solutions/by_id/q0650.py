@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划 + 因数分解
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 为 1，直接返回 0。
+2. 初始化 dp 数组，dp[i] 表示得到 i 个 'A' 所需的最少操作次数。
+3. 对于每个 i，从 2 到 n，尝试将其分解为 j * k (j 是 i 的因数)，并更新 dp[i] 为 dp[j] + k。
+4. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用动态规划记录每个子问题的最优解。
+- 通过因数分解来优化状态转移。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(n))
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_steps(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算得到 n 个 'A' 所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return 0
+    
+    dp = [0] * (n + 1)
+    
+    for i in range(2, n + 1):
+        dp[i] = i  # 最坏情况是每次只复制一个 'A'
+        for j in range(2, int(i ** 0.5) + 1):
+            if i % j == 0:
+                dp[i] = min(dp[i], dp[j] + i // j, dp[i // j] + j)
+    
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_steps)

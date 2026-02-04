@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用异或运算的性质，将所有数对的异或和简化为两个数组的长度和元素的异或和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 nums1 的长度为奇数，则将 nums2 中所有元素的异或和加入结果。
+2. 如果 nums2 的长度为奇数，则将 nums1 中所有元素的异或和加入结果。
+3. 返回最终结果。
 
 关键点:
-- [TODO]
+- 利用异或运算的性质，可以将复杂度降低到 O(n + m)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums1 的长度，m 是 nums2 的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有数对的异或和
     """
-    # TODO: 实现最优解法
-    pass
+    xor_sum = 0
+    
+    # 如果 nums1 的长度为奇数，则将 nums2 中所有元素的异或和加入结果
+    if len(nums1) % 2 == 1:
+        for num in nums2:
+            xor_sum ^= num
+    
+    # 如果 nums2 的长度为奇数，则将 nums1 中所有元素的异或和加入结果
+    if len(nums2) % 2 == 1:
+        for num in nums1:
+            xor_sum ^= num
+    
+    return xor_sum
 
 
 Solution = create_solution(solution_function_name)

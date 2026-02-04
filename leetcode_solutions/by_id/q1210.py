@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对数组进行排序，然后去掉前 5% 和后 5% 的元素，计算剩余元素的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算需要去掉的元素数量（即数组长度的 5%）。
+3. 去掉前 5% 和后 5% 的元素。
+4. 计算剩余元素的平均值。
 
 关键点:
-- [TODO]
+- 使用排序来确定需要去掉的元素。
+- 计算平均值时注意精度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。主要由排序操作决定。
+空间复杂度: O(1)，除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算删除最小 5% 和最大 5% 的数字后的数组均值
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(arr)
+    k = n // 20  # 计算需要去掉的元素数量
+    arr.sort()  # 对数组进行排序
+    # 去掉前 5% 和后 5% 的元素
+    trimmed_arr = arr[k:n-k]
+    # 计算剩余元素的平均值
+    return sum(trimmed_arr) / (n - 2 * k)
 
 Solution = create_solution(solution_function_name)

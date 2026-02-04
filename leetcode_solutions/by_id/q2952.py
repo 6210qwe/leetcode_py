@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中，进行了 j 次操作后的最小和。通过这种方式，我们可以逐步构建出最终的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0，其他 dp[0][j] = inf。
+2. 遍历每个元素，更新 dp 数组。
+3. 对于每个元素，计算其在 t 秒后的值，并更新 dp 数组。
+4. 最后，找到满足条件的最小时间。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 通过排序和贪心策略优化状态转移。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log n)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time_to_make_array_sum_at_most_x(nums1: List[int], nums2: List[int], x: int) -> int:
+    n = len(nums1)
+    pairs = sorted(zip(nums1, nums2), key=lambda p: p[1])
+    dp = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(i + 1):
+            if j > 0:
+                dp[i][j] = min(dp[i][j], dp[i - 1][j - 1])
+            dp[i][j] = min(dp[i][j], dp[i - 1][j] + pairs[i - 1][0] + pairs[i - 1][1] * j)
+
+    for j in range(n + 1):
+        if dp[n][j] <= x:
+            return j
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_make_array_sum_at_most_x)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查每隔 k 个字符的子串是否与原字符串的前缀匹配来确定最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时间 t 为 1。
+2. 在每次迭代中，检查 word 的前缀是否与从当前索引开始的长度为 n - k * t 的子串匹配。
+3. 如果匹配，则返回当前时间 t。
+4. 否则，增加时间 t 并继续检查。
 
 关键点:
-- [TODO]
+- 使用切片操作来获取子串并进行比较。
+- 循环直到找到匹配或遍历完所有可能的时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n/k)，其中 n 是 word 的长度。每次迭代最多需要 O(n) 的时间来比较子串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_time_to_revert_word(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 word 恢复到初始状态所需的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word)
+    t = 1
+    while t * k < n:
+        if word[:n - t * k] == word[t * k:]:
+            return t
+        t += 1
+    return (n + k - 1) // k  # 如果没有找到匹配，返回完整的循环次数
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_revert_word)

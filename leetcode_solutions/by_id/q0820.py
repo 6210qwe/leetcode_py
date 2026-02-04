@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来检测图中的环，并标记安全节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个列表：visited 用于记录访问过的节点，safe 用于记录安全节点，unsafe 用于记录不安全节点。
+2. 对于每个节点，如果它还没有被访问过，调用 DFS 函数。
+3. 在 DFS 函数中，首先将当前节点标记为已访问。
+4. 对于当前节点的每个邻居节点，如果邻居节点已经被标记为不安全，则当前节点也是不安全的；否则，递归调用 DFS 函数。
+5. 如果当前节点的所有邻居节点都是安全的，则将当前节点标记为安全节点。
+6. 最后，返回所有安全节点的列表。
 
 关键点:
-- [TODO]
+- 使用三色标记法来避免重复计算和处理环。
+- 通过反向图进行拓扑排序可以更高效地找到所有安全节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(V + E)，存储图的反向图和辅助数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def eventual_safe_nodes(graph: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最终的安全状态
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int):
+        if visited[node] == 1:
+            unsafe.add(node)
+            return False
+        if visited[node] == 2:
+            return True
 
+        visited[node] = 1
+        for neighbor in graph[node]:
+            if not dfs(neighbor):
+                unsafe.add(node)
+                return False
 
-Solution = create_solution(solution_function_name)
+        visited[node] = 2
+        safe.add(node)
+        return True
+
+    n = len(graph)
+    visited = [0] * n  # 0: 未访问, 1: 访问中, 2: 已访问
+    safe = set()
+    unsafe = set()
+
+    for i in range(n):
+        if visited[i] == 0:
+            dfs(i)
+
+    return sorted(list(safe))
+
+Solution = create_solution(eventual_safe_nodes)

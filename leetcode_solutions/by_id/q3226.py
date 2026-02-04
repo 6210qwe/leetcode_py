@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和双指针来模拟游戏过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组 nums 进行排序。
+2. 使用两个指针分别指向当前最小和次小的元素。
+3. 依次从 nums 中取出最小和次小的元素，并按 Bob 和 Alice 的顺序添加到结果数组 arr 中。
+4. 重复上述步骤直到 nums 为空。
 
 关键点:
-- [TODO]
+- 通过排序，可以确保每次都能快速找到最小和次小的元素。
+- 使用双指针可以简化代码逻辑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度，主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_number_game(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最小数字游戏
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化结果数组
+    arr = []
+    
+    # 使用双指针模拟游戏过程
+    for i in range(0, len(nums), 2):
+        # Bob 先添加次小的元素
+        arr.append(nums[i + 1])
+        # Alice 再添加最小的元素
+        arr.append(nums[i])
+    
+    return arr
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_number_game)

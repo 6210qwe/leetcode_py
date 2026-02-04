@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计每个子数组中相同元素的对数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个哈希表 count 来记录当前窗口内每个元素的出现次数。
+3. 移动右指针扩展窗口，更新哈希表，并计算当前窗口内的相同元素对数。
+4. 当相同元素对数达到或超过 k 时，移动左指针收缩窗口，并更新结果。
+5. 重复步骤 3 和 4，直到右指针遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来高效地找到所有满足条件的子数组。
+- 通过哈希表记录元素出现次数，快速计算相同元素对数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储 n 个不同的元素。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_subarrays(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计好子数组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    left = 0
+    count = {}
+    pairs = 0
+    result = 0
+    
+    for right in range(len(nums)):
+        if nums[right] in count:
+            count[nums[right]] += 1
+            pairs += count[nums[right]] - 1
+        else:
+            count[nums[right]] = 1
+        
+        while pairs >= k:
+            result += len(nums) - right
+            count[nums[left]] -= 1
+            if count[nums[left]] > 0:
+                pairs -= count[nums[left]]
+            left += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_subarrays)

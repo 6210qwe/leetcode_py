@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表 seen 来存储遇到的正整数，并使用一个变量 k 来记录连续 -1 的数量。遍历 nums 数组，根据遇到的值更新 seen 和 k，并将结果添加到 ans 列表中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 seen 和 ans 列表，以及 k 变量。
+2. 遍历 nums 数组：
+   - 如果遇到正整数，将其添加到 seen 列表的开头。
+   - 如果遇到 -1，增加 k 的值，并根据 k 的值从 seen 列表中获取相应的元素或 -1，将其添加到 ans 列表中。
+3. 返回 ans 列表。
 
 关键点:
-- [TODO]
+- 使用列表的 insert 方法将正整数添加到 seen 列表的开头。
+- 使用 k 记录连续 -1 的数量，并根据 k 从 seen 列表中获取相应的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。我们只需要遍历一次 nums 数组。
+空间复杂度: O(n)，在最坏情况下，seen 列表可能包含所有的正整数。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def last_visited_integers(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    seen = []
+    ans = []
+    k = 0
+
+    for num in nums:
+        if num != -1:
+            seen.insert(0, num)
+            k = 0
+        else:
+            k += 1
+            if k <= len(seen):
+                ans.append(seen[k - 1])
+            else:
+                ans.append(-1)
+
+    return ans
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(last_visited_integers)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将每个整数转换为字符串，然后逐个字符地将其添加到结果列表中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 `result`。
+2. 遍历输入数组 `nums` 中的每个整数。
+3. 将每个整数转换为字符串，并逐个字符地将其添加到 `result` 列表中。
+4. 返回 `result` 列表。
 
 关键点:
-- [TODO]
+- 使用字符串操作来逐个字符地处理整数的数位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是数组 `nums` 的长度，d 是整数的最大数位数（最多为 6）。
+空间复杂度: O(n * d)，用于存储结果列表。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def separate_digits(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组中的每个整数进行数位分割，并按顺序放入结果数组中
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for num in nums:
+        for digit in str(num):
+            result.append(int(digit))
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(separate_digits)

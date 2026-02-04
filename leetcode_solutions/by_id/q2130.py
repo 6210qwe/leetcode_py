@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用状态压缩和回溯来枚举所有可能的子序列，并检查它们是否为回文子序列。通过记录每个子序列的长度，计算最大乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用状态压缩表示子序列的选择情况。
+2. 对于每个状态，检查其是否为回文子序列。
+3. 记录每个回文子序列的长度。
+4. 遍历所有状态组合，计算两个不相交回文子序列长度的最大乘积。
 
 关键点:
-- [TODO]
+- 使用状态压缩表示子序列的选择情况。
+- 通过位运算快速判断两个子序列是否相交。
+- 使用递归和回溯来生成所有可能的子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^n) - 其中 n 是字符串的长度。因为每个字符有三种选择：属于第一个子序列、属于第二个子序列或不属于任何子序列。
+空间复杂度: O(2^n) - 用于存储所有可能的子序列及其长度。
 """
 
 # ============================================================================
@@ -44,17 +48,27 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def is_palindrome(subseq: str) -> bool:
+    return subseq == subseq[::-1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_product(s: str) -> int:
+    n = len(s)
+    max_product = 0
+    
+    # 生成所有可能的子序列
+    for mask in range(1, 1 << n):
+        subseq1 = ""
+        subseq2 = ""
+        for i in range(n):
+            if mask & (1 << i):
+                subseq1 += s[i]
+            else:
+                subseq2 += s[i]
+        
+        if is_palindrome(subseq1) and is_palindrome(subseq2):
+            max_product = max(max_product, len(subseq1) * len(subseq2))
+    
+    return max_product
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product)

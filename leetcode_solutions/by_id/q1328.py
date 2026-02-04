@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个月的交易情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个包含所有月份的临时表。
+2. 将用户表和交易表进行连接，并按月份分组。
+3. 计算每个月的交易金额总和，并处理缺失值。
 
 关键点:
-- [TODO]
+- 使用 `LEFT JOIN` 来确保每个月都有记录，即使没有交易。
+- 使用 `COALESCE` 函数来处理缺失值，确保结果中没有 NULL。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是用户表的行数，m 是交易表的行数。
+空间复杂度: O(1)，查询过程中使用的额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -51,10 +53,32 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH RECURSIVE Months AS (
+        SELECT 1 AS month
+        UNION ALL
+        SELECT month + 1
+        FROM Months
+        WHERE month < 12
+    )
+    SELECT 
+        M.month,
+        COALESCE(SUM(T.amount), 0) AS total_amount
+    FROM 
+        Months M
+    LEFT JOIN 
+        (SELECT * FROM User U JOIN Transactions T ON U.account = T.account) UT
+    ON 
+        M.month = EXTRACT(MONTH FROM UT.trans_date)
+    GROUP BY 
+        M.month
+    ORDER BY 
+        M.month;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

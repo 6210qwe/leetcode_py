@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法结合线段树来高效地处理重叠正方形的问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个正方形的上下边界分别记录为事件，并按 y 坐标排序。
+2. 使用线段树来维护当前扫描线上的面积。
+3. 在扫描过程中，通过二分查找找到使得上下面积相等的 y 坐标。
 
 关键点:
-- [TODO]
+- 使用线段树来高效地更新和查询区间面积。
+- 通过二分查找来精确找到使上下面积相等的 y 坐标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n log C)，其中 n 是正方形的数量，C 是 y 坐标的范围。
+空间复杂度: O(n + C)，其中 n 是正方形的数量，C 是 y 坐标的范围。
 """
 
 # ============================================================================
@@ -48,13 +50,64 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
+    
+    def update(self, idx, val):
+        self._update(1, 0, self.n - 1, idx, val)
+    
+    def _update(self, node, start, end, idx, val):
+        if start == end:
+            self.tree[node] += val
+        else:
+            mid = (start + end) // 2
+            if idx <= mid:
+                self._update(2 * node, start, mid, idx, val)
+            else:
+                self._update(2 * node + 1, mid + 1, end, idx, val)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+    
+    def query(self, left, right):
+        return self._query(1, 0, self.n - 1, left, right)
+    
+    def _query(self, node, start, end, left, right):
+        if left > end or right < start:
+            return 0
+        if left <= start and end <= right:
+            return self.tree[node]
+        mid = (start + end) // 2
+        return self._query(2 * node, start, mid, left, right) + self._query(2 * node + 1, mid + 1, end, left, right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(squares: List[List[int]]) -> float:
+    events = []
+    for x, y, l in squares:
+        events.append((y, 1, x, x + l - 1))
+        events.append((y + l, -1, x, x + l - 1))
+    
+    events.sort()
+    y_coords = sorted(set(y for y, _, _, _ in events))
+    y_index = {y: i for i, y in enumerate(y_coords)}
+    
+    total_area = sum(l ** 2 for _, _, l in squares)
+    half_area = total_area / 2
+    
+    n = len(y_coords)
+    segment_tree = SegmentTree(n)
+    
+    current_area = 0
+    for y, typ, x1, x2 in events:
+        if typ == 1:
+            segment_tree.update(y_index[y], x2 - x1 + 1)
+            current_area += (x2 - x1 + 1) * (y_coords[y_index[y] + 1] - y_coords[y_index[y]])
+        else:
+            current_area -= (x2 - x1 + 1) * (y_coords[y_index[y]] - y_coords[y_index[y] - 1])
+            segment_tree.update(y_index[y], -(x2 - x1 + 1))
+        
+        if abs(current_area - half_area) < 1e-5:
+            return y
+    
+    return y_coords[-1]
 
 Solution = create_solution(solution_function_name)

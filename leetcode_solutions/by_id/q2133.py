@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符串出现的次数，然后遍历每个字符串，检查其前缀和后缀是否在哈希表中存在。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个字符串出现的次数。
+2. 遍历 `nums` 数组，将每个字符串及其出现次数存入哈希表。
+3. 初始化结果计数器 `result` 为 0。
+4. 再次遍历 `nums` 数组，对于每个字符串 `num`：
+   - 检查 `target` 是否可以由 `num` 作为前缀或后缀组成。
+   - 如果 `num` 是 `target` 的前缀，检查 `target` 的剩余部分是否在哈希表中存在，并且不是 `num` 本身。
+   - 如果 `num` 是 `target` 的后缀，检查 `target` 的剩余部分是否在哈希表中存在，并且不是 `num` 本身。
+5. 返回结果计数器 `result`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个字符串的出现次数，以便快速查找。
+- 分别检查前缀和后缀的情况，确保不会重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `nums` 的长度，m 是 `target` 的长度。
+空间复杂度: O(n)，用于存储哈希表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[str], target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算连接后等于目标字符串的字符串对的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化哈希表记录每个字符串出现的次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    result = 0
+    for num in nums:
+        # 检查 num 是否是 target 的前缀
+        if target.startswith(num):
+            suffix = target[len(num):]
+            if suffix in count and (suffix != num or count[suffix] > 1):
+                result += count[suffix] - (suffix == num)
+        
+        # 检查 num 是否是 target 的后缀
+        if target.endswith(num):
+            prefix = target[:-len(num)]
+            if prefix in count and (prefix != num or count[prefix] > 1):
+                result += count[prefix] - (prefix == num)
+    
+    return result
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有排列，并通过排序和剪枝来避免重复。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入字符串进行排序，以方便后续去重。
+2. 使用回溯法生成所有排列。
+3. 在回溯过程中，通过判断当前字符是否与前一个字符相同来避免重复。
 
 关键点:
-- [TODO]
+- 排序字符串以便于去重。
+- 回溯过程中使用一个布尔数组来记录字符是否被使用。
+- 通过比较当前字符与前一个字符来避免重复。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * n!)，其中 n 是字符串的长度。n! 是排列的数量，每个排列需要 O(n) 的时间来构建。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(S: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成字符串 S 的所有排列组合
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(start=0):
+        if start == n:
+            result.append(''.join(path))
+            return
+        for i in range(n):
+            if used[i] or (i > 0 and S[i] == S[i - 1] and not used[i - 1]):
+                continue
+            used[i] = True
+            path.append(S[i])
+            backtrack(start + 1)
+            path.pop()
+            used[i] = False
 
+    S = ''.join(sorted(S))  # 排序字符串以便于去重
+    n = len(S)
+    used = [False] * n
+    path = []
+    result = []
+    backtrack()
+    return result
 
 Solution = create_solution(solution_function_name)

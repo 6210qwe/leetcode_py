@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个广告的点击率和转化率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个广告的点击次数。
+2. 计算每个广告的展示次数。
+3. 计算每个广告的点击率（点击次数 / 展示次数）。
+4. 计算每个广告的转化次数。
+5. 计算每个广告的转化率（转化次数 / 点击次数）。
 
 关键点:
-- [TODO]
+- 使用 SQL 聚合函数和 JOIN 操作来计算所需的指标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数据表中的行数。我们需要遍历所有行来计算聚合指标。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    query = """
+    SELECT 
+        ad_id,
+        IFNULL(ROUND(SUM(action = 'Clicked') / COUNT(*), 2), 0) AS ctr,
+        IFNULL(ROUND(SUM(action = 'Purchased') / SUM(action = 'Clicked'), 2), 0) AS cvr
+    FROM 
+        Ads
+    GROUP BY 
+        ad_id
+    ORDER BY 
+        ctr DESC, cvr DESC, ad_id ASC;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

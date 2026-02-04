@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算每个位置的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果数组 res。
+2. 根据 k 的正负情况，分别处理前 k 个或后 k 个元素的和。
+3. 使用滑动窗口更新每个位置的和。
 
 关键点:
-- [TODO]
+- 使用取模运算来处理循环数组。
+- 通过滑动窗口减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def defuse_the_bomb(code: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 拆炸弹
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(code)
+    if k == 0:
+        return [0] * n
+    
+    res = [0] * n
+    window_sum = 0
+    
+    if k > 0:
+        # 计算第一个窗口的和
+        for i in range(k):
+            window_sum += code[i]
+        
+        for i in range(n):
+            res[i] = window_sum
+            window_sum -= code[(i + k) % n]
+            window_sum += code[i]
+    else:
+        # 计算第一个窗口的和
+        for i in range(-1, k - 1, -1):
+            window_sum += code[i]
+        
+        for i in range(n):
+            res[i] = window_sum
+            window_sum -= code[i]
+            window_sum += code[(i + k - 1) % n]
+    
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(defuse_the_bomb)

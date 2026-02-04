@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学来计算从 startPos 到 endPos 的不同方法数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算从 startPos 到 endPos 的距离 diff。
+2. 如果 diff 和 k 的奇偶性不同，或者 diff > k，则返回 0。
+3. 使用组合公式 C(k, (k + diff) // 2) 来计算方法数目，并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用费马小定理和快速幂来计算组合数的逆元。
+- 通过预处理阶乘和逆元来优化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -48,13 +50,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def mod_inverse(x, p):
+    """计算 x 在模 p 下的逆元"""
+    return pow(x, p - 2, p)
 
+def precompute_factorials_and_inverses(n, p):
+    """预计算阶乘和逆元"""
+    fact = [1] * (n + 1)
+    inv_fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % p
+        inv_fact[i] = mod_inverse(fact[i], p)
+    return fact, inv_fact
+
+def combination(n, k, fact, inv_fact, p):
+    """计算组合数 C(n, k)"""
+    if k < 0 or k > n:
+        return 0
+    return fact[n] * inv_fact[k] % p * inv_fact[n - k] % p
+
+def solution_function_name(startPos: int, endPos: int, k: int) -> int:
+    """
+    函数式接口 - 计算从 startPos 到 endPos 的不同方法数目
+    """
+    diff = abs(endPos - startPos)
+    if (diff + k) % 2 != 0 or diff > k:
+        return 0
+    
+    fact, inv_fact = precompute_factorials_and_inverses(k, MOD)
+    steps = (k + diff) // 2
+    return combination(k, steps, fact, inv_fact, MOD)
 
 Solution = create_solution(solution_function_name)

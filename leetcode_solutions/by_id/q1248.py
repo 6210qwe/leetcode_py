@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算以 x 为根的子树的节点数，以及 x 的左子树和右子树的节点数。如果 x 的左子树或右子树的节点数大于 n // 2，则二号玩家可以通过选择 x 的父节点获胜。否则，二号玩家无法获胜。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到值为 x 的节点。
+2. 计算 x 的左子树和右子树的节点数。
+3. 检查 x 的左子树或右子树的节点数是否大于 n // 2。
+4. 如果是，则二号玩家可以通过选择 x 的父节点获胜；否则，二号玩家无法获胜。
 
 关键点:
-- [TODO]
+- 使用深度优先搜索 (DFS) 计算子树的节点数。
+- 通过比较子树的节点数来判断二号玩家是否能获胜。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。我们需要遍历整个树来计算节点数。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的空间复杂度取决于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def btree_game_winning_move(root: Optional[TreeNode], n: int, x: int) -> bool:
+    def count_nodes(node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+        return 1 + count_nodes(node.left) + count_nodes(node.right)
+
+    def find_node(node: Optional[TreeNode], target: int) -> Optional[TreeNode]:
+        if not node:
+            return None
+        if node.val == target:
+            return node
+        left_result = find_node(node.left, target)
+        if left_result:
+            return left_result
+        return find_node(node.right, target)
+
+    # 找到值为 x 的节点
+    x_node = find_node(root, x)
+    if not x_node:
+        return False
+
+    # 计算 x 的左子树和右子树的节点数
+    left_count = count_nodes(x_node.left)
+    right_count = count_nodes(x_node.right)
+
+    # 检查 x 的左子树或右子树的节点数是否大于 n // 2
+    if left_count > n // 2 or right_count > n // 2:
+        return True
+
+    # 检查 x 的父节点是否能获胜
+    parent_count = n - (left_count + right_count + 1)
+    return parent_count > n // 2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(btree_game_winning_move)

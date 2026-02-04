@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将问题转化为一个背包问题，目标是将石头分成两堆，使得两堆的重量差最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有石头的总重量 `total_weight`。
+2. 目标是找到一个子集，使其重量尽可能接近 `total_weight // 2`。
+3. 使用动态规划来解决这个问题，定义 `dp[i]` 表示是否可以凑出重量 `i`。
+4. 初始化 `dp[0] = True`，表示重量为 0 是可以凑出来的。
+5. 遍历每个石头，更新 `dp` 数组。
+6. 最后，找到最大的 `i` 使得 `dp[i]` 为 `True`，计算 `total_weight - 2 * i` 即为最小的可能重量。
 
 关键点:
-- [TODO]
+- 将问题转化为背包问题，使用动态规划求解。
+- 动态规划的状态转移方程为 `dp[j] = dp[j] or dp[j - stone]`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sum(stones))，其中 n 是石头的数量，sum(stones) 是石头的总重量。
+空间复杂度: O(sum(stones))，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def last_stone_weight_ii(stones: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最后一块石头的最小可能重量
     """
-    # TODO: 实现最优解法
-    pass
+    total_weight = sum(stones)
+    target = total_weight // 2
+    dp = [False] * (target + 1)
+    dp[0] = True
+    
+    for stone in stones:
+        for j in range(target, stone - 1, -1):
+            dp[j] = dp[j] or dp[j - stone]
+    
+    for i in range(target, -1, -1):
+        if dp[i]:
+            return total_weight - 2 * i
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(last_stone_weight_ii)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用矩阵快速幂来计算 k 次操作后的状态转移矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建初始的状态转移矩阵和初始状态向量。
+2. 使用矩阵快速幂计算 k 次操作后的状态转移矩阵。
+3. 计算最终状态向量，并提取结果。
 
 关键点:
-- [TODO]
+- 使用矩阵快速幂来高效计算大指数次幂。
+- 状态转移矩阵的构建和初始化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -47,14 +49,46 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import numpy as np
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def matrix_mult(A, B):
+    return (A @ B) % MOD
 
+def matrix_pow(matrix, power):
+    result = np.eye(len(matrix), dtype=int)
+    base = matrix
+    while power > 0:
+        if power & 1:
+            result = matrix_mult(result, base)
+        base = matrix_mult(base, base)
+        power >>= 1
+    return result
+
+def solution_function_name(s: str, t: str, k: int) -> int:
+    n = len(s)
+    
+    # 构建状态转移矩阵
+    transition_matrix = np.zeros((n, n), dtype=int)
+    for i in range(n):
+        for j in range(n):
+            if s[i:] + s[:i] == t[j:] + t[:j]:
+                transition_matrix[i][j] = 1
+    
+    # 初始状态向量
+    initial_state = np.zeros(n, dtype=int)
+    for i in range(n):
+        if s[i:] + s[:i] == t:
+            initial_state[i] = 1
+    
+    # 计算 k 次操作后的状态转移矩阵
+    final_transition_matrix = matrix_pow(transition_matrix, k)
+    
+    # 计算最终状态向量
+    final_state = matrix_mult(final_transition_matrix, initial_state)
+    
+    # 返回结果
+    return sum(final_state) % MOD
 
 Solution = create_solution(solution_function_name)

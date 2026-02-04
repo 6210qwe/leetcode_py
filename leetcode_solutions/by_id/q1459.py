@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来存储商品及其价格，并维护一个计数器来跟踪当前顾客数量。每当顾客数量达到 n 时，应用折扣并重置计数器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用一个字典来存储商品及其价格，并初始化计数器和折扣。
+2. 在 `getBill` 方法中，计算当前顾客的账单总额。
+3. 如果当前顾客数量达到 n，则应用折扣并重置计数器。
+4. 返回最终的账单金额。
 
 关键点:
-- [TODO]
+- 使用字典来快速查找商品价格。
+- 维护一个计数器来跟踪顾客数量，并在达到 n 时应用折扣。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是产品数组的长度。
+空间复杂度: O(p)，其中 p 是产品的数量。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Cashier:
+
+    def __init__(self, n: int, discount: int, products: List[int], prices: List[int]):
+        self.n = n
+        self.discount = discount
+        self.product_prices = {product: price for product, price in zip(products, prices)}
+        self.customer_count = 0
+
+    def getBill(self, product: List[int], amount: List[int]) -> float:
+        self.customer_count += 1
+        total_bill = sum(self.product_prices[p] * a for p, a in zip(product, amount))
+        
+        if self.customer_count % self.n == 0:
+            total_bill *= (100 - self.discount) / 100.0
+        
+        return total_bill
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Cashier)

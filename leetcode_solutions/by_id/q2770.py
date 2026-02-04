@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的 `functools.partial` 函数来将给定的函数绑定到特定的上下文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 `functools.partial` 函数。
+2. 使用 `partial` 函数将给定的函数 `fn` 绑定到给定的上下文 `ctx`。
+3. 返回绑定后的函数。
 
 关键点:
-- [TODO]
+- `functools.partial` 可以用来固定函数的部分参数，从而创建一个新的函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 创建绑定函数的操作是常数时间。
+空间复杂度: O(1) - 除了返回的新函数外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from functools import partial
+from typing import Callable, Any
 
-
-def solution_function_name(params):
+def bind_function_to_context(fn: Callable, ctx: Any) -> Callable:
     """
-    函数式接口 - [TODO] 实现
+    将给定的函数 fn 绑定到给定的上下文 ctx，并返回绑定后的函数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 functools.partial 将函数绑定到上下文
+    bound_fn = partial(fn, ctx)
+    return bound_fn
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bind_function_to_context)

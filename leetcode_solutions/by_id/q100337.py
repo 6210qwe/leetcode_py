@@ -21,22 +21,26 @@ LCR 184. 设计自助结算系统 - 请设计一个自助结账系统，该系�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个队列，一个普通队列 `queue` 用于存储所有商品的价格，另一个双端队列 `max_queue` 用于维护当前队列中的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个队列 `queue` 和 `max_queue`。
+2. `add(value)` 操作时，将 `value` 加入 `queue`，同时在 `max_queue` 中维护当前的最大值。
+3. `remove()` 操作时，从 `queue` 中移除第一个元素，如果该元素是当前最大值，则也从 `max_queue` 中移除。
+4. `get_max()` 操作时，直接返回 `max_queue` 的第一个元素。
 
 关键点:
-- [TODO]
+- `max_queue` 维护的是当前队列中的最大值，且保持单调递减。
+- 在 `add` 操作时，确保 `max_queue` 的单调性。
+- 在 `remove` 操作时，检查并移除 `max_queue` 中的过期最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) 均摊时间复杂度
+空间复杂度: O(n) 其中 n 是队列中元素的数量
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Checkout:
+    def __init__(self):
+        self.queue = []
+        self.max_queue = []
+
+    def get_max(self) -> int:
+        if not self.max_queue:
+            return -1
+        return self.max_queue[0]
+
+    def add(self, value: int) -> None:
+        self.queue.append(value)
+        while self.max_queue and self.max_queue[-1] < value:
+            self.max_queue.pop()
+        self.max_queue.append(value)
+
+    def remove(self) -> int:
+        if not self.queue:
+            return -1
+        value = self.queue.pop(0)
+        if value == self.max_queue[0]:
+            self.max_queue.pop(0)
+        return value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Checkout)

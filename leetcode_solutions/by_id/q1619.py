@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合记录已经访问过的位置。如果在遍历过程中发现某个位置已经被访问过，则说明路径相交。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前位置 (x, y) 为 (0, 0)，并将其加入哈希集合。
+2. 遍历路径字符串 path：
+   - 根据当前字符更新 (x, y) 的值。
+   - 检查更新后的 (x, y) 是否已经在哈希集合中，如果是则返回 True。
+   - 将更新后的 (x, y) 加入哈希集合。
+3. 如果遍历结束后没有发现重复位置，则返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希集合来记录已经访问过的位置，以 O(1) 时间复杂度检查和插入。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是路径字符串的长度。
+空间复杂度: O(n)，最坏情况下需要存储所有位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Set
 
 
-def solution_function_name(params):
+def is_path_crossing(path: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断路径是否相交
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化当前位置 (x, y) 为 (0, 0)，并将其加入哈希集合
+    x, y = 0, 0
+    visited: Set[tuple[int, int]] = {(x, y)}
+
+    # 遍历路径字符串 path
+    for direction in path:
+        if direction == 'N':
+            y += 1
+        elif direction == 'S':
+            y -= 1
+        elif direction == 'E':
+            x += 1
+        elif direction == 'W':
+            x -= 1
+
+        # 检查更新后的 (x, y) 是否已经在哈希集合中
+        if (x, y) in visited:
+            return True
+
+        # 将更新后的 (x, y) 加入哈希集合
+        visited.add((x, y))
+
+    # 如果遍历结束后没有发现重复位置，则返回 False
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_path_crossing)

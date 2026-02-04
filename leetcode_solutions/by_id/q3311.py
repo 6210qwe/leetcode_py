@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过累加数组中的元素来模拟蚂蚁的移动，并在每次移动后检查蚂蚁是否回到了边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化位置为 0。
+2. 遍历数组，累加每个元素的值。
+3. 每次累加后，检查当前位置是否为 0，如果是则计数器加 1。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 通过累加来模拟蚂蚁的移动。
+- 只有在移动结束后检查蚂蚁是否回到边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算蚂蚁返回边界的次数
     """
-    # TODO: 实现最优解法
-    pass
+    position = 0
+    count = 0
+    for num in nums:
+        position += num
+        if position == 0:
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

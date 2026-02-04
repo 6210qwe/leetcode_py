@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到所有元音按顺序排布的最长子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别指向当前窗口的起始和结束位置。
+2. 遍历字符串 `word`，使用 `right` 指针扩展窗口。
+3. 如果当前字符不是下一个期望的元音字母，则重置 `left` 指针到 `right` 位置。
+4. 如果当前窗口包含了所有五个元音字母且顺序正确，则更新最长子字符串的长度。
+5. 返回最长美丽子字符串的长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前的子字符串，并检查其是否包含所有五个元音字母且顺序正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `word` 的长度。每个字符最多被处理两次（一次通过 `right` 指针，一次通过 `left` 指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_beautiful_substring(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回 word 中最长美丽子字符串的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(word) < 5:
+        return 0
+
+    vowels = "aeiou"
+    max_length = 0
+    left = 0
+    right = 0
+    current_vowel_index = 0
+
+    while right < len(word):
+        if word[right] == vowels[current_vowel_index]:
+            if current_vowel_index == 4:
+                max_length = max(max_length, right - left + 1)
+            right += 1
+        else:
+            if word[right] == vowels[current_vowel_index + 1]:
+                current_vowel_index += 1
+                right += 1
+            else:
+                left = right
+                current_vowel_index = 0
+                if word[left] == 'a':
+                    current_vowel_index = 1
+                    right = left + 1
+                else:
+                    right += 1
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_beautiful_substring)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找出所有没有入度的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合来存储所有节点。
+2. 遍历所有边，将每个边的目标节点从集合中移除。
+3. 剩余在集合中的节点即为没有入度的节点，这些节点就是我们需要的结果。
 
 关键点:
-- [TODO]
+- 通过遍历边来移除目标节点，从而找到没有入度的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。
+空间复杂度: O(n)，用于存储节点集合。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_smallest_set_of_vertices(n: int, edges: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到可以到达所有节点的最小点集
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个集合来存储所有节点
+    nodes = set(range(n))
+    
+    # 遍历所有边，将每个边的目标节点从集合中移除
+    for from_node, to_node in edges:
+        if to_node in nodes:
+            nodes.remove(to_node)
+    
+    # 剩余在集合中的节点即为没有入度的节点
+    return list(nodes)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_smallest_set_of_vertices)

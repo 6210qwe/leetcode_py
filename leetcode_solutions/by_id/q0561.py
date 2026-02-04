@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数组排序后，每两个相邻的数配对，取每对中的较小值相加。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 遍历排序后的数组，每隔一个元素取一次，累加这些元素的值。
 
 关键点:
-- [TODO]
+- 通过排序确保每对中的较小值尽可能大。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def array_pair_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现数组拆分的最大总和
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 累加每对中的较小值
+    return sum(nums[i] for i in range(0, len(nums), 2))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_pair_sum)

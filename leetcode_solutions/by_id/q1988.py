@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，将数组从小到大排序后，使用双指针从两端向中间配对，以最小化最大数对和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针从两端向中间配对，计算每对数的和。
+3. 记录所有数对和的最大值。
 
 关键点:
-- [TODO]
+- 通过排序和双指针方法，确保每对数的和尽可能小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，后续遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_max_pair_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化最大数对和
+    max_pair_sum = 0
+    
+    # 使用双指针从两端向中间配对
+    left, right = 0, len(nums) - 1
+    while left < right:
+        pair_sum = nums[left] + nums[right]
+        max_pair_sum = max(max_pair_sum, pair_sum)
+        left += 1
+        right -= 1
+    
+    return max_pair_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_max_pair_sum)

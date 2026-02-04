@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个玩家的首次登录日期，并计算每个玩家在首次登录后的第二天再次登录的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 查询每个玩家的首次登录日期。
+2. 计算每个玩家在首次登录后的第二天再次登录的次数。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `ROW_NUMBER()` 来找到每个玩家的首次登录日期。
+- 使用 `DATE_ADD` 函数来计算首次登录后的第二天。
+- 使用 `JOIN` 操作来匹配首次登录和第二天登录的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是活动记录的数量。主要的时间消耗在于对数据进行排序。
+空间复杂度: O(1)，查询本身不使用额外的空间，只依赖于数据库的内部操作。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    query = """
+    WITH FirstLogin AS (
+        SELECT 
+            player_id, 
+            MIN(event_date) AS first_login
+        FROM 
+            Activity
+        GROUP BY 
+            player_id
+    )
+    SELECT 
+        fl.player_id, 
+        COUNT(a.event_date) AS second_day_active
+    FROM 
+        FirstLogin fl
+    LEFT JOIN 
+        Activity a
+    ON 
+        fl.player_id = a.player_id AND a.event_date = DATE_ADD(fl.first_login, INTERVAL 1 DAY)
+    GROUP BY 
+        fl.player_id;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

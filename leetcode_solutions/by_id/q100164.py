@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针找到链表中点，反转后半部分链表，然后比较前后两部分是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用快慢指针找到链表的中点。
+2. 反转后半部分链表。
+3. 比较前半部分和反转后的后半部分是否相同。
+4. 恢复链表（可选）。
 
 关键点:
-- [TODO]
+- 快慢指针用于找到链表中点。
+- 反转链表时需要保存前一个节点。
+- 比较前后两部分时注意边界条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_palindrome(head: Optional[ListNode]) -> bool:
+    if not head or not head.next:
+        return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 使用快慢指针找到链表中点
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
 
+    # 反转后半部分链表
+    prev = None
+    while slow:
+        next_node = slow.next
+        slow.next = prev
+        prev = slow
+        slow = next_node
 
-Solution = create_solution(solution_function_name)
+    # 比较前半部分和反转后的后半部分
+    left, right = head, prev
+    while right:
+        if left.val != right.val:
+            return False
+        left = left.next
+        right = right.next
+
+    return True
+
+Solution = create_solution(is_palindrome)

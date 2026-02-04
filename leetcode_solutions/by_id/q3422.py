@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学中的二项式系数来计算 k 秒后的 a[n-1] 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算组合数 C(n + k - 1, k)。
+2. 返回结果对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用组合数公式 C(n, k) = n! / (k! * (n - k)!)。
+- 为了避免大数运算，使用模意义下的乘法逆元来计算组合数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def mod_inverse(x, mod):
+    """计算 x 在模 mod 意义下的乘法逆元"""
+    return pow(x, mod - 2, mod)
+
+
+def combination(n, k, mod):
+    """计算组合数 C(n, k) % mod"""
+    if k > n:
+        return 0
+    if k == 0 or k == n:
+        return 1
+    k = min(k, n - k)
+    numerator = 1
+    for i in range(n, n - k, -1):
+        numerator = (numerator * i) % mod
+    denominator = 1
+    for i in range(1, k + 1):
+        denominator = (denominator * i) % mod
+    return (numerator * mod_inverse(denominator, mod)) % mod
+
+
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 k 秒后 a[n-1] 的值
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    return combination(n + k - 1, k, mod)
 
 
 Solution = create_solution(solution_function_name)

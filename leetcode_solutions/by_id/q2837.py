@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举操作次数 k 来检查是否可以通过 k 次操作使 num1 等于 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 枚举操作次数 k 从 0 到 60。
+2. 对于每个 k，计算 num1 - k * num2 是否可以表示为 k 个 2 的幂次之和。
+3. 如果可以，则返回 k。
+4. 如果遍历完所有 k 仍无法找到合适的解，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用位运算来检查 num1 - k * num2 是否可以表示为 k 个 2 的幂次之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 枚举的次数是固定的 61 次。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_zero(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 num1 等于 0 需要的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    for k in range(61):
+        target = num1 - k * num2
+        if target < 0:
+            break
+        # 检查 target 是否可以表示为 k 个 2 的幂次之和
+        if bin(target).count('1') <= k:
+            return k
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_zero)

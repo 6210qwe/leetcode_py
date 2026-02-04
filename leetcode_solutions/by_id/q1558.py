@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Floyd-Warshall算法计算所有课程之间的传递闭包。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 `reachable`，表示从课程 i 到课程 j 是否可达。
+2. 根据 `prerequisites` 填充 `reachable` 数组。
+3. 使用Floyd-Warshall算法更新 `reachable` 数组，计算所有课程之间的传递闭包。
+4. 对于每个查询，检查 `reachable` 数组中的对应值。
 
 关键点:
-- [TODO]
+- Floyd-Warshall算法用于计算图的传递闭包。
+- 通过传递闭包可以快速判断两个节点之间的可达性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是课程数量。Floyd-Warshall算法的时间复杂度为 O(n^3)。
+空间复杂度: O(n^2)，存储 `reachable` 数组所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def checkIfPrerequisite(numCourses: int, prerequisites: List[List[int]], queries: List[List[int]]) -> List[bool]:
+    # 初始化可达性矩阵
+    reachable = [[False] * numCourses for _ in range(numCourses)]
+    
+    # 根据先修课程填充可达性矩阵
+    for pre, course in prerequisites:
+        reachable[pre][course] = True
+    
+    # 使用Floyd-Warshall算法计算传递闭包
+    for k in range(numCourses):
+        for i in range(numCourses):
+            for j in range(numCourses):
+                reachable[i][j] = reachable[i][j] or (reachable[i][k] and reachable[k][j])
+    
+    # 处理查询
+    result = []
+    for u, v in queries:
+        result.append(reachable[u][v])
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(checkIfPrerequisite)

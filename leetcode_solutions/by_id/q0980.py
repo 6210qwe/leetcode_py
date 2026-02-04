@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有字符串之间的重叠部分。
+2. 使用动态规划来记录在某个状态下，最后一个字符串是哪个以及当前的最短长度。
+3. 通过回溯找到最终的最短超级串。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示哪些字符串已经被使用。
+- 动态规划表 dp[mask][i] 表示状态 mask 下，最后一个字符串是 words[i] 时的最短长度。
+- 重叠部分计算可以帮助减少重复部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * 2^n)，其中 n 是 words 的长度。
+空间复杂度: O(n * 2^n)，用于存储动态规划表。
 """
 
 # ============================================================================
@@ -49,12 +52,54 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_shortest_superstring(words: List[str]) -> str:
+    n = len(words)
+    # 计算所有字符串之间的重叠部分
+    overlap = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                for k in range(1, min(len(words[i]), len(words[j])) + 1):
+                    if words[i][-k:] == words[j][:k]:
+                        overlap[i][j] = k
+
+    # 动态规划表
+    dp = [[float('inf')] * n for _ in range(1 << n)]
+    parent = [[None] * n for _ in range(1 << n)]
+
+    # 初始化
+    for i in range(n):
+        dp[1 << i][i] = len(words[i])
+
+    # 动态规划
+    for mask in range(1, 1 << n):
+        for bit in range(n):
+            if (mask >> bit) & 1:
+                pmask = mask ^ (1 << bit)
+                if pmask:
+                    for i in range(n):
+                        if (pmask >> i) & 1:
+                            value = dp[pmask][i] + len(words[bit]) - overlap[i][bit]
+                            if value < dp[mask][bit]:
+                                dp[mask][bit] = value
+                                parent[mask][bit] = i
+
+    # 找到最短超级串的最后一个字符串
+    last = min(range(n), key=lambda i: dp[(1 << n) - 1][i])
+    perm = []
+    mask = (1 << n) - 1
+    while mask:
+        perm.append(last)
+        mask, last = mask ^ (1 << last), parent[mask][last]
+
+    # 构建最短超级串
+    perm.reverse()
+    result = [words[perm[0]]]
+    for i in range(1, len(perm)):
+        overlap_len = overlap[perm[i - 1]][perm[i]]
+        result.append(words[perm[i]][overlap_len:])
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_shortest_superstring)

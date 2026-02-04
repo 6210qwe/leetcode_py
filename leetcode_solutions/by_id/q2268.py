@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每一行是否可以通过翻转行和列将所有 1 变为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历矩阵的每一行，检查每一行是否可以通过翻转行和列将所有 1 变为 0。
+2. 如果某一行不能通过翻转变成全 0，则返回 False。
+3. 如果所有行都可以通过翻转变成全 0，则返回 True。
 
 关键点:
-- [TODO]
+- 一个行可以通过翻转变成全 0 的条件是：该行的所有 1 必须在相同的列上。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_remove_ones(matrix: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以通过翻转行和列将所有 1 变为 0。
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return True
 
+    rows, cols = len(matrix), len(matrix[0])
 
-Solution = create_solution(solution_function_name)
+    for i in range(rows):
+        # 检查当前行的第一个 1 的位置
+        first_one_col = -1
+        for j in range(cols):
+            if matrix[i][j] == 1:
+                if first_one_col == -1:
+                    first_one_col = j
+                elif first_one_col != j:
+                    return False
+    return True
+
+Solution = create_solution(can_remove_ones)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算不同子序列的数量。我们维护一个数组 `dp`，其中 `dp[i]` 表示以第 `i` 个字符结尾的不同子序列的数量。对于每个字符，我们可以选择将其添加到之前的所有子序列中，或者单独作为一个新的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 26 的数组 `last`，用于记录每个字符上次出现的位置。
+2. 初始化一个长度为 `n+1` 的数组 `dp`，其中 `dp[0] = 0`，表示空字符串的子序列数量为 0。
+3. 遍历字符串 `s`，对于每个字符 `c`：
+   - 更新 `dp[i+1]` 为 `dp[i] * 2 % MOD`，表示将当前字符添加到之前的所有子序列中。
+   - 如果字符 `c` 之前已经出现过，则减去从上次出现位置到当前位置之间的子序列数量，避免重复计算。
+   - 更新 `last[c]` 为当前索引 `i`。
+4. 返回 `dp[n] - 1`，减去空字符串的情况。
 
 关键点:
-- [TODO]
+- 使用 `last` 数组记录每个字符上次出现的位置，避免重复计算。
+- 动态规划的状态转移方程为 `dp[i+1] = (dp[i] * 2 - dp[last[c]]) % MOD`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +54,22 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def distinct_subsequences(s: str) -> int:
+    n = len(s)
+    last = [-1] * 26
+    dp = [0] * (n + 1)
+    dp[0] = 0
 
+    for i in range(n):
+        c = ord(s[i]) - ord('a')
+        dp[i + 1] = (dp[i] * 2) % MOD
+        if last[c] >= 0:
+            dp[i + 1] -= dp[last[c]]
+        dp[i + 1] %= MOD
+        last[c] = i
 
-Solution = create_solution(solution_function_name)
+    return (dp[n] - 1) % MOD
+
+Solution = create_solution(distinct_subsequences)

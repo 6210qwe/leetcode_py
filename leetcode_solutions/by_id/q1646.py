@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到第 k 个缺失的正整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，分别指向 0 和 len(arr) - 1。
+2. 在二分查找的过程中，计算中间位置 mid，并计算从 1 到 arr[mid] 之间的缺失正整数的数量。
+3. 如果缺失的正整数数量小于 k，则说明第 k 个缺失的正整数在 mid 右侧，更新 left。
+4. 否则，更新 right。
+5. 最后，根据 left 的位置计算出第 k 个缺失的正整数。
 
 关键点:
-- [TODO]
+- 使用二分查找来减少查找范围，提高效率。
+- 计算缺失的正整数数量时，使用公式 (arr[mid] - 1) - mid。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_kth_missing_positive(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到第 k 个缺失的正整数
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(arr) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        missing = arr[mid] - mid - 1
+        
+        if missing < k:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # 计算第 k 个缺失的正整数
+    return left + k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_missing_positive)

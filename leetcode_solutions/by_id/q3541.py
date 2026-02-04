@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储被禁止的单词，并遍历消息数组，统计出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `bannedWords` 转换为集合以提高查找效率。
+2. 初始化一个计数器 `count` 用于记录 `message` 中出现的被禁止单词的数量。
+3. 遍历 `message` 数组，如果某个单词在 `bannedWords` 集合中，增加计数器 `count`。
+4. 如果 `count` 达到 2 或更多，返回 `True` 表示是垃圾信息，否则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用集合来存储 `bannedWords` 以实现 O(1) 的查找时间复杂度。
+- 只需要遍历一次 `message` 数组即可完成判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `message` 的长度，m 是 `bannedWords` 的长度。
+空间复杂度: O(m)，存储 `bannedWords` 集合所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(message: List[str], bannedWords: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定的消息数组是否包含至少两个被禁止的单词。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将 bannedWords 转换为集合以提高查找效率
+    banned_set = set(bannedWords)
+    
+    # 初始化计数器
+    count = 0
+    
+    # 遍历 message 数组
+    for word in message:
+        if word in banned_set:
+            count += 1
+            if count >= 2:
+                return True
+    
+    return False
 
 Solution = create_solution(solution_function_name)

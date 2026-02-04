@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的对称整数，并检查它们是否在给定范围内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有可能的对称整数。
+2. 检查每个对称整数是否在 [low, high] 范围内。
+3. 统计符合条件的对称整数的数量。
 
 关键点:
-- [TODO]
+- 生成对称整数时，可以利用数学方法直接构造。
+- 只考虑 2 位和 4 位的对称整数，因为 10^4 以内的对称整数最多只有 4 位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_symmetric_integers(low: int, high: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计 [low, high] 范围内的对称整数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    def is_symmetric(num: int) -> bool:
+        s = str(num)
+        n = len(s)
+        if n % 2 != 0:
+            return False
+        half = n // 2
+        return sum(int(c) for c in s[:half]) == sum(int(c) for c in s[half:])
+
+    count = 0
+    for num in range(low, high + 1):
+        if is_symmetric(num):
+            count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_symmetric_integers)

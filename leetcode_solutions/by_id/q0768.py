@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过记录每个字符最后出现的位置来确定分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，记录每个字符最后出现的位置。
+2. 再次遍历字符串，使用两个变量 `start` 和 `end` 来确定当前片段的起始和结束位置。
+3. 当遍历到 `end` 位置时，将当前片段的长度加入结果列表，并更新 `start` 为 `end + 1`。
 
 关键点:
-- [TODO]
+- 通过记录每个字符最后出现的位置，可以确保每个字符只出现在一个片段中。
+- 使用贪心算法，每次找到当前片段的最远边界，从而保证片段数量最多。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要两次遍历字符串。
+空间复杂度: O(1)，额外空间主要用于存储结果列表和字符最后出现的位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def partition_labels(s: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串 s 划分为尽可能多的片段，同一字母最多出现在一个片段中。
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个字符最后出现的位置
+    last_occurrence = {char: idx for idx, char in enumerate(s)}
+    
+    result = []
+    start, end = 0, 0
+    
+    for i, char in enumerate(s):
+        # 更新当前片段的结束位置
+        end = max(end, last_occurrence[char])
+        
+        # 当遍历到当前片段的结束位置时，记录片段长度
+        if i == end:
+            result.append(end - start + 1)
+            start = i + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition_labels)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和前缀匹配来删除子文件夹
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对文件夹列表进行排序，确保父文件夹在子文件夹之前。
+2. 初始化一个结果列表，用于存储非子文件夹。
+3. 遍历排序后的文件夹列表，对于每个文件夹：
+   - 如果结果列表为空，直接添加当前文件夹到结果列表。
+   - 如果当前文件夹不是结果列表中最后一个文件夹的子文件夹，添加当前文件夹到结果列表。
 
 关键点:
-- [TODO]
+- 通过排序和前缀匹配，可以高效地删除子文件夹。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是文件夹列表的长度，排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了结果列表外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_subfolders(folder: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除子文件夹
     """
-    # TODO: 实现最优解法
-    pass
+    # 对文件夹列表进行排序
+    folder.sort()
+    
+    # 初始化结果列表
+    result = []
+    
+    for f in folder:
+        # 如果结果列表为空，或者当前文件夹不是结果列表中最后一个文件夹的子文件夹
+        if not result or not f.startswith(result[-1] + '/'):
+            result.append(f)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_subfolders)

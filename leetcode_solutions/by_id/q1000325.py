@@ -21,22 +21,25 @@ LCR 062. 实现 Trie (前缀树) - Trie [https://baike.baidu.com/item/字典树/
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用嵌套字典来表示 Trie 树的节点，每个节点包含一个子节点字典和一个标记是否为单词结尾的布尔值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 Trie 树时，创建一个根节点。
+2. 插入单词时，从根节点开始逐字符遍历，如果当前字符不在子节点字典中，则创建一个新的子节点。
+3. 搜索单词时，从根节点开始逐字符遍历，如果某个字符不在子节点字典中，则返回 False；如果遍历完整个单词且最后一个字符是单词结尾，则返回 True。
+4. 检查前缀时，从根节点开始逐字符遍历，如果某个字符不在子节点字典中，则返回 False；如果遍历完整个前缀，则返回 True。
 
 关键点:
-- [TODO]
+- 使用嵌套字典来表示 Trie 树的节点。
+- 每个节点包含一个子节点字典和一个标记是否为单词结尾的布尔值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是单词或前缀的长度。
+空间复杂度: O(n * m)，其中 n 是插入的单词数量，m 是单词的平均长度。
 """
 
 # ============================================================================
@@ -49,12 +52,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
 
-Solution = create_solution(solution_function_name)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+
+
+Solution = create_solution(Trie)

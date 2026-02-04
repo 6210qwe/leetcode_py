@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和有序集合来维护当前窗口内的元素，并确保窗口内元素的最大值和最小值之差不超过2。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用有序集合（如 Python 的 SortedList）来维护当前窗口内的元素。
+3. 移动右指针 right，将新元素加入有序集合，并检查当前窗口内的最大值和最小值之差是否超过2。
+4. 如果超过2，则移动左指针 left，直到窗口内的最大值和最小值之差不超过2。
+5. 计算当前窗口内的子数组数量，并累加到结果中。
+6. 重复上述步骤，直到右指针遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地获取当前窗口内的最大值和最小值。
+- 滑动窗口的动态调整确保了时间复杂度的优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每个元素最多被插入和删除一次有序集合，每次操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，最坏情况下有序集合需要存储整个数组的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def count_continuous_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回不间断子数组的总数目。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    left = 0
+    result = 0
+    window = SortedList()
+    
+    for right in range(n):
+        window.add(nums[right])
+        
+        while window[-1] - window[0] > 2:
+            window.remove(nums[left])
+            left += 1
+        
+        result += right - left + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_continuous_subarrays)

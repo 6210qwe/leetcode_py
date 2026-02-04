@@ -21,22 +21,24 @@ LCR 104. 组合总和 Ⅳ - 给定一个由 不同 正整数组成的数组 nums
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示总和为 i 的组合数。对于每个 i，我们可以通过将 nums 中的每个数加上 dp[i-num] 来更新 dp[i]。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 target + 1 的 dp 数组，dp[0] = 1，表示总和为 0 的组合数为 1。
+2. 遍历从 1 到 target 的每个值 i，对于每个 i，遍历 nums 中的每个数 num，如果 i >= num，则 dp[i] += dp[i - num]。
+3. 返回 dp[target]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = sum(dp[i - num] for num in nums if i >= num)
+- 初始化 dp[0] = 1
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target)，其中 n 是 nums 的长度，target 是目标值。
+空间复杂度: O(target)，因为我们需要一个长度为 target + 1 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def combination_sum_iv(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算总和为 target 的组合数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [0] * (target + 1)
+    dp[0] = 1  # 总和为 0 的组合数为 1
+    
+    # 动态规划计算 dp 数组
+    for i in range(1, target + 1):
+        for num in nums:
+            if i >= num:
+                dp[i] += dp[i - num]
+    
+    return dp[target]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(combination_sum_iv)

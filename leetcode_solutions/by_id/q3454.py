@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过维护一个单调栈来最小化操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个单调栈，用于存储需要调整的差值。
+2. 遍历数组，计算每个位置的差值，并将其加入单调栈。
+3. 对于每个差值，如果可以与栈顶元素合并，则合并并更新操作次数。
+4. 最终返回操作次数。
 
 关键点:
-- [TODO]
+- 通过维护单调栈来最小化操作次数。
+- 合并差值时，尽量减少操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_target(nums: List[int], target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使 nums 数组变为 target 数组所需的最少操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    diff = [target[i] - nums[i] for i in range(n)]
+    stack = []
+    operations = 0
 
+    for d in diff:
+        if not stack or d * stack[-1] >= 0:
+            stack.append(d)
+        else:
+            while stack and abs(stack[-1]) < abs(d):
+                operations += abs(stack.pop())
+            if stack and abs(stack[-1]) == abs(d):
+                operations += abs(d)
+                stack.pop()
+            elif stack and abs(stack[-1]) > abs(d):
+                operations += abs(d)
+                stack[-1] += d
+            else:
+                stack.append(d)
 
-Solution = create_solution(solution_function_name)
+    return operations + sum(abs(d) for d in stack)
+
+Solution = create_solution(min_operations_to_target)

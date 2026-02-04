@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来按年度汇总销售总额
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Sales` 表中选择 `sale_date` 和 `amount` 列。
+2. 使用 `DATE_FORMAT` 函数将 `sale_date` 转换为年份格式。
+3. 按年份分组并计算每一年的销售总额。
 
 关键点:
-- [TODO]
+- 使用 `DATE_FORMAT` 函数提取年份
+- 使用 `GROUP BY` 子句按年份分组
+- 使用 `SUM` 函数计算每一年的销售总额
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `Sales` 表中的行数
+空间复杂度: O(1)，不考虑结果集占用的空间
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        DATE_FORMAT(sale_date, '%Y') AS sale_year,
+        SUM(amount) AS total_amount
+    FROM 
+        Sales
+    GROUP BY 
+        sale_year
+    ORDER BY 
+        sale_year;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

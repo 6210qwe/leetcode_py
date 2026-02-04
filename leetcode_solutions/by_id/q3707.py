@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个回答的出现频率，并找到出现频率最高的回答。如果有多个回答频率相同，则选择字典序最小的那个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个回答的出现频率。
+2. 遍历每个 responses[i]，对其去重并更新哈希表中的频率。
+3. 遍历哈希表，找到出现频率最高的回答。如果有多个回答频率相同，则选择字典序最小的那个。
 
 关键点:
-- [TODO]
+- 使用集合去重每个 responses[i]。
+- 使用哈希表记录每个回答的频率。
+- 在遍历哈希表时，同时考虑频率和字典序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 responses 的长度，m 是每个 responses[i] 的平均长度。
+空间复杂度: O(k)，其中 k 是不同回答的数量。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_most_common_response(responses: List[List[str]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最常见的回答
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表来记录每个回答的出现频率
+    response_count = {}
+    
+    # 遍历每个 responses[i]，对其去重并更新哈希表中的频率
+    for response in responses:
+        unique_responses = set(response)
+        for resp in unique_responses:
+            if resp in response_count:
+                response_count[resp] += 1
+            else:
+                response_count[resp] = 1
+    
+    # 找到出现频率最高的回答
+    max_count = 0
+    most_common_response = ""
+    for resp, count in response_count.items():
+        if count > max_count or (count == max_count and resp < most_common_response):
+            max_count = count
+            most_common_response = resp
+    
+    return most_common_response
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_most_common_response)

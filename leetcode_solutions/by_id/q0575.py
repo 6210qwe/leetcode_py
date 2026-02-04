@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来统计糖果的种类数，然后取最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用集合统计糖果的种类数。
+2. 返回糖果种类数和 n/2 的最小值。
 
 关键点:
-- [TODO]
+- 使用集合去重来统计糖果种类数。
+- 比较糖果种类数和 n/2 的最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 遍历一次数组来统计糖果种类数。
+空间复杂度: O(n) - 使用集合来存储糖果种类。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_candies(candyType: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 Alice 可以吃到的最多糖果种类数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用集合统计糖果的种类数
+    unique_candies = set(candyType)
+    
+    # 返回糖果种类数和 n/2 的最小值
+    return min(len(unique_candies), len(candyType) // 2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_candies)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算单调数组对的数量。我们需要维护两个数组 `dp_min` 和 `dp_max`，分别表示以当前元素结尾的非递减和非递增子数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp_min` 和 `dp_max` 数组，长度为 51（因为 nums[i] 的范围是 1 到 50）。
+2. 遍历数组 `nums`，对于每个元素 `num`，更新 `dp_min` 和 `dp_max`。
+3. 计算最终结果时，使用前缀和来快速计算满足条件的数组对数量。
 
 关键点:
-- [TODO]
+- 使用动态规划来维护单调性。
+- 使用前缀和来快速计算满足条件的数组对数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 nums 的长度，m 是 nums 中元素的最大值（这里是 50）。
+空间复杂度: O(m)，用于存储 dp_min 和 dp_max 数组。
 """
 
 # ============================================================================
@@ -48,13 +50,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有单调数组对的数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    dp_min = [0] * 51
+    dp_max = [0] * 51
+    dp_min[nums[0]] = 1
+    dp_max[nums[0]] = 1
+    
+    for i in range(1, n):
+        new_dp_min = [0] * 51
+        new_dp_max = [0] * 51
+        for j in range(1, 51):
+            new_dp_min[j] = (new_dp_min[j-1] + dp_min[j]) % MOD
+            if j <= nums[i]:
+                new_dp_min[nums[i]] = (new_dp_min[nums[i]] + new_dp_min[j-1]) % MOD
+            else:
+                new_dp_min[nums[i]] = (new_dp_min[nums[i]] + new_dp_min[j-1] - dp_min[j-1] + MOD) % MOD
+        
+        for j in range(50, 0, -1):
+            new_dp_max[j] = (new_dp_max[j+1] + dp_max[j]) % MOD
+            if j >= nums[i]:
+                new_dp_max[nums[i]] = (new_dp_max[nums[i]] + new_dp_max[j+1]) % MOD
+            else:
+                new_dp_max[nums[i]] = (new_dp_max[nums[i]] + new_dp_max[j+1] - dp_max[j+1] + MOD) % MOD
+        
+        dp_min, dp_max = new_dp_min, new_dp_max
+    
+    return sum(dp_min) % MOD
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 内置的排序函数 `sorted` 对矩阵的行进行排序，根据第 k 列的值从高到低排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `sorted` 函数对矩阵的行进行排序，key 参数设置为第 k 列的值。
+2. 返回排序后的矩阵。
 
 关键点:
-- [TODO]
+- 使用 `sorted` 函数可以简洁高效地实现排序。
+- 通过 `lambda` 函数指定排序的关键字为第 k 列的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m)，其中 m 是学生的数量。排序操作的时间复杂度为 O(m log m)。
+空间复杂度: O(m)，排序操作需要 O(m) 的额外空间来存储排序结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sort_students_by_kth_score(score: List[List[int]], k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    根据第 k 场考试的分数从高到低对学生进行排序。
+    
+    :param score: 学生的分数矩阵，每个元素是一个整数列表，表示一个学生的各科成绩。
+    :param k: 第 k 场考试的索引。
+    :return: 排序后的分数矩阵。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 sorted 函数对矩阵的行进行排序，根据第 k 列的值从高到低排序
+    return sorted(score, key=lambda row: row[k], reverse=True)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_students_by_kth_score)

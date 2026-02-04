@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先将卡牌按递增顺序排序，然后使用一个双端队列来模拟牌组的操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将卡牌按递增顺序排序。
+2. 初始化一个双端队列，将排序后的卡牌依次放入队列。
+3. 使用一个空列表 `result` 来存储最终的卡牌顺序。
+4. 重复以下步骤，直到队列为空：
+   - 从队列头部取出一张卡牌，将其加入 `result`。
+   - 如果队列不为空，将队列头部的卡牌移到队列尾部。
+5. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用双端队列来高效地模拟卡牌移动操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是卡牌的数量。排序操作的时间复杂度为 O(n log n)，而后续的队列操作为 O(n)。
+空间复杂度: O(n)，双端队列和结果列表都需要 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def reveal_cards_in_increasing_order(deck: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回能以递增顺序显示卡牌的牌组顺序。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将卡牌按递增顺序排序
+    deck.sort()
+    
+    # 初始化双端队列
+    queue = deque()
+    for card in deck:
+        queue.append(card)
+    
+    result = []
+    while queue:
+        # 从队列头部取出一张卡牌，加入结果列表
+        result.append(queue.popleft())
+        
+        # 如果队列不为空，将队列头部的卡牌移到队列尾部
+        if queue:
+            queue.append(queue.popleft())
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reveal_cards_in_increasing_order)

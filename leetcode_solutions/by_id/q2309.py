@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算当前文本中 pattern[0] 和 pattern[1] 的数量，并考虑在开头或结尾插入一个字符来最大化子序列的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 text 中 pattern[0] 和 pattern[1] 的数量。
+2. 计算当前 text 中 pattern 作为子序列出现的次数。
+3. 考虑在开头或结尾插入一个字符来最大化子序列的数量。
 
 关键点:
-- [TODO]
+- 使用前缀和的思想来计算当前 text 中 pattern 作为子序列出现的次数。
+- 通过在开头或结尾插入一个字符来最大化子序列的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 text 的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_subsequences(text: str, pattern: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在 text 中插入一个字符后，最多包含多少个等于 pattern 的子序列。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 text 中 pattern[0] 和 pattern[1] 的数量
+    count_p0 = 0
+    count_p1 = 0
+    for char in text:
+        if char == pattern[0]:
+            count_p0 += 1
+        elif char == pattern[1]:
+            count_p1 += 1
+    
+    # 计算当前 text 中 pattern 作为子序列出现的次数
+    subsequences = 0
+    p0_count = 0
+    for char in text:
+        if char == pattern[0]:
+            p0_count += 1
+        elif char == pattern[1]:
+            subsequences += p0_count
+    
+    # 考虑在开头或结尾插入一个字符来最大化子序列的数量
+    max_subsequences = subsequences + max(count_p0, count_p1)
+    
+    return max_subsequences
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_subsequences)

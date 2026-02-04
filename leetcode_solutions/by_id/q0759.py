@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来选择最少的元素，使得每个区间至少有两个元素在集合中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按区间的结束位置升序排序。
+2. 初始化一个空的结果集 `result`。
+3. 遍历排序后的区间：
+   - 如果当前区间的开始位置大于结果集中的最后一个元素，则添加当前区间的最后两个元素到结果集中。
+   - 否则，检查当前区间的结束位置是否小于结果集中的倒数第二个元素，如果是，则添加当前区间的最后一个元素到结果集中。
 
 关键点:
-- [TODO]
+- 通过按结束位置排序，确保每次选择的元素尽可能靠后，从而减少后续区间的覆盖需求。
+- 通过维护结果集中的元素，确保每个区间至少有两个元素在集合中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 intervals 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def intersectionSizeTwo(intervals: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 按区间的结束位置升序排序，如果结束位置相同，则按开始位置降序排序
+    intervals.sort(key=lambda x: (x[1], -x[0]))
+    
+    result = []
+    for start, end in intervals:
+        if not result or start > result[-1]:
+            result.append(end - 1)
+            result.append(end)
+        elif start > result[-2]:
+            result.append(end)
+    
+    return len(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(intersectionSizeTwo)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到最近的二进制回文数，并计算最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_palindrome` 来判断一个数是否是二进制回文数。
+2. 定义一个辅助函数 `min_operations_to_palindrome` 来计算将一个数转换为最近的二进制回文数所需的最小操作次数。
+3. 遍历输入数组 `nums`，对每个元素调用 `min_operations_to_palindrome` 函数，得到结果并存储在 `ans` 数组中。
 
 关键点:
-- [TODO]
+- 使用动态规划来找到最近的二进制回文数。
+- 通过比较加减操作来确定最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))，其中 n 是 nums 的长度，log(max(nums)) 是最大数的二进制位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_palindrome(num: int) -> bool:
+    binary_str = bin(num)[2:]
+    return binary_str == binary_str[::-1]
+
+
+def min_operations_to_palindrome(num: int) -> int:
+    operations = 0
+    while not is_palindrome(num):
+        if is_palindrome(num + 1):
+            num += 1
+        else:
+            num -= 1
+        operations += 1
+    return operations
+
+
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将每个数转换为二进制回文数所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    ans = []
+    for num in nums:
+        ans.append(min_operations_to_palindrome(num))
+    return ans
 
 
 Solution = create_solution(solution_function_name)

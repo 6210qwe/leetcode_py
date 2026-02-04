@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计苹果和桔子的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建 SQL 查询语句，从表中选择苹果和桔子的数量。
+2. 执行查询并返回结果。
 
 关键点:
-- [TODO]
+- 使用 SQL 的 COUNT 函数来统计数量。
+- 确保查询条件正确区分苹果和桔子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。SQL 查询需要遍历整个表来统计数量。
+空间复杂度: O(1)，查询结果只包含两个整数，不随输入规模增加而增加。
 """
 
 # ============================================================================
@@ -51,10 +52,22 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询来统计苹果和桔子的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT 
+        SUM(CASE WHEN fruit = 'apple' THEN 1 ELSE 0 END) AS apple_count,
+        SUM(CASE WHEN fruit = 'orange' THEN 1 ELSE 0 END) AS orange_count
+    FROM fruits
+    """
+    
+    # 假设 params 是一个数据库连接对象
+    cursor = params.cursor()
+    cursor.execute(query)
+    result = cursor.fetchone()
+    
+    return result['apple_count'], result['orange_count']
 
 
 Solution = create_solution(solution_function_name)

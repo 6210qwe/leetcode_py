@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断初始的异或和是否为 0，以及数组长度的奇偶性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的异或和。
+2. 如果异或和为 0，则 Alice 直接获胜。
+3. 如果异或和不为 0 且数组长度为偶数，则 Alice 必胜。
+4. 否则，Bob 必胜。
 
 关键点:
-- [TODO]
+- 初始异或和为 0 时，Alice 直接获胜。
+- 数组长度为偶数时，Alice 可以通过选择合适的数字来确保 Bob 最终面对异或和为 0 的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 Alice 是否能赢得游戏
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算整个数组的异或和
+    xor_sum = 0
+    for num in nums:
+        xor_sum ^= num
+    
+    # 如果异或和为 0，Alice 直接获胜
+    if xor_sum == 0:
+        return True
+    
+    # 如果数组长度为偶数，Alice 必胜
+    if len(nums) % 2 == 0:
+        return True
+    
+    # 否则，Bob 必胜
+    return False
 
 
 Solution = create_solution(solution_function_name)

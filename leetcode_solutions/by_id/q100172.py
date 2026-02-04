@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,22 +22,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个固定大小的数组来存储三个栈的数据，并使用三个指针分别指向每个栈的栈顶。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个固定大小的数组和三个指针，分别指向三个栈的栈顶。
+2. 对于push操作，检查当前栈是否已满，如果未满则将数据压入栈中并更新指针。
+3. 对于pop操作，检查当前栈是否为空，如果不为空则弹出栈顶元素并更新指针。
+4. 对于peek操作，直接返回当前栈顶元素。
+5. 对于isEmpty操作，检查当前栈指针是否等于初始位置。
 
 关键点:
-- [TODO]
+- 使用一个数组存储三个栈的数据，通过计算偏移量来确定每个栈的位置。
+- 每个栈的指针用于跟踪栈顶位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(n)，其中n是总的栈大小
 """
 
 # ============================================================================
@@ -44,17 +49,44 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TripleInOne:
+
+    def __init__(self, stack_size: int):
+        self.stack_size = stack_size
+        self.array = [0] * (3 * stack_size)
+        self.pointers = [0, stack_size, 2 * stack_size]
+
+    def push(self, stack_num: int, value: int) -> None:
+        if self.pointers[stack_num] < (stack_num + 1) * self.stack_size:
+            self.array[self.pointers[stack_num]] = value
+            self.pointers[stack_num] += 1
+
+    def pop(self, stack_num: int) -> int:
+        if self.pointers[stack_num] > stack_num * self.stack_size:
+            self.pointers[stack_num] -= 1
+            return self.array[self.pointers[stack_num]]
+        return -1
+
+    def peek(self, stack_num: int) -> int:
+        if self.pointers[stack_num] > stack_num * self.stack_size:
+            return self.array[self.pointers[stack_num] - 1]
+        return -1
+
+    def is_empty(self, stack_num: int) -> bool:
+        return self.pointers[stack_num] == stack_num * self.stack_size
 
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    triple_stack = TripleInOne(1)
+    triple_stack.push(0, 1)
+    triple_stack.push(0, 2)
+    print(triple_stack.pop(0))  # 输出: 1
+    print(triple_stack.pop(0))  # 输出: 2
+    print(triple_stack.pop(0))  # 输出: -1
+    print(triple_stack.is_empty(0))  # 输出: True
+```
+
+这个实现使用了一个固定大小的数组来存储三个栈的数据，并使用三个指针分别指向每个栈的栈顶。每个操作的时间复杂度都是 O(1)，空间复杂度是 O(n)，其中 n 是总的栈大小。

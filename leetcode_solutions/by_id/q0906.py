@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用方向数组来表示机器人的朝向，并使用集合来存储障碍物的位置，以便快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化机器人的位置 (0, 0) 和初始方向（北）。
+2. 将障碍物列表转换为集合以提高查找效率。
+3. 遍历命令列表，根据命令更新机器人的位置和方向：
+   - 如果命令是 -2 或 -1，更新方向。
+   - 如果命令是正整数，向前移动指定步数，检查每一步是否遇到障碍物。
+4. 计算并记录每一步的最大欧氏距离平方。
 
 关键点:
-- [TODO]
+- 使用方向数组来简化方向的更新。
+- 使用集合来存储障碍物位置，以便 O(1) 时间复杂度内判断是否遇到障碍物。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 commands 的长度，m 是 obstacles 的长度。
+空间复杂度: O(m)，用于存储障碍物集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def robot_simulation(commands: List[int], obstacles: List[List[int]]) -> int:
+    # 方向数组：北、东、南、西
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    # 初始位置和方向
+    x, y, direction = 0, 0, 0
+    # 将障碍物列表转换为集合
+    obstacle_set = set(map(tuple, obstacles))
+    max_distance = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for command in commands:
+        if command == -2:  # 向左转 90 度
+            direction = (direction - 1) % 4
+        elif command == -1:  # 向右转 90 度
+            direction = (direction + 1) % 4
+        else:  # 向前移动 x 个单位
+            dx, dy = directions[direction]
+            for _ in range(command):
+                if (x + dx, y + dy) in obstacle_set:
+                    break
+                x += dx
+                y += dy
+            # 更新最大欧氏距离平方
+            max_distance = max(max_distance, x**2 + y**2)
 
+    return max_distance
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(robot_simulation)

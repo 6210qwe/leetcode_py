@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来统计可整除子串的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_sum` 来记录前缀和的余数出现的次数。
+2. 遍历字符串，计算当前字符的数值，并更新前缀和。
+3. 对于每个前缀和，计算其对 `k` 的余数，并在哈希表中查找该余数的出现次数。
+4. 更新结果，将当前前缀和的余数加入哈希表。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表可以高效地统计可整除子串的数量。
+- 通过模运算来处理大数问题，避免溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)，其中 n 是字符串的长度，k 是给定的整数。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_divisible_substrings(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计字符串 s 中可被 k 整除的子串数量
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = {0: 1}  # 初始化前缀和哈希表
+    result = 0
+    current_sum = 0
+    
+    for char in s:
+        # 计算当前字符的数值
+        num = ord(char) - ord('0')
+        # 更新前缀和
+        current_sum = (current_sum * 10 + num) % k
+        # 查找当前前缀和的余数在哈希表中的出现次数
+        if current_sum in prefix_sum:
+            result += prefix_sum[current_sum]
+        # 更新哈希表
+        prefix_sum[current_sum] = prefix_sum.get(current_sum, 0) + 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_divisible_substrings)

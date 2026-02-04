@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 找到 list1 中下标为 a-1 和 b+1 的节点。
+- 将 list2 插入到这两个节点之间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 list1，找到下标为 a-1 的节点（记为 prev）。
+2. 继续遍历 list1，找到下标为 b+1 的节点（记为 next）。
+3. 将 prev 的 next 指向 list2 的头节点。
+4. 将 list2 的尾节点的 next 指向 next 节点。
+5. 返回 list1 的头节点。
 
 关键点:
-- [TODO]
+- 确保正确处理边界情况，如 a=0 或 b=list1.length-1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 list1 的长度，m 是 list2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_in_between(list1: ListNode, a: int, b: int, list2: ListNode) -> ListNode:
     """
-    函数式接口 - [TODO] 实现
+    合并两个链表 - 将 list1 中下标从 a 到 b 的全部节点都删除，并将 list2 接在被删除节点的位置。
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到下标为 a-1 的节点
+    prev = list1
+    for _ in range(a - 1):
+        prev = prev.next
+    
+    # 找到下标为 b+1 的节点
+    current = prev
+    for _ in range(b - a + 2):
+        current = current.next
+    
+    # 将 prev 的 next 指向 list2 的头节点
+    prev.next = list2
+    
+    # 找到 list2 的尾节点
+    while list2.next:
+        list2 = list2.next
+    
+    # 将 list2 的尾节点的 next 指向 current 节点
+    list2.next = current
+    
+    return list1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_in_between)

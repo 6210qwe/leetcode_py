@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从起点到终点的最短路径。使用一个队列来存储当前节点的位置、剩余可消除障碍物的数量和当前步数。同时使用一个集合来记录已经访问过的状态，避免重复访问。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列和访问集合。
+2. 从起点 (0, 0) 开始进行 BFS。
+3. 对于每个节点，检查其四个方向的邻居。
+4. 如果邻居是终点且可以到达，则返回当前步数。
+5. 如果邻居是障碍物且剩余可消除障碍物数量大于 0，则将其加入队列。
+6. 如果邻居是空地，则直接加入队列。
+7. 如果遍历完所有可能的路径仍未找到终点，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用元组 (x, y, remaining_k) 来表示状态，确保不会重复访问相同的状态。
+- 通过 BFS 保证找到的路径是最短路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)，其中 m 和 n 分别是网格的行数和列数，k 是最多可以消除的障碍物数量。每个状态最多会被访问一次。
+空间复杂度: O(m * n * k)，用于存储队列和访问集合。
 """
 
 # ============================================================================
@@ -49,12 +55,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def shortest_path_with_obstacles_elimination(grid: List[List[int]], k: int) -> int:
+    if not grid or not grid[0]:
+        return -1
+
+    m, n = len(grid), len(grid[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    queue = [(0, 0, k)]
+    visited = set([(0, 0, k)])
+
+    steps = 0
+    while queue:
+        for _ in range(len(queue)):
+            x, y, remaining_k = queue.pop(0)
+            if x == m - 1 and y == n - 1:
+                return steps
+
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    next_k = remaining_k - grid[nx][ny]
+                    if next_k >= 0 and (nx, ny, next_k) not in visited:
+                        visited.add((nx, ny, next_k))
+                        queue.append((nx, ny, next_k))
+
+        steps += 1
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_path_with_obstacles_elimination)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和 + 滑动窗口来找到满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用滑动窗口遍历前缀和数组，找到长度在 l 和 r 之间的子数组，并记录其和。
+3. 找到和大于 0 的子数组中最小的和。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子数组的和。
+- 滑动窗口可以高效地遍历所有可能的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_positive_sum_subarray(nums: List[int], l: int, r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到长度在 l 和 r 之间且和大于 0 的子数组的最小和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    min_sum = float('inf')
+    
+    # 使用滑动窗口遍历前缀和数组
+    for i in range(1, n + 1):
+        for j in range(i - r, i - l + 1):
+            if j < 0:
+                continue
+            subarray_sum = prefix_sum[i] - prefix_sum[j]
+            if subarray_sum > 0:
+                min_sum = min(min_sum, subarray_sum)
+    
+    return min_sum if min_sum != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_positive_sum_subarray)

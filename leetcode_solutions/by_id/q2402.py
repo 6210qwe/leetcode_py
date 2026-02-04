@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逐位分析，我们可以发现对于每一位，如果存在一个1，那么我们可以通过操作将这一位变为1。因此，最大异或和就是将所有位都置为1的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_xor` 为0。
+2. 对于每一位（从第0位到第31位），检查数组中的所有数字在该位上是否有1。
+3. 如果某一位上有1，则将 `max_xor` 的对应位置为1。
+4. 返回 `max_xor`。
 
 关键点:
-- [TODO]
+- 通过逐位检查，确保每一位都能被置为1，从而得到最大异或和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算操作后的最大异或和
     """
-    # TODO: 实现最优解法
-    pass
+    max_xor = 0
+    for bit in range(32):
+        # 检查当前位是否有1
+        if any((num >> bit) & 1 for num in nums):
+            max_xor |= (1 << bit)
+    return max_xor
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用四个边界变量来控制矩阵的填充方向，并按照顺时针方向依次填充。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化矩阵，所有元素设为 -1。
+2. 定义四个边界变量：top, bottom, left, right，分别表示当前未填充区域的上下左右边界。
+3. 按照顺时针方向依次填充矩阵：
+   - 从左到右填充 top 行，然后 top 下移。
+   - 从上到下填充 right 列，然后 right 左移。
+   - 从右到左填充 bottom 行，然后 bottom 上移。
+   - 从下到上填充 left 列，然后 left 右移。
+4. 每次填充时，检查链表是否还有节点，如果有则使用链表节点的值填充矩阵，否则填充 -1。
+5. 重复上述过程直到所有元素都被填充。
 
 关键点:
-- [TODO]
+- 使用四个边界变量来控制填充方向和范围。
+- 在每次填充时检查链表是否还有节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，因为每个矩阵元素都需要被访问一次。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +57,58 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(m: int, n: int, head: Optional[ListNode]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成一个大小为 m x n 的螺旋矩阵，矩阵包含链表中的所有整数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化矩阵
+    matrix = [[-1] * n for _ in range(m)]
+    
+    # 定义边界变量
+    top, bottom = 0, m - 1
+    left, right = 0, n - 1
+    
+    # 当前节点
+    current = head
+    
+    while top <= bottom and left <= right:
+        # 从左到右填充 top 行
+        for i in range(left, right + 1):
+            if current:
+                matrix[top][i] = current.val
+                current = current.next
+            else:
+                break
+        top += 1
+        
+        # 从上到下填充 right 列
+        for i in range(top, bottom + 1):
+            if current:
+                matrix[i][right] = current.val
+                current = current.next
+            else:
+                break
+        right -= 1
+        
+        # 从右到左填充 bottom 行
+        for i in range(right, left - 1, -1):
+            if current:
+                matrix[bottom][i] = current.val
+                current = current.next
+            else:
+                break
+        bottom -= 1
+        
+        # 从下到上填充 left 列
+        for i in range(bottom, top - 1, -1):
+            if current:
+                matrix[i][left] = current.val
+                current = current.next
+            else:
+                break
+        left += 1
+    
+    return matrix
 
 
 Solution = create_solution(solution_function_name)

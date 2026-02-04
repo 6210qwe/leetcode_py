@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，从中间向两边扩展，找到最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左指针 `left` 和右指针 `right`，初始值分别为 `k`。
+2. 初始化当前最小值 `min_val` 为 `nums[k]`，并初始化最大分数 `max_score` 为 `nums[k]`。
+3. 在 `left` 和 `right` 没有越界的情况下，比较 `nums[left-1]` 和 `nums[right+1]`，选择较大的一方进行扩展。
+4. 更新 `min_val` 为当前子数组中的最小值，并更新 `max_score`。
+5. 返回 `max_score`。
 
 关键点:
-- [TODO]
+- 使用双指针从中间向两边扩展，确保每次扩展时都选择较大的值。
+- 通过维护当前子数组的最小值来计算分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = k, k
+    min_val = nums[k]
+    max_score = nums[k]
+
+    while left > 0 or right < len(nums) - 1:
+        if (nums[left - 1] if left > 0 else float('-inf')) > (nums[right + 1] if right < len(nums) - 1 else float('-inf')):
+            left -= 1
+        else:
+            right += 1
+        min_val = min(min_val, nums[left], nums[right])
+        max_score = max(max_score, min_val * (right - left + 1))
+
+    return max_score
 
 
 Solution = create_solution(solution_function_name)

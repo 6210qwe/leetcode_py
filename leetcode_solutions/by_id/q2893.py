@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护两个变量 `even_score` 和 `odd_score`，分别表示当前在偶数位置和奇数位置的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `even_score` 和 `odd_score` 为负无穷大。
+2. 如果 `nums[0]` 是偶数，则 `even_score = nums[0]`，否则 `odd_score = nums[0]`。
+3. 遍历数组 `nums`，对于每个位置 `i`：
+   - 如果 `nums[i]` 是偶数，更新 `even_score` 为 `max(even_score + nums[i], odd_score + nums[i] - x)`。
+   - 如果 `nums[i]` 是奇数，更新 `odd_score` 为 `max(odd_score + nums[i], even_score + nums[i] - x)`。
+4. 返回 `max(even_score, odd_score)`。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程依赖于当前元素的奇偶性和前一个状态的奇偶性。
+- 通过维护两个变量来简化状态空间，避免使用二维数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    even_score = float('-inf')
+    odd_score = float('-inf')
+
+    if nums[0] % 2 == 0:
+        even_score = nums[0]
+    else:
+        odd_score = nums[0]
+
+    for i in range(1, len(nums)):
+        if nums[i] % 2 == 0:
+            even_score = max(even_score + nums[i], odd_score + nums[i] - x)
+        else:
+            odd_score = max(odd_score + nums[i], even_score + nums[i] - x)
+
+    return max(even_score, odd_score)
 
 
 Solution = create_solution(solution_function_name)

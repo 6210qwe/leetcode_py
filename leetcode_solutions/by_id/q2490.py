@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护一个递增的序列，并使用动态规划来计算最大可取图书数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈和一个动态规划数组 dp，dp[i] 表示以第 i 本书结尾的最大可取图书数量。
+2. 遍历每一本书，使用单调栈来维护一个递增的序列。
+3. 对于每一本书，如果当前书的数量小于等于栈顶书的数量，则更新 dp 值。
+4. 最后返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护递增序列，确保每次取书时不会违反规则。
+- 动态规划数组 dp 用于记录以每本书结尾的最大可取图书数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(books: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算你能拿走的最大图书数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(books)
+    if n == 0:
+        return 0
+
+    dp = [0] * n
+    stack = []
+
+    for i in range(n):
+        while stack and books[stack[-1]] >= books[i]:
+            stack.pop()
+        if stack:
+            dp[i] = dp[stack[-1]] + (i - stack[-1]) * books[i]
+        else:
+            dp[i] = (i + 1) * books[i]
+        stack.append(i)
+
+    return max(dp)
 
 
 Solution = create_solution(solution_function_name)

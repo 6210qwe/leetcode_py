@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀和来找到最短子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组 `nums` 的总和 `total_sum`。
+2. 如果 `target` 大于 `total_sum`，则需要考虑多个 `nums` 的拼接。
+3. 使用滑动窗口和前缀和来找到满足条件的最短子数组。
+4. 如果找不到满足条件的子数组，返回 -1。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前子数组的和。
+- 使用前缀和来快速计算子数组的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_size_subarray(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到满足元素和等于 target 的最短子数组长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    total_sum = sum(nums)
+    if target > total_sum:
+        repeat = (target // total_sum) + 1
+        nums = nums * repeat
+        n = len(nums)
+
+    left = 0
+    current_sum = 0
+    min_length = float('inf')
+
+    for right in range(n):
+        current_sum += nums[right]
+        while current_sum >= target:
+            min_length = min(min_length, right - left + 1)
+            current_sum -= nums[left]
+            left += 1
+
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_size_subarray)

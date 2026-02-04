@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个整数，找到其最大数位，并将该整数的所有数位替换为这个最大数位，然后计算所有加密后整数的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组中的每个整数。
+2. 对于每个整数，找到其最大数位。
+3. 将该整数的所有数位替换为最大数位。
+4. 计算所有加密后整数的和。
 
 关键点:
-- [TODO]
+- 使用字符串操作来找到最大数位并替换。
+- 通过遍历数组来处理每个整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是数组的长度，d 是整数的最大位数（在本题中 d 最大为 4）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中所有元素加密后的和
     """
-    # TODO: 实现最优解法
-    pass
+    def encrypt(num: int) -> int:
+        # 将整数转换为字符串，找到最大数位
+        max_digit = max(str(num))
+        # 将所有数位替换为最大数位
+        encrypted_num = int(max_digit * len(str(num)))
+        return encrypted_num
 
+    # 计算所有加密后整数的和
+    return sum(encrypt(num) for num in nums)
 
 Solution = create_solution(solution_function_name)

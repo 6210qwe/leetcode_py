@@ -21,22 +21,28 @@ LCP 75. 传送卷轴 - 随着不断的深入，小扣来到了守护者之森寻
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用 BFS 计算从起点 S 和终点 T 到所有可达位置的最短路径。
+2. 对于每个空地，计算其镜像位置，并记录从镜像位置到 T 的最短路径。
+3. 最后，找到从 S 到 T 的最短路径，考虑守护者在某个空地使用卷轴的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 BFS，分别从 S 和 T 开始，计算到所有可达位置的最短路径。
+2. 对于每个空地，计算其镜像位置，并记录从镜像位置到 T 的最短路径。
+3. 找到从 S 到 T 的最短路径，考虑守护者在某个空地使用卷轴的情况。
 
 关键点:
-- [TODO]
+- 使用 BFS 计算最短路径。
+- 计算镜像位置并记录最短路径。
+- 考虑守护者在某个空地使用卷轴的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是迷宫的边长。
+空间复杂度: O(n^2)，用于存储 BFS 的结果和镜像位置的最短路径。
 """
 
 # ============================================================================
@@ -44,17 +50,53 @@ LCP 75. 传送卷轴 - 随着不断的深入，小扣来到了守护者之森寻
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(maze: List[str]) -> int:
+    n = len(maze)
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    
+    def bfs(start: str) -> dict:
+        queue = deque()
+        visited = set()
+        for i in range(n):
+            for j in range(n):
+                if maze[i][j] == start:
+                    queue.append((i, j, 0))
+                    visited.add((i, j))
+        
+        dist = {}
+        while queue:
+            x, y, d = queue.popleft()
+            dist[(x, y)] = d
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < n and 0 <= ny < n and maze[nx][ny] != '#' and (nx, ny) not in visited:
+                    visited.add((nx, ny))
+                    queue.append((nx, ny, d + 1))
+        return dist
+    
+    s_dist = bfs('S')
+    t_dist = bfs('T')
+    
+    mirror_dist = {}
+    for i in range(n):
+        for j in range(n):
+            if maze[i][j] == '.':
+                mx, my = i, n - 1 - j
+                if (mx, my) in t_dist:
+                    mirror_dist[(i, j)] = t_dist[(mx, my)]
+                mx, my = n - 1 - i, j
+                if (mx, my) in t_dist:
+                    mirror_dist[(i, j)] = min(mirror_dist.get((i, j), float('inf')), t_dist[(mx, my)])
+    
+    min_steps = float('inf')
+    for (x, y), d in s_dist.items():
+        if (x, y) in t_dist:
+            min_steps = min(min_steps, d + t_dist[(x, y)])
+        if (x, y) in mirror_dist:
+            min_steps = min(min_steps, d + mirror_dist[(x, y)])
+    
+    return min_steps if min_steps != float('inf') else -1
 
 Solution = create_solution(solution_function_name)

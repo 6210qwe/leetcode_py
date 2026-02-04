@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出内容长度大于 15 的推文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 Tweets 表中选择 tweet_id 和 content 列。
+2. 使用 WHERE 子句过滤出 content 长度大于 15 的记录。
+3. 返回结果表，只包含 tweet_id 列。
 
 关键点:
-- [TODO]
+- 使用 CHAR_LENGTH 函数计算 content 的长度。
+- 确保查询结果只包含 tweet_id 列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Tweets 表中的行数。需要遍历整个表来计算每个 content 的长度。
+空间复杂度: O(1)，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(tweets: List[dict]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询所有无效推文的编号（ID）
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    invalid_tweets = [tweet['tweet_id'] for tweet in tweets if len(tweet['content']) > 15]
+    return invalid_tweets
 
 
 Solution = create_solution(solution_function_name)

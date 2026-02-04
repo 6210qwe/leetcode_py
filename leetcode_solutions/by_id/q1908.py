@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出既是低脂又是可回收的产品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 Products 表中选择 product_id 列。
+2. 使用 WHERE 子句筛选出 low_fats 为 'Y' 且 recyclable 为 'Y' 的行。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来实现高效的筛选。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Products 表中的行数。我们需要遍历整个表来筛选符合条件的行。
+空间复杂度: O(1)，查询本身不使用额外的空间。
 """
 
 # ============================================================================
@@ -51,10 +51,15 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来筛选出既是低脂又是可回收的产品。
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT product_id
+    FROM Products
+    WHERE low_fats = 'Y' AND recyclable = 'Y';
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

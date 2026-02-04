@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个股票的出现次数，然后遍历数组计算最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表记录每个股票的出现次数。
+2. 遍历数组，对于每个股票，计算其得分并更新最大得分。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内查找和更新股票的出现次数。
+- 遍历数组时，利用哈希表快速计算得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大线性股票得分
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用哈希表记录每个股票的出现次数
+    count = {}
+    max_score = 0
+    
+    for price in prices:
+        if price in count:
+            count[price] += 1
+        else:
+            count[price] = 1
+        
+        # 计算当前价格的得分
+        score = price * count[price]
+        max_score = max(max_score, score)
+    
+    return max_score
 
 Solution = create_solution(solution_function_name)

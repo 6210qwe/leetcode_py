@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查两个字符串是否可以通过交换两个字符使其相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 s 和 goal 长度不同，直接返回 False。
+2. 如果 s 和 goal 完全相同，检查 s 中是否有重复字符，如果有则返回 True，否则返回 False。
+3. 找到 s 和 goal 中不同的字符对，如果超过两对，则返回 False。
+4. 检查这两对字符是否可以通过交换使 s 变成 goal。
 
 关键点:
-- [TODO]
+- 使用计数器来检查是否有重复字符。
+- 使用列表来存储不同字符对，并检查这些对是否可以通过交换使 s 变成 goal。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def buddy_strings(s: str, goal: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断两个字符串是否可以通过交换两个字符使其相等
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) != len(goal):
+        return False
+
+    if s == goal:
+        # 检查 s 中是否有重复字符
+        seen = set()
+        for char in s:
+            if char in seen:
+                return True
+            seen.add(char)
+        return False
+
+    # 找到 s 和 goal 中不同的字符对
+    diff = []
+    for i in range(len(s)):
+        if s[i] != goal[i]:
+            diff.append((s[i], goal[i]))
+            if len(diff) > 2:
+                return False
+
+    # 检查这两对字符是否可以通过交换使 s 变成 goal
+    return len(diff) == 2 and diff[0] == diff[1][::-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(buddy_strings)

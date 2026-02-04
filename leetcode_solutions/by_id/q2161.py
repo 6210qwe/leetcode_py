@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字典来存储时间戳到价格的映射以及价格到时间戳集合的映射。使用一个变量来记录最新的时间戳。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建两个字典和一个变量来记录最新的时间戳。
+2. 在 `update` 方法中，更新时间戳到价格的映射，并更新价格到时间戳集合的映射。如果时间戳已经存在，则移除旧价格并添加新价格。
+3. 在 `current` 方法中，返回最新时间戳对应的价格。
+4. 在 `maximum` 方法中，返回价格到时间戳集合映射中的最大价格。
+5. 在 `minimum` 方法中，返回价格到时间戳集合映射中的最小价格。
 
 关键点:
-- [TODO]
+- 使用两个字典来高效地更新和查询价格。
+- 使用一个变量来记录最新的时间戳。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 更新和查询操作的时间复杂度主要由有序集合的插入和删除操作决定。
+空间复杂度: O(n) - 存储所有时间戳和价格需要线性空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Set
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class StockPrice:
+
+    def __init__(self):
+        self.timestamp_to_price: Dict[int, int] = {}
+        self.price_to_timestamps: Dict[int, Set[int]] = {}
+        self.latest_timestamp = 0
+
+    def update(self, timestamp: int, price: int) -> None:
+        if timestamp in self.timestamp_to_price:
+            old_price = self.timestamp_to_price[timestamp]
+            self.price_to_timestamps[old_price].remove(timestamp)
+            if not self.price_to_timestamps[old_price]:
+                del self.price_to_timestamps[old_price]
+
+        self.timestamp_to_price[timestamp] = price
+        if price not in self.price_to_timestamps:
+            self.price_to_timestamps[price] = set()
+        self.price_to_timestamps[price].add(timestamp)
+
+        self.latest_timestamp = max(self.latest_timestamp, timestamp)
+
+    def current(self) -> int:
+        return self.timestamp_to_price[self.latest_timestamp]
+
+    def maximum(self) -> int:
+        return max(self.price_to_timestamps.keys())
+
+    def minimum(self) -> int:
+        return min(self.price_to_timestamps.keys())
 
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    stockPrice = StockPrice()
+    stockPrice.update(1, 10)  # 时间戳为 [1] ，对应的股票价格为 [10] 。
+    stockPrice.update(2, 5)   # 时间戳为 [1,2] ，对应的股票价格为 [10,5] 。
+    print(stockPrice.current())  # 返回 5 ，最新时间戳为 2 ，对应价格为 5 。
+    print(stockPrice.maximum())  # 返回 10 ，最高价格的时间戳为 1 ，价格为 10 。
+    stockPrice.update(1, 3)    # 之前时间戳为 1 的价格错误，价格更新为 3 。
+    print(stockPrice.maximum())  # 返回 5 ，更正后最高价格为 5 。
+    stockPrice.update(4, 2)    # 时间戳为 [1,2,4] ，对应价格为 [3,5,2] 。
+    print(stockPrice.minimum())  # 返回 2 ，最低价格时间戳为 4 ，价格为 2 。

@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出评分为 NULL 的图书。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 编写 SQL 查询语句，选择评分为 NULL 的图书。
+2. 执行查询并返回结果。
 
 关键点:
-- [TODO]
+- 使用 `IS NULL` 来筛选评分为 NULL 的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的记录数。需要遍历整个表来筛选出符合条件的记录。
+空间复杂度: O(1)，查询本身不使用额外的空间，只返回符合条件的记录。
 """
 
 # ============================================================================
@@ -49,12 +49,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回评分为 NULL 的图书
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT book_id, name
+    FROM Books
+    WHERE rating IS NULL;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

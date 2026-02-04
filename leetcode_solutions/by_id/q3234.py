@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速幂算法计算 (a^b % 10)^c % m，并检查结果是否等于 target。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个快速幂函数 `mod_pow`，用于计算 (base^exp) % mod。
+2. 遍历 variables 数组，对于每个变量，计算 (a^b % 10)^c % m。
+3. 如果结果等于 target，则将当前下标添加到结果列表中。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用快速幂算法可以高效地计算大幂次的模运算。
+- 通过两次调用快速幂函数，分别计算 a^b % 10 和 (a^b % 10)^c % m。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(b, c)))，其中 n 是 variables 的长度，log(max(b, c)) 是快速幂的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def mod_pow(base: int, exp: int, mod: int) -> int:
+    """快速幂算法 (base^exp) % mod"""
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        base = (base * base) % mod
+        exp //= 2
+    return result
 
-def solution_function_name(params):
+def solution_function_name(variables: List[List[int]], target: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现双模幂运算
     """
-    # TODO: 实现最优解法
-    pass
-
+    good_indices = []
+    for i, (a, b, c, m) in enumerate(variables):
+        # 计算 (a^b % 10)
+        ab_mod_10 = mod_pow(a, b, 10)
+        # 计算 (ab_mod_10^c % m)
+        result = mod_pow(ab_mod_10, c, m)
+        if result == target:
+            good_indices.append(i)
+    return good_indices
 
 Solution = create_solution(solution_function_name)

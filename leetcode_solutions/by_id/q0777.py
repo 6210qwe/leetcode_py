@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每一条从左上到右下的对角线上的元素是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历矩阵的第一行和第一列，分别作为每条对角线的起点。
+2. 对于每个起点，检查该对角线上的所有元素是否相同。
+3. 如果所有对角线上的元素都相同，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 只需要遍历第一行和第一列，因为这些位置包含了所有对角线的起点。
+- 使用双指针方法来检查对角线上的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。我们需要遍历整个矩阵来检查每条对角线。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def is_toeplitz_matrix(matrix: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查给定的矩阵是否为托普利茨矩阵。
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return True
 
+    rows, cols = len(matrix), len(matrix[0])
 
-Solution = create_solution(solution_function_name)
+    # 检查从第一行开始的对角线
+    for col in range(cols):
+        i, j = 0, col
+        while i < rows - 1 and j < cols - 1:
+            if matrix[i][j] != matrix[i + 1][j + 1]:
+                return False
+            i += 1
+            j += 1
+
+    # 检查从第一列开始的对角线
+    for row in range(1, rows):
+        i, j = row, 0
+        while i < rows - 1 and j < cols - 1:
+            if matrix[i][j] != matrix[i + 1][j + 1]:
+                return False
+            i += 1
+            j += 1
+
+    return True
+
+Solution = create_solution(is_toeplitz_matrix)

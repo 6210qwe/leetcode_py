@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最优的 value 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化二分查找的左右边界，left 为 0，right 为数组的最大值。
+3. 在每次迭代中，计算中间值 mid，并计算将所有大于 mid 的值变为 mid 后的数组和。
+4. 根据当前数组和与 target 的差值调整二分查找的边界。
+5. 最终返回最接近 target 的 value 值。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算数组和。
+- 通过二分查找来高效地找到最优的 value 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(arr)))，其中 n 是数组的长度，max(arr) 是数组的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findBestValue(arr: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到使得数组和最接近目标值的 value 值
     """
-    # TODO: 实现最优解法
-    pass
+    arr.sort()
+    n = len(arr)
+    prefix_sum = 0
+    left, right = 0, arr[-1]
+    
+    while left < right:
+        mid = (left + right) // 2
+        idx = bisect.bisect_left(arr, mid)
+        current_sum = prefix_sum + (n - idx) * mid
+        if current_sum == target:
+            return mid
+        elif current_sum < target:
+            left = mid + 1
+        else:
+            right = mid
+    
+    # 检查 left 和 left - 1 哪个更接近 target
+    idx = bisect.bisect_left(arr, left)
+    current_sum_left = prefix_sum + (n - idx) * left
+    idx = bisect.bisect_left(arr, left - 1)
+    current_sum_left_minus_one = prefix_sum + (n - idx) * (left - 1)
+    
+    if abs(current_sum_left - target) < abs(current_sum_left_minus_one - target):
+        return left
+    else:
+        return left - 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findBestValue)

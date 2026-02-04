@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来遍历所有可能的路径，并记录满足条件的路径数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量：找到起始位置，统计需要访问的空格数。
+2. 定义回溯函数，递归地尝试四个方向的移动。
+3. 在每次移动后，标记当前格子为已访问，并更新剩余需要访问的空格数。
+4. 如果到达终点且所有空格都已访问，则计数加一。
+5. 回溯时恢复现场，继续尝试其他路径。
 
 关键点:
-- [TODO]
+- 使用深度优先搜索（DFS）进行回溯。
+- 记录已经访问过的格子，避免重复访问。
+- 确保每个空格都被访问一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3^(m*n))，其中 m 和 n 分别是网格的行数和列数。每个空格最多有 3 个方向可以选择。
+空间复杂度: O(m*n)，递归调用栈的深度最多为 m*n。
 """
 
 # ============================================================================
@@ -49,12 +54,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def unique_paths_iii(grid: List[List[int]]) -> int:
+    rows, cols = len(grid), len(grid[0])
+    start_row, start_col = 0, 0
+    empty_count = 1  # 包含起始格子
+
+    # 找到起始位置并统计空格数
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1:
+                start_row, start_col = r, c
+            elif grid[r][c] == 0:
+                empty_count += 1
+
+    def dfs(r: int, c: int, count: int) -> int:
+        if not (0 <= r < rows and 0 <= c < cols) or grid[r][c] == -1:
+            return 0
+        if grid[r][c] == 2:
+            return 1 if count == 0 else 0
+        grid[r][c] = -1  # 标记为已访问
+        count -= 1
+        total_paths = (
+            dfs(r + 1, c, count)
+            + dfs(r - 1, c, count)
+            + dfs(r, c + 1, count)
+            + dfs(r, c - 1, count)
+        )
+        grid[r][c] = 0  # 回溯
+        count += 1
+        return total_paths
+
+    return dfs(start_row, start_col, empty_count)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(unique_paths_iii)

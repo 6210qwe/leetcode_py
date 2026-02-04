@@ -21,22 +21,27 @@ LCR 179. 查找总价格为目标值的两个商品 - 购物车内的商品价�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来查找两个商品的价格总和为 target。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，一个指向数组的起始位置（left），另一个指向数组的末尾位置（right）。
+2. 计算当前 left 和 right 指针所指向元素的和。
+3. 如果和等于 target，返回这两个元素。
+4. 如果和小于 target，移动左指针向右。
+5. 如果和大于 target，移动右指针向左。
+6. 重复步骤 2-5，直到找到满足条件的两个元素或两个指针相遇。
 
 关键点:
-- [TODO]
+- 由于数组是有序的，使用双指针可以高效地找到目标值。
+- 双指针方法的时间复杂度为 O(n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(price: List[int], target: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用双指针方法查找两个商品的价格总和为 target。
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(price) - 1
+    while left < right:
+        current_sum = price[left] + price[right]
+        if current_sum == target:
+            return [price[left], price[right]]
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    return []
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过观察每次操作后的数组变化，可以发现这是一个周期性的问题。我们可以通过模拟操作来找到最小的操作步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的数组 perm，并将其初始化为 [0, 1, 2, ..., n-1]。
+2. 创建一个新的数组 arr 来存储每次操作后的结果。
+3. 通过循环模拟每次操作，直到 perm 回到初始状态。
+4. 返回操作的次数。
 
 关键点:
-- [TODO]
+- 通过模拟操作来找到周期性。
+- 使用一个变量来记录操作的次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，因为每次操作会将数组分成两部分，最坏情况下需要 log n 次操作才能回到初始状态。
+空间复杂度: O(n)，需要额外的空间来存储新的数组 arr。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reinitialize_permutation(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 perm 回到初始状态所需的最小操作步数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 perm 和 arr
+    perm = list(range(n))
+    arr = [0] * n
+    steps = 0
+    
+    while True:
+        for i in range(n):
+            if i % 2 == 0:
+                arr[i] = perm[i // 2]
+            else:
+                arr[i] = perm[n // 2 + (i - 1) // 2]
+        
+        steps += 1
+        if arr == list(range(n)):
+            break
+        
+        perm = arr[:]
+    
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reinitialize_permutation)

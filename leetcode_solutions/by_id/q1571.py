@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有房子对之间的最小距离和。
+2. 使用动态规划来确定放置 k 个邮筒的最优位置。
 
 关键点:
-- [TODO]
+- 使用预处理来计算所有房子对之间的最小距离和。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_distance_sum(houses: List[int]) -> int:
+    n = len(houses)
+    cost = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i, n):
+            mid = (i + j) // 2
+            cost[i][j] = sum(abs(houses[k] - houses[mid]) for k in range(i, j + 1))
+    return cost
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_distance_to_mailboxes(houses: List[int], k: int) -> int:
+    n = len(houses)
+    houses.sort()
+    cost = min_distance_sum(houses)
+    
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    for m in range(1, n + 1):
+        for j in range(1, k + 1):
+            for i in range(m):
+                dp[m][j] = min(dp[m][j], dp[i][j - 1] + cost[i][m - 1])
+    
+    return dp[n][k]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_distance_to_mailboxes)

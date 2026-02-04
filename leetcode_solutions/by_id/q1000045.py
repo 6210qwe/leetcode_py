@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的左边和上边连续黑色像素的数量，然后通过这些信息来找到最大的全黑方阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个二维数组 left 和 up，分别记录每个位置左边和上边连续黑色像素的数量。
+2. 遍历矩阵，填充 left 和 up 数组。
+3. 再次遍历矩阵，对于每个位置 (i, j)，计算可能的最大全黑方阵的边长 k，并更新结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每个位置的左边和上边连续黑色像素的数量。
+- 通过这些信息来找到最大的全黑方阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的边长。需要遍历矩阵两次。
+空间复杂度: O(n^2)，需要额外的两个二维数组来记录左边和上边连续黑色像素的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_largest_square(matrix: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大全黑方阵
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return []
+
+    n = len(matrix)
+    left = [[0] * n for _ in range(n)]
+    up = [[0] * n for _ in range(n)]
+    max_size = 0
+    result = []
+
+    for i in range(n):
+        for j in range(n):
+            if matrix[i][j] == 0:
+                left[i][j] = left[i][j - 1] + 1 if j > 0 else 1
+                up[i][j] = up[i - 1][j] + 1 if i > 0 else 1
+
+                k = min(left[i][j], up[i][j])
+                while k > max_size:
+                    if left[i - k + 1][j] >= k and up[i][j - k + 1] >= k:
+                        max_size = k
+                        result = [i - k + 1, j - k + 1, k]
+                    k -= 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_largest_square)

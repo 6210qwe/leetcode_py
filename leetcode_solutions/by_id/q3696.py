@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀和来计算可以被最后一个数位整除的子字符串数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `dp`，其中 `dp[i]` 表示以第 `i` 个字符结尾的子字符串中可以被该字符整除的数目。
+2. 遍历字符串 `s`，对于每个字符 `s[i]`，计算从 `s[0]` 到 `s[i]` 的所有子字符串，并检查这些子字符串是否可以被 `s[i]` 整除。
+3. 使用前缀和数组 `prefix_sum` 来加速计算子字符串的数值。
+4. 更新 `dp` 数组并累加结果。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算子字符串的数值。
+- 动态规划数组 `dp` 用于存储中间结果，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_divisible_substrings(s: str) -> int:
+    n = len(s)
+    if n == 0:
+        return 0
+
+    # 前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] * 10 + int(s[i - 1])
+
+    # dp 数组
+    dp = [0] * n
+
+    # 计算 dp 数组
+    for i in range(n):
+        count = 0
+        for j in range(i, -1, -1):
+            if s[i] != '0':
+                num = (prefix_sum[i + 1] - prefix_sum[j] * 10 ** (i - j)) % int(s[i])
+                if num == 0:
+                    count += 1
+        dp[i] = count
+
+    # 累加结果
+    result = sum(dp)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_divisible_substrings)

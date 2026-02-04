@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个字符的频率，尝试删除每个字符后检查剩余字符的频率是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的频率。
+2. 尝试删除每个字符，并检查剩余字符的频率是否相同。
+3. 如果存在一种删除方式使得剩余字符的频率相同，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 Counter 来高效计算字符频率。
+- 通过集合来检查频率是否相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。最坏情况下，我们需要遍历每个字符并检查剩余字符的频率。
+空间复杂度: O(1)，因为字符集是固定的（26 个小写字母）。
 """
 
 # ============================================================================
@@ -47,14 +49,26 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def equalFrequency(word: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过删除一个字符使剩余字符的频率相同
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个字符的频率
+    freq = Counter(word)
+    
+    # 尝试删除每个字符，并检查剩余字符的频率是否相同
+    for char in word:
+        new_freq = freq.copy()
+        new_freq[char] -= 1
+        if new_freq[char] == 0:
+            del new_freq[char]
+        if len(set(new_freq.values())) == 1:
+            return True
+    
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(equalFrequency)

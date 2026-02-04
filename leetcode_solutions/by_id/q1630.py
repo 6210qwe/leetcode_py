@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学公式直接计算区间内的奇数个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算区间内所有数字的总数。
+2. 如果 low 是奇数，则将总数加 1。
+3. 返回总数的一半，即为奇数的个数。
 
 关键点:
-- [TODO]
+- 通过数学公式避免遍历区间内的每个数字，从而提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_odds(low: int, high: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定区间内的奇数个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算区间内所有数字的总数
+    total_numbers = high - low + 1
+    
+    # 如果 low 是奇数，则将总数加 1
+    if low % 2 == 1:
+        total_numbers += 1
+    
+    # 返回总数的一半，即为奇数的个数
+    return total_numbers // 2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_odds)

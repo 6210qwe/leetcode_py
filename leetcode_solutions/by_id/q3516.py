@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用一个字典来存储每个值的位置，以便快速查找。
+- 计算相邻元素和对角线相邻元素时，通过位置直接访问。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，遍历网格，将每个值的位置存储在字典中。
+2. 在 `adjacentSum` 方法中，找到给定值的位置，计算其上下左右的相邻元素之和。
+3. 在 `diagonalSum` 方法中，找到给定值的位置，计算其左上、右上、左下、右下的对角线相邻元素之和。
 
 关键点:
-- [TODO]
+- 使用字典存储值的位置，以实现 O(1) 时间复杂度的查找。
+- 通过位置直接访问相邻和对角线相邻元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次查询的时间复杂度为常数级。
+空间复杂度: O(n^2) - 存储网格中每个值的位置。
 """
 
 # ============================================================================
@@ -44,17 +48,49 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class NeighborSum:
+    def __init__(self, grid: List[List[int]]):
+        self.grid = grid
+        self.n = len(grid)
+        self.value_to_pos = {}
+        for i in range(self.n):
+            for j in range(self.n):
+                self.value_to_pos[grid[i][j]] = (i, j)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def adjacentSum(self, value: int) -> int:
+        if value not in self.value_to_pos:
+            return 0
+        i, j = self.value_to_pos[value]
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        total = 0
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < self.n and 0 <= nj < self.n:
+                total += self.grid[ni][nj]
+        return total
 
+    def diagonalSum(self, value: int) -> int:
+        if value not in self.value_to_pos:
+            return 0
+        i, j = self.value_to_pos[value]
+        directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+        total = 0
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < self.n and 0 <= nj < self.n:
+                total += self.grid[ni][nj]
+        return total
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_solution() -> NeighborSum:
+    return NeighborSum
+
+# 示例使用
+if __name__ == "__main__":
+    grid = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+    ns = NeighborSum(grid)
+    print(ns.adjacentSum(1))  # 输出 6
+    print(ns.adjacentSum(4))  # 输出 16
+    print(ns.diagonalSum(4))  # 输出 16
+    print(ns.diagonalSum(8))  # 输出 4

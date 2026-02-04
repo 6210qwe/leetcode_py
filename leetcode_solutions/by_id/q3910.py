@@ -21,22 +21,31 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每本书当前被借阅的数量。
+2. 计算每本书的可用副本数。
+3. 筛选出当前被借阅且无可用副本的书籍。
+4. 按当前借阅者数量降序排列，然后按书名升序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询计算每本书当前被借阅的数量。
+2. 将 `library_books` 表与子查询结果进行连接，计算每本书的可用副本数。
+3. 筛选出当前被借阅且无可用副本的书籍。
+4. 对结果进行排序。
 
 关键点:
-- [TODO]
+- 使用子查询和连接操作来计算每本书的当前借阅数量和可用副本数。
+- 使用 `GROUP BY` 和 `COUNT` 来统计每本书的当前借阅数量。
+- 使用 `LEFT JOIN` 来处理可能没有借阅记录的书籍。
+- 使用 `ORDER BY` 进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `borrowing_records` 表中的记录数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，用于存储中间结果和最终结果。
 """
 
 # ============================================================================
@@ -49,12 +58,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(library_books, borrowing_records):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找无可用副本的书籍
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每本书当前被借阅的数量
+    current_borrowers_subquery = (
+        borrowing_records
+        .filter(borrowing_records.return_date.is_(None))
+        .group_by(borrowing_records.book_id)
+        .count()
+        .alias("current_borrowers")
+    )
+
+    # 将 library_books 表与子查询结果进行连接，计算每本书的可用副本数
+    query = (
+        library_books
+        .join(current_borrowers_subquery, library_books.book_id == current_borrowers_subquery.c.book_id, isouter=True)
+        .with_entities(
+            library_books.book_id,
+            library_books.title,
+            library_books.author,
+            library_books.genre,
+            library_books.publication_year,
+            (current_borrowers_subquery.c.current_borrowers).label("current_borrowers"),
+            (library_books.total_copies - current_borrowers_subquery.c.current_borrowers).label("available_copies")
+        )
+        .filter((library_books.total_copies - current_borrowers_subquery.c.current_borrowers) == 0)
+        .order_by(current_borrowers_subquery.c.current_borrowers.desc(), library_books.title.asc())
+    )
+
+    return query.all()
 
 
 Solution = create_solution(solution_function_name)

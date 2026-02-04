@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算在每个可能的 k 个连续元素上的最大利润增益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算原始策略下的总利润。
+2. 使用滑动窗口遍历所有可能的 k 个连续元素，计算修改后的利润增益。
+3. 更新最大利润增益。
+4. 返回原始利润加上最大利润增益。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地计算每个 k 个连续元素的利润增益。
+- 保持代码简洁和可读性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_profit_with_strategy(prices: List[int], strategy: List[int], k: int) -> int:
+    n = len(prices)
+    original_profit = sum(p * s for p, s in zip(prices, strategy))
+    
+    max_gain = 0
+    current_gain = 0
+    
+    for i in range(k // 2):
+        current_gain += prices[i] * (strategy[i] + 1)
+    
+    for i in range(k // 2, n - k // 2):
+        current_gain += prices[i + k // 2] * (strategy[i + k // 2] - 1)
+        max_gain = max(max_gain, current_gain)
+        current_gain -= prices[i - k // 2] * (strategy[i - k // 2] + 1)
+        current_gain += prices[i] * (strategy[i] + 1)
+    
+    return original_profit + max_gain
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_profit_with_strategy)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用模运算来避免大数溢出
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前数值 current_value 为 0 和结果数组 result 为空列表。
+2. 遍历字符串 word 的每个字符：
+   - 将当前字符转换为整数并更新 current_value。
+   - 更新 current_value 为 (current_value * 10 + int(char)) % m。
+   - 如果 current_value 为 0，则在 result 中添加 1，否则添加 0。
+3. 返回结果数组 result。
 
 关键点:
-- [TODO]
+- 使用模运算来避免大数溢出。
+- 通过不断更新 current_value 来保持其在合理范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 word 的长度。
+空间复杂度: O(1)，除了返回的结果数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_divisibility_array(word: str, m: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出字符串的可整除数组
     """
-    # TODO: 实现最优解法
-    pass
+    current_value = 0
+    result = []
+    
+    for char in word:
+        current_value = (current_value * 10 + int(char)) % m
+        if current_value == 0:
+            result.append(1)
+        else:
+            result.append(0)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_divisibility_array)

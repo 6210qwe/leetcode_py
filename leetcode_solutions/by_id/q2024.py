@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据，通过条件筛选和排序来计算每个雇员的奖金。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取 Employees 表。
+2. 创建一个新的列 `bonus`，根据条件计算奖金。
+3. 按照 `employee_id` 排序。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的条件选择和向量化操作来提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是员工的数量。主要的时间开销在于排序操作。
+空间复杂度: O(n)，存储结果所需的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def calculate_special_bonus(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    计算每个雇员的奖金，并返回按 employee_id 排序的结果。
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个新的列 `bonus`，初始值为 0
+    employees['bonus'] = 0
+    
+    # 根据条件计算奖金
+    employees.loc[(employees['employee_id'] % 2 != 0) & (~employees['name'].str.startswith('M')), 'bonus'] = employees['salary']
+    
+    # 按照 `employee_id` 排序
+    result = employees[['employee_id', 'bonus']].sort_values(by='employee_id')
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calculate_special_bonus)

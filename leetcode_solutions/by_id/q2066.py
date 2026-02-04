@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，遍历每个台阶，计算需要添加的台阶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前高度为 0。
+2. 遍历每个台阶，计算当前台阶与前一个台阶之间的高度差。
+3. 如果高度差大于 dist，则计算需要添加的台阶数，并更新当前高度。
+4. 返回总的添加台阶数。
 
 关键点:
-- [TODO]
+- 通过计算高度差来确定需要添加的台阶数。
+- 使用贪心算法确保每次添加的台阶数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 rungs 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def add_rungs(rungs: List[int], dist: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算需要添加的最少台阶数
     """
-    # TODO: 实现最优解法
-    pass
+    current_height = 0
+    added_rungs = 0
+    
+    for rung in rungs:
+        if rung - current_height > dist:
+            added_rungs += (rung - current_height - 1) // dist
+        current_height = rung
+    
+    return added_rungs
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_rungs)

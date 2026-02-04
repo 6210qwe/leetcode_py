@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来生成第 k 个只包含 3, 5, 7 作为素因子的数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，并将第一个数 1 放入堆中。
+2. 每次从堆中取出最小的数，并将其乘以 3, 5, 7 后的结果放入堆中（如果结果未出现过）。
+3. 重复上述过程直到找到第 k 个数。
 
 关键点:
-- [TODO]
+- 使用集合来记录已经出现过的数，避免重复计算。
+- 使用最小堆来高效地获取当前最小的数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log k)，每次插入和删除操作的时间复杂度为 O(log k)。
+空间复杂度: O(k)，需要存储 k 个数及其乘积。
 """
 
 # ============================================================================
@@ -47,14 +49,30 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def get_kth_magic_number(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回第 k 个只包含 3, 5, 7 作为素因子的数
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 1:
+        return 1
+    
+    # 初始化最小堆和已出现的数的集合
+    heap = [1]
+    seen = {1}
+    
+    for _ in range(1, k):
+        # 从堆中取出最小的数
+        current = heapq.heappop(heap)
+        
+        # 将当前数乘以 3, 5, 7 后的结果放入堆中（如果结果未出现过）
+        for factor in [3, 5, 7]:
+            next_num = current * factor
+            if next_num not in seen:
+                seen.add(next_num)
+                heapq.heappush(heap, next_num)
+    
+    return heapq.heappop(heap)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_kth_magic_number)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储分组结果，遍历数组并将每个元素根据回调函数的结果放入相应的分组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字典 `result` 用于存储分组结果。
+2. 遍历数组中的每个元素，使用回调函数 `fn` 获取该元素的键。
+3. 如果键不在 `result` 中，则在 `result` 中创建一个新的键，并将当前元素添加到该键对应的列表中。
+4. 如果键已经在 `result` 中，则将当前元素添加到该键对应的列表中。
+5. 返回 `result` 字典。
 
 关键点:
-- [TODO]
+- 使用字典来存储分组结果，确保时间复杂度和空间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组中的每个元素一次。
+空间复杂度: O(n)，最坏情况下，每个元素都有不同的键，需要存储 n 个键值对。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def group_by(array: List, fn):
     """
-    函数式接口 - [TODO] 实现
+    对数组进行分组，返回一个字典，其中每个键都是 fn(array[i]) 的输出的一个数组，
+    该数组中含有原数组中具有该键的所有项。
     """
-    # TODO: 实现最优解法
-    pass
+    result = {}
+    for item in array:
+        key = fn(item)
+        if key not in result:
+            result[key] = []
+        result[key].append(item)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(group_by)

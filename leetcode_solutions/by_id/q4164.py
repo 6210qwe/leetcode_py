@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法来推导出最终剩余的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `left` 和 `right` 分别表示当前剩余区间的左右边界。
+2. 使用一个布尔变量 `from_left` 来标记当前操作是从左还是从右开始。
+3. 通过循环不断缩小区间，直到 `left` 和 `right` 相等。
+4. 根据 `from_left` 的值更新 `left` 或 `right`。
+5. 最终返回 `left` 或 `right`。
 
 关键点:
-- [TODO]
+- 通过数学推导可以发现，每次操作后的剩余区间可以通过简单的公式计算得出。
+- 通过交替更新 `left` 和 `right` 可以在 O(log n) 时间内找到最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def last_remaining(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回交替删除操作后最后剩下的整数
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 1, n
+    from_left = True
+    step = 1
+    
+    while left < right:
+        if from_left or (right - left + 1) % 2 == 1:
+            left += step
+        else:
+            right -= step
+        step *= 2
+        from_left = not from_left
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(last_remaining)

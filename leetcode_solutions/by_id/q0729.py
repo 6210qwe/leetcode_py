@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序列表来存储所有已预订的时间段，并在每次预订时检查新时间段是否与已有时间段重叠。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的有序列表 `self.calendar` 来存储时间段。
+2. 在 `book` 方法中，使用二分查找找到新时间段的插入位置。
+3. 检查新时间段是否与前一个时间段或后一个时间段重叠，如果重叠则返回 `False`。
+4. 如果没有重叠，则将新时间段插入有序列表并返回 `True`。
 
 关键点:
-- [TODO]
+- 使用 `bisect_left` 和 `bisect_right` 来确定新时间段的插入位置。
+- 检查新时间段与相邻时间段是否有重叠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 每次插入和查找操作的时间复杂度为 O(log n)，其中 n 是已预订的时间段数量。
+空间复杂度: O(n) - 存储所有已预订的时间段需要 O(n) 的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from bisect import bisect_left, bisect_right
+
+class MyCalendar:
+
+    def __init__(self):
+        self.calendar = []
+
+    def book(self, start: int, end: int) -> bool:
+        # 使用二分查找找到插入位置
+        i = bisect_right(self.calendar, (start, end))
+        
+        # 检查与前一个时间段是否有重叠
+        if i > 0 and self.calendar[i-1][1] > start:
+            return False
+        
+        # 检查与后一个时间段是否有重叠
+        if i < len(self.calendar) and self.calendar[i][0] < end:
+            return False
+        
+        # 插入新时间段
+        self.calendar.insert(i, (start, end))
+        return True
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    myCalendar = MyCalendar()
+    print(myCalendar.book(10, 20))  # True
+    print(myCalendar.book(15, 25))  # False
+    print(myCalendar.book(20, 30))  # True

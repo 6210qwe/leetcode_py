@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和位移操作来实现乘法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 B 为 0，则返回 0。
+2. 如果 B 为 1，则返回 A。
+3. 将 B 分解为两部分：B 的一半和 B 的另一半。
+4. 递归计算 A 与 B 的一半的乘积。
+5. 根据 B 的奇偶性，将结果加倍或加倍后再加 A。
 
 关键点:
-- [TODO]
+- 通过递归和位移操作减少乘法次数。
+- 递归调用时，将 B 减半以减少递归深度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log B)
+空间复杂度: O(log B)
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(A: int, B: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 递归实现两个正整数的相乘
     """
-    # TODO: 实现最优解法
-    pass
+    # 递归终止条件
+    if B == 0:
+        return 0
+    if B == 1:
+        return A
+
+    # 递归计算 A 与 B 的一半的乘积
+    half_product = solution_function_name(A, B >> 1)
+
+    # 根据 B 的奇偶性，将结果加倍或加倍后再加 A
+    if B & 1:
+        return half_product + half_product + A
+    else:
+        return half_product + half_product
 
 
 Solution = create_solution(solution_function_name)

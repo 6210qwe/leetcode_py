@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过观察可以发现，只要 s 和 target 中至少有一个 1，那么可以通过一系列操作将 s 转换为 target。如果 s 和 target 中都没有 1，则必须两者都为全 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 s 和 target 中是否至少有一个 1。
+2. 如果 s 和 target 中至少有一个 1，则返回 True。
+3. 如果 s 和 target 中都没有 1，则检查 s 和 target 是否都为全 0，如果是则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 只要 s 和 target 中至少有一个 1，就可以通过操作将 s 转换为 target。
+- 如果 s 和 target 中都没有 1，则必须两者都为全 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_make_strings_equal(s: str, target: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过位运算使字符串 s 等于 target
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查 s 和 target 中是否至少有一个 1
+    has_one_in_s = '1' in s
+    has_one_in_target = '1' in target
+
+    # 如果 s 和 target 中至少有一个 1，则可以转换
+    if has_one_in_s or has_one_in_target:
+        return has_one_in_s and has_one_in_target
+
+    # 如果 s 和 target 中都没有 1，则必须两者都为全 0
+    return s == target
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_make_strings_equal)

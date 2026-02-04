@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,40 +22,69 @@ LCR 030. O(1) 时间插入、删除和获取随机元素 - 设计一个支持在
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储元素，并使用一个哈希表来记录每个元素在列表中的索引，从而实现 O(1) 时间复杂度的插入、删除和获取随机元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 插入时，检查哈希表中是否存在该元素，如果存在则返回 False；否则将元素添加到列表末尾，并在哈希表中记录其索引。
+2. 删除时，检查哈希表中是否存在该元素，如果不存在则返回 False；否则将该元素与列表末尾的元素交换位置，更新哈希表中末尾元素的索引，然后删除列表末尾的元素。
+3. 获取随机元素时，直接从列表中随机选择一个元素。
 
 关键点:
-- [TODO]
+- 使用列表和哈希表结合的方式，确保插入、删除和获取随机元素的时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(n)，其中 n 是集合中元素的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import random
+
+class RandomizedSet:
+
+    def __init__(self):
+        self.val_to_index = {}
+        self.values = []
+
+    def insert(self, val: int) -> bool:
+        if val in self.val_to_index:
+            return False
+        self.val_to_index[val] = len(self.values)
+        self.values.append(val)
+        return True
+
+    def remove(self, val: int) -> bool:
+        if val not in self.val_to_index:
+            return False
+        index = self.val_to_index[val]
+        last_val = self.values[-1]
+        self.values[index] = last_val
+        self.val_to_index[last_val] = index
+        del self.val_to_index[val]
+        self.values.pop()
+        return True
+
+    def getRandom(self) -> int:
+        return random.choice(self.values)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+# 测试用例
+if __name__ == "__main__":
+    obj = RandomizedSet()
+    print(obj.insert(1))  # True
+    print(obj.remove(2))  # False
+    print(obj.insert(2))  # True
+    print(obj.getRandom())  # 1 or 2
+    print(obj.remove(1))  # True
+    print(obj.insert(2))  # False
+    print(obj.getRandom())  # 2
+```
 
-
-Solution = create_solution(solution_function_name)
+这个实现使用了列表和哈希表来确保插入、删除和获取随机元素的操作都在 O(1) 时间复杂度内完成。代码结构清晰，变量命名明确，并且包含了必要的注释。

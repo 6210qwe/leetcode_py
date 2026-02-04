@@ -21,40 +21,53 @@ LCR 059. 数据流中的第 K 大元素 - 设计一个找到数据流中第 k �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护数据流中的前 k 大元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将初始数据流中的前 k 大元素放入最小堆。
+2. 在每次添加新元素时，如果新元素大于堆顶元素，则替换堆顶元素，并重新调整堆。
+3. 堆顶元素即为当前数据流中的第 k 大元素。
 
 关键点:
-- [TODO]
+- 使用 Python 的 heapq 库来实现最小堆。
+- 维护堆的大小不超过 k，以确保堆顶元素始终是第 k 大元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k) - 每次插入操作的时间复杂度。
+空间复杂度: O(k) - 堆的最大大小。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+class KthLargest:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, k: int, nums: List[int]):
+        self.k = k
+        self.min_heap = []
+        for num in nums:
+            self.add(num)
 
+    def add(self, val: int) -> int:
+        if len(self.min_heap) < self.k:
+            heapq.heappush(self.min_heap, val)
+        elif val > self.min_heap[0]:
+            heapq.heapreplace(self.min_heap, val)
+        return self.min_heap[0]
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    kth_largest = KthLargest(3, [4, 5, 8, 2])
+    print(kth_largest.add(3))  # 输出 4
+    print(kth_largest.add(5))  # 输出 5
+    print(kth_largest.add(10)) # 输出 5
+    print(kth_largest.add(9))  # 输出 8
+    print(kth_largest.add(4))  # 输出 8

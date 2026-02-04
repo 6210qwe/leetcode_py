@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来检查数组是否是连续的
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的最大值和最小值
+2. 检查数组的长度是否等于最大值减最小值加一
+3. 使用哈希表检查是否有重复元素
 
 关键点:
-- [TODO]
+- 使用哈希表可以快速检查重复元素
+- 通过最大值和最小值可以确定数组的范围
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_consecutive(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查数组是否是连续的
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return False
+
+    min_val = min(nums)
+    max_val = max(nums)
+
+    # 检查数组长度是否等于最大值减最小值加一
+    if len(nums) != max_val - min_val + 1:
+        return False
+
+    # 使用哈希表检查是否有重复元素
+    seen = set()
+    for num in nums:
+        if num in seen:
+            return False
+        seen.add(num)
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_consecutive)

@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，计算每个节点的子节点值之和，并统计满足条件的节点数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算当前节点的子节点值之和。
+2. 在 `dfs` 函数中，递归计算左子树和右子树的子节点值之和。
+3. 如果当前节点的值等于其左右子树的子节点值之和，则计数器加一。
+4. 返回当前节点的子节点值之和加上当前节点的值。
 
 关键点:
-- [TODO]
+- 通过递归遍历树，确保每个节点都被访问到。
+- 通过传递引用的方式更新计数器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_nodes_equal_to_sum_of_descendants(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算值等于其所有子节点值之和的节点数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], count: List[int]) -> int:
+        if not node:
+            return 0
+        left_sum = dfs(node.left, count)
+        right_sum = dfs(node.right, count)
+        if node.val == left_sum + right_sum:
+            count[0] += 1
+        return left_sum + right_sum + node.val
 
+    count = [0]
+    dfs(root, count)
+    return count[0]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_nodes_equal_to_sum_of_descendants)

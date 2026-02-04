@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储数组中的元素及其索引，然后遍历数组检查是否存在某个元素的两倍也在数组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表。
+2. 遍历数组，将每个元素及其索引存入哈希表。
+3. 再次遍历数组，对于每个元素，检查其两倍是否存在于哈希表中，并且确保不是同一个元素。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内检查元素是否存在。
+- 需要确保找到的两倍元素不是同一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，每次遍历的时间复杂度是 O(n)。
+空间复杂度: O(n)，哈希表的空间复杂度是 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_exist(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查整数及其两倍数是否存在
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表存储数组中的元素及其索引
+    num_map = {}
+    for i, num in enumerate(arr):
+        num_map[num] = i
+    
+    # 遍历数组，检查是否存在某个元素的两倍
+    for i, num in enumerate(arr):
+        if 2 * num in num_map and num_map[2 * num] != i:
+            return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_exist)

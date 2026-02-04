@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 内置的 split 方法对每个字符串进行拆分，并过滤掉空字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 result 用于存储最终结果。
+2. 遍历 words 数组中的每个字符串，使用 split 方法按 separator 拆分。
+3. 将拆分后的非空字符串添加到 result 列表中。
+4. 返回 result 列表。
 
 关键点:
-- [TODO]
+- 使用 split 方法可以方便地按指定分隔符拆分字符串。
+- 过滤掉空字符串以满足题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是每个字符串的平均长度。
+空间复杂度: O(n * m)，存储拆分后的结果。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def split_strings_by_separator(words: List[str], separator: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按分隔符拆分字符串
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for word in words:
+        # 按 separator 拆分字符串并过滤掉空字符串
+        parts = [part for part in word.split(separator) if part]
+        result.extend(parts)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_strings_by_separator)

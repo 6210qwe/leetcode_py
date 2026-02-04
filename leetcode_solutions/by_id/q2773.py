@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和字典来处理嵌套结构，并生成新的不可变对象。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入是否为字典或列表，如果不是则直接返回。
+2. 如果是字典，遍历每个键值对，递归处理每个值。
+3. 如果是列表，遍历每个元素，递归处理每个元素。
+4. 构建新的字典或列表并返回。
 
 关键点:
-- [TODO]
+- 递归处理嵌套结构。
+- 生成新的不可变对象。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入对象的总节点数（包括所有嵌套的键值对和元素）。
+空间复杂度: O(n)，因为我们需要存储新的不可变对象。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any, Dict, List, Union
 
 
-def solution_function_name(params):
+def solution_function_name(obj: Union[Dict, List]) -> Union[Dict, List]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现不可变辅助工具
     """
-    # TODO: 实现最优解法
-    pass
+    if isinstance(obj, dict):
+        return {k: solution_function_name(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [solution_function_name(x) for x in obj]
+    else:
+        return obj
 
 
 Solution = create_solution(solution_function_name)

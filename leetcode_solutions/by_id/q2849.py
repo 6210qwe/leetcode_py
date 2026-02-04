@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和有序集合来高效计算每个子数组的不平衡数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0。
+2. 使用两个指针 `left` 和 `right` 来表示当前子数组的左右边界。
+3. 使用一个有序集合 `active` 来存储当前子数组中的元素。
+4. 遍历数组 `nums`，对于每个元素 `num`：
+   - 将 `num` 加入 `active`。
+   - 计算当前子数组的不平衡数字，并更新 `result`。
+   - 如果 `active` 中的元素数量超过 `n`，则移除 `left` 指针指向的元素，并移动 `left` 指针。
+5. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效维护当前子数组中的元素及其顺序。
+- 通过滑动窗口来避免重复计算子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedSet
 
+def sum_of_imbalance_numbers(nums: List[int]) -> int:
+    n = len(nums)
+    result = 0
+    
+    for left in range(n):
+        active = SortedSet()
+        imbalance_count = 0
+        
+        for right in range(left, n):
+            num = nums[right]
+            if num not in active:
+                active.add(num)
+                # 计算加入新元素后的不平衡数字
+                if num - 1 in active and num + 1 in active:
+                    imbalance_count -= 1
+                elif num - 1 not in active and num + 1 not in active:
+                    imbalance_count += 1
+            
+            result += imbalance_count
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_imbalance_numbers)

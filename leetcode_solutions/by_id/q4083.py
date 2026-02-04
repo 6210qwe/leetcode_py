@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算子数组的和，并使用哈希表记录每个前缀和出现的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 遍历数组，对于每个位置 i，检查是否存在一个 j 使得 capacity[i] = capacity[j] 且 sum(capacity[i+1:j]) == capacity[i]。
+3. 使用哈希表记录每个前缀和出现的位置，以便快速查找。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子数组的和。
+- 使用哈希表记录前缀和出现的位置，以实现 O(1) 时间复杂度的查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_stable_subarrays(capacity: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算边界与内部和相等的稳定子数组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(capacity)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + capacity[i]
+    
+    count = 0
+    prefix_sum_index = {}
+    
+    for i in range(n):
+        target = prefix_sum[i] + capacity[i]
+        if target in prefix_sum_index:
+            for j in prefix_sum_index[target]:
+                if j > i + 1 and capacity[i] == capacity[j - 1]:
+                    count += 1
+        if target not in prefix_sum_index:
+            prefix_sum_index[target] = []
+        prefix_sum_index[target].append(i + 1)
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_stable_subarrays)

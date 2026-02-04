@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集（Union-Find）来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，每个城市初始时都是独立的集合。
+2. 遍历连接矩阵，将直接相连的城市合并到同一个集合中。
+3. 最后统计并查集中不同集合的数量，即为省份数量。
 
 关键点:
-- [TODO]
+- 并查集的路径压缩和按秩合并可以优化查找和合并操作的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * α(n))，其中 n 是城市的数量，α 是反阿克曼函数，接近于常数。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
@@ -49,12 +50,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
+
+    def get_count(self):
+        return self.count
+
+
+def solution_function_name(isConnected: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用并查集计算省份数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(isConnected)
+    uf = UnionFind(n)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if isConnected[i][j] == 1:
+                uf.union(i, j)
+
+    return uf.get_count()
 
 
 Solution = create_solution(solution_function_name)

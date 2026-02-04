@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计数来构建最大回文数。首先统计每个数字出现的次数，然后从大到小选择数字构建回文数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数字的出现次数。
+2. 从大到小选择数字，如果某个数字出现了偶数次，则将其全部加入回文数中；如果出现了奇数次，则只取其最大偶数部分。
+3. 如果有剩余的单个数字，选择最大的一个放在中间。
+4. 构建回文数时，确保没有前导零。
 
 关键点:
-- [TODO]
+- 优先选择较大的数字来构建回文数。
+- 确保没有前导零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 num 的长度。我们需要遍历字符串进行计数和构建回文数。
+空间复杂度: O(1)，因为计数器的大小是固定的（最多 10 个数字）。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_palindromic(num: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回能够使用 num 中数字形成的最大回文整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数字的出现次数
+    count = [0] * 10
+    for digit in num:
+        count[int(digit)] += 1
+    
+    # 构建回文数的左半部分
+    left_half = []
+    middle_digit = -1
+    for digit in range(9, -1, -1):
+        if count[digit] % 2 == 1 and middle_digit == -1:
+            middle_digit = digit
+        half_count = count[digit] // 2
+        if (digit != 0 or len(left_half) > 0) and half_count > 0:
+            left_half.extend([str(digit)] * half_count)
+    
+    # 构建最终的回文数
+    right_half = left_half[::-1]
+    if middle_digit != -1:
+        left_half.append(str(middle_digit))
+    
+    result = ''.join(left_half + right_half)
+    return result if result else '0'
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_palindromic)

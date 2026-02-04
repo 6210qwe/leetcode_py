@@ -21,22 +21,27 @@ LCR 068. 搜索插入位置 - 给定一个排序的整数数组 nums 和一个�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到目标值或其插入位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，分别指向数组的起始和末尾。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 nums[mid] 等于 target，返回 mid。
+   - 如果 nums[mid] 小于 target，将 left 移动到 mid + 1。
+   - 如果 nums[mid] 大于 target，将 right 移动到 mid - 1。
+3. 如果没有找到 target，返回 left 作为插入位置。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度为 O(log n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def search_insert_position(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到目标值或其插入位置
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(nums) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(search_insert_position)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算 "LCT" 子序列的数量，并考虑在不同位置插入字母的影响。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算原字符串中 "L" 和 "C" 的前缀和。
+2. 遍历字符串，计算在每个位置插入 "L"、"C" 和 "T" 后的 "LCT" 子序列数量。
+3. 选择最大值作为结果。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算 "L" 和 "C" 的数量。
+- 在遍历过程中，考虑插入 "L"、"C" 和 "T" 的影响。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_subsequences_after_inserting(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在最多插入一个字母后，字符串中可以形成的 "LCT" 子序列的最大数量。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n < 3:
+        return 0
+
+    # 计算 "L" 和 "C" 的前缀和
+    l_prefix = [0] * (n + 1)
+    c_prefix = [0] * (n + 1)
+    for i in range(1, n + 1):
+        l_prefix[i] = l_prefix[i - 1] + (s[i - 1] == 'L')
+        c_prefix[i] = c_prefix[i - 1] + (s[i - 1] == 'C')
+
+    # 计算原字符串中的 "LCT" 子序列数量
+    original_count = 0
+    t_count = 0
+    for i in range(n - 1, -1, -1):
+        if s[i] == 'T':
+            t_count += 1
+        elif s[i] == 'C':
+            original_count += l_prefix[i] * t_count
+
+    # 计算在不同位置插入 "L"、"C" 和 "T" 后的 "LCT" 子序列数量
+    max_count = original_count
+    for i in range(n + 1):
+        if i == 0 or s[i - 1] != 'L':
+            max_count = max(max_count, (l_prefix[i] + 1) * (c_prefix[n] - c_prefix[i]) * t_count)
+        if i == n or s[i] != 'C':
+            max_count = max(max_count, l_prefix[i] * (c_prefix[i] + 1) * t_count)
+        if i == n or s[i] != 'T':
+            max_count = max(max_count, l_prefix[i] * (c_prefix[n] - c_prefix[i]) * (t_count + 1))
+
+    return max_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_subsequences_after_inserting)

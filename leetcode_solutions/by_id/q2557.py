@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和最大公约数（GCD）来计算子数组的最小公倍数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `gcd` 来计算两个数的最大公约数。
+2. 定义一个辅助函数 `lcm` 来计算两个数的最小公倍数。
+3. 使用滑动窗口遍历数组，计算每个子数组的最小公倍数。
+4. 如果子数组的最小公倍数等于 k，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用 GCD 和 LCM 计算子数组的最小公倍数。
+- 滑动窗口技术用于高效地计算子数组的最小公倍数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log k)，其中 n 是数组长度，k 是给定的整数。最坏情况下，每个子数组都需要计算最小公倍数，且每次计算需要 O(log k) 时间。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +50,30 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小公倍数等于 k 的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    def gcd(a: int, b: int) -> int:
+        return math.gcd(a, b)
 
+    def lcm(a: int, b: int) -> int:
+        return a * b // gcd(a, b)
+    
+    count = 0
+    n = len(nums)
+    
+    for i in range(n):
+        current_lcm = nums[i]
+        for j in range(i, n):
+            current_lcm = lcm(current_lcm, nums[j])
+            if current_lcm == k:
+                count += 1
+            elif current_lcm > k:
+                break
+    
+    return count
 
 Solution = create_solution(solution_function_name)

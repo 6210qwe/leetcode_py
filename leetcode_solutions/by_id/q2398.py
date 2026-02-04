@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查矩阵的主对角线和副对角线上的元素是否都不为0，并且其他元素是否都为0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历矩阵的每个元素。
+2. 检查主对角线和副对角线上的元素是否都不为0。
+3. 检查其他元素是否都为0。
+4. 如果所有条件都满足，返回True；否则返回False。
 
 关键点:
-- [TODO]
+- 通过一次遍历完成检查，避免多次遍历矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中n是矩阵的边长。我们需要遍历整个矩阵。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_x_matrix(grid: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断矩阵是否是一个X矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    
+    for i in range(n):
+        for j in range(n):
+            if i == j or i + j == n - 1:
+                # 检查对角线上的元素是否不为0
+                if grid[i][j] == 0:
+                    return False
+            else:
+                # 检查其他元素是否为0
+                if grid[i][j] != 0:
+                    return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_x_matrix)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀和来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置的前缀和，并对 k 取模。
+2. 使用动态规划记录每个前缀和模 k 的最小值。
+3. 遍历数组，更新动态规划数组，找到最小的可能和。
 
 关键点:
-- [TODO]
+- 使用前缀和模 k 来简化问题。
+- 动态规划数组 dp[i] 表示前缀和模 k 为 i 的最小和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_sum_after_divisible_deletions(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在执行任意次数删除操作后，nums 的最小可能和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = 0
+    dp = [float('inf')] * k
+    dp[0] = 0
+    
+    for num in nums:
+        prefix_sum = (prefix_sum + num) % k
+        dp[prefix_sum] = min(dp[prefix_sum], prefix_sum + num - k * (prefix_sum > 0))
+    
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_sum_after_divisible_deletions)

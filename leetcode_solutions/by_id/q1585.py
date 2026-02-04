@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历从 1 到 sqrt(n) 的所有数，找到 n 的所有因子，并存储在两个列表中。一个列表存储较小的因子，另一个列表存储较大的因子。最后根据 k 的值返回第 k 个因子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表 small_factors 和 large_factors。
+2. 遍历从 1 到 sqrt(n) 的所有数，如果 i 是 n 的因子，则将 i 添加到 small_factors 中，将 n // i 添加到 large_factors 中。
+3. 根据 k 的值，从 small_factors 或 large_factors 中返回第 k 个因子。
 
 关键点:
-- [TODO]
+- 只需要遍历到 sqrt(n)，因为超过 sqrt(n) 的因子可以通过 n // i 得到。
+- 通过两个列表分别存储较小和较大的因子，可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n))
+空间复杂度: O(sqrt(n))
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 n 的第 k 个因子
     """
-    # TODO: 实现最优解法
-    pass
+    small_factors = []
+    large_factors = []
+
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            small_factors.append(i)
+            if i != n // i:
+                large_factors.append(n // i)
+
+    all_factors = small_factors + large_factors[::-1]
+
+    if k > len(all_factors):
+        return -1
+    else:
+        return all_factors[k - 1]
 
 
 Solution = create_solution(solution_function_name)

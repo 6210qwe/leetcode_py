@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字最后出现的位置，然后遍历数组找到所有必须包含在一起的区间，最后计算这些区间的排列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 记录每个数字最后出现的位置。
+2. 遍历数组，找到所有必须包含在一起的区间。
+3. 计算这些区间的排列数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字最后出现的位置。
+- 找到所有必须包含在一起的区间。
+- 计算这些区间的排列数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_good_partitions(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好分割方案的数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 记录每个数字最后出现的位置
+    last_occurrence = {}
+    for i, num in enumerate(nums):
+        last_occurrence[num] = i
+    
+    # 找到所有必须包含在一起的区间
+    intervals = []
+    start = 0
+    end = 0
+    for i, num in enumerate(nums):
+        end = max(end, last_occurrence[num])
+        if i == end:
+            intervals.append((start, end))
+            start = i + 1
+    
+    # 计算这些区间的排列数
+    num_intervals = len(intervals)
+    result = 1
+    for i in range(1, num_intervals):
+        result = (result * 2) % MOD
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_partitions)

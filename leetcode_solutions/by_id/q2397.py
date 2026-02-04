@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][0] 表示前 i 个地块不放置房子的方法数，dp[i][1] 表示前 i 个地块放置房子的方法数。然后通过状态转移方程来更新这些值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1, dp[0][1] = 1。
+2. 通过状态转移方程更新 dp 数组：
+   - dp[i][0] = (dp[i-1][0] + dp[i-1][1]) % MOD
+   - dp[i][1] = dp[i-1][0] % MOD
+3. 最终结果为 (dp[n][0] + dp[n][1]) ** 2 % MOD。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过对称性，可以将两边的地块分开考虑，最后将结果相乘。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1) 通过优化空间复杂度，只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def countHousePlacements(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算放置房屋的方式数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    
+    # 初始化 dp 数组
+    dp = [[0, 0] for _ in range(n + 1)]
+    dp[0][0] = 1
+    dp[0][1] = 1
+    
+    # 通过状态转移方程更新 dp 数组
+    for i in range(1, n + 1):
+        dp[i][0] = (dp[i - 1][0] + dp[i - 1][1]) % MOD
+        dp[i][1] = dp[i - 1][0] % MOD
+    
+    # 最终结果
+    result = (dp[n][0] + dp[n][1]) ** 2 % MOD
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(countHousePlacements)

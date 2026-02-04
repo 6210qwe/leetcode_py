@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历矩形数组，找到每个矩形可以切出的最大正方形边长，然后统计这些边长中的最大值出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：max_len 用于记录当前找到的最大正方形边长，count 用于记录最大正方形边长的出现次数。
+2. 遍历矩形数组，对于每个矩形，计算其可以切出的最大正方形边长（即 min(li, wi)）。
+3. 更新 max_len 和 count：
+   - 如果当前边长大于 max_len，则更新 max_len 并重置 count 为 1。
+   - 如果当前边长等于 max_len，则增加 count。
+4. 返回 count。
 
 关键点:
-- [TODO]
+- 使用一次遍历来同时更新最大正方形边长和其出现次数，避免了多次遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是矩形数组的长度。我们只需要遍历一次矩形数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def solution_function_name(rectangles: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以形成最大正方形的矩形数目
     """
-    # TODO: 实现最优解法
-    pass
+    max_len = 0
+    count = 0
+    
+    for l, w in rectangles:
+        side = min(l, w)
+        if side > max_len:
+            max_len = side
+            count = 1
+        elif side == max_len:
+            count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

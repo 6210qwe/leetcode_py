@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录所有可能的按位与结果，然后通过查找哈希表来计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表 `pair_count` 来记录所有可能的 `nums[i] & nums[j]` 结果及其出现次数。
+2. 遍历 `nums` 数组，对于每个 `nums[k]`，检查 `pair_count` 中有多少个键值对的键与 `nums[k]` 按位与结果为 0。
+3. 累加这些键值对的值，即为满足条件的三元组数量。
 
 关键点:
-- [TODO]
+- 使用哈希表记录所有可能的按位与结果，减少重复计算。
+- 通过查找哈希表来快速计算满足条件的三元组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。我们需要遍历所有可能的 (i, j) 对来构建哈希表，然后再遍历一次 nums 数组来查找满足条件的三元组。
+空间复杂度: O(n^2)，哈希表 `pair_count` 最多存储 n^2 个不同的按位与结果。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_triplets(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算按位与为零的三元组数量
     """
-    # TODO: 实现最优解法
-    pass
+    pair_count = {}
+    n = len(nums)
+    
+    # 构建哈希表，记录所有可能的 nums[i] & nums[j] 结果及其出现次数
+    for i in range(n):
+        for j in range(n):
+            pair = nums[i] & nums[j]
+            if pair in pair_count:
+                pair_count[pair] += 1
+            else:
+                pair_count[pair] = 1
+    
+    # 遍历 nums 数组，计算满足条件的三元组数量
+    triplets_count = 0
+    for k in range(n):
+        for pair, count in pair_count.items():
+            if pair & nums[k] == 0:
+                triplets_count += count
+    
+    return triplets_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_triplets)

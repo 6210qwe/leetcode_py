@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算找到满足条件的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个质数 num，从 0 开始遍历，找到第一个满足 `x | (x + 1) == num` 的 x。
+2. 如果找不到这样的 x，则将结果设为 -1。
 
 关键点:
-- [TODO]
+- 使用位运算来判断和构造满足条件的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(num))，其中 n 是 nums 的长度，num 是 nums 中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def construct_min_bitwise_array(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回一个长度为 n 的数组 ans，对于每个下标 i，满足 ans[i] OR (ans[i] + 1) == nums[i]，
+    并且 ans[i] 是最小的。如果找不到这样的 ans[i]，则 ans[i] = -1。
     """
-    # TODO: 实现最优解法
-    pass
+    def find_min_x(num: int) -> int:
+        for x in range(num):
+            if x | (x + 1) == num:
+                return x
+        return -1
+
+    return [find_min_x(num) for num in nums]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(construct_min_bitwise_array)

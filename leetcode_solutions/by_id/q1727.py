@@ -21,40 +21,89 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。我们使用一个三维数组 dp 来记录每种状态的结果，dp[turn][mouse_pos][cat_pos] 表示当前轮次 turn，老鼠位置为 mouse_pos，猫位置为 cat_pos 时的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，初始值为 None。
+2. 定义一个递归函数 dfs(turn, mouse_pos, cat_pos) 来进行记忆化搜索。
+3. 在递归函数中，首先检查当前状态是否已经计算过，如果是则直接返回结果。
+4. 根据当前轮次判断是老鼠还是猫的回合，并枚举所有可能的移动。
+5. 对于每个可能的移动，递归调用 dfs 函数，并根据返回结果更新当前状态的结果。
+6. 返回最终结果。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过枚举所有可能的移动来确保找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(rows * cols * (rows * cols) * (rows * cols))，其中 rows 和 cols 分别是网格的行数和列数。
+空间复杂度: O(rows * cols * (rows * cols) * (rows * cols))，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def canMouseWin(grid: List[str], catJump: int, mouseJump: int) -> bool:
+    rows, cols = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # 找到初始位置
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 'M':
+                mouse_pos = (r, c)
+            elif grid[r][c] == 'C':
+                cat_pos = (r, c)
+            elif grid[r][c] == 'F':
+                food_pos = (r, c)
+    
+    # 记忆化搜索
+    memo = {}
+    
+    def dfs(turn, mouse_pos, cat_pos):
+        if (turn, mouse_pos, cat_pos) in memo:
+            return memo[(turn, mouse_pos, cat_pos)]
+        
+        if turn >= 128:  # 最多 128 步
+            return False
+        
+        if mouse_pos == cat_pos or cat_pos == food_pos:
+            return False
+        if mouse_pos == food_pos:
+            return True
+        
+        if turn % 2 == 0:  # 老鼠的回合
+            for dr, dc in directions:
+                for jump in range(mouseJump + 1):
+                    nr, nc = mouse_pos[0] + dr * jump, mouse_pos[1] + dc * jump
+                    if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != '#':
+                        if dfs(turn + 1, (nr, nc), cat_pos):
+                            memo[(turn, mouse_pos, cat_pos)] = True
+                            return True
+                    else:
+                        break
+            memo[(turn, mouse_pos, cat_pos)] = False
+            return False
+        else:  # 猫的回合
+            for dr, dc in directions:
+                for jump in range(catJump + 1):
+                    nr, nc = cat_pos[0] + dr * jump, cat_pos[1] + dc * jump
+                    if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != '#':
+                        if not dfs(turn + 1, mouse_pos, (nr, nc)):
+                            memo[(turn, mouse_pos, cat_pos)] = False
+                            return False
+                    else:
+                        break
+            memo[(turn, mouse_pos, cat_pos)] = True
+            return True
+    
+    return dfs(0, mouse_pos, cat_pos)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(canMouseWin)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来计算滞留的雨水量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向数组的两端，并初始化两个变量 left_max 和 right_max 来记录从左到右和从右到左的最大高度。
+2. 从两端向中间遍历：
+   - 如果 height[left] < height[right]，则更新 left_max 并计算左侧的滞留雨水量。
+   - 否则，更新 right_max 并计算右侧的滞留雨水量。
+3. 将所有滞留雨水量累加起来。
 
 关键点:
-- [TODO]
+- 使用双指针可以避免嵌套循环，从而降低时间复杂度。
+- 通过维护左右两侧的最大高度，可以有效地计算每一格的滞留雨水量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(height: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算滞留雨水量
     """
-    # TODO: 实现最优解法
-    pass
+    if not height:
+        return 0
 
+    left, right = 0, len(height) - 1
+    left_max, right_max = 0, 0
+    trapped_water = 0
+
+    while left < right:
+        if height[left] < height[right]:
+            if height[left] >= left_max:
+                left_max = height[left]
+            else:
+                trapped_water += left_max - height[left]
+            left += 1
+        else:
+            if height[right] >= right_max:
+                right_max = height[right]
+            else:
+                trapped_water += right_max - height[right]
+            right -= 1
+
+    return trapped_water
 
 Solution = create_solution(solution_function_name)

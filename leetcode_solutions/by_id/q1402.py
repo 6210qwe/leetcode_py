@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个位置作为右下角的最大正方形边长，并累加这些边长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与输入矩阵大小相同的 DP 矩阵，用于存储以 (i, j) 为右下角的最大正方形边长。
+2. 遍历输入矩阵，对于每个位置 (i, j)，如果 matrix[i][j] 为 1，则更新 dp[i][j] 为 min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1。
+3. 累加所有 dp[i][j] 的值，即为所有正方形子矩阵的数量。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+- 边界处理：当 i 或 j 为 0 时，dp[i][j] 只能为 1（因为无法形成更大的正方形）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，使用了与输入矩阵相同大小的 DP 矩阵。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_squares(matrix: List[List[int]]) -> int:
+    if not matrix or not matrix[0]:
+        return 0
+    
+    m, n = len(matrix), len(matrix[0])
+    dp = [[0] * n for _ in range(m)]
+    count = 0
+    
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == 1:
+                if i == 0 or j == 0:
+                    dp[i][j] = 1
+                else:
+                    dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+                count += dp[i][j]
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_squares)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示从 (0, 0) 到 (i, j) 的路径数。通过遍历整个网格，我们可以计算出每个位置的路径数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与输入网格大小相同的 dp 数组，并将起点 (0, 0) 的路径数设为 1。
+2. 遍历整个网格，对于每个位置 (i, j)，如果它可以通过上方或左方到达，则将其路径数更新为上方和左方路径数之和。
+3. 最终返回 dp 数组右下角的值，即为从 (0, 0) 到 (m-1, n-1) 的路径数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = dp[i-1][j] + dp[i][j-1]
+- 边界条件：dp[0][0] = 1
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 (0, 0) 到 (m-1, n-1) 的路径数
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+    
+    m, n = len(grid), len(grid[0])
+    dp = [[0] * n for _ in range(m)]
+    dp[0][0] = 1
+    
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                continue
+            if i > 0:
+                dp[i][j] += dp[i-1][j]
+            if j > 0:
+                dp[i][j] += dp[i][j-1]
+    
+    return dp[m-1][n-1]
 
 
 Solution = create_solution(solution_function_name)

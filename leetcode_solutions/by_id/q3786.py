@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j][k] 表示从 s[i] 到 s[j] 且最多进行 k 次操作后的最长回文子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][k] 表示从 s[i] 到 s[j] 且最多进行 k 次操作后的最长回文子序列的长度。
+2. 如果 i > j，dp[i][j][k] = 0。
+3. 如果 i == j，dp[i][j][k] = 1。
+4. 如果 s[i] == s[j]，dp[i][j][k] = dp[i+1][j-1][k] + 2。
+5. 如果 s[i] != s[j]，我们需要考虑两种情况：
+   - 不进行替换操作：dp[i][j][k] = max(dp[i+1][j][k], dp[i][j-1][k])。
+   - 进行替换操作：dp[i][j][k] = max(dp[i][j][k], dp[i+1][j-1][k-1] + 2)。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理边界条件。
+- 使用递归和记忆化搜索来优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)，其中 n 是字符串 s 的长度，k 是最大操作次数。
+空间复杂度: O(n^2 * k)，用于存储动态规划的状态。
 """
 
 # ============================================================================
@@ -49,12 +56,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def longest_palindromic_subsequence(s: str, k: int) -> int:
+    n = len(s)
+    dp = [[[0] * (k + 1) for _ in range(n)] for _ in range(n)]
+
+    def get_diff(c1, c2):
+        return min(abs(ord(c1) - ord(c2)), 26 - abs(ord(c1) - ord(c2)))
+
+    def dfs(i, j, k):
+        if i > j:
+            return 0
+        if i == j:
+            return 1
+        if dp[i][j][k] != 0:
+            return dp[i][j][k]
+        
+        if s[i] == s[j]:
+            dp[i][j][k] = dfs(i + 1, j - 1, k) + 2
+        else:
+            dp[i][j][k] = max(dfs(i + 1, j, k), dfs(i, j - 1, k))
+            if k > 0:
+                diff = get_diff(s[i], s[j])
+                if diff <= k:
+                    dp[i][j][k] = max(dp[i][j][k], dfs(i + 1, j - 1, k - diff) + 2)
+        
+        return dp[i][j][k]
+
+    return dfs(0, n - 1, k)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindromic_subsequence)

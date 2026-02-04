@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法尝试所有可能的子集组合，检查是否存在两个子集的乘积等于目标值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组所有元素的乘积 total_product。
+2. 如果 total_product 不是 target 的平方，则不可能找到两个子集，返回 False。
+3. 使用回溯法尝试所有可能的子集组合，检查是否存在一个子集的乘积等于 target。
+4. 如果找到一个子集的乘积等于 target，则另一个子集的乘积也必然等于 target，返回 True。
+5. 如果遍历完所有组合仍未找到满足条件的子集，返回 False。
 
 关键点:
-- [TODO]
+- 使用回溯法来生成所有可能的子集组合。
+- 通过计算总乘积和目标值的关系来提前判断是否可能找到解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是数组的长度。因为我们需要尝试所有可能的子集组合。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_partition_equal_product(nums: List[int], target: int) -> bool:
+    def backtrack(index: int, current_product: int) -> bool:
+        if current_product == target:
+            return True
+        if current_product > target or index == len(nums):
+            return False
+        for i in range(index, len(nums)):
+            if backtrack(i + 1, current_product * nums[i]):
+                return True
+        return False
+
+    total_product = 1
+    for num in nums:
+        total_product *= num
+
+    if total_product != target ** 2:
+        return False
+
+    return backtrack(0, 1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_partition_equal_product)

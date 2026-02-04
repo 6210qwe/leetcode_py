@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归来逆序打印链表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `print_list_in_reverse`，该函数接受一个链表节点作为参数。
+2. 如果当前节点为空，返回空列表。
+3. 递归调用 `print_list_in_reverse` 函数处理当前节点的下一个节点。
+4. 将当前节点的值添加到递归调用的结果中。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 递归调用可以自然地实现逆序打印。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点只被访问一次。
+空间复杂度: O(n)，递归调用栈的深度为链表的长度。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def print_linked_list_in_reverse(head: Optional[ListNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 逆序打印不可变链表
     """
-    # TODO: 实现最优解法
-    pass
+    def print_list_in_reverse(node: Optional[ListNode]) -> List[int]:
+        if not node:
+            return []
+        # 递归调用处理下一个节点
+        next_values = print_list_in_reverse(node.next)
+        # 将当前节点的值添加到结果中
+        return next_values + [node.val]
+
+    return print_list_in_reverse(head)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(print_linked_list_in_reverse)

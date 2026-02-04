@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每门课程的学生数量，并筛选出学生数量大于等于 5 的课程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 对课程进行分组。
+2. 使用 COUNT 统计每门课程的学生数量。
+3. 使用 HAVING 筛选出学生数量大于等于 5 的课程。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 HAVING 来筛选符合条件的课程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Courses 表中的行数。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(courses):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查询至少有 5 个学生的所有课程
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 SQL 查询来实现
+    query = """
+    SELECT class
+    FROM courses
+    GROUP BY class
+    HAVING COUNT(student) >= 5
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

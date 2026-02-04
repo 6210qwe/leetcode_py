@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过字符串操作和日期格式化生成日期范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 解析起始日期和结束日期。
+2. 使用字符串操作生成日期范围列表。
 
 关键点:
-- [TODO]
+- 确保日期格式正确。
+- 生成的日期范围应包含起始日期和结束日期。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d) - d 是日期范围的天数。
+空间复杂度: O(d) - 存储日期范围所需的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def date_range_generator(start_date: str, end_date: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    生成从 start_date 到 end_date 的日期范围（包括 start_date 和 end_date）。
+
+    :param start_date: 起始日期，格式为 "YYYY-MM-DD"。
+    :param end_date: 结束日期，格式为 "YYYY-MM-DD"。
+    :return: 包含所有日期的列表，格式为 "YYYY-MM-DD"。
     """
-    # TODO: 实现最优解法
-    pass
+    from datetime import datetime, timedelta
 
+    # 解析起始日期和结束日期
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
 
-Solution = create_solution(solution_function_name)
+    # 生成日期范围
+    date_list = []
+    current_date = start
+    while current_date <= end:
+        date_list.append(current_date.strftime("%Y-%m-%d"))
+        current_date += timedelta(days=1)
+
+    return date_list
+
+Solution = create_solution(date_range_generator)

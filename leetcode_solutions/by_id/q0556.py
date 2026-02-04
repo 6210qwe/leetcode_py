@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从右向左找到第一个降序的位置，然后将该位置右边的部分进行排序，找到比该位置大的最小数字进行交换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字 n 转换为字符列表。
+2. 从右向左找到第一个降序的位置 i。
+3. 如果没有找到降序的位置，说明 n 是最大排列，返回 -1。
+4. 从右向左找到第一个比 nums[i] 大的数字 nums[j]。
+5. 交换 nums[i] 和 nums[j]。
+6. 反转 i+1 到末尾的部分，使其成为最小排列。
+7. 将字符列表转换回整数，检查是否在 32 位整数范围内，如果是则返回，否则返回 -1。
 
 关键点:
-- [TODO]
+- 从右向左找到第一个降序的位置。
+- 交换后反转部分使其成为最小排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是数字 n 的位数。因为我们需要遍历和操作数字 n 的每一位。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def next_greater_element_iii(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到下一个更大的排列
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数字 n 转换为字符列表
+    nums = list(str(n))
+    
+    # 从右向左找到第一个降序的位置
+    i = len(nums) - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+    
+    # 如果没有找到降序的位置，说明 n 是最大排列，返回 -1
+    if i == -1:
+        return -1
+    
+    # 从右向左找到第一个比 nums[i] 大的数字 nums[j]
+    j = len(nums) - 1
+    while j >= 0 and nums[j] <= nums[i]:
+        j -= 1
+    
+    # 交换 nums[i] 和 nums[j]
+    nums[i], nums[j] = nums[j], nums[i]
+    
+    # 反转 i+1 到末尾的部分，使其成为最小排列
+    nums[i + 1:] = reversed(nums[i + 1:])
+    
+    # 将字符列表转换回整数
+    result = int(''.join(nums))
+    
+    # 检查是否在 32 位整数范围内
+    if result > 2**31 - 1:
+        return -1
+    else:
+        return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(next_greater_element_iii)

@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从节点 0 出发到其他节点的最短路径，并记录每条边上可以到达的新节点数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法找到从节点 0 出发到其他节点的最短路径。
+3. 计算每个节点的可达性。
+4. 计算每条边上可以到达的新节点数。
 
 关键点:
-- [TODO]
+- 使用优先队列来实现 Dijkstra 算法。
+- 记录每条边上可以到达的新节点数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是节点的数量。
+空间复杂度: O(E + V)，用于存储图的邻接表和最短路径信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def reachableNodes(edges: List[List[int]], maxMoves: int, n: int) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v, cnt in edges:
+        graph[u].append((v, cnt))
+        graph[v].append((u, cnt))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # Dijkstra 算法
+    dist = [float('inf')] * n
+    dist[0] = 0
+    pq = [(0, 0)]  # (distance, node)
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist[u]:
+            continue
+        for v, cnt in graph[u]:
+            if d + cnt + 1 < dist[v]:
+                dist[v] = d + cnt + 1
+                heapq.heappush(pq, (dist[v], v))
 
+    # 计算每个节点的可达性
+    reachable_nodes = sum(1 for d in dist if d <= maxMoves)
 
-Solution = create_solution(solution_function_name)
+    # 计算每条边上可以到达的新节点数
+    used_edges = {}
+    for u, v, cnt in edges:
+        used_edges[(u, v)] = min(cnt, max(maxMoves - dist[u], 0))
+        used_edges[(v, u)] = min(cnt, max(maxMoves - dist[v], 0))
+        reachable_nodes += min(cnt, used_edges[(u, v)] + used_edges[(v, u)])
+
+    return reachable_nodes
+
+Solution = create_solution(reachableNodes)

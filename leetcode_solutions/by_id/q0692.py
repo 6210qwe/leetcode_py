@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计词频，然后使用最小堆来获取前 k 个高频单词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个单词的出现频率。
+2. 使用一个大小为 k 的最小堆来存储前 k 个高频单词。
+3. 最后从堆中取出单词并按频率降序和字典序升序排列。
 
 关键点:
-- [TODO]
+- 使用最小堆来保持前 k 个高频单词，并在插入时维护堆的大小。
+- 自定义比较器来处理频率相同但字典序不同的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是单词的数量，k 是需要返回的高频单词数量。构建哈希表的时间复杂度是 O(n)，维护最小堆的时间复杂度是 O(n log k)。
+空间复杂度: O(n + k)，哈希表的空间复杂度是 O(n)，最小堆的空间复杂度是 O(k)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+import heapq
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def top_k_frequent(words: List[str], k: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    返回前 k 个出现次数最多的单词。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个单词的出现频率
+    word_count = {}
+    for word in words:
+        word_count[word] = word_count.get(word, 0) + 1
+
+    # 定义一个最小堆，用于存储前 k 个高频单词
+    heap = []
+    for word, freq in word_count.items():
+        heapq.heappush(heap, (-freq, word))
+        if len(heap) > k:
+            heapq.heappop(heap)
+
+    # 从堆中取出单词并按频率降序和字典序升序排列
+    result = []
+    while heap:
+        freq, word = heapq.heappop(heap)
+        result.append(word)
+    return result[::-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(top_k_frequent)

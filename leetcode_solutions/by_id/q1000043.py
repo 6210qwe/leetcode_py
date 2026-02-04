@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口技术来找到包含所有 small 元素的最短子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示当前窗口的左右边界。
+2. 使用一个计数器 need 来记录 small 中每个元素的需要数量。
+3. 使用一个计数器 window 来记录当前窗口中每个元素的数量。
+4. 移动右指针扩展窗口，直到窗口包含了 small 中的所有元素。
+5. 移动左指针收缩窗口，直到窗口不再包含 small 中的所有元素。
+6. 在每次窗口满足条件时，更新最短子数组的长度和起始位置。
+7. 返回最短子数组的起始和结束位置。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术可以在 O(n) 时间复杂度内解决问题。
+- 计数器 need 和 window 用于跟踪所需元素和当前窗口中的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 big 的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(m)，其中 m 是 small 的长度。需要存储 small 中的元素及其计数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def shortest_supersequence(big: List[int], small: List[int]) -> List[int]:
+    if not small or not big:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    need, window = {}, {}
+    for num in small:
+        need[num] = need.get(num, 0) + 1
 
+    left, right = 0, 0
+    valid = 0
+    start, length = 0, float('inf')
 
-Solution = create_solution(solution_function_name)
+    while right < len(big):
+        c = big[right]
+        right += 1
+        if c in need:
+            window[c] = window.get(c, 0) + 1
+            if window[c] == need[c]:
+                valid += 1
+
+        while valid == len(need):
+            if right - left < length:
+                start = left
+                length = right - left
+            d = big[left]
+            left += 1
+            if d in need:
+                if window[d] == need[d]:
+                    valid -= 1
+                window[d] -= 1
+
+    return [start, start + length - 1] if length != float('inf') else []
+
+Solution = create_solution(shortest_supersequence)

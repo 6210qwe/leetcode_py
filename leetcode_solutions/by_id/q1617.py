@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i] 表示当前有 i 个石子时，当前玩家是否能够获胜。状态转移方程为：
+dp[i] = not dp[i - k*k] for k in range(1, int(i**0.5) + 1)。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，长度为 n+1，dp[0] = False，表示没有石子时当前玩家输。
+2. 遍历从 1 到 n 的每个状态 i，对于每个 i，检查所有可能的平方数 k*k，如果存在一个 k 使得 dp[i - k*k] 为 False，则 dp[i] 为 True。
+3. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 使用平方数作为步长。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(n))，其中 n 是石子的数量。我们需要遍历从 1 到 n 的每个状态，并对每个状态检查所有可能的平方数。
+空间复杂度: O(n)，需要一个大小为 n+1 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划解决石子游戏 IV 问题
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [False] * (n + 1)
+    
+    # 动态规划状态转移
+    for i in range(1, n + 1):
+        for k in range(1, int(i**0.5) + 1):
+            if not dp[i - k * k]:
+                dp[i] = True
+                break
+    
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

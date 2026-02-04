@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，我们可以最大化每个节点的价值。对于每个节点，我们有两种选择：保持原值或进行 XOR 操作。我们需要计算每种选择的总和，并选择较大的那个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个节点的两种可能值：原值和原值与 k 的异或值。
+2. 对于每种选择，计算所有节点的总和。
+3. 返回两个总和中的较大值。
 
 关键点:
-- [TODO]
+- 通过计算每个节点的两种可能值，我们可以确定哪种选择会最大化总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 我们只需要遍历一次数组来计算每种选择的总和。
+空间复杂度: O(1) - 我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_max_sum(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 Alice 通过执行操作后可以得到的最大节点价值之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个节点的两种可能值
+    original_sum = sum(nums)
+    xor_sum = sum(max(num, num ^ k) for num in nums)
+    
+    # 返回两种总和中的较大值
+    return max(original_sum, xor_sum)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_sum)

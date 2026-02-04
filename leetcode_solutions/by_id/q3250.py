@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合存储所有可能的水平和垂直间距，然后找到最大的公共间距。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将水平栅栏和垂直栅栏的边界加入到各自的列表中，并排序。
+2. 计算所有可能的水平间距和垂直间距，并存储在集合中。
+3. 找到最大公共间距，并计算其面积。
+4. 如果没有找到公共间距，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用集合存储间距，便于查找公共间距。
+- 排序后计算间距，确保间距的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h + v + h * log(h) + v * log(v))，其中 h 和 v 分别是水平栅栏和垂直栅栏的数量。
+空间复杂度: O(h + v)，用于存储间距集合。
 """
 
 # ============================================================================
@@ -49,12 +52,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_square_area(m: int, n: int, hFences: List[int], vFences: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过移除一些栅栏（可能不移除）所能形成的最大面积的正方形田地的面积，或者如果无法形成正方形田地则返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    # 添加边界栅栏
+    hFences.append(1)
+    hFences.append(m)
+    vFences.append(1)
+    vFences.append(n)
+
+    # 排序
+    hFences.sort()
+    vFences.sort()
+
+    # 计算所有可能的水平间距
+    h_diffs = set()
+    for i in range(len(hFences)):
+        for j in range(i + 1, len(hFences)):
+            h_diffs.add(hFences[j] - hFences[i])
+
+    # 计算所有可能的垂直间距
+    v_diffs = set()
+    for i in range(len(vFences)):
+        for j in range(i + 1, len(vFences)):
+            v_diffs.add(vFences[j] - vFences[i])
+
+    # 找到最大公共间距
+    common_diffs = h_diffs & v_diffs
+    if not common_diffs:
+        return -1
+
+    max_diff = max(common_diffs)
+    return (max_diff ** 2) % (10**9 + 7)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_square_area)

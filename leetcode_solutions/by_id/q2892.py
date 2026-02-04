@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来检查数组是否符合要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的最大值 n。
+2. 检查数组长度是否为 n + 1。
+3. 使用计数器统计每个数字的出现次数。
+4. 检查 1 到 n-1 是否恰好出现一次，n 是否恰好出现两次。
 
 关键点:
-- [TODO]
+- 使用计数器来高效统计每个数字的出现次数。
+- 确保数组长度和最大值匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组一次来计算最大值和计数。
+空间复杂度: O(n)，使用计数器存储每个数字的出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+from collections import Counter
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_good_array(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查数组是否是好的数组。
     """
-    # TODO: 实现最优解法
-    pass
+    n = max(nums)
+    if len(nums) != n + 1:
+        return False
+    
+    counter = Counter(nums)
+    
+    for i in range(1, n):
+        if counter[i] != 1:
+            return False
+    
+    if counter[n] != 2:
+        return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_good_array)

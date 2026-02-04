@@ -21,22 +21,25 @@ LCR 117. 相似字符串组 - 如果交换字符串 X 中的两个不同位置�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并相似的字符串组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 定义一个函数来检查两个字符串是否相似。
+3. 遍历所有字符串对，如果两个字符串相似，则在并查集中合并它们。
+4. 最后，返回并查集中的连通分量数。
 
 关键点:
-- [TODO]
+- 使用并查集高效地管理字符串组的合并。
+- 通过检查字符差异来判断字符串是否相似。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是字符串的数量，m 是字符串的长度。需要遍历所有字符串对，并检查每对字符串是否相似。
+空间复杂度: O(n)，并查集的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +52,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find(parent, i):
+    if parent[i] != i:
+        parent[i] = find(parent, parent[i])
+    return parent[i]
 
+def union(parent, rank, x, y):
+    rootX = find(parent, x)
+    rootY = find(parent, y)
+    if rootX != rootY:
+        if rank[rootX] > rank[rootY]:
+            parent[rootY] = rootX
+        elif rank[rootX] < rank[rootY]:
+            parent[rootX] = rootY
+        else:
+            parent[rootY] = rootX
+            rank[rootX] += 1
+
+def are_similar(s1, s2):
+    diff = 0
+    for c1, c2 in zip(s1, s2):
+        if c1 != c2:
+            diff += 1
+        if diff > 2:
+            return False
+    return diff == 2 or diff == 0
+
+def solution_function_name(strs: List[str]) -> int:
+    n = len(strs)
+    parent = list(range(n))
+    rank = [0] * n
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if are_similar(strs[i], strs[j]):
+                union(parent, rank, i, j)
+
+    groups = set()
+    for i in range(n):
+        groups.add(find(parent, i))
+
+    return len(groups)
 
 Solution = create_solution(solution_function_name)

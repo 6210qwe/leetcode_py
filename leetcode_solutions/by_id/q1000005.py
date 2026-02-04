@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历整个矩阵，找到所有的池塘，并计算每个池塘的大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果列表 `pond_sizes` 来存储每个池塘的大小。
+2. 遍历矩阵中的每个元素，如果遇到水域（值为0），则从该位置开始进行DFS。
+3. 在DFS过程中，标记访问过的水域，并递归地访问其八个方向上的相邻水域。
+4. 计算每个池塘的大小，并将其添加到结果列表中。
+5. 对结果列表进行排序并返回。
 
 关键点:
-- [TODO]
+- 使用DFS遍历矩阵，确保每个水域只被访问一次。
+- 通过标记访问过的水域来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中m和n分别是矩阵的行数和列数。每个元素最多被访问一次。
+空间复杂度: O(m * n)，在最坏情况下，递归栈的深度可能达到矩阵的大小。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def pond_sizes(land: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算矩阵中所有池塘的大小，并返回从小到大排序的结果。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(x: int, y: int) -> int:
+        if x < 0 or x >= m or y < 0 or y >= n or land[x][y] != 0:
+            return 0
+        land[x][y] = -1  # 标记已访问
+        size = 1
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            size += dfs(nx, ny)
+        return size
 
+    m, n = len(land), len(land[0])
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    pond_sizes = []
 
-Solution = create_solution(solution_function_name)
+    for i in range(m):
+        for j in range(n):
+            if land[i][j] == 0:
+                size = dfs(i, j)
+                if size > 0:
+                    pond_sizes.append(size)
+
+    return sorted(pond_sizes)
+
+Solution = create_solution(pond_sizes)

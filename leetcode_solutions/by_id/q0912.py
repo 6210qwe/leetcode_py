@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组存储权重的累积和，并使用二分查找来找到随机数对应的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算权重数组 w 的前缀和数组 prefix_sum。
+2. 在 pickIndex 方法中，生成一个在 [1, total_weight] 范围内的随机数。
+3. 使用二分查找在前缀和数组中找到第一个大于等于该随机数的位置，返回其下标。
 
 关键点:
-- [TODO]
+- 前缀和数组用于快速计算累积权重。
+- 二分查找用于高效地找到随机数对应的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) 初始化，O(log n) 每次 pickIndex
+空间复杂度: O(n) 存储前缀和数组
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
+import random
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Solution:
+
+    def __init__(self, w: List[int]):
+        self.prefix_sum = []
+        total = 0
+        for weight in w:
+            total += weight
+            self.prefix_sum.append(total)
+        self.total_weight = total
+
+    def pickIndex(self) -> int:
+        target = random.randint(1, self.total_weight)
+        left, right = 0, len(self.prefix_sum) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if self.prefix_sum[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

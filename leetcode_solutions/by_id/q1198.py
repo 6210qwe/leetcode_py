@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出那些被借阅次数少于 10 次的书籍。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Books` 表中选择所有书籍。
+2. 通过 `JOIN` 操作将 `Books` 表和 `Orders` 表连接起来。
+3. 使用 `GROUP BY` 和 `HAVING` 子句来筛选出借阅次数少于 10 次的书籍。
 
 关键点:
-- [TODO]
+- 使用 `LEFT JOIN` 确保即使没有借阅记录的书籍也能被包含在结果中。
+- 使用 `COUNT` 函数来计算每本书的借阅次数。
+- 使用 `HAVING` 子句来过滤借阅次数少于 10 次的书籍。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `Books` 表的行数，m 是 `Orders` 表的行数。
+空间复杂度: O(1)，因为查询只涉及常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 SQL 查询语句
     """
-    # TODO: 实现最优解法
-    pass
+    query = """
+    SELECT b.book_id, b.name
+    FROM Books b
+    LEFT JOIN Orders o ON b.book_id = o.book_id
+    GROUP BY b.book_id, b.name
+    HAVING COUNT(o.order_id) < 10
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

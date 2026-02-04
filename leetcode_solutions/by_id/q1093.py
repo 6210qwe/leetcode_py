@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来恢复树结构。通过遍历字符串，解析出每个节点的深度和值，然后根据深度将节点插入到正确的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前路径上的节点。
+2. 遍历输入字符串，解析出每个节点的深度和值。
+3. 根据深度调整栈，确保栈顶元素是当前节点的父节点。
+4. 将当前节点插入到父节点的左子节点或右子节点。
+5. 返回根节点。
 
 关键点:
-- [TODO]
+- 使用栈来维护当前路径上的节点。
+- 通过深度来确定当前节点的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。每个字符最多被处理一次。
+空间复杂度: O(h)，其中 h 是树的高度。栈的最大深度为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +48,45 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def recoverFromPreorder(traversal: str) -> Optional[TreeNode]:
+    if not traversal:
+        return None
+
+    def get_depth_and_value(s: str, start: int) -> (int, int, int):
+        depth = 0
+        while s[start] == '-':
+            depth += 1
+            start += 1
+        value_start = start
+        while start < len(s) and s[start].isdigit():
+            start += 1
+        value = int(s[value_start:start])
+        return depth, value, start
+
+    root = TreeNode(int(traversal.split('-')[0]))
+    stack = [(0, root)]
+    i = len(str(root.val))
+
+    while i < len(traversal):
+        depth, value, next_i = get_depth_and_value(traversal, i)
+        node = TreeNode(value)
+
+        while stack[-1][0] >= depth:
+            stack.pop()
+
+        if not stack[-1][1].left:
+            stack[-1][1].left = node
+        else:
+            stack[-1][1].right = node
+
+        stack.append((depth, node))
+        i = next_i
+
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(recoverFromPreorder)

@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 将销售数据按季节分组。
+2. 计算每个季节每个类别的总销售量和总收入。
+3. 根据总销售量、总收入和字典序确定每个季节最受欢迎的类别。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
-
-关键点:
-- [TODO]
+1. 使用 SQL 查询将销售数据按季节分组，并计算每个季节每个类别的总销售量和总收入。
+2. 使用窗口函数对每个季节的类别进行排名，根据总销售量、总收入和字典序。
+3. 选择每个季节排名第一的类别作为最受欢迎的类别。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是销售记录的数量。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(sales, products):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现季节性销售分析
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义季节映射
+    season_mapping = {
+        1: 'Winter', 2: 'Winter', 3: 'Spring',
+        4: 'Spring', 5: 'Spring', 6: 'Summer',
+        7: 'Summer', 8: 'Summer', 9: 'Fall',
+        10: 'Fall', 11: 'Fall', 12: 'Winter'
+    }
 
+    # 合并销售数据和产品数据
+    merged_data = sales.merge(products, on='product_id')
+
+    # 添加季节列
+    merged_data['season'] = merged_data['sale_date'].dt.month.map(season_mapping)
+
+    # 计算每个季节每个类别的总销售量和总收入
+    seasonal_sales = (
+        merged_data
+        .groupby(['season', 'category'])
+        .agg(total_quantity=('quantity', 'sum'), total_revenue=('price', 'sum'))
+        .reset_index()
+    )
+
+    # 对每个季节的类别进行排名
+    ranked_sales = (
+        seasonal_sales
+        .assign(rank=lambda df: df.groupby('season')
+                .apply(lambda g: g.sort_values(
+                    ['total_quantity', 'total_revenue', 'category'],
+                    ascending=[False, False, True]
+                ).reset_index(drop=True).index)
+                .values)
+    )
+
+    # 选择每个季节排名第一的类别
+    result = (
+        ranked_sales
+        .loc[ranked_sales['rank'] == 0]
+        .sort_values('season')
+        [['season', 'category', 'total_quantity', 'total_revenue']]
+    )
+
+    return result
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针来比较两个数组，找到第一个不同的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向两个数组的起始位置。
+2. 逐个比较两个数组的元素，如果发现不同，则返回 "sensor1" 或 "sensor2"。
+3. 如果遍历完所有元素都没有发现不同，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用双指针可以同时遍历两个数组，时间复杂度为 O(n)。
+- 只需要常数级别的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只需要常数级别的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def faulty_sensor(sensor1: List[int], sensor2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 比较两个传感器的数据，找出有缺陷的传感器。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(sensor1)
+    for i in range(n):
+        if sensor1[i] != sensor2[i]:
+            if i + 1 < n and sensor1[i] == sensor2[i + 1] and sensor1[i + 1] == sensor2[i]:
+                return 1
+            else:
+                return 2
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(faulty_sensor)

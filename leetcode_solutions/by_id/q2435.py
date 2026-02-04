@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次检查当前剩余的数字是否能组成一个完整的 1 到 k 的序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `current_set` 来存储当前已经出现的数字。
+2. 遍历 `rolls` 数组，将每个数字加入 `current_set`。
+3. 如果 `current_set` 包含了 1 到 k 的所有数字，则清空 `current_set` 并增加计数器 `count`。
+4. 返回 `count + 1` 作为结果。
 
 关键点:
-- [TODO]
+- 通过集合来快速判断 1 到 k 的所有数字是否都已出现。
+- 每次找到一个完整的 1 到 k 序列后，重置集合并继续查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def shortest_impossible_sequence(rolls: List[int], k: int) -> int:
+    current_set = set()
+    count = 0
+    
+    for roll in rolls:
+        current_set.add(roll)
+        if len(current_set) == k:
+            current_set.clear()
+            count += 1
+    
+    return count + 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_impossible_sequence)

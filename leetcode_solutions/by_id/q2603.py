@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储正面和负面词汇，然后遍历每个学生的报告，计算每个学生的分数，并使用堆来获取前 k 名学生。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将正面和负面词汇分别存储在哈希集合中。
+2. 初始化一个列表来存储每个学生的分数和 ID。
+3. 遍历每个学生的报告，计算其分数，并将其分数和 ID 存储在列表中。
+4. 使用堆来获取分数最高的前 k 名学生。如果分数相同，ID 较小的学生排名靠前。
 
 关键点:
-- [TODO]
+- 使用哈希集合来快速查找正面和负面词汇。
+- 使用堆来高效地获取前 k 名学生。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k + m)，其中 n 是学生数量，m 是正面和负面词汇的总长度。遍历学生报告的时间复杂度是 O(n)，使用堆的时间复杂度是 O(n log k)。
+空间复杂度: O(m + n)，其中 m 是正面和负面词汇的总长度，n 是学生数量。存储词汇和学生信息的空间复杂度是 O(m + n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def top_k_students(positive_feedback: List[str], negative_feedback: List[str], report: List[str], student_id: List[int], k: int) -> List[int]:
+    # 将正面和负面词汇存储在哈希集合中
+    positive_set = set(positive_feedback)
+    negative_set = set(negative_feedback)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个学生的分数
+    scores = []
+    for i, r in enumerate(report):
+        score = 0
+        words = r.split()
+        for word in words:
+            if word in positive_set:
+                score += 3
+            elif word in negative_set:
+                score -= 1
+        scores.append((-score, student_id[i]))
 
+    # 使用堆来获取前 k 名学生
+    heapq.heapify(scores)
+    result = [heapq.heappop(scores)[1] for _ in range(k)]
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(top_k_students)

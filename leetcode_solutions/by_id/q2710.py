@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过位运算找到最近的 2 的幂，并决定是加还是减。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作计数器 `operations` 为 0。
+2. 当 `n` 不为 0 时，进行以下操作：
+   - 找到最接近 `n` 的 2 的幂 `power_of_two`。
+   - 如果 `n` 与 `power_of_two` 的差值小于 `n` 与 `power_of_two + power_of_two` 的差值，则 `n` 减去 `power_of_two`，否则 `n` 加上 `power_of_two`。
+   - 增加操作计数器 `operations`。
+3. 返回操作计数器 `operations`。
 
 关键点:
-- [TODO]
+- 使用位运算快速找到最接近 `n` 的 2 的幂。
+- 通过比较差值来决定是加还是减。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_reduce_to_zero(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将整数 n 减少到 0 需要的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    while n != 0:
+        # 找到最接近 n 的 2 的幂
+        power_of_two = 1
+        while power_of_two * 2 <= n:
+            power_of_two *= 2
+        
+        # 决定是加还是减
+        if n - power_of_two < power_of_two - (n - power_of_two):
+            n -= power_of_two
+        else:
+            n += power_of_two
+        
+        operations += 1
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_reduce_to_zero)

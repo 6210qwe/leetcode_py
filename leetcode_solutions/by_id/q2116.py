@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字出现的次数，然后遍历数组，对于每个元素，检查是否存在与之差的绝对值为 k 的元素，并累加计数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个数字出现的次数。
+2. 初始化一个变量 `pairs` 来记录满足条件的数对数量。
+3. 遍历数组 `nums`：
+   - 对于每个元素 `num`，检查 `num + k` 和 `num - k` 是否在哈希表中存在。
+   - 如果存在，则将对应的计数值加到 `pairs` 中。
+4. 更新哈希表 `count`，增加当前元素 `num` 的计数。
+5. 返回 `pairs`。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内查找和更新计数。
+- 通过遍历数组一次，可以实现 O(n) 的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_k_difference(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算差的绝对值为 k 的数对数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    pairs = 0
+    
+    for num in nums:
+        if num + k in count:
+            pairs += count[num + k]
+        if num - k in count:
+            pairs += count[num - k]
+        
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    return pairs
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_k_difference)

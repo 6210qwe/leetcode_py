@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的最大和最小乘积。因为负数乘以负数会变成正数，所以我们需要同时记录最大和最小乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][0] 表示到达 (i, j) 位置的最大乘积，dp[i][j][1] 表示到达 (i, j) 位置的最小乘积。
+2. 遍历矩阵，更新 dp 数组。
+3. 如果最终的最大乘积为负数，返回 -1；否则返回最大乘积对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 使用动态规划记录每个位置的最大和最小乘积。
+- 处理边界情况，确保初始值正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，使用了一个三维数组来存储中间结果。
 """
 
 # ============================================================================
@@ -48,13 +50,46 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从左上角到右下角路径的最大非负积
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return -1
 
+    m, n = len(grid), len(grid[0])
+    dp = [[[0, 0] for _ in range(n)] for _ in range(m)]
+
+    # 初始化起点
+    dp[0][0][0] = dp[0][0][1] = grid[0][0]
+
+    # 初始化第一行
+    for j in range(1, n):
+        dp[0][j][0] = dp[0][j][1] = dp[0][j-1][0] * grid[0][j]
+
+    # 初始化第一列
+    for i in range(1, m):
+        dp[i][0][0] = dp[i][0][1] = dp[i-1][0][0] * grid[i][0]
+
+    # 填充 dp 数组
+    for i in range(1, m):
+        for j in range(1, n):
+            candidates = [
+                dp[i-1][j][0] * grid[i][j],
+                dp[i-1][j][1] * grid[i][j],
+                dp[i][j-1][0] * grid[i][j],
+                dp[i][j-1][1] * grid[i][j]
+            ]
+            dp[i][j][0] = max(candidates)
+            dp[i][j][1] = min(candidates)
+
+    # 计算最终结果
+    max_product = dp[-1][-1][0]
+    if max_product < 0:
+        return -1
+    else:
+        return max_product % MOD
 
 Solution = create_solution(solution_function_name)

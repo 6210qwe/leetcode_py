@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀和的思想来计算满足条件的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示当前窗口的左右边界。
+2. 使用一个变量 current_and 来存储当前窗口内所有元素的按位与结果。
+3. 遍历数组，使用 right 指针扩展窗口，同时更新 current_and。
+4. 如果 current_and 等于 k，计算以 right 为右端点的所有子数组数量，并累加到结果中。
+5. 如果 current_and 小于 k，继续扩展窗口。
+6. 如果 current_and 大于 k，移动 left 指针缩小窗口，直到 current_and 小于等于 k。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态维护当前窗口内的按位与结果。
+- 通过调整窗口大小来找到所有满足条件的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次由 right 指针，一次由 left 指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算子数组按位与值为 k 的数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = 0
+    current_and = (1 << 30) - 1  # 初始化为全 1
+    left = 0
+    
+    for right in range(n):
+        current_and &= nums[right]
+        
+        while left <= right and current_and < k:
+            current_and |= ~nums[left]  # 取消 left 指针指向的元素的影响
+            left += 1
+        
+        if current_and == k:
+            result += left + 1  # 计算以 right 为右端点的所有子数组数量
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

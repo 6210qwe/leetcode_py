@@ -21,22 +21,24 @@ LCR 131. 砍竹子 I - 现需要将一根长为正整数 bamboo_len 的竹子砍
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示将长度为 i 的竹子砍成若干段后的最大乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，其中 dp[i] 表示长度为 i 的竹子的最大乘积。
+2. 对于每个长度 i，尝试将其分成两段 j 和 i-j，并取 max(j * (i-j), j * dp[i-j]) 的最大值。
+3. 最终结果保存在 dp[bamboo_len] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程是 dp[i] = max(dp[i], j * (i-j), j * dp[i-j])。
+- 边界条件是 dp[2] = 1，因为长度为 2 的竹子只能分成 1 和 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 bamboo_len，因为我们需要遍历所有可能的分割点。
+空间复杂度: O(n)，因为我们使用了一个大小为 n+1 的数组来存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(bamboo_len: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将长度为 bamboo_len 的竹子砍成若干段后的最大乘积
     """
-    # TODO: 实现最优解法
-    pass
+    if bamboo_len < 2:
+        return 0
+    
+    # 初始化 dp 数组
+    dp = [0] * (bamboo_len + 1)
+    dp[2] = 1
+    
+    # 动态规划计算最大乘积
+    for i in range(3, bamboo_len + 1):
+        for j in range(1, i):
+            dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
+    
+    return dp[bamboo_len]
 
 
 Solution = create_solution(solution_function_name)

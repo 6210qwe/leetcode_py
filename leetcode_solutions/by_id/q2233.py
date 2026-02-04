@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算平滑下降阶段的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `count` 和 `total`，分别用于记录当前连续下降阶段的长度和总的平滑下降阶段数量。
+2. 遍历价格数组，如果当前价格比前一天的价格恰好少 1，则增加 `count`，否则重置 `count` 为 1。
+3. 每次更新 `count` 后，将 `count` 加到 `total` 中。
+4. 返回 `total` 作为结果。
 
 关键点:
-- [TODO]
+- 使用滑动窗口的思想来计算连续下降阶段的长度。
+- 每次更新 `count` 后，将其加到 `total` 中以累加所有平滑下降阶段的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是价格数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算平滑下降阶段的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not prices:
+        return 0
+
+    count = 1
+    total = 0
+
+    for i in range(1, len(prices)):
+        if prices[i] == prices[i - 1] - 1:
+            count += 1
+        else:
+            count = 1
+        total += count
+
+    return total
 
 
 Solution = create_solution(solution_function_name)

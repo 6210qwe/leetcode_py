@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表来表示排列 P，并通过索引操作来实现元素的查找和移动。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化排列 P 为 [1, 2, ..., m]。
+2. 初始化结果数组 result。
+3. 遍历 queries 数组：
+   - 找到当前 query 在 P 中的位置。
+   - 将该位置添加到结果数组中。
+   - 将当前 query 移动到 P 的开头。
+4. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用列表索引来快速查找和移动元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 queries 的长度，m 是排列 P 的长度。每次查询需要 O(m) 时间来查找和移动元素。
+空间复杂度: O(m)，用于存储排列 P 和结果数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def process_queries(queries: List[int], m: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 处理带键的排列查询
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化排列 P
+    P = list(range(1, m + 1))
+    
+    # 初始化结果数组
+    result = []
+    
+    # 遍历 queries 数组
+    for query in queries:
+        # 找到当前 query 在 P 中的位置
+        index = P.index(query)
+        
+        # 将该位置添加到结果数组中
+        result.append(index)
+        
+        # 将当前 query 移动到 P 的开头
+        P.insert(0, P.pop(index))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(process_queries)

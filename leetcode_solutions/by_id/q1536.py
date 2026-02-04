@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合操作来找出购买了产品 A 和 B 但未购买产品 C 的顾客。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建三个集合分别存储购买了产品 A、B 和 C 的顾客。
+2. 使用集合的交集和差集操作来找出满足条件的顾客。
 
 关键点:
-- [TODO]
+- 使用集合操作可以高效地进行交集和差集计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是购买记录的数量。每个购买记录只需要常数时间处理。
+空间复杂度: O(m)，其中 m 是顾客数量。最坏情况下，所有顾客都购买了产品。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_customers(purchases: List[List[str]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    找出购买了产品 A 和产品 B 却没有购买产品 C 的顾客。
+
+    :param purchases: 购买记录列表，每个记录包含 [顾客ID, 产品ID]
+    :return: 满足条件的顾客列表
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建三个集合分别存储购买了产品 A、B 和 C 的顾客
+    bought_A = set()
+    bought_B = set()
+    bought_C = set()
 
+    for customer, product in purchases:
+        if product == 'A':
+            bought_A.add(customer)
+        elif product == 'B':
+            bought_B.add(customer)
+        elif product == 'C':
+            bought_C.add(customer)
 
-Solution = create_solution(solution_function_name)
+    # 使用集合的交集和差集操作来找出满足条件的顾客
+    result = (bought_A & bought_B) - bought_C
+    return list(result)
+
+Solution = create_solution(find_customers)

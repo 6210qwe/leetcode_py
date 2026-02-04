@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个字符，计算向前切换和向后切换的最小代价，并累加这些代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总代价为0。
+2. 遍历字符串s和t的每个字符。
+3. 对于每个字符，计算将其从s转换到t所需的向前切换和向后切换的代价。
+4. 选择较小的代价并累加到总代价中。
+5. 返回总代价。
 
 关键点:
-- [TODO]
+- 计算向前切换和向后切换的代价时，需要考虑环形结构（即'a'到'z'和'z'到'a'）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是字符串s和t的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(s: str, t: str, nextCost: List[int], previousCost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从字符串s到字符串t的切换距离
     """
-    # TODO: 实现最优解法
-    pass
-
+    total_cost = 0
+    n = len(s)
+    
+    for i in range(n):
+        diff = (ord(t[i]) - ord(s[i])) % 26
+        if diff > 0:
+            cost_forward = sum(nextCost[(ord(s[i]) - ord('a') + j) % 26] for j in range(diff))
+            cost_backward = sum(previousCost[(ord(s[i]) - ord('a') - j) % 26] for j in range(26 - diff))
+            total_cost += min(cost_forward, cost_backward)
+        else:
+            cost_forward = sum(nextCost[(ord(s[i]) - ord('a') + j) % 26] for j in range(26 + diff))
+            cost_backward = sum(previousCost[(ord(s[i]) - ord('a') - j) % 26] for j in range(-diff))
+            total_cost += min(cost_forward, cost_backward)
+    
+    return total_cost
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 两个字符串接近的条件是它们包含相同的字符集，并且每个字符的频率分布相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查两个字符串的长度是否相等，如果不等则直接返回 False。
+2. 使用 Counter 计算两个字符串中每个字符的频率。
+3. 比较两个字符串的字符集是否相同。
+4. 比较两个字符串的字符频率分布是否相同。
 
 关键点:
-- [TODO]
+- 使用 Counter 来统计字符频率和字符集。
+- 比较字符集和频率分布。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。Counter 的操作是 O(n)，排序操作是 O(n log n)。
+空间复杂度: O(n)，用于存储 Counter 的结果。
 """
 
 # ============================================================================
@@ -47,14 +50,30 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def close_strings(word1: str, word2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断两个字符串是否接近
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查两个字符串的长度是否相等
+    if len(word1) != len(word2):
+        return False
+    
+    # 使用 Counter 计算两个字符串中每个字符的频率
+    counter1 = Counter(word1)
+    counter2 = Counter(word2)
+    
+    # 比较两个字符串的字符集是否相同
+    if set(counter1.keys()) != set(counter2.keys()):
+        return False
+    
+    # 比较两个字符串的字符频率分布是否相同
+    if sorted(counter1.values()) != sorted(counter2.values()):
+        return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(close_strings)

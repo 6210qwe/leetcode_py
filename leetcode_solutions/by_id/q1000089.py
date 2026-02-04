@@ -21,40 +21,57 @@ LCP 34. 二叉树染色 - 小扣有一个根结点为 `root` 的二叉树模型�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划（DP）来解决这个问题。我们定义一个递归函数 `dp(node, k)`，表示以 `node` 为根节点的子树中，最多可以染 `k` 个蓝色节点的最大价值。对于每个节点，我们有两种选择：染色或不染色。如果染色，则其子节点不能再染色；如果不染色，则其子节点可以染色。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义递归函数 `dp(node, k)`。
+2. 对于每个节点，计算两种情况下的最大价值：
+   - 不染色：`dp(node.left, k) + dp(node.right, k)`
+   - 染色：`node.val + sum(dp(node.left, i) for i in range(k)) + sum(dp(node.right, j) for j in range(k - i - 1))`
+3. 返回最大值。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索（Memoization）来避免重复计算。
+- 递归函数的参数包括当前节点和剩余可染色的节点数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k^2)，其中 n 是节点数，k 是最大可染色节点数。每个节点最多被访问 k 次，每次访问需要 O(k) 的时间来计算子节点的最大价值。
+空间复杂度: O(n * k)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def max_value(root: Optional[TreeNode], k: int) -> int:
+    memo = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dp(node: Optional[TreeNode], k: int) -> int:
+        if not node:
+            return 0
+        if (id(node), k) in memo:
+            return memo[(id(node), k)]
+        
+        # 不染色的情况
+        no_paint = dp(node.left, k) + dp(node.right, k)
+        
+        # 染色的情况
+        paint = node.val
+        for i in range(k):
+            paint += dp(node.left, i) + dp(node.right, k - i - 1)
+        
+        result = max(no_paint, paint)
+        memo[(id(node), k)] = result
+        return result
 
+    return dp(root, k)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_value)

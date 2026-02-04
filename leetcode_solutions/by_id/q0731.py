@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个列表分别记录单次预订和双重预订的区间。每次预订时，检查新预订是否会与现有的双重预订区间冲突，如果会则返回 False。否则，更新单次预订和双重预订的区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表 `single_booked` 和 `double_booked`，分别记录单次预订和双重预订的区间。
+2. 在 `book` 方法中，遍历 `double_booked` 列表，检查新预订是否与现有的双重预订区间冲突。如果有冲突，返回 False。
+3. 遍历 `single_booked` 列表，检查新预订是否与现有的单次预订区间有重叠。如果有重叠，将重叠部分记录到 `double_booked` 列表中。
+4. 将新预订的区间添加到 `single_booked` 列表中，并返回 True。
 
 关键点:
-- [TODO]
+- 使用两个列表分别记录单次预订和双重预订的区间。
+- 检查新预订是否会与现有的双重预订区间冲突。
+- 更新单次预订和双重预订的区间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 `book` 方法的调用次数。每次调用 `book` 方法时，需要遍历 `single_booked` 和 `double_booked` 列表。
+空间复杂度: O(n)，其中 n 是 `book` 方法的调用次数。需要存储所有的单次预订和双重预订的区间。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class MyCalendarTwo:
+
+    def __init__(self):
+        self.single_booked = []
+        self.double_booked = []
+
+    def book(self, start: int, end: int) -> bool:
+        # 检查新预订是否会与现有的双重预订区间冲突
+        for s, e in self.double_booked:
+            if start < e and end > s:
+                return False
+        
+        # 更新双重预订的区间
+        for s, e in self.single_booked:
+            if start < e and end > s:
+                self.double_booked.append((max(start, s), min(end, e)))
+        
+        # 更新单次预订的区间
+        self.single_booked.append((start, end))
+        return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(MyCalendarTwo)

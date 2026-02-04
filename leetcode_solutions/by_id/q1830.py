@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个美味程度出现的次数，然后遍历每个美味程度，检查是否存在另一个美味程度使得它们的和是2的幂。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个美味程度出现的次数。
+2. 初始化一个变量 `result` 来记录大餐的数量。
+3. 遍历 `deliciousness` 数组，对于每个美味程度 `val`：
+   - 检查 `count` 中是否存在另一个美味程度 `target` 使得 `val + target` 是2的幂，并更新 `result`。
+   - 更新 `count` 中 `val` 的出现次数。
+4. 返回 `result` 对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个美味程度出现的次数，可以快速查找和更新。
+- 通过预计算2的幂的范围，减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max_val))，其中 n 是 `deliciousness` 的长度，max_val 是 `deliciousness` 中的最大值。
+空间复杂度: O(n)，哈希表的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_good_meals(deliciousness: List[int]) -> int:
+    MOD = 10**9 + 7
+    max_val = max(deliciousness)
+    power_of_twos = {2**i for i in range(22)}  # 2^20 is the largest possible sum
+    count = {}
+    result = 0
+    
+    for val in deliciousness:
+        for target in power_of_twos:
+            if target - val in count:
+                result += count[target - val]
+                result %= MOD
+        count[val] = count.get(val, 0) + 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_meals)

@@ -21,24 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 面积一致 + 顶点异或：所有小矩形的面积之和要等于大矩形面积，且所有小矩形四个顶点经「奇偶计数」后只剩大矩形的四个顶点。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 遍历所有小矩形，更新外包矩形的 `min_x, min_y, max_x, max_y`，同时累加小矩形面积和 `area_sum`。
+2. 使用集合 `corners` 记录顶点：对每个小矩形 (x1,y1,x2,y2) 的四个角，如果角点第一次出现则加入集合；第二次出现则从集合删除，相当于做异或。
+3. 遍历结束后，检查：
+   - `area_sum` 是否等于外包矩形面积 `(max_x-min_x)*(max_y-min_y)`；若不等说明有重叠或空洞。
+   - `corners` 是否恰好包含外包矩形的四个角点，且不多不少。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 利用“内部顶点被覆盖偶数次会相互抵消”的性质，只留下外边界的四个顶点。
+- 面积和与顶点集合这两个条件联合即可排除重叠与空洞。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n)，n 为矩形个数，每个矩形常数次操作。
+空间复杂度: O(n)，最坏情况下 `corners` 中可能暂存 O(n) 个不同顶点。
 """
 
 # ============================================================================
@@ -51,25 +53,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def perfect_rectangle(params):
+def perfect_rectangle(rectangles: List[List[int]]) -> bool:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> perfect_rectangle([待实现])
-        [待实现]
+    判断若干小矩形是否能精确覆盖成一个大矩形而无重叠/间隙。
+
+    核心检查：面积和等于外包矩形面积，且所有小矩形顶点经过异或后只剩外包矩形四个顶点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not rectangles:
+        return False
+
+    min_x = min(r[0] for r in rectangles)
+    min_y = min(r[1] for r in rectangles)
+    max_x = max(r[2] for r in rectangles)
+    max_y = max(r[3] for r in rectangles)
+
+    area_sum = 0
+    corners: set[tuple[int, int]] = set()
+
+    for x1, y1, x2, y2 in rectangles:
+        area_sum += (x2 - x1) * (y2 - y1)
+        for p in [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]:
+            if p in corners:
+                corners.remove(p)
+            else:
+                corners.add(p)
+
+    # 检查面积
+    if area_sum != (max_x - min_x) * (max_y - min_y):
+        return False
+
+    # 角点必须正好是外包矩形的四个角
+    expected = {
+        (min_x, min_y),
+        (min_x, max_y),
+        (max_x, min_y),
+        (max_x, max_y),
+    }
+    return corners == expected
 
 
 # 自动生成Solution类（无需手动编写）

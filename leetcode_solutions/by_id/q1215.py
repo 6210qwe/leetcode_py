@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个被举报的帖子的举报次数，并按要求格式化输出。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `GROUP BY` 和 `COUNT` 函数来统计每个被举报帖子的举报次数。
+2. 按照题目要求格式化输出结果。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `COUNT` 函数来统计每个被举报帖子的举报次数。
+- 确保输出格式符合题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `actions` 表中的行数。我们需要遍历所有行来统计举报次数。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(actions: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计每个被举报帖子的举报次数，并按要求格式化输出。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+
+    # 统计每个被举报帖子的举报次数
+    report_count = defaultdict(int)
+    for action in actions:
+        if action[1] == "report":
+            report_count[action[2]] += 1
+
+    # 按要求格式化输出结果
+    result = []
+    for post_id, count in sorted(report_count.items(), key=lambda x: (-x[1], x[0])):
+        result.append([post_id, str(count)])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

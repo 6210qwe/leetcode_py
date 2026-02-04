@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针方法来最大化放入仓库的箱子数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对箱子和仓库进行降序排序。
+2. 使用两个指针分别遍历箱子和仓库。
+3. 尽可能将当前最大的箱子放入当前最大的仓库位置。
+4. 如果当前箱子不能放入当前仓库位置，则尝试放入下一个仓库位置。
+5. 重复上述过程直到所有箱子或仓库都被处理完。
 
 关键点:
-- [TODO]
+- 通过降序排序确保每次尝试放入最大的箱子到最大的仓库位置。
+- 使用双指针方法来高效地处理箱子和仓库。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是箱子的数量，m 是仓库的位置数量。排序操作的时间复杂度为 O(n log n) 和 O(m log m)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_boxes_in_warehouse(boxes: List[int], warehouse: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 对箱子和仓库进行降序排序
+    boxes.sort(reverse=True)
+    warehouse.sort(reverse=True)
 
+    box_index = 0
+    warehouse_index = 0
+    count = 0
 
-Solution = create_solution(solution_function_name)
+    while box_index < len(boxes) and warehouse_index < len(warehouse):
+        if boxes[box_index] <= warehouse[warehouse_index]:
+            count += 1
+            box_index += 1
+            warehouse_index += 1
+        else:
+            box_index += 1
+
+    return count
+
+Solution = create_solution(max_boxes_in_warehouse)

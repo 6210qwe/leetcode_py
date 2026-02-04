@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最大堆来解决这个问题。首先按课程的结束时间进行排序，然后使用一个最大堆来记录当前已选课程的持续时间。每次选择一个课程时，如果当前时间加上该课程的持续时间不超过其结束时间，则将其加入堆中；否则，检查堆中的最大持续时间课程是否可以被替换以减少总时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按课程的结束时间进行排序。
+2. 初始化当前时间和一个最大堆。
+3. 遍历排序后的课程列表：
+   - 如果当前时间加上该课程的持续时间不超过其结束时间，则将该课程的持续时间加入堆中，并更新当前时间。
+   - 否则，检查堆中的最大持续时间课程是否可以被替换以减少总时间。
+4. 堆的大小即为最多可以修读的课程数目。
 
 关键点:
-- [TODO]
+- 使用最大堆来记录当前已选课程的持续时间，以便在必要时替换最长的课程。
+- 按课程的结束时间进行排序，确保尽早完成课程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是课程的数量。排序操作的时间复杂度为 O(n log n)，遍历和堆操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储最大堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def schedule_course(courses: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最多可以修读的课程数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 按课程的结束时间进行排序
+    courses.sort(key=lambda x: x[1])
+    
+    current_time = 0
+    max_heap = []
+    
+    for duration, last_day in courses:
+        if current_time + duration <= last_day:
+            # 如果当前时间加上该课程的持续时间不超过其结束时间，则将该课程的持续时间加入堆中
+            current_time += duration
+            heapq.heappush(max_heap, -duration)
+        elif max_heap and -max_heap[0] > duration:
+            # 否则，检查堆中的最大持续时间课程是否可以被替换以减少总时间
+            current_time += duration + heapq.heappop(max_heap)
+            heapq.heappush(max_heap, -duration)
+    
+    return len(max_heap)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(schedule_course)

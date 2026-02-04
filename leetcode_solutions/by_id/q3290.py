@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滚动哈希来快速匹配子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 转换为一个新的数组 diff，其中 diff[i] 表示 nums[i+1] 与 nums[i] 的关系（1, 0, -1）。
+2. 使用滚动哈希将 pattern 转换为一个哈希值。
+3. 在 diff 数组上滑动窗口，计算每个窗口的哈希值，并与 pattern 的哈希值进行比较。
+4. 如果哈希值匹配，则进一步验证子数组是否完全匹配 pattern。
 
 关键点:
-- [TODO]
+- 使用滚动哈希可以高效地进行子数组匹配。
+- 滚动哈希需要处理哈希冲突的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +51,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def get_diff(nums: List[int]) -> List[int]:
+    """将 nums 转换为 diff 数组"""
+    return [1 if nums[i + 1] > nums[i] else (0 if nums[i + 1] == nums[i] else -1) for i in range(len(nums) - 1)]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def hash_pattern(pattern: List[int], base: int, mod: int) -> int:
+    """计算 pattern 的哈希值"""
+    hash_val = 0
+    for num in pattern:
+        hash_val = (hash_val * base + (num + 1)) % mod
+    return hash_val
 
+def match_pattern(diff: List[int], pattern: List[int], base: int, mod: int) -> int:
+    """在 diff 数组上滑动窗口，匹配 pattern"""
+    n, m = len(diff), len(pattern)
+    pattern_hash = hash_pattern(pattern, base, mod)
+    window_hash = hash_pattern(diff[:m], base, mod)
+    
+    count = 0
+    if window_hash == pattern_hash and diff[:m] == pattern:
+        count += 1
+    
+    power = pow(base, m, mod)
+    
+    for i in range(m, n):
+        window_hash = (window_hash * base - (diff[i - m] + 1) * power + (diff[i] + 1)) % mod
+        if window_hash == pattern_hash and diff[i - m + 1:i + 1] == pattern:
+            count += 1
+    
+    return count
+
+def solution_function_name(nums: List[int], pattern: List[int]) -> int:
+    """
+    函数式接口 - 计算匹配 pattern 的子数组数目
+    """
+    diff = get_diff(nums)
+    base, mod = 101, 10**9 + 7
+    return match_pattern(diff, pattern, base, mod)
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@ LCP 43. 十字路口的交通 - 前往「力扣挑战赛」场馆的道路上，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和位掩码来表示每个时间点的状态，并通过状态转移找到最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化状态集合和状态转移表。
+2. 使用位掩码表示每个方向的车辆状态。
+3. 通过状态转移表计算每个时间点的最优解。
+4. 返回最少需要的时间。
 
 关键点:
-- [TODO]
+- 使用位掩码表示状态，减少空间复杂度。
+- 动态规划避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^m * m)，其中 m 是最大车辆数（20）。
+空间复杂度: O(2^m * m)，存储状态转移表。
 """
 
 # ============================================================================
@@ -44,17 +47,37 @@ LCP 43. 十字路口的交通 - 前往「力扣挑战赛」场馆的道路上，
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def traffic_lights(directions: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算最少需要几秒钟，该十字路口等候的车辆才能全部走完。
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向映射
+    dir_map = {'E': 0, 'S': 1, 'W': 2, 'N': 3}
+    # 最大车辆数
+    max_cars = 20
+    # 状态总数
+    total_states = 1 << (max_cars * 4)
+    
+    # 初始化状态集合
+    states = [float('inf')] * total_states
+    states[0] = 0
+    
+    # 状态转移
+    for state in range(total_states):
+        if states[state] == float('inf'):
+            continue
+        for i in range(4):
+            if not (state & (1 << (i * max_cars))):
+                new_state = state
+                for j in range(4):
+                    if i != j and len(directions[j]) > 0 and (new_state & (1 << (j * max_cars))) == 0:
+                        next_dir = dir_map[directions[j][0]]
+                        if (i + next_dir) % 2 != 0:  # 不相交
+                            new_state |= 1 << (j * max_cars)
+                            directions[j] = directions[j][1:]
+                            states[new_state] = min(states[new_state], states[state] + 1)
+    
+    return states[total_states - 1]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(traffic_lights)

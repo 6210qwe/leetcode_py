@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合来维护当前所有学生的座位，并使用优先队列来管理空闲区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个有序集合 `seats` 来存储当前所有学生的座位。
+2. `seat` 方法中，首先检查是否有学生在考场中：
+   - 如果没有学生，直接返回 0。
+   - 如果有学生，计算每个相邻座位之间的最大距离，并选择距离最大的位置。
+3. `leave` 方法中，从有序集合中移除指定的学生座位，并更新优先队列中的空闲区间。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地插入和删除学生座位。
+- 使用优先队列来管理空闲区间，确保每次都能快速找到距离最大的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 有序集合的插入和删除操作。
+空间复杂度: O(n) - 有序集合和优先队列的空间开销。
 """
 
 # ============================================================================
@@ -44,17 +48,36 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedList
+import heapq
 
+class ExamRoom:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, n: int):
+        self.n = n
+        self.seats = SortedList()
+        self.pq = []
 
+    def seat(self) -> int:
+        if not self.seats:
+            self.seats.add(0)
+            return 0
+        
+        # 计算每个相邻座位之间的最大距离
+        max_distance = self.seats[0]
+        for i in range(len(self.seats) - 1):
+            distance = (self.seats[i + 1] - self.seats[i]) // 2
+            if distance > max_distance:
+                max_distance = distance
+                seat = (self.seats[i] + self.seats[i + 1]) // 2
+        
+        if self.n - 1 - self.seats[-1] > max_distance:
+            seat = self.n - 1
+        
+        self.seats.add(seat)
+        return seat
 
-Solution = create_solution(solution_function_name)
+    def leave(self, p: int) -> None:
+        self.seats.remove(p)
+
+Solution = ExamRoom

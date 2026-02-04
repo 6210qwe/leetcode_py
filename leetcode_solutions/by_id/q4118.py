@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个队列分别存储乘客和司机，按到达顺序进行匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个队列，一个用于存储乘客，一个用于存储司机。
+2. 添加乘客时，将其ID加入乘客队列。
+3. 添加司机时，将其ID加入司机队列。
+4. 匹配时，从两个队列中各取出一个元素进行匹配，如果有一个队列为空，则返回[-1, -1]。
+5. 取消乘客时，从乘客队列中移除该乘客。
 
 关键点:
-- [TODO]
+- 使用队列来维护到达顺序。
+- 匹配时确保两个队列都不为空。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每个操作（添加、匹配、取消）的时间复杂度都是O(1)。
+空间复杂度: O(n) - 使用了两个队列来存储乘客和司机，最坏情况下空间复杂度为O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class RideSharingSystem:
+    def __init__(self):
+        self.riders = deque()
+        self.drivers = deque()
+
+    def addRider(self, riderId: int) -> None:
+        self.riders.append(riderId)
+
+    def addDriver(self, driverId: int) -> None:
+        self.drivers.append(driverId)
+
+    def matchDriverWithRider(self) -> List[int]:
+        if not self.riders or not self.drivers:
+            return [-1, -1]
+        rider_id = self.riders.popleft()
+        driver_id = self.drivers.popleft()
+        return [driver_id, rider_id]
+
+    def cancelRider(self, riderId: int) -> None:
+        try:
+            self.riders.remove(riderId)
+        except ValueError:
+            pass
 
 
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    ride_sharing_system = RideSharingSystem()
+    ride_sharing_system.addRider(3)
+    ride_sharing_system.addDriver(2)
+    ride_sharing_system.addRider(1)
+    print(ride_sharing_system.matchDriverWithRider())  # [2, 3]
+    ride_sharing_system.addDriver(5)
+    ride_sharing_system.cancelRider(3)
+    print(ride_sharing_system.matchDriverWithRider())  # [5, 1]
+    print(ride_sharing_system.matchDriverWithRider())  # [-1, -1]

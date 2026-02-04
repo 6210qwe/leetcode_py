@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序，按值从小到大处理每个元素。
+2. 使用一个字典 `dp` 来存储每个下标的最大跳跃步数。
+3. 对于每个下标 `i`，尝试向左和向右跳跃，更新 `dp[i]` 的值。
+4. 返回 `dp` 中的最大值。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算。
+- 通过排序确保每次处理的元素都是当前最小的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组长度。排序的时间复杂度是 O(n log n)，而后续的遍历和更新操作是 O(n)。
+空间复杂度: O(n)，用于存储 `dp` 字典和排序后的索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxJumps(arr: List[int], d: int) -> int:
+    def dfs(i: int) -> int:
+        if dp[i] != -1:
+            return dp[i]
+        
+        max_jumps = 1
+        for di in [-1, 1]:
+            for j in range(1, d + 1):
+                ni = i + di * j
+                if not (0 <= ni < n) or arr[ni] >= arr[i]:
+                    break
+                max_jumps = max(max_jumps, 1 + dfs(ni))
+        
+        dp[i] = max_jumps
+        return max_jumps
+    
+    n = len(arr)
+    dp = [-1] * n
+    indices = sorted(range(n), key=lambda i: arr[i])
+    
+    for i in indices:
+        dfs(i)
+    
+    return max(dp)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxJumps)

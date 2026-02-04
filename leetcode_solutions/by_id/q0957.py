@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来匹配括号，并计算需要添加的括号数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈和一个计数器。
+2. 遍历字符串 s：
+   - 如果遇到 '(', 将其压入栈中。
+   - 如果遇到 ')':
+     * 如果栈不为空，弹出栈顶元素（表示匹配成功）。
+     * 如果栈为空，增加计数器（表示需要添加一个 '(' 来匹配这个 ')'）。
+3. 最后，栈中剩余的 '(' 数量加上计数器的值即为需要添加的最少括号数。
 
 关键点:
-- [TODO]
+- 使用栈来匹配括号。
+- 计数器记录未匹配的 ')'。
+- 栈中剩余的 '(' 数量也需要添加相应的 ')'。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +56,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_add_to_make_valid(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使括号字符串有效的最少添加括号数
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    count = 0
+
+    for char in s:
+        if char == '(':
+            stack.append(char)
+        elif char == ')':
+            if stack:
+                stack.pop()
+            else:
+                count += 1
+
+    return len(stack) + count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_add_to_make_valid)

@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个 tokenId 及其过期时间，并在每次操作时检查和更新过期时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，设置 timeToLive 参数，并创建一个空的哈希表来存储 tokenId 及其过期时间。
+2. 在 generate 方法中，将 tokenId 和其过期时间（currentTime + timeToLive）存入哈希表。
+3. 在 renew 方法中，检查 tokenId 是否存在且未过期，如果存在且未过期，则更新其过期时间为 currentTime + timeToLive。
+4. 在 countUnexpiredTokens 方法中，遍历哈希表，统计未过期的 tokenId 数量。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储 tokenId 及其过期时间，以便快速查找和更新。
+- 在每次操作时，检查和更新过期时间，确保操作的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - generate 和 renew 方法的时间复杂度为 O(1)，countUnexpiredTokens 方法的时间复杂度为 O(n)。
+空间复杂度: O(n) - 使用哈希表存储 tokenId 及其过期时间，最坏情况下需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict
 
+class AuthenticationManager:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, timeToLive: int):
+        self.timeToLive = timeToLive
+        self.tokens: Dict[str, int] = {}
 
+    def generate(self, tokenId: str, currentTime: int) -> None:
+        self.tokens[tokenId] = currentTime + self.timeToLive
 
-Solution = create_solution(solution_function_name)
+    def renew(self, tokenId: str, currentTime: int) -> None:
+        if tokenId in self.tokens and self.tokens[tokenId] > currentTime:
+            self.tokens[tokenId] = currentTime + self.timeToLive
+
+    def countUnexpiredTokens(self, currentTime: int) -> int:
+        return sum(1 for expire_time in self.tokens.values() if expire_time > currentTime)
+
+Solution = create_solution(AuthenticationManager)

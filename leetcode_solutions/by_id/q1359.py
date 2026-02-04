@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用格雷码生成循环排列
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成长度为 2^n 的格雷码序列。
+2. 将格雷码序列中的每个元素与 start 进行异或操作，得到最终的排列。
 
 关键点:
-- [TODO]
+- 格雷码的生成方法：从 0 到 2^n-1 的所有整数，通过 i ^ (i >> 1) 生成。
+- 通过异或操作将格雷码序列转换为以 start 开头的序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)
+空间复杂度: O(2^n)
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, start: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成以 start 开头的循环码排列
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成格雷码序列
+    gray_code = [i ^ (i >> 1) for i in range(1 << n)]
+    
+    # 通过异或操作将格雷码序列转换为以 start 开头的序列
+    result = [num ^ start for num in gray_code]
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

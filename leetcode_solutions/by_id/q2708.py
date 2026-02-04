@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和并查集来构造字典序最小的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个并查集来管理字符的分组。
+2. 遍历 LCP 矩阵，根据 LCP 值将字符分组。
+3. 检查 LCP 矩阵的有效性，确保每个分组内的字符一致。
+4. 构造字典序最小的字符串，使用尽可能小的字符。
 
 关键点:
-- [TODO]
+- 使用并查集来管理字符的分组。
+- 确保 LCP 矩阵的有效性。
+- 构造字典序最小的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +52,53 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def findTheString(lcp: List[List[int]]) -> str:
+    n = len(lcp)
+    
+    # 并查集
+    parent = list(range(n))
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        rootX = find(x)
+        rootY = find(y)
+        if rootX != rootY:
+            parent[rootX] = rootY
+    
+    # 根据 LCP 矩阵进行分组
+    for i in range(n):
+        for j in range(n):
+            if lcp[i][j] > 0:
+                union(i, j)
+    
+    # 检查 LCP 矩阵的有效性
+    for i in range(n):
+        for j in range(n):
+            if lcp[i][j] > 0:
+                if find(i) != find(j):
+                    return ""
+                if lcp[i][j] > min(n - i, n - j):
+                    return ""
+            else:
+                if find(i) == find(j):
+                    return ""
+    
+    # 构造字典序最小的字符串
+    char_map = {}
+    next_char = 'a'
+    result = []
+    for i in range(n):
+        root = find(i)
+        if root not in char_map:
+            if next_char > 'z':
+                return ""
+            char_map[root] = next_char
+            next_char = chr(ord(next_char) + 1)
+        result.append(char_map[root])
+    
+    return "".join(result)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findTheString)

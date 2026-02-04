@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。首先对每个长方体的尺寸进行排序，确保长方体的尺寸从小到大排列。然后使用动态规划的方法，计算每个长方体作为顶部时的最大高度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对每个长方体的尺寸进行排序。
+2. 对所有长方体按尺寸从小到大排序。
+3. 使用动态规划计算每个长方体作为顶部时的最大高度。
+4. 返回最大高度。
 
 关键点:
-- [TODO]
+- 对每个长方体的尺寸进行排序，确保可以堆叠。
+- 使用动态规划来计算最大高度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是长方体的数量。排序操作的时间复杂度是 O(n log n)，动态规划部分的时间复杂度是 O(n^2)。
+空间复杂度: O(n)，用于存储动态规划的状态数组。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(cuboids: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算堆叠长方体的最大高度
     """
-    # TODO: 实现最优解法
-    pass
+    # 对每个长方体的尺寸进行排序
+    for cuboid in cuboids:
+        cuboid.sort()
+    
+    # 按长方体的尺寸从小到大排序
+    cuboids.sort()
+    
+    n = len(cuboids)
+    dp = [0] * n
+    
+    # 动态规划计算最大高度
+    for i in range(n):
+        dp[i] = cuboids[i][2]
+        for j in range(i):
+            if cuboids[j][0] <= cuboids[i][0] and cuboids[j][1] <= cuboids[i][1] and cuboids[j][2] <= cuboids[i][2]:
+                dp[i] = max(dp[i], dp[j] + cuboids[i][2])
+    
+    return max(dp)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来记录每个位置的累计移动结果，并使用哈希集合来存储所有可能的最终坐标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置的前缀和（即从起点 (0, 0) 到当前位置的累计移动结果）。
+2. 遍历字符串 s，对于每个可能的删除子字符串的位置，计算删除后的最终坐标，并将其加入哈希集合中。
+3. 返回哈希集合的大小，即不同最终坐标的数量。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子串的累计移动结果。
+- 使用哈希集合来存储不同的最终坐标，确保不会重复计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distinct_points_reachable(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算删除长度为 k 的子字符串后可到达的不同最终坐标的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    # 计算前缀和
+    prefix_sum = [(0, 0)]
+    for char in s:
+        x, y = prefix_sum[-1]
+        if char == 'U':
+            y += 1
+        elif char == 'D':
+            y -= 1
+        elif char == 'L':
+            x -= 1
+        elif char == 'R':
+            x += 1
+        prefix_sum.append((x, y))
+    
+    # 存储不同的最终坐标
+    unique_points = set()
+    
+    # 遍历字符串 s，计算删除每个长度为 k 的子字符串后的最终坐标
+    for i in range(n - k + 1):
+        # 计算删除子字符串后的最终坐标
+        final_x, final_y = prefix_sum[i][0] + (prefix_sum[n][0] - prefix_sum[i + k][0]), prefix_sum[i][1] + (prefix_sum[n][1] - prefix_sum[i + k][1])
+        unique_points.add((final_x, final_y))
+    
+    return len(unique_points)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_points_reachable)

@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来重构树，并计算每个子树的大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建初始树结构。
+2. 使用 DFS 重新构建树，找到每个节点最近的祖先节点。
+3. 再次使用 DFS 计算每个子树的大小。
 
 关键点:
-- [TODO]
+- 使用字典来存储每个节点的子节点。
+- 在 DFS 中更新每个节点的父节点。
+- 使用递归计算每个子树的大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_subtree_sizes_after_changes(parent: List[int], s: str) -> List[int]:
+    n = len(parent)
+    children = [[] for _ in range(n)]
+    new_parent = list(parent)
+    
+    # 构建初始树结构
+    for i in range(1, n):
+        children[parent[i]].append(i)
+    
+    # 使用 DFS 重新构建树
+    def dfs(node: int, ancestors: dict) -> None:
+        for child in children[node]:
+            if s[child] in ancestors:
+                new_parent[child] = ancestors[s[child]]
+            else:
+                ancestors[s[child]] = child
+            dfs(child, ancestors)
+            del ancestors[s[child]]
+    
+    dfs(0, {s[0]: 0})
+    
+    # 重新构建子节点列表
+    new_children = [[] for _ in range(n)]
+    for i in range(1, n):
+        new_children[new_parent[i]].append(i)
+    
+    # 计算每个子树的大小
+    def calculate_size(node: int) -> int:
+        size = 1
+        for child in new_children[node]:
+            size += calculate_size(child)
+        return size
+    
+    result = [calculate_size(i) for i in range(n)]
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_subtree_sizes_after_changes)

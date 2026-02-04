@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为单向链表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个全局变量 `prev` 用于记录上一个访问的节点。
+2. 定义一个全局变量 `head` 用于记录链表的头节点。
+3. 使用递归进行中序遍历：
+   - 递归遍历左子树。
+   - 修改当前节点的 `left` 指针为 `None`，并将 `prev` 的 `right` 指针指向当前节点。
+   - 更新 `prev` 为当前节点。
+   - 递归遍历右子树。
+4. 返回 `head` 作为链表的头节点。
 
 关键点:
-- [TODO]
+- 中序遍历保证了节点按从小到大的顺序访问。
+- 使用 `prev` 和 `head` 变量来构建和记录链表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉搜索树的节点数，因为每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是二叉搜索树的高度，这是由于递归调用栈的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+prev = None
+head = None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def convert_bst_to_linked_list(root: Optional[TreeNode]) -> Optional[TreeNode]:
+    global prev, head
+    
+    def inorder_traversal(node: Optional[TreeNode]):
+        nonlocal head
+        if not node:
+            return
+        
+        # 递归遍历左子树
+        inorder_traversal(node.left)
+        
+        # 修改当前节点的 left 指针为 None
+        node.left = None
+        
+        # 如果 prev 为空，说明当前节点是链表的头节点
+        if not prev:
+            head = node
+        else:
+            # 将 prev 的 right 指针指向当前节点
+            prev.right = node
+        
+        # 更新 prev 为当前节点
+        prev = node
+        
+        # 递归遍历右子树
+        inorder_traversal(node.right)
+    
+    inorder_traversal(root)
+    return head
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_bst_to_linked_list)

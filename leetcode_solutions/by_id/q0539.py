@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将所有时间转换为分钟数，并进行排序。然后计算相邻时间的差值，同时考虑跨天的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有时间转换为从一天开始算起的分钟数。
+2. 对转换后的分钟数进行排序。
+3. 计算相邻时间的差值，并记录最小差值。
+4. 考虑跨天的情况，即第一个时间和最后一个时间之间的差值。
 
 关键点:
-- [TODO]
+- 将时间转换为分钟数后进行排序，可以简化计算。
+- 考虑跨天的情况，确保找到真正的最小时间差。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 timePoints 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储转换后的分钟数数组。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_min_difference(time_points: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出给定时间列表中任意两个时间的最小时间差
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有时间转换为从一天开始算起的分钟数
+    minutes = [int(t[:2]) * 60 + int(t[3:]) for t in time_points]
+    
+    # 对转换后的分钟数进行排序
+    minutes.sort()
+    
+    # 初始化最小时间差
+    min_diff = float('inf')
+    
+    # 计算相邻时间的差值
+    for i in range(1, len(minutes)):
+        min_diff = min(min_diff, minutes[i] - minutes[i - 1])
+    
+    # 考虑跨天的情况
+    min_diff = min(min_diff, (minutes[0] + 1440) - minutes[-1])
+    
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_difference)

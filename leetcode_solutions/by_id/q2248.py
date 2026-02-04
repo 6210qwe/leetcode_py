@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，先对糖果价格进行降序排序，然后每次选择前两个价格最高的糖果购买，并免费获得下一个价格较低的糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对糖果价格数组进行降序排序。
+2. 初始化总开销为 0。
+3. 遍历排序后的糖果价格数组，每次取三个糖果，前两个糖果计入总开销，第三个糖果免费。
+4. 返回总开销。
 
 关键点:
-- [TODO]
+- 通过降序排序确保每次选择的两个糖果价格最高，从而使得免费获得的糖果价格最低。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是糖果数量。主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_cost(cost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算打折购买糖果的最小开销
     """
-    # TODO: 实现最优解法
-    pass
+    # 对糖果价格进行降序排序
+    cost.sort(reverse=True)
+    
+    total_cost = 0
+    for i in range(len(cost)):
+        if i % 3 < 2:  # 每三个糖果中，前两个计入总开销
+            total_cost += cost[i]
+    
+    return total_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来找到所有感染区域，并记录每个区域将要感染的未感染区域。选择威胁最大的区域进行隔离，并更新矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量，包括防火墙数量和标记矩阵。
+2. 使用 DFS 找到所有感染区域，并记录每个区域将要感染的未感染区域。
+3. 选择威胁最大的区域进行隔离，并更新矩阵。
+4. 重复上述步骤直到没有新的感染区域。
 
 关键点:
-- [TODO]
+- 使用 DFS 找到所有感染区域。
+- 记录每个区域将要感染的未感染区域。
+- 选择威胁最大的区域进行隔离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * (m + n))，其中 m 和 n 分别是矩阵的行数和列数。每次 DFS 的时间复杂度是 O(m * n)，最多进行 m * n 次 DFS。
+空间复杂度: O(m * n)，用于存储标记矩阵和其他辅助数据结构。
 """
 
 # ============================================================================
@@ -49,12 +53,61 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def contain_virus(is_infected: List[List[int]]) -> int:
+    def dfs(x: int, y: int, index: int):
+        if x < 0 or x >= m or y < 0 or y >= n or is_infected[x][y] != 1:
+            return
+        is_infected[x][y] = -index
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n:
+                if is_infected[nx][ny] == 0:
+                    threat[index].add((nx, ny))
+                    walls[index] += 1
+                elif is_infected[nx][ny] == 1:
+                    dfs(nx, ny, index)
+
+    m, n = len(is_infected), len(is_infected[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    result = 0
+
+    while True:
+        regions = []
+        threat = [set() for _ in range(m * n + 1)]
+        walls = [0 for _ in range(m * n + 1)]
+        index = 0
+
+        for i in range(m):
+            for j in range(n):
+                if is_infected[i][j] == 1:
+                    index += 1
+                    regions.append(index)
+                    dfs(i, j, index)
+
+        if not regions:
+            break
+
+        max_threat_index = max(regions, key=lambda x: len(threat[x]))
+        result += walls[max_threat_index]
+
+        for i in range(m):
+            for j in range(n):
+                if is_infected[i][j] < 0:
+                    if is_infected[i][j] == -max_threat_index:
+                        is_infected[i][j] = 2  # Mark as contained
+                    else:
+                        is_infected[i][j] = 1  # Reset to infected
+
+        for i in range(m):
+            for j in range(n):
+                if is_infected[i][j] == 0:
+                    for dx, dy in directions:
+                        nx, ny = i + dx, j + dy
+                        if 0 <= nx < m and 0 <= ny < n and is_infected[nx][ny] == 1:
+                            is_infected[i][j] = 1
+                            break
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(contain_virus)

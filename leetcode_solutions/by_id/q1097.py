@@ -21,40 +21,79 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储所有单词的逆序形式，然后在查询时从当前字符流的末尾开始匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构造 Trie 树，将每个单词的逆序形式插入到 Trie 中。
+2. 在每次查询时，从当前字符流的末尾开始，逐步向前匹配 Trie 树中的节点。
+3. 如果匹配到一个完整的单词，则返回 True；否则，继续匹配直到字符流的开头或匹配失败。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来高效地存储和查询单词的逆序形式。
+- 在查询时从字符流的末尾开始匹配，确保匹配到的是后缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是 words 的长度，n 是 words 中最长单词的长度。构建 Trie 树的时间复杂度为 O(m * n)，每次查询的时间复杂度为 O(n)。
+空间复杂度: O(m * n)，Trie 树的空间复杂度取决于所有单词的总长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
 
-Solution = create_solution(solution_function_name)
+class StreamChecker:
+    def __init__(self, words: List[str]):
+        self.trie_root = TrieNode()
+        self.stream = []
+        
+        # 将每个单词的逆序形式插入到 Trie 树中
+        for word in words:
+            node = self.trie_root
+            for char in reversed(word):
+                if char not in node.children:
+                    node.children[char] = TrieNode()
+                node = node.children[char]
+            node.is_end_of_word = True
+
+    def query(self, letter: str) -> bool:
+        self.stream.append(letter)
+        node = self.trie_root
+        
+        # 从字符流的末尾开始匹配
+        for char in reversed(self.stream):
+            if char not in node.children:
+                return False
+            node = node.children[char]
+            if node.is_end_of_word:
+                return True
+        return False
+
+
+# 测试用例
+if __name__ == "__main__":
+    stream_checker = StreamChecker(["cd", "f", "kl"])
+    print(stream_checker.query("a"))  # False
+    print(stream_checker.query("b"))  # False
+    print(stream_checker.query("c"))  # False
+    print(stream_checker.query("d"))  # True
+    print(stream_checker.query("e"))  # False
+    print(stream_checker.query("f"))  # True
+    print(stream_checker.query("g"))  # False
+    print(stream_checker.query("h"))  # False
+    print(stream_checker.query("i"))  # False
+    print(stream_checker.query("j"))  # False
+    print(stream_checker.query("k"))  # False
+    print(stream_checker.query("l"))  # True

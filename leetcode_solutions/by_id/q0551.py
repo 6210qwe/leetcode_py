@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历字符串来检查是否存在超过一次的缺勤和连续三次的迟到。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器：absent_count 用于记录缺勤次数，late_streak 用于记录连续迟到的天数。
+2. 遍历字符串：
+   - 如果当前字符是 'A'，增加 absent_count。
+   - 如果当前字符是 'L'，增加 late_streak。
+   - 如果当前字符不是 'L'，重置 late_streak。
+3. 在遍历过程中，如果 absent_count 超过 1 或 late_streak 达到 3，返回 False。
+4. 遍历结束后，如果没有违反条件，返回 True。
 
 关键点:
-- [TODO]
+- 一次遍历即可完成所有检查，时间复杂度为 O(n)。
+- 只使用常数空间，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_record(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查学生出勤记录是否满足出勤奖励条件
     """
-    # TODO: 实现最优解法
-    pass
+    absent_count = 0
+    late_streak = 0
+    
+    for char in s:
+        if char == 'A':
+            absent_count += 1
+            if absent_count > 1:
+                return False
+        if char == 'L':
+            late_streak += 1
+            if late_streak >= 3:
+                return False
+        else:
+            late_streak = 0
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_record)

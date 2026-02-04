@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每个账户的余额变化，并在最后计算每个账户的最终余额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `balances` 来存储每个账户的余额。
+2. 遍历每条交易记录，根据交易类型更新对应账户的余额。
+3. 返回每个账户的最终余额。
 
 关键点:
-- [TODO]
+- 使用字典来存储和更新余额，可以高效地进行查找和更新操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是交易记录的数量。我们需要遍历每条交易记录一次。
+空间复杂度: O(m)，其中 m 是账户的数量。我们需要存储每个账户的余额。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def account_balance(operations: List[List[str]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算账户余额
     """
-    # TODO: 实现最优解法
-    pass
+    balances = {}
+    
+    for operation in operations:
+        op_type, account, amount = operation
+        amount = int(amount)
+        
+        if account not in balances:
+            balances[account] = 0
+        
+        if op_type == "Deposit":
+            balances[account] += amount
+        elif op_type == "Withdraw":
+            balances[account] -= amount
+    
+    return balances.get("main", 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(account_balance)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的频率，然后找到最大频率，并计算所有具有最大频率的元素的总频率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的频率。
+2. 找到最大频率。
+3. 计算所有具有最大频率的元素的总频率。
 
 关键点:
-- [TODO]
+- 使用哈希表进行频率统计。
+- 一次遍历找到最大频率。
+- 再次遍历哈希表计算总频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。需要两次遍历数组。
+空间复杂度: O(n)，哈希表的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表统计每个元素的频率
+    frequency = {}
+    for num in nums:
+        if num in frequency:
+            frequency[num] += 1
+        else:
+            frequency[num] = 1
+    
+    # 找到最大频率
+    max_freq = max(frequency.values())
+    
+    # 计算所有具有最大频率的元素的总频率
+    total_max_freq = sum(freq for freq in frequency.values() if freq == max_freq)
+    
+    return total_max_freq
 
 
 Solution = create_solution(solution_function_name)

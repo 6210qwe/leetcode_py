@@ -21,40 +21,81 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来找到图中的连通分量，并计算每个连通分量的大小。然后通过组合数学计算无法互相到达的点对数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历所有边，将每条边的两个节点合并到同一个集合中。
+3. 计算每个连通分量的大小。
+4. 通过组合数学公式计算无法互相到达的点对数。
 
 关键点:
-- [TODO]
+- 并查集用于高效地管理和查询连通分量。
+- 使用组合数学公式计算点对数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。初始化并查集和遍历边的时间复杂度是 O(n + m)。
+空间复杂度: O(n)，并查集需要 O(n) 的空间来存储每个节点的父节点和秩。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.size = [1] * n
 
-def solution_function_name(params):
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+                self.size[root_x] += self.size[root_y]
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+                self.size[root_y] += self.size[root_x]
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+                self.size[root_x] += self.size[root_y]
+
+def count_unreachable_pairs(n: int, edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算无法互相到达的点对数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化并查集
+    uf = UnionFind(n)
+    
+    # 遍历所有边，将每条边的两个节点合并到同一个集合中
+    for u, v in edges:
+        uf.union(u, v)
+    
+    # 计算每个连通分量的大小
+    component_sizes = []
+    for i in range(n):
+        if uf.find(i) == i:
+            component_sizes.append(uf.size[i])
+    
+    # 通过组合数学公式计算无法互相到达的点对数
+    total_pairs = n * (n - 1) // 2
+    reachable_pairs = sum(size * (size - 1) // 2 for size in component_sizes)
+    unreachable_pairs = total_pairs - reachable_pairs
+    
+    return unreachable_pairs
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_unreachable_pairs)

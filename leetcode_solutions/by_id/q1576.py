@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 或广度优先搜索 (BFS) 从城市 0 开始遍历所有城市，并统计需要改变方向的路线数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图，同时记录每条边的方向。
+2. 从城市 0 开始进行 DFS 或 BFS 遍历。
+3. 在遍历过程中，如果当前边的方向是从子节点指向父节点，则需要改变方向，计数器加一。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用邻接表存储图和边的方向。
+- 从城市 0 开始遍历，确保所有城市都能到达城市 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是城市的数量。每个城市和每条边都只会被访问一次。
+空间复杂度: O(n)，存储邻接表和递归栈或队列的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minReorder(n: int, connections: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算需要改变方向的最小路线数
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表和边的方向
+    graph = {i: [] for i in range(n)}
+    for u, v in connections:
+        graph[u].append((v, 1))  # 1 表示原方向
+        graph[v].append((u, 0))  # 0 表示反方向
 
+    # 深度优先搜索
+    def dfs(node: int, parent: int) -> int:
+        changes = 0
+        for neighbor, direction in graph[node]:
+            if neighbor != parent:
+                changes += direction + dfs(neighbor, node)
+        return changes
 
-Solution = create_solution(solution_function_name)
+    return dfs(0, -1)
+
+Solution = create_solution(minReorder)

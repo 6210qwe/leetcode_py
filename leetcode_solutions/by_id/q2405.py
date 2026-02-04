@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先使用频率最高的字符，以减少按键次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的出现频率。
+2. 按照频率从高到低排序。
+3. 计算每个字符的按键次数，并累加总按键次数。
 
 关键点:
-- [TODO]
+- 使用哈希表统计字符频率。
+- 按频率排序后，分组计算按键次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)，其中 n 是字符串长度，k 是字符种类数。
+空间复杂度: O(k)，用于存储字符频率和排序后的字符列表。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_keypresses(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少按键次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的出现频率
+    char_count = {}
+    for char in s:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # 按频率从高到低排序
+    sorted_chars = sorted(char_count.items(), key=lambda x: x[1], reverse=True)
+    
+    # 计算每个字符的按键次数，并累加总按键次数
+    total_keypresses = 0
+    for i, (char, count) in enumerate(sorted_chars):
+        group = i // 9  # 每 9 个字符一组
+        total_keypresses += (group + 1) * count
+    
+    return total_keypresses
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_keypresses)

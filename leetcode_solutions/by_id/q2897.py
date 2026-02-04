@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树结构，计算每个节点的房屋数量，并使用记忆化搜索优化重复子问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算以当前节点为根的子树中的房屋数量。
+2. 在 `dfs` 函数中，如果当前节点为空，则返回 0。
+3. 如果当前节点的值已经计算过，则直接返回缓存的结果。
+4. 递归计算左子树和右子树的房屋数量。
+5. 更新当前节点的房屋数量，并将其存储在缓存中。
+6. 返回当前节点的房屋数量。
 
 关键点:
-- [TODO]
+- 使用字典 `memo` 来存储已经计算过的节点的房屋数量，避免重复计算。
+- 递归过程中，通过左右子树的房屋数量来更新当前节点的房屋数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，同时 `memo` 字典的空间复杂度也是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_houses(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算环形街道上的房屋数量。
+    
+    :param root: 树的根节点
+    :return: 房屋数量
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], memo: dict) -> int:
+        if not node:
+            return 0
+        if node in memo:
+            return memo[node]
+        
+        left_count = dfs(node.left, memo)
+        right_count = dfs(node.right, memo)
+        
+        total_count = 1 + left_count + right_count
+        memo[node] = total_count
+        return total_count
+    
+    memo = {}
+    return dfs(root, memo)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_houses)

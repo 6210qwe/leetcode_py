@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用层次遍历（广度优先搜索）来检查二叉树是否为完全二叉树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 开始层次遍历：
+   - 如果遇到空节点，标记为遇到了空节点。
+   - 如果在遇到空节点后又遇到非空节点，说明不是完全二叉树，返回 False。
+3. 如果遍历完整棵树都没有违反上述规则，返回 True。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 一旦遇到空节点，之后不能再遇到非空节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量，因为每个节点都会被访问一次。
+空间复杂度: O(n)，队列中最多会存储 n 个节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_complete_tree(root: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查二叉树是否为完全二叉树
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return True
+
+    queue = [root]
+    encountered_null = False
+
+    while queue:
+        node = queue.pop(0)
+        if not node:
+            encountered_null = True
+        else:
+            if encountered_null:
+                return False
+            queue.append(node.left)
+            queue.append(node.right)
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_complete_tree)

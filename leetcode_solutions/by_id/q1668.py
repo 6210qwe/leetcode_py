@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位掩码和哈希表来记录每个前缀的状态，并查找最长的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix`，用于存储每个状态第一次出现的位置。
+2. 初始化状态 `state` 为 0，并将初始状态 (0, -1) 存入哈希表。
+3. 遍历字符串 `s`，对于每个字符，更新状态 `state`。
+4. 检查当前状态是否已经在哈希表中出现过，如果是，则计算当前子字符串的长度。
+5. 检查与当前状态只有一个位不同的状态是否在哈希表中出现过，如果是，则计算当前子字符串的长度。
+6. 更新哈希表 `prefix`，记录当前状态的位置。
+7. 返回最长的超赞子字符串的长度。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示字符的奇偶性。
+- 使用哈希表来记录每个状态第一次出现的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为状态数最多为 1024）
 """
 
 # ============================================================================
@@ -49,12 +55,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出最长的超赞子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表，记录每个状态第一次出现的位置
+    prefix = {0: -1}
+    state = 0
+    max_length = 0
+    
+    for i, char in enumerate(s):
+        # 更新状态
+        state ^= 1 << int(char)
+        
+        # 如果当前状态已经出现过，计算子字符串长度
+        if state in prefix:
+            max_length = max(max_length, i - prefix[state])
+        else:
+            prefix[state] = i
+        
+        # 检查与当前状态只有一个位不同的状态
+        for j in range(10):
+            new_state = state ^ (1 << j)
+            if new_state in prefix:
+                max_length = max(max_length, i - prefix[new_state])
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

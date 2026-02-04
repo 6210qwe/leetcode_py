@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 模拟内存分配过程，直到某个内存条无法满足当前秒数的内存需求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化秒数 `i` 为 1。
+2. 进入循环，直到 `memory1` 和 `memory2` 都不足以分配 `i` 位内存：
+   - 如果 `memory1` 大于等于 `memory2`，则从 `memory1` 中减去 `i` 位内存。
+   - 否则，从 `memory2` 中减去 `i` 位内存。
+   - 将秒数 `i` 增加 1。
+3. 返回 `[i, memory1, memory2]`。
 
 关键点:
-- [TODO]
+- 通过比较 `memory1` 和 `memory2` 来决定哪个内存条分配当前秒数的内存。
+- 循环直到某个内存条无法满足当前秒数的内存需求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n))，其中 n 是初始内存的最大值。因为在最坏情况下，内存分配的时间复杂度接近于 sqrt(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(memory1: int, memory2: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    i = 1
+    while memory1 >= i or memory2 >= i:
+        if memory1 >= memory2:
+            memory1 -= i
+        else:
+            memory2 -= i
+        i += 1
+    return [i, memory1, memory2]
 
 
 Solution = create_solution(solution_function_name)

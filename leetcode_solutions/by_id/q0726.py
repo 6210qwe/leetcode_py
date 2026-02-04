@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理嵌套的括号，并使用哈希表来记录每种原子的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前层级的原子计数。
+2. 从右到左遍历字符串，解析原子和数量。
+3. 遇到右括号时，将当前计数压入栈中，并初始化一个新的计数。
+4. 遇到左括号时，弹出栈顶元素，并乘以括号外的倍数。
+5. 最终合并所有层级的计数，生成结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来处理嵌套的括号。
+- 从右到左遍历字符串，方便处理嵌套结构。
+- 使用哈希表记录每种原子的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,56 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_of_atoms(formula: str) -> str:
+    def parse():
+        nonlocal i
+        stack = [collections.Counter()]
+        num = ''
+        
+        while i >= 0:
+            char = formula[i]
+            
+            if char.isdigit():
+                num = char + num
+            elif char.islower():
+                i -= 1
+                continue
+            elif char == ')':
+                if num:
+                    multiplier = int(num)
+                    num = ''
+                else:
+                    multiplier = 1
+                counter = collections.Counter()
+                while True:
+                    top = stack.pop()
+                    for atom, count in top.items():
+                        counter[atom] += count * multiplier
+                    if stack and isinstance(stack[-1], int):
+                        multiplier *= stack.pop()
+                    else:
+                        break
+                stack.append(counter)
+            elif char == '(':
+                if num:
+                    stack.append(int(num))
+                    num = ''
+                else:
+                    stack.append(1)
+            else:
+                if num:
+                    stack[-1][char] += int(num)
+                    num = ''
+                else:
+                    stack[-1][char] += 1
+            
+            i -= 1
+        
+        return sum((collections.Counter({atom: count}) for count in stack), collections.Counter())
+
+    i = len(formula) - 1
+    result = parse()
+    return ''.join(f'{atom}{count if count > 1 else ""}' for atom, count in sorted(result.items()))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_of_atoms)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算起始点和目标点之间的曼哈顿距离来判断是否可以在给定时间内到达。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算起始点 (sx, sy) 和目标点 (fx, fy) 之间的曼哈顿距离。
+2. 如果曼哈顿距离小于等于 t，则可以到达目标点。
+3. 特殊情况处理：如果起始点和目标点相同且 t 为 1，则不能在 1 秒内到达。
 
 关键点:
-- [TODO]
+- 曼哈顿距离可以用来判断是否可以在 t 秒内到达目标点。
+- 考虑特殊情况，当起始点和目标点相同时，t 不能为 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_reachable_at_time(sx: int, sy: int, fx: int, fy: int, t: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以在给定时间内到达目标点
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算曼哈顿距离
+    distance = max(abs(fx - sx), abs(fy - sy))
+    
+    # 特殊情况处理
+    if distance == 0 and t == 1:
+        return False
+    
+    # 判断是否可以在 t 秒内到达
+    return distance <= t
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_reachable_at_time)

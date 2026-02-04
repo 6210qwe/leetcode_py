@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 逐行逐列检查每个格子是否满足给定条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每一行和每一列，检查每个格子是否满足条件。
+2. 如果某个格子不满足条件，则返回 False。
+3. 如果所有格子都满足条件，则返回 True。
 
 关键点:
-- [TODO]
+- 检查每个格子时，需要同时考虑其下方和右侧的格子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断矩阵是否满足条件
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    
+    for i in range(m):
+        for j in range(n):
+            # 检查下方格子是否存在且是否相等
+            if i < m - 1 and grid[i][j] != grid[i + 1][j]:
+                return False
+            # 检查右侧格子是否存在且是否不相等
+            if j < n - 1 and grid[i][j] == grid[i][j + 1]:
+                return False
+    
+    return True
 
 
 Solution = create_solution(solution_function_name)

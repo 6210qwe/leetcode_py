@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查一个数是否为阿姆斯特朗数，即该数的每个位上的数字的 k 次幂之和等于该数本身。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 获取数字的长度（位数）k。
+2. 计算每个位上的数字的 k 次幂之和。
+3. 比较计算结果与原数是否相等。
 
 关键点:
-- [TODO]
+- 使用数学方法获取数字的每一位，并计算其 k 次幂。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是数字的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_armstrong(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查一个数是否为阿姆斯特朗数。
+    
+    :param n: 输入的整数
+    :return: 是否为阿姆斯特朗数
     """
-    # TODO: 实现最优解法
-    pass
+    # 获取数字的长度
+    k = len(str(n))
+    # 初始化总和
+    total = 0
+    # 临时变量
+    temp = n
+    
+    while temp > 0:
+        digit = temp % 10
+        total += digit ** k
+        temp //= 10
+    
+    return total == n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_armstrong)

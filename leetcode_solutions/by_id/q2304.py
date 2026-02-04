@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将输入字符串解析为起始和结束的列和行，然后生成所有符合条件的单元格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 解析输入字符串，获取起始列 col1、起始行 row1、结束列 col2 和结束行 row2。
+2. 使用嵌套循环生成从 col1 到 col2 和从 row1 到 row2 的所有单元格。
+3. 返回生成的单元格列表。
 
 关键点:
-- [TODO]
+- 使用 ord 和 chr 函数来处理字母列号。
+- 使用嵌套循环生成所有符合条件的单元格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((c2 - c1 + 1) * (r2 - r1 + 1))
+空间复杂度: O((c2 - c1 + 1) * (r2 - r1 + 1))
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def cells_in_range(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成给定范围内的所有单元格
     """
-    # TODO: 实现最优解法
-    pass
+    # 解析输入字符串
+    col1, row1, _, col2, row2 = s[0], int(s[1]), s[2], s[3], int(s[4])
+    
+    # 生成所有符合条件的单元格
+    result = []
+    for col in range(ord(col1), ord(col2) + 1):
+        for row in range(row1, row2 + 1):
+            result.append(f"{chr(col)}{row}")
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(cells_in_range)

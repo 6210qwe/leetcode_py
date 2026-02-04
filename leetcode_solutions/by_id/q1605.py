@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最少的天数。通过二分查找在天数范围内找到最小的天数，使得在该天数内可以制作出 m 束花。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 1，right 为 bloomDay 中的最大值。
+2. 在 left <= right 的条件下进行二分查找：
+   - 计算中间值 mid。
+   - 检查在 mid 天内是否可以制作出 m 束花。
+   - 如果可以，则将 right 更新为 mid - 1。
+   - 如果不可以，则将 left 更新为 mid + 1。
+3. 最终返回 left，即为最少的天数。如果 left 超过了 bloomDay 中的最大值，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小天数范围。
+- 检查在给定天数内是否可以制作出 m 束花。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(bloomDay)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_make_bouquets(bloomDay: List[int], days: int, m: int, k: int) -> bool:
+    bouquets = 0
+    flowers = 0
+    for day in bloomDay:
+        if day <= days:
+            flowers += 1
+            if flowers == k:
+                bouquets += 1
+                flowers = 0
+        else:
+            flowers = 0
+        if bouquets >= m:
+            return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_days_to_make_m_bouquets(bloomDay: List[int], m: int, k: int) -> int:
+    if m * k > len(bloomDay):
+        return -1
+    
+    left, right = 1, max(bloomDay)
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if can_make_bouquets(bloomDay, mid, m, k):
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    return left if left <= max(bloomDay) else -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_days_to_make_m_bouquets)

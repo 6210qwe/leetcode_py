@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对数组进行排序，然后遍历数组，使用贪心算法尽可能地将连续的元素放入同一个子序列中，直到无法再添加新的元素为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化一个计数器 `count` 用于记录子序列的数量，并初始化一个变量 `current_min` 用于记录当前子序列的最小值。
+3. 遍历排序后的数组：
+   - 如果当前元素与 `current_min` 的差值大于 `k`，则开始一个新的子序列，并更新 `current_min` 为当前元素。
+   - 否则，继续将当前元素加入当前子序列。
+4. 返回 `count` 作为结果。
 
 关键点:
-- [TODO]
+- 通过排序确保每次选择的元素都是当前子序列中最小的。
+- 使用贪心算法尽可能地将连续的元素放入同一个子序列中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def partition_array(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 划分数组使最大差为 K
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    count = 1  # 记录子序列的数量
+    current_min = nums[0]  # 当前子序列的最小值
+    
+    for num in nums:
+        # 如果当前元素与 current_min 的差值大于 k，则开始一个新的子序列
+        if num - current_min > k:
+            count += 1
+            current_min = num  # 更新 current_min 为当前元素
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition_array)

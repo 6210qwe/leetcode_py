@@ -21,40 +21,79 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。我们使用一个三维数组 `dp` 来记录每种状态下的结果，其中 `dp[turns][mouse_pos][cat_pos]` 表示当前轮次为 `turns`，老鼠在 `mouse_pos` 位置，猫在 `cat_pos` 位置时的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp` 数组，并设置基础情况。
+2. 使用递归函数 `search` 来搜索所有可能的状态。
+3. 在递归函数中，根据当前轮次和玩家位置，判断是否达到终止条件。
+4. 如果没有达到终止条件，继续递归搜索下一轮次的状态。
+5. 根据递归结果更新 `dp` 数组。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过递归函数来模拟游戏过程。
+- 通过 `dp` 数组来记录每种状态下的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 * 2n)，其中 n 是图的节点数。因为每个状态 (turns, mouse_pos, cat_pos) 最多被计算一次，而 turns 的最大值为 2n。
+空间复杂度: O(n^3 * 2n)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def catMouseGame(graph: List[List[int]]) -> int:
+    n = len(graph)
+    DRAW, MOUSE, CAT = 0, 1, 2
+    dp = [[[None for _ in range(n)] for _ in range(n)] for _ in range(2 * n)]
+    
+    def search(turns, mouse_pos, cat_pos):
+        if turns == 2 * n:
+            return DRAW
+        if dp[turns][mouse_pos][cat_pos] is not None:
+            return dp[turns][mouse_pos][cat_pos]
+        
+        if mouse_pos == 0:
+            dp[turns][mouse_pos][cat_pos] = MOUSE
+            return MOUSE
+        if mouse_pos == cat_pos:
+            dp[turns][mouse_pos][cat_pos] = CAT
+            return CAT
+        
+        player = MOUSE if turns % 2 == 0 else CAT
+        default_result = DRAW
+        if player == MOUSE:
+            result = CAT
+            for next_pos in graph[mouse_pos]:
+                next_result = search(turns + 1, next_pos, cat_pos)
+                if next_result == MOUSE:
+                    result = MOUSE
+                    break
+                elif next_result == DRAW:
+                    default_result = DRAW
+        else:
+            result = MOUSE
+            for next_pos in graph[cat_pos]:
+                if next_pos == 0:
+                    continue
+                next_result = search(turns + 1, mouse_pos, next_pos)
+                if next_result == CAT:
+                    result = CAT
+                    break
+                elif next_result == DRAW:
+                    default_result = DRAW
+        
+        dp[turns][mouse_pos][cat_pos] = result if result != DRAW else default_result
+        return dp[turns][mouse_pos][cat_pos]
+    
+    return search(0, 1, 2)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(catMouseGame)

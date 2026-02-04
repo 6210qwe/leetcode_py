@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。首先将球员按年龄和分数排序，然后使用动态规划来计算最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将球员按年龄升序排序，如果年龄相同则按分数升序排序。
+2. 初始化一个动态规划数组 dp，dp[i] 表示以第 i 个球员为结尾的最大得分。
+3. 遍历每个球员，对于每个球员 j，遍历其之前的所有球员 i，如果球员 j 的分数大于等于球员 i 的分数，则更新 dp[j]。
+4. 最后返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 排序确保了年龄较小的球员在前面，这样可以避免矛盾。
+- 动态规划数组 dp 用于记录以每个球员为结尾的最大得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是球员的数量。排序的时间复杂度是 O(n log n)，动态规划的时间复杂度是 O(n^2)。
+空间复杂度: O(n)，需要一个长度为 n 的动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def best_team_score(scores: List[int], ages: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回所有可能的无矛盾球队中得分最高那支的分数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将球员按年龄升序排序，如果年龄相同则按分数升序排序
+    players = sorted(zip(ages, scores))
+    
+    n = len(players)
+    dp = [0] * n
+    
+    for i in range(n):
+        dp[i] = players[i][1]
+        for j in range(i):
+            if players[i][1] >= players[j][1]:
+                dp[i] = max(dp[i], dp[j] + players[i][1])
+    
+    return max(dp)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(best_team_score)

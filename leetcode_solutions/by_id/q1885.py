@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串，计算每个同质子字符串的长度，并利用公式计算其贡献值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `mod` 为 10^9 + 7，用于取模操作。
+2. 初始化变量 `count` 为 0，用于记录同质子字符串的总数。
+3. 初始化变量 `prev_char` 为 None，用于记录前一个字符。
+4. 初始化变量 `current_length` 为 0，用于记录当前同质子字符串的长度。
+5. 遍历字符串 `s`：
+   - 如果当前字符与 `prev_char` 相同，则增加 `current_length`。
+   - 否则，更新 `count`，并重置 `current_length` 和 `prev_char`。
+6. 最后更新 `count`，因为最后一个同质子字符串可能没有被处理。
+7. 返回 `count` 对 `mod` 取模的结果。
 
 关键点:
-- [TODO]
+- 使用公式 (n * (n + 1)) // 2 计算长度为 n 的同质子字符串的贡献值。
+- 通过一次遍历字符串，实现 O(n) 的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +57,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_homogenous_substrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计同质子字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    count = 0
+    prev_char = None
+    current_length = 0
+
+    for char in s:
+        if char == prev_char:
+            current_length += 1
+        else:
+            count += (current_length * (current_length + 1)) // 2
+            current_length = 1
+            prev_char = char
+
+    count += (current_length * (current_length + 1)) // 2
+
+    return count % mod
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_homogenous_substrings)

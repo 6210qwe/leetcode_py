@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 计算每对矩形的交集区域。
+- 对于每个交集区域，找到能够放入的最大正方形面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `get_intersection` 来计算两个矩形的交集区域。
+2. 遍历所有矩形对，计算它们的交集区域。
+3. 对于每个交集区域，计算能够放入的最大正方形面积。
+4. 返回所有交集区域中最大的正方形面积。
 
 关键点:
-- [TODO]
+- 交集区域的计算需要考虑矩形的边界。
+- 最大正方形的边长取决于交集区域的最小维度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 需要遍历所有矩形对。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_intersection(rect1, rect2):
+    """计算两个矩形的交集区域"""
+    x1 = max(rect1[0][0], rect2[0][0])
+    y1 = max(rect1[0][1], rect2[0][1])
+    x2 = min(rect1[1][0], rect2[1][0])
+    y2 = min(rect1[1][1], rect2[1][1])
+    if x1 < x2 and y1 < y2:
+        return (x1, y1), (x2, y2)
+    return None
 
-def solution_function_name(params):
+def solution_function_name(bottomLeft: List[List[int]], topRight: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 求交集区域内的最大正方形面积
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(bottomLeft)
+    max_area = 0
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            intersection = get_intersection((bottomLeft[i], topRight[i]), (bottomLeft[j], topRight[j]))
+            if intersection:
+                width = intersection[1][0] - intersection[0][0]
+                height = intersection[1][1] - intersection[0][1]
+                side = min(width, height)
+                max_area = max(max_area, side * side)
+    
+    return max_area
 
 Solution = create_solution(solution_function_name)

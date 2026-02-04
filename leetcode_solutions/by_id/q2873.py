@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托斯特尼筛法生成质数表，然后枚举所有可能的质数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用埃拉托斯特尼筛法生成从 2 到 n 的所有质数。
+2. 枚举所有可能的质数对 (x, y)，其中 x + y == n 且 x <= y。
+3. 将符合条件的质数对加入结果列表并返回。
 
 关键点:
-- [TODO]
+- 埃拉托斯特尼筛法可以在 O(n log log n) 时间复杂度内生成质数表。
+- 通过枚举 x 和查找 y 来减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_prime(n: int) -> bool:
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_prime_pairs(n: int) -> List[List[int]]:
+    primes = [i for i in range(2, n + 1) if is_prime(i)]
+    result = []
+    for x in primes:
+        y = n - x
+        if y < x:
+            break
+        if y in primes:
+            result.append([x, y])
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_prime_pairs)

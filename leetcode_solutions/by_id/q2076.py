@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字符串中的每个字符转换为其在字母表中的位置，然后将这些位置拼接成一个整数。接着，对该整数进行 k 次数位求和操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串 s 中的每个字符转换为其在字母表中的位置，并拼接成一个整数。
+2. 对该整数进行 k 次数位求和操作，每次操作将整数的每一位相加，直到 k 次操作完成。
 
 关键点:
-- [TODO]
+- 使用 ASCII 码来快速计算字符在字母表中的位置。
+- 通过循环进行 k 次数位求和操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k * log(num))，其中 n 是字符串 s 的长度，k 是转换次数，num 是拼接后的整数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_digits_after_convert(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现字符串转化后的各位数字之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串中的每个字符转换为其在字母表中的位置，并拼接成一个整数
+    num = int(''.join(str(ord(char) - ord('a') + 1) for char in s))
+    
+    # 进行 k 次数位求和操作
+    for _ in range(k):
+        num = sum(int(digit) for digit in str(num))
+    
+    return num
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_digits_after_convert)

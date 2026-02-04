@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法找到需要解锁的最小下标集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个数组 `sorted_nums`，它是 `nums` 的排序版本。
+2. 初始化两个指针 `i` 和 `j`，分别指向 `nums` 和 `sorted_nums` 的起始位置。
+3. 遍历 `nums`，如果 `nums[i]` 不等于 `sorted_nums[j]`，则将 `i` 添加到结果集中，并移动 `j` 指针。
+4. 如果 `nums[i]` 等于 `sorted_nums[j]`，则同时移动 `i` 和 `j` 指针。
+5. 返回结果集。
 
 关键点:
-- [TODO]
+- 通过比较 `nums` 和 `sorted_nums`，找到需要解锁的最小下标集合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `nums` 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(n)，用于存储排序后的数组和结果集。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_unlocked_indices(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到对数字排序的最小解锁下标
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    sorted_nums = sorted(nums)
+    i, j = 0, 0
+    unlocked_indices = []
+
+    while i < n and j < n:
+        if nums[i] != sorted_nums[j]:
+            unlocked_indices.append(i)
+            j += 1
+        else:
+            i += 1
+            j += 1
+
+    return unlocked_indices
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_unlocked_indices)

@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来判断是否可以通过交换使数组有序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中所有元素的质因数。
+2. 使用并查集将具有相同质因数的元素连接起来。
+3. 检查排序后的数组是否可以通过并查集中的连接关系实现。
 
 关键点:
-- [TODO]
+- 使用质因数分解和并查集来判断连通性。
+- 通过并查集检查排序后的数组是否可以由原数组通过交换得到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是数组长度，m 是数组中的最大值。
+空间复杂度: O(m)，用于存储质因数和并查集。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            self.parent[root_x] = root_y
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def gcd_sort(nums: List[int]) -> bool:
+    max_num = max(nums)
+    uf = UnionFind(max_num + 1)
+    
+    # 将具有相同质因数的元素连接起来
+    for num in nums:
+        for factor in range(2, int(math.sqrt(num)) + 1):
+            if num % factor == 0:
+                uf.union(num, factor)
+                uf.union(num, num // factor)
+    
+    # 检查排序后的数组是否可以通过并查集中的连接关系实现
+    sorted_nums = sorted(nums)
+    for i in range(len(nums)):
+        if uf.find(nums[i]) != uf.find(sorted_nums[i]):
+            return False
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(gcd_sort)

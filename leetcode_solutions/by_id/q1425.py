@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个国家的不同天气类型。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 子句按国家分组。
+2. 使用 COUNT 和 DISTINCT 函数统计每个国家的不同天气类型数量。
 
 关键点:
-- [TODO]
+- 使用 SQL 的聚合函数和 GROUP BY 子句来实现高效的统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是表中的行数。SQL 查询的时间复杂度通常与表的大小成线性关系。
+空间复杂度: O(1) - 除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +49,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT country,
+           COUNT(DISTINCT weather_type) AS num_distinct_weather_types
+    FROM Weather
+    GROUP BY country;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

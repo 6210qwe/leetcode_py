@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字符串的 split 方法将句子分割成单词列表，然后遍历每个单词，检查 searchWord 是否是当前单词的前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子按空格分割成单词列表。
+2. 遍历单词列表，检查 searchWord 是否是当前单词的前缀。
+3. 如果找到匹配的前缀，返回其在句子中的位置（从 1 开始计数）。
+4. 如果遍历完所有单词都没有找到匹配的前缀，返回 -1。
 
 关键点:
-- [TODO]
+- 使用字符串的 startswith 方法来检查前缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是句子的长度，m 是 searchWord 的长度。最坏情况下需要遍历整个句子。
+空间复杂度: O(n)，因为需要存储分割后的单词列表。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(sentence: str, searchWord: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查单词是否为句中其他单词的前缀
     """
-    # TODO: 实现最优解法
-    pass
+    # 将句子按空格分割成单词列表
+    words = sentence.split()
+    
+    # 遍历单词列表，检查 searchWord 是否是当前单词的前缀
+    for i, word in enumerate(words):
+        if word.startswith(searchWord):
+            return i + 1  # 返回匹配单词的位置（从 1 开始计数）
+    
+    # 如果没有找到匹配的前缀，返回 -1
+    return -1
 
 
 Solution = create_solution(solution_function_name)

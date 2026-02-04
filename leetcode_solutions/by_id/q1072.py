@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来解决这个问题。我们可以在遍历链表的同时维护一个单调递减栈，栈中存储的是节点的值和索引。当遇到一个比栈顶元素大的节点时，更新栈顶元素的答案，并将栈顶元素出栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果数组 `result` 和一个单调递减栈 `stack`。
+2. 遍历链表，对于每个节点：
+   - 如果栈不为空且当前节点的值大于栈顶元素的值，则更新栈顶元素的答案，并将栈顶元素出栈。
+   - 将当前节点的值和索引压入栈中。
+3. 遍历结束后，栈中剩余的元素都是没有找到下一个更大节点的节点，将它们的答案设为 0。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护节点的值和索引。
+- 在遍历链表时，通过比较当前节点的值和栈顶元素的值来更新答案。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下，栈中会存储所有的节点。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def next_larger_nodes(head: Optional[ListNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回链表中每个节点的下一个更大节点的值
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    stack = []
+    index = 0
+    
+    while head:
+        # 更新栈中所有小于当前节点值的节点的答案
+        while stack and stack[-1][1] < head.val:
+            _, idx = stack.pop()
+            result[idx] = head.val
+        
+        # 将当前节点的值和索引压入栈中
+        stack.append((head.val, index))
+        result.append(0)  # 初始化当前节点的答案为 0
+        head = head.next
+        index += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(next_larger_nodes)

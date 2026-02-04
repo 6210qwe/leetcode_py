@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 为了使数组中的所有元素按位 AND 运算结果为 x，我们需要确保每个元素都包含 x 的所有位。我们可以从 x 开始，逐步增加每个元素，同时确保它们的按位 AND 结果为 x。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化第一个元素为 x。
+2. 从第二个元素开始，逐步增加每个元素，确保每个元素都大于前一个元素，并且按位 AND 结果为 x。
+3. 计算最后一个元素的值。
 
 关键点:
-- [TODO]
+- 确保每个元素都包含 x 的所有位。
+- 逐步增加每个元素，确保它们的按位 AND 结果为 x。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化第一个元素为 x
+    current = x
+    
+    # 逐步增加每个元素
+    for i in range(1, n):
+        # 找到下一个大于当前元素且按位 AND 结果为 x 的元素
+        current += 1
+        while current & x != x:
+            current += 1
+    
+    return current
 
 
 Solution = create_solution(solution_function_name)

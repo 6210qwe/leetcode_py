@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）和状态压缩来找到满足条件的排列，并通过剪枝优化搜索过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个数字转换为字符串形式，以便于后续拼接。
+2. 使用DFS进行搜索，维护当前状态和当前余数。
+3. 在每一步中，选择一个未使用的数字，更新当前状态和余数，并递归继续搜索。
+4. 如果找到一个满足条件的排列，记录并返回结果。
+5. 通过剪枝优化搜索过程，避免不必要的计算。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示当前已使用的数字集合。
+- 通过余数来判断当前拼接的数是否满足条件。
+- 通过剪枝优化搜索过程，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n! * n)，其中n是nums的长度。最坏情况下需要遍历所有排列。
+空间复杂度: O(n)，递归调用栈的深度最多为n。
 """
 
 # ============================================================================
@@ -48,13 +53,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def smallest_divisible_permutation(nums: List[int], k: int) -> List[int]:
+    def dfs(index, path, used, remainder):
+        if index == len(nums):
+            if remainder == 0:
+                result.append(path[:])
+            return
+        for i in range(len(nums)):
+            if not used & (1 << i):
+                new_remainder = (remainder * 10 + nums[i]) % k
+                used |= 1 << i
+                path.append(nums[i])
+                dfs(index + 1, path, used, new_remainder)
+                path.pop()
+                used &= ~(1 << i)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    nums = [str(num) for num in nums]
+    result = []
+    dfs(0, [], 0, 0)
+    return min(result, default=[])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_divisible_permutation)

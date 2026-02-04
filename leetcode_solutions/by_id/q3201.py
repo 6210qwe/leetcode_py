@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举第一个和第二个小朋友的糖果数，计算第三个小朋友的糖果数是否在限制范围内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果计数器 `count` 为 0。
+2. 枚举第一个小朋友的糖果数 `a` 从 0 到 `min(n, limit)`。
+3. 对于每个 `a`，枚举第二个小朋友的糖果数 `b` 从 0 到 `min(n - a, limit)`。
+4. 计算第三个小朋友的糖果数 `c = n - a - b`，如果 `c` 在 0 到 `limit` 范围内，则增加计数器 `count`。
 
 关键点:
-- [TODO]
+- 通过枚举前两个小朋友的糖果数，可以确定第三个小朋友的糖果数。
+- 确保每个小朋友的糖果数不超过 `limit`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(min(n, limit)^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_candies(n: int, limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分配糖果
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for a in range(min(n, limit) + 1):
+        for b in range(min(n - a, limit) + 1):
+            c = n - a - b
+            if 0 <= c <= limit:
+                count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_candies)

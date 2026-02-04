@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逐位比较 a, b 和 c 的二进制表示，计算需要翻转的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化翻转次数为 0。
+2. 遍历 a, b 和 c 的每一位，从最低位到最高位。
+3. 对于每一位，如果 c 的该位为 1，则 a 和 b 中至少有一个位为 1 才能满足条件，否则需要翻转。
+4. 如果 c 的该位为 0，则 a 和 b 的该位都必须为 0，否则需要翻转。
+5. 返回总的翻转次数。
 
 关键点:
-- [TODO]
+- 使用位运算逐位比较 a, b 和 c。
+- 计算需要翻转的次数时，考虑 a 和 b 的每一位是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为整数的位数是固定的（最多 32 位）。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_flips_to_make_a_or_b_equal_to_c(a: int, b: int, c: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 a OR b == c 成立的最小翻转次数
     """
-    # TODO: 实现最优解法
-    pass
+    flips = 0
+    for i in range(32):
+        bit_a = (a >> i) & 1
+        bit_b = (b >> i) & 1
+        bit_c = (c >> i) & 1
+        if bit_c == 0:
+            # c 的该位为 0，a 和 b 的该位都必须为 0
+            flips += (bit_a + bit_b)
+        else:
+            # c 的该位为 1，a 和 b 中至少有一个位为 1
+            if bit_a == 0 and bit_b == 0:
+                flips += 1
+    return flips
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips_to_make_a_or_b_equal_to_c)

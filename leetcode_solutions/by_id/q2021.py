@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来存储字符，当栈顶元素与 part 的前缀匹配时，检查后续字符是否能形成完整的 part，如果可以则弹出这些字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s 的每个字符：
+   - 将字符压入栈中。
+   - 检查栈顶元素是否与 part 的第一个字符匹配，如果匹配则继续检查后续字符是否能形成完整的 part。
+   - 如果形成完整的 part，则将这些字符从栈中弹出。
+3. 最后将栈中的字符拼接成结果字符串并返回。
 
 关键点:
-- [TODO]
+- 使用栈来存储字符，并在匹配到 part 时弹出相应字符。
+- 通过不断检查栈顶元素和 part 的匹配情况，确保每次删除最左边的 part。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串 s 的长度，m 是 part 的长度。最坏情况下，每个字符都需要与 part 进行比较。
+空间复杂度: O(n)，使用栈来存储字符。
 """
 
 # ============================================================================
@@ -49,12 +54,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_substring(s: str, part: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除字符串 s 中所有出现的子字符串 part
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    part_len = len(part)
+    
+    for char in s:
+        stack.append(char)
+        if ''.join(stack[-part_len:]) == part:
+            del stack[-part_len:]
+    
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_substring)

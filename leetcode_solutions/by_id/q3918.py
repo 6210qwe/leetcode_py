@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算 n 的数字和与数字积，然后检查 n 是否能被这两个值的和整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为字符串，以便逐位处理。
+2. 初始化数字和 sum_digits 和数字积 product_digits。
+3. 遍历 n 的每一位，计算 sum_digits 和 product_digits。
+4. 检查 n 是否能被 sum_digits + product_digits 整除。
 
 关键点:
-- [TODO]
+- 使用字符串遍历来处理每一位数字。
+- 确保 product_digits 不为零，避免除以零的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是 n 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 n 是否可以被其数字和与数字积之和整除。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 n 转换为字符串
+    n_str = str(n)
+    
+    # 初始化数字和和数字积
+    sum_digits = 0
+    product_digits = 1
+    
+    # 遍历 n 的每一位
+    for digit in n_str:
+        digit = int(digit)
+        sum_digits += digit
+        if digit != 0:
+            product_digits *= digit
+    
+    # 检查 n 是否能被 sum_digits + product_digits 整除
+    return (sum_digits + product_digits) != 0 and n % (sum_digits + product_digits) == 0
 
 
 Solution = create_solution(solution_function_name)

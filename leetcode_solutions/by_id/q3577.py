@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历双向链表并将节点值存储到数组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空数组 `result`。
+2. 使用一个指针遍历双向链表，将每个节点的值添加到 `result` 中。
+3. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用指针遍历双向链表，确保所有节点都被访问到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是双向链表的长度。我们需要遍历整个链表一次。
+空间复杂度: O(n)，需要一个数组来存储双向链表的所有节点值。
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def convert_doubly_linked_list_to_array(head: Optional[ListNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    将双向链表转换为数组
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    current = head
+    while current:
+        result.append(current.val)
+        current = current.next
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_doubly_linked_list_to_array)

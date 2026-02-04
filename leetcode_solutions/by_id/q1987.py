@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个长度为3的子字符串是否包含不同字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为0。
+2. 遍历字符串 `s`，对于每个长度为3的子字符串，检查其是否包含不同字符。
+3. 如果包含不同字符，则计数器 `count` 加1。
+4. 返回计数器 `count`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，每次只检查当前子字符串的三个字符。
+- 通过集合来判断三个字符是否不同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_substrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串 s 中长度为 3 的好子字符串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for i in range(len(s) - 2):
+        if len(set(s[i:i+3])) == 3:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_substrings)

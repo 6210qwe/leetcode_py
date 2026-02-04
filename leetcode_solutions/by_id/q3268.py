@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调队列来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个动态规划数组 dp，其中 dp[i] 表示购买前 i 种水果所需的最少金币数。
+2. 使用一个单调队列来维护当前窗口内的最小值。
+3. 遍历每种水果，更新 dp 数组，并使用单调队列来优化计算。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为 dp[i] = min(dp[j]) + prices[i]，其中 j 在 [i-k, i-1] 范围内。
+- 单调队列用于在 O(1) 时间内找到 dp 数组中的最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(prices: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(prices)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [float('inf')] * n
+    dp[0] = prices[0]
+
+    # 单调队列
+    from collections import deque
+    q = deque()
+
+    for i in range(1, n):
+        # 维护单调队列
+        while q and dp[q[-1]] > dp[i-1]:
+            q.pop()
+        q.append(i-1)
+
+        # 移除不在窗口范围内的元素
+        if q[0] < i - k:
+            q.popleft()
+
+        # 更新 dp 数组
+        dp[i] = dp[q[0]] + prices[i]
+
+    return dp[-1]
 
 
 Solution = create_solution(solution_function_name)

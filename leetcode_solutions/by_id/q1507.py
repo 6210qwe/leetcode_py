@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来检查从起点到终点是否存在有效路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义方向数组 `directions` 来表示每个街道类型的连通方向。
+2. 使用递归 DFS 函数来遍历网格，标记已访问的单元格以避免重复访问。
+3. 从起点 (0, 0) 开始进行 DFS，如果能到达终点 (m-1, n-1)，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用方向数组来简化方向判断。
+- 递归 DFS 函数来遍历网格，并使用集合 `visited` 来记录已访问的单元格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
@@ -48,13 +50,33 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def has_valid_path(grid: List[List[int]]) -> bool:
+    if not grid or not grid[0]:
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    directions = {
+        1: [(0, -1), (0, 1)],
+        2: [(-1, 0), (1, 0)],
+        3: [(0, -1), (1, 0)],
+        4: [(0, 1), (1, 0)],
+        5: [(0, -1), (-1, 0)],
+        6: [(0, 1), (-1, 0)]
+    }
 
+    def dfs(x: int, y: int, visited: set) -> bool:
+        if (x, y) == (m - 1, n - 1):
+            return True
+        visited.add((x, y))
+        for dx, dy in directions[grid[x][y]]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and (nx, ny) not in visited:
+                for ddx, ddy in directions[grid[nx][ny]]:
+                    if (nx + ddx, ny + ddy) == (x, y):
+                        if dfs(nx, ny, visited):
+                            return True
+        return False
 
-Solution = create_solution(solution_function_name)
+    return dfs(0, 0, set())
+
+Solution = create_solution(has_valid_path)

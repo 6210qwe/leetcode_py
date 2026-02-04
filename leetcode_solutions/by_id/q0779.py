@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护当前块的最大值，确保每个块内的最大值不超过后续块的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈，用于存储当前块的最大值。
+2. 遍历数组，对于每个元素：
+   - 如果栈为空或当前元素大于等于栈顶元素，则将当前元素压入栈。
+   - 否则，找到栈中第一个大于当前元素的元素，并将其替换为当前元素。
+3. 最终栈的大小即为最多能分成的块数。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护块的最大值，确保每个块内的最大值不超过后续块的最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈的大小可能达到 n。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_chunks_to_sorted(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多能分成的块数
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for num in arr:
+        if not stack or num >= stack[-1]:
+            stack.append(num)
+        else:
+            max_val = stack.pop()
+            while stack and stack[-1] > num:
+                stack.pop()
+            stack.append(max_val)
+    return len(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_chunks_to_sorted)

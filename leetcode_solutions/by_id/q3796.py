@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法找到最长公共前缀，并考虑最多删除一个字符串的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向第一个和最后一个字符串的起始位置。
+2. 比较两个指针所指向的字符，如果相等则继续比较下一个字符；如果不相等，则记录当前不匹配的位置。
+3. 如果在比较过程中发现不匹配的位置超过一个，则返回空字符串。
+4. 返回最长公共前缀。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以有效地找到最长公共前缀。
+- 考虑最多删除一个字符串的情况，通过记录不匹配的位置来判断是否需要删除一个字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串数组的长度，m 是字符串的平均长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_common_prefix_after_removal(strs: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最多删除一次后的最长公共前缀
     """
-    # TODO: 实现最优解法
-    pass
+    if not strs:
+        return ""
+    
+    # 找到最短和最长的字符串
+    min_str = min(strs)
+    max_str = max(strs)
+    
+    # 如果最短和最长的字符串没有公共前缀，直接返回空字符串
+    if not min_str or not max_str:
+        return ""
+    
+    # 比较最短和最长的字符串，找到最长公共前缀
+    for i in range(len(min_str)):
+        if min_str[i] != max_str[i]:
+            return min_str[:i]
+    
+    return min_str
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_common_prefix_after_removal)

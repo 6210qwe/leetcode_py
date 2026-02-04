@@ -21,22 +21,25 @@ LCP 13. 寻宝 - 我们得到了一副藏宝图，藏宝图显示，在一个迷
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来计算从一个点到另一个点的最短路径。使用状态压缩来记录哪些机关已经被触发。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到所有的特殊点（起点 S、终点 T、机关 M 和石堆 O）的位置。
+2. 使用 BFS 计算从每一个特殊点到其他所有特殊点的最短路径，并存储在一个距离表中。
+3. 使用动态规划 (DP) 和状态压缩来找到从起点出发，触发所有机关并到达终点的最短路径。
 
 关键点:
-- [TODO]
+- 使用 BFS 计算最短路径。
+- 使用状态压缩来记录哪些机关已经被触发。
+- 动态规划来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((M + O + 1) * 2^M)，其中 M 是机关的数量，O 是石堆的数量。
+空间复杂度: O((M + O + 1) * 2^M)，用于存储距离表和 DP 数组。
 """
 
 # ============================================================================
@@ -44,17 +47,65 @@ LCP 13. 寻宝 - 我们得到了一副藏宝图，藏宝图显示，在一个迷
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
+import sys
 
+def bfs(maze: List[str], start: tuple, special_points: List[tuple]) -> List[int]:
+    n, m = len(maze), len(maze[0])
+    queue = deque([start])
+    visited = set([start])
+    dist = {point: -1 for point in special_points}
+    
+    if start in special_points:
+        dist[start] = 0
+    
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < n and 0 <= ny < m and maze[nx][ny] != '#' and (nx, ny) not in visited:
+                visited.add((nx, ny))
+                queue.append((nx, ny))
+                if (nx, ny) in special_points:
+                    dist[(nx, ny)] = dist[(x, y)] + 1
+    return [dist[point] for point in special_points]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(maze: List[str]) -> int:
+    n, m = len(maze), len(maze[0])
+    special_points = []
+    start, end = None, None
+    for i in range(n):
+        for j in range(m):
+            if maze[i][j] == 'S':
+                start = (i, j)
+            elif maze[i][j] == 'T':
+                end = (i, j)
+            elif maze[i][j] in ['M', 'O']:
+                special_points.append((i, j))
+    
+    if start is None or end is None:
+        return -1
+    
+    special_points = [start, end] + special_points
+    k = len(special_points)
+    dist = [[0] * k for _ in range(k)]
+    
+    for i in range(k):
+        distances = bfs(maze, special_points[i], special_points)
+        for j in range(k):
+            dist[i][j] = distances[j]
+    
+    dp = [[sys.maxsize] * k for _ in range(1 << k)]
+    dp[1 << 0][0] = 0
+    
+    for mask in range(1, 1 << k):
+        for i in range(k):
+            if mask & (1 << i):
+                for j in range(k):
+                    if not (mask & (1 << j)) and dist[i][j] != -1:
+                        dp[mask | (1 << j)][j] = min(dp[mask | (1 << j)][j], dp[mask][i] + dist[i][j])
+    
+    result = min(dp[(1 << k) - 1])
+    return result if result != sys.maxsize else -1
 
 Solution = create_solution(solution_function_name)

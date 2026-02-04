@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算计算每个下标的二进制表示中 1 的个数，并累加符合条件的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 res 为 0。
+2. 遍历数组 nums 的每个下标 i。
+3. 计算下标 i 的二进制表示中 1 的个数。
+4. 如果 1 的个数等于 k，则将 nums[i] 加到 res 上。
+5. 返回 res。
 
 关键点:
-- [TODO]
+- 使用 Brian Kernighan 算法高效计算二进制表示中 1 的个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log m)，其中 n 是数组长度，m 是数组的最大下标值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_values_at_indices_with_k_set_bits(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 K 置位下标对应元素的和
     """
-    # TODO: 实现最优解法
-    pass
+    def count_set_bits(n: int) -> int:
+        """使用 Brian Kernighan 算法计算二进制表示中 1 的个数"""
+        count = 0
+        while n:
+            n &= (n - 1)
+            count += 1
+        return count
+
+    res = 0
+    for i in range(len(nums)):
+        if count_set_bits(i) == k:
+            res += nums[i]
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_values_at_indices_with_k_set_bits)

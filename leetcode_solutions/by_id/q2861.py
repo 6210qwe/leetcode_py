@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典将 keys 和 values 中的元素一一对应起来，然后返回该字典。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 keys 和 values 的长度是否相等，如果不相等则返回空字典。
+2. 使用 zip 函数将 keys 和 values 对应起来，生成一个字典。
+3. 返回生成的字典。
 
 关键点:
-- [TODO]
+- 使用 zip 函数可以简洁地将两个列表合并成一个字典。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 keys 或 values 的长度。因为我们需要遍历整个列表来构建字典。
+空间复杂度: O(n)，因为我们需要存储生成的字典。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(keys: List[str], values: List[int]) -> dict:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从两个数组中创建对象
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查 keys 和 values 的长度是否相等
+    if len(keys) != len(values):
+        return {}
+
+    # 使用 zip 函数将 keys 和 values 对应起来，生成一个字典
+    result = dict(zip(keys, values))
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个长度为 k 的子字符串是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别表示当前窗口的起始和结束位置。
+2. 遍历字符串 s，检查每个长度为 k 的子字符串：
+   - 如果子字符串的所有字符都相同，并且前面和后面的字符（如果存在）都不同，则返回 True。
+3. 如果遍历完字符串仍未找到满足条件的子字符串，则返回 False。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地检查每个长度为 k 的子字符串。
+- 通过比较前后字符来确保子字符串满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查是否存在长度为 k 的特殊子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n < k:
+        return False
+
+    for i in range(n - k + 1):
+        # 检查子字符串是否所有字符都相同
+        if all(s[i] == s[i + j] for j in range(k)):
+            # 检查前面的字符（如果存在）
+            if i > 0 and s[i - 1] == s[i]:
+                continue
+            # 检查后面的字符（如果存在）
+            if i + k < n and s[i + k] == s[i]:
+                continue
+            return True
+
+    return False
 
 
 Solution = create_solution(solution_function_name)

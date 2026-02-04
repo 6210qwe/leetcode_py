@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库进行数据处理，通过 groupby 和 nunique 函数来计算每个 date_id 和 make_name 下的不同 lead_id 和 partner_id 的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并转换为 Pandas DataFrame。
+2. 使用 groupby 按 date_id 和 make_name 分组。
+3. 使用 nunique 计算每组中不同 lead_id 和 partner_id 的数量。
+4. 重置索引并返回结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行高效的数据处理。
+- 通过 groupby 和 nunique 函数简化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入数据的行数。Pandas 的 groupby 和 nunique 操作的时间复杂度接近线性。
+空间复杂度: O(n)，存储中间结果所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+from typing import List
 
-
-def solution_function_name(params):
+def daily_leads_and_partners(daily_sales: List[List[str]]) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    计算每个 date_id 和 make_name 下的不同 lead_id 和 partner_id 的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入数据转换为 Pandas DataFrame
+    df = pd.DataFrame(daily_sales, columns=["date_id", "make_name", "lead_id", "partner_id"])
+    
+    # 将 lead_id 和 partner_id 转换为整数类型
+    df["lead_id"] = df["lead_id"].astype(int)
+    df["partner_id"] = df["partner_id"].astype(int)
+    
+    # 按 date_id 和 make_name 分组，并计算不同 lead_id 和 partner_id 的数量
+    result = df.groupby(["date_id", "make_name"]).agg(
+        unique_leads=("lead_id", "nunique"),
+        unique_partners=("partner_id", "nunique")
+    ).reset_index()
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    daily_sales = [
+        ["2020-12-8", "toyota", "0", "1"],
+        ["2020-12-8", "toyota", "1", "0"],
+        ["2020-12-8", "toyota", "1", "2"],
+        ["2020-12-7", "toyota", "0", "2"],
+        ["2020-12-7", "toyota", "0", "1"],
+        ["2020-12-8", "honda", "1", "2"],
+        ["2020-12-8", "honda", "2", "1"],
+        ["2020-12-7", "honda", "0", "1"],
+        ["2020-12-7", "honda", "1", "2"],
+        ["2020-12-7", "honda", "2", "1"]
+    ]
+    
+    result = daily_leads_and_partners(daily_sales)
+    print(result)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来模拟多米诺骨牌的推倒过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在字符串两端添加虚拟的 'L' 和 'R'，以处理边界情况。
+2. 使用双指针遍历字符串，找到连续的 'L' 和 'R' 之间的区间。
+3. 根据区间的两端字符，决定中间的 '.' 的方向。
+4. 更新字符串并返回最终结果。
 
 关键点:
-- [TODO]
+- 使用双指针可以有效地处理区间内的多米诺骨牌。
+- 虚拟的 'L' 和 'R' 可以简化边界处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def push_dominoes(dominoes: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 推多米诺骨牌
     """
-    # TODO: 实现最优解法
-    pass
+    # 在字符串两端添加虚拟的 'L' 和 'R'
+    dominoes = 'L' + dominoes + 'R'
+    n = len(dominoes)
+    result = list(dominoes)
+    
+    i = 0
+    for j in range(1, n):
+        if dominoes[j] == '.':
+            continue
+        if i > 0:  # 跳过开头的 'L'
+            left, right = dominoes[i], dominoes[j]
+            if left == right:
+                result[i+1:j] = [left] * (j - i - 1)
+            elif left == 'R' and right == 'L':
+                k = (j - i - 1) // 2
+                result[i+1:i+1+k] = ['R'] * k
+                result[j-k:j] = ['L'] * k
+                if (j - i - 1) % 2 == 1:
+                    result[i+1+k] = '.'
+        i = j
+    
+    return ''.join(result[1:-1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(push_dominoes)

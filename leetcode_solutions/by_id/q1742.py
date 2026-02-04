@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对点按 x 坐标进行排序，然后遍历排序后的点，计算相邻点之间的 x 坐标差值，找到最大的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按 x 坐标对点进行排序。
+2. 遍历排序后的点，计算相邻点之间的 x 坐标差值。
+3. 找到最大的 x 坐标差值，即为最宽垂直区域的宽度。
 
 关键点:
-- [TODO]
+- 排序后只需比较相邻点的 x 坐标差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def widest_vertical_area(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两点之间不包含任何点的最宽垂直区域的宽度
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 x 坐标对点进行排序
+    points.sort(key=lambda p: p[0])
+    
+    # 初始化最大宽度
+    max_width = 0
+    
+    # 遍历排序后的点，计算相邻点之间的 x 坐标差值
+    for i in range(1, len(points)):
+        width = points[i][0] - points[i - 1][0]
+        max_width = max(max_width, width)
+    
+    return max_width
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(widest_vertical_area)

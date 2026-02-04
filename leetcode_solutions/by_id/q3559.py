@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示形成 target[:i] 所需的最少字符串数量。对于每个位置 i，我们尝试使用 words 中的每个字符串作为前缀，并更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0，其他位置初始化为无穷大。
+2. 遍历 target 的每个字符，对于每个字符，遍历 words 中的每个字符串，检查其是否是当前子字符串的前缀。
+3. 更新 dp 数组，如果可以使用某个字符串作为前缀，则更新 dp[i + len(word)]。
+4. 最后，返回 dp[len(target)]，如果其值为无穷大，说明无法形成 target，返回 -1。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录形成 target 每个前缀所需的最少字符串数量。
+- 遍历 words 中的每个字符串，检查其是否是当前子字符串的前缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * k)，其中 n 是 target 的长度，m 是 words 的长度，k 是 words 中最长字符串的长度。
+空间复杂度: O(n)，其中 n 是 target 的长度。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_valid_strings_to_form_target(words: List[str], target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算形成目标字符串所需的最少字符串数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(target)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+
+    for i in range(n):
+        for word in words:
+            if target[i:i+len(word)] == word:
+                dp[i + len(word)] = min(dp[i + len(word)], dp[i] + 1)
+
+    return dp[n] if dp[n] != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_valid_strings_to_form_target)

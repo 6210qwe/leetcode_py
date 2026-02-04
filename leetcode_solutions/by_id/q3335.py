@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个单元格属于 Y 和不属于 Y 的情况下的操作次数，选择最小的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个计数器，分别记录 Y 的单元格中 0、1、2 的数量。
+2. 遍历矩阵，根据单元格是否属于 Y 更新计数器。
+3. 计算每种情况下的操作次数，选择最小的操作次数。
 
 关键点:
-- [TODO]
+- 判断单元格是否属于 Y 的方法是通过其坐标。
+- 通过计数器统计 Y 和非 Y 单元格的值，计算操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations_to_write_y(grid: List[List[int]]) -> int:
+    n = len(grid)
+    center = n // 2
+    y_counts = [0, 0, 0]
+    non_y_counts = [0, 0, 0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        for j in range(n):
+            if (i == j and i <= center) or (i + j == n - 1 and i < center) or (i > center and j == center):
+                y_counts[grid[i][j]] += 1
+            else:
+                non_y_counts[grid[i][j]] += 1
 
+    total_y = sum(y_counts)
+    total_non_y = sum(non_y_counts)
 
-Solution = create_solution(solution_function_name)
+    min_ops = float('inf')
+    for y_val in range(3):
+        for non_y_val in range(3):
+            if y_val != non_y_val:
+                ops = (total_y - y_counts[y_val]) + (total_non_y - non_y_counts[non_y_val])
+                min_ops = min(min_ops, ops)
+
+    return min_ops
+
+Solution = create_solution(min_operations_to_write_y)

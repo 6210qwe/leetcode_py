@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三个列表分别存储小于、等于和大于 pivot 的元素，最后将这三个列表合并。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个空列表：less_than_pivot, equal_to_pivot, greater_than_pivot。
+2. 遍历输入数组 nums，根据元素与 pivot 的比较结果，将其分别添加到相应的列表中。
+3. 最后将这三个列表按顺序合并成一个结果数组并返回。
 
 关键点:
-- [TODO]
+- 保持小于和大于 pivot 的元素的相对顺序不变。
+- 使用三个列表来分别存储不同范围的元素，最后合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。我们只需要遍历一次数组。
+空间复杂度: O(n)，我们需要额外的空间来存储三个列表。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def partition_array(nums: List[int], pivot: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据给定的 pivot 对数组进行划分
     """
-    # TODO: 实现最优解法
-    pass
+    less_than_pivot = []
+    equal_to_pivot = []
+    greater_than_pivot = []
+
+    for num in nums:
+        if num < pivot:
+            less_than_pivot.append(num)
+        elif num == pivot:
+            equal_to_pivot.append(num)
+        else:
+            greater_than_pivot.append(num)
+
+    return less_than_pivot + equal_to_pivot + greater_than_pivot
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition_array)

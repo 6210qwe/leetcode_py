@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来维护当前子数组的正数和负数长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `pos` 和 `neg`，分别表示以当前元素结尾的乘积为正数和负数的最长子数组长度。
+2. 遍历数组，根据当前元素的正负性更新 `pos` 和 `neg`。
+3. 如果当前元素为正数，则 `pos` 增加 1，如果 `neg` 不为 0，则 `neg` 也增加 1。
+4. 如果当前元素为负数，则交换 `pos` 和 `neg` 的值，并将 `neg` 增加 1。
+5. 如果当前元素为 0，则重置 `pos` 和 `neg` 为 0。
+6. 在每次更新后，记录最大 `pos` 值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程取决于当前元素的正负性。
+- 通过维护 `pos` 和 `neg` 来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回乘积为正数的最长子数组长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    max_len = 0
+    pos = 0
+    neg = 0
+
+    for num in nums:
+        if num > 0:
+            pos += 1
+            if neg > 0:
+                neg += 1
+        elif num < 0:
+            pos, neg = neg + 1 if neg > 0 else 0, pos + 1
+        else:
+            pos = 0
+            neg = 0
+        max_len = max(max_len, pos)
+
+    return max_len
 
 
 Solution = create_solution(solution_function_name)

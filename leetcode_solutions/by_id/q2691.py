@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算区间内的元音字符串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 `words` 数组，生成一个前缀和数组 `prefix_sum`，其中 `prefix_sum[i]` 表示从 `words[0]` 到 `words[i-1]` 中以元音开头和结尾的字符串数量。
+2. 对于每个查询 `[li, ri]`，使用前缀和数组快速计算区间 `[li, ri]` 内的元音字符串数量。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以将每次查询的时间复杂度从 O(n) 降低到 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `words` 的长度，m 是 `queries` 的长度。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_vowel_string(word: str) -> bool:
+    vowels = {'a', 'e', 'i', 'o', 'u'}
+    return word[0] in vowels and word[-1] in vowels
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def vowel_strings_in_ranges(words: List[str], queries: List[List[int]]) -> List[int]:
+    n = len(words)
+    prefix_sum = [0] * (n + 1)
+    
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + (1 if is_vowel_string(words[i]) else 0)
+    
+    result = []
+    for li, ri in queries:
+        result.append(prefix_sum[ri + 1] - prefix_sum[li])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(vowel_strings_in_ranges)

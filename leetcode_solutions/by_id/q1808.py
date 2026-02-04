@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 表示在区间 [i, j] 内，当前玩家与对手的最大得分差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示在区间 [i, j] 内，当前玩家与对手的最大得分差值。
+2. 计算前缀和数组 prefix_sum，prefix_sum[i] 表示从 stones[0] 到 stones[i-1] 的和。
+3. 从后往前遍历区间长度，更新 dp 数组。
+4. 返回 dp[0][n-1]，即整个区间的最大得分差值。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算区间和。
+- 动态规划的状态转移方程为：
+  dp[i][j] = max(prefix_sum[j+1] - prefix_sum[i+1] - dp[i+1][j], prefix_sum[j] - prefix_sum[i] - dp[i][j-1])
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 stones 的长度。需要遍历所有可能的区间。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def stoneGameVII(stones: List[int]) -> int:
+    n = len(stones)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + stones[i]
+    
+    dp = [[0] * n for _ in range(n)]
+    
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = max(
+                prefix_sum[j + 1] - prefix_sum[i + 1] - dp[i + 1][j],
+                prefix_sum[j] - prefix_sum[i] - dp[i][j - 1]
+            )
+    
+    return dp[0][n - 1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stoneGameVII)

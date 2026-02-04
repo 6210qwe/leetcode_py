@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和枚举来找到所有可能的分组方法。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 枚举每一种可能的分组方法，检查是否满足所有学生保持开心的条件。
+3. 计算并返回满足条件的分组方法数。
 
 关键点:
-- [TODO]
+- 排序后的数组可以方便地枚举每一种可能的分组方法。
+- 通过比较当前分组的人数和 `nums` 中的值来判断是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，后续的遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_happy_students(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算让所有学生保持开心的分组方法数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    n = len(nums)
+    count = 0
+    
+    # 检查不选择任何学生的情况
+    if all(num > 0 for num in nums):
+        count += 1
+    
+    # 检查选择所有学生的情况
+    if all(num < n for num in nums):
+        count += 1
+    
+    # 枚举每一种可能的分组方法
+    for k in range(1, n):
+        if nums[k - 1] < k and nums[k] > k:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_happy_students)

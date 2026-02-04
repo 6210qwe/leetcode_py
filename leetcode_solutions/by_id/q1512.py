@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用两个字典来分别存储每个乘客的进站信息和每条路线的总时间和旅行次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典：`check_ins` 用于存储每个乘客的进站信息（包括进站名称和时间），`route_times` 用于存储每条路线的总时间和旅行次数。
+2. `checkIn` 方法：将乘客的进站信息存储在 `check_ins` 字典中。
+3. `checkOut` 方法：计算乘客的旅行时间，并更新 `route_times` 字典中的总时间和旅行次数。
+4. `getAverageTime` 方法：根据 `route_times` 字典中的总时间和旅行次数计算平均时间。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储和更新乘客的进站信息和路线的总时间和旅行次数，以实现高效的查询和更新操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+- `checkIn`、`checkOut` 和 `getAverageTime` 方法的时间复杂度均为 O(1)，因为它们只涉及字典的插入、更新和查询操作。
+
+空间复杂度: O(P + R)
+- `P` 是乘客数量，`R` 是不同的路线数量。`check_ins` 字典的空间复杂度为 O(P)，`route_times` 字典的空间复杂度为 O(R)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Tuple
+
+class UndergroundSystem:
+    def __init__(self):
+        self.check_ins: Dict[int, Tuple[str, int]] = {}
+        self.route_times: Dict[Tuple[str, str], Tuple[int, int]] = {}
+
+    def checkIn(self, id: int, stationName: str, t: int) -> None:
+        self.check_ins[id] = (stationName, t)
+
+    def checkOut(self, id: int, stationName: str, t: int) -> None:
+        start_station, start_time = self.check_ins.pop(id)
+        route = (start_station, stationName)
+        if route not in self.route_times:
+            self.route_times[route] = (0, 0)
+        total_time, count = self.route_times[route]
+        self.route_times[route] = (total_time + t - start_time, count + 1)
+
+    def getAverageTime(self, startStation: str, endStation: str) -> float:
+        total_time, count = self.route_times[(startStation, endStation)]
+        return total_time / count
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(UndergroundSystem)

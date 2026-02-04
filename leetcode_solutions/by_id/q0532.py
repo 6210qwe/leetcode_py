@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字出现的次数，然后遍历哈希表来找到符合条件的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表记录每个数字出现的次数。
+2. 遍历哈希表，对于每个数字 num：
+   - 如果 k > 0，则检查 num + k 是否在哈希表中，如果存在则计数加一。
+   - 如果 k == 0，则检查 num 出现的次数是否大于 1，如果存在则计数加一。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内检查某个数字是否存在。
+- 对于 k == 0 的情况，需要额外处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。遍历数组和哈希表的时间复杂度都是 O(n)。
+空间复杂度: O(n)，哈希表的空间复杂度是 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_pairs(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中不同的 k-diff 数对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if k < 0:
+        return 0
+    
+    # 使用哈希表记录每个数字出现的次数
+    num_count = {}
+    for num in nums:
+        if num in num_count:
+            num_count[num] += 1
+        else:
+            num_count[num] = 1
+    
+    count = 0
+    for num in num_count:
+        if k > 0 and num + k in num_count:
+            count += 1
+        elif k == 0 and num_count[num] > 1:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_pairs)

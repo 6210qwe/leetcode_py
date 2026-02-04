@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算生成所有子集
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `subsets` 用于存储所有子集。
+2. 遍历从 0 到 2^n - 1 的所有整数，其中 n 是输入数组的长度。
+3. 对于每个整数，使用位运算检查每一位是否为 1，如果是，则将对应的元素加入当前子集。
+4. 将当前子集加入 `subsets` 列表。
 
 关键点:
-- [TODO]
+- 使用位运算可以高效地生成所有子集
+- 时间复杂度和空间复杂度都达到最优
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n)，其中 n 是输入数组的长度。生成所有子集需要 2^n 次操作，每次操作需要 O(n) 的时间来构建子集。
+空间复杂度: O(2^n * n)，存储所有子集需要的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def power_set(nums: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回某集合的所有子集
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    subsets = []
+    
+    for i in range(2 ** n):
+        subset = []
+        for j in range(n):
+            if (i >> j) & 1:
+                subset.append(nums[j])
+        subsets.append(subset)
+    
+    return subsets
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(power_set)

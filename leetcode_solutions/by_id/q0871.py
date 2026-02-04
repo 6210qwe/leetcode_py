@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历所有房间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个访问标记数组 `visited`，用于记录每个房间是否被访问过。
+2. 从 0 号房间开始进行 DFS。
+3. 在 DFS 过程中，标记当前房间为已访问，并递归地访问所有可以通过当前房间钥匙打开的房间。
+4. 如果所有房间都被访问过，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 DFS 来遍历所有房间。
+- 通过访问标记数组来避免重复访问同一个房间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是房间的数量，m 是所有钥匙的总数。
+空间复杂度: O(n)，用于存储访问标记数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def canVisitAllRooms(rooms: List[List[int]]) -> bool:
+    def dfs(room: int):
+        if visited[room]:
+            return
+        visited[room] = True
+        for key in rooms[room]:
+            dfs(key)
+    
+    n = len(rooms)
+    visited = [False] * n
+    dfs(0)
+    return all(visited)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(canVisitAllRooms)

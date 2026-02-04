@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，并在遇到奇数层时反转节点值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 使用一个变量 `level` 来记录当前层数，从 0 开始。
+3. 当队列不为空时，进行以下操作：
+   - 获取当前层的所有节点。
+   - 如果当前层是奇数层，反转这些节点的值。
+   - 将下一层的所有节点加入队列。
+   - 更新 `level`。
+4. 返回根节点。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 在奇数层时反转节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(n)，队列中最多会存储一层的节点，最坏情况下是完全二叉树的最后一层。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def reverse_odd_levels(root: Optional[TreeNode]) -> Optional[TreeNode]:
+    if not root:
+        return None
+
+    queue = [root]
+    level = 0
+
+    while queue:
+        next_level = []
+        for node in queue:
+            if node.left:
+                next_level.append(node.left)
+            if node.right:
+                next_level.append(node.right)
+
+        if level % 2 == 1:
+            # 反转当前层的节点值
+            values = [node.val for node in queue]
+            for node in queue:
+                node.val = values.pop()
+
+        queue = next_level
+        level += 1
+
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reverse_odd_levels)

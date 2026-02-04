@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储已经计算过的函数结果，以便在后续调用中直接返回缓存的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个哈希表 `cache` 来存储输入参数及其对应的函数结果。
+2. 在每次调用记忆化函数时，首先检查输入参数是否已经在 `cache` 中。
+3. 如果输入参数在 `cache` 中，直接返回缓存的结果。
+4. 如果输入参数不在 `cache` 中，调用原函数 `fn` 计算结果，并将结果存储在 `cache` 中，然后返回结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来实现高效的查找和存储。
+- 使用元组作为哈希表的键，确保输入参数的唯一性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 哈希表的查找和插入操作平均情况下是常数时间。
+空间复杂度: O(n) - 哈希表的空间复杂度取决于不同输入参数的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any
 
+def memoize(fn: Callable) -> Callable:
+    cache = {}
+    
+    def memoized(*args):
+        if args not in cache:
+            cache[args] = fn(*args)
+        return cache[args]
+    
+    return memoized
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(memoize)

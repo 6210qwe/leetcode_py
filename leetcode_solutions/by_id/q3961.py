@@ -21,22 +21,34 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 对每个学生的学习记录按日期排序。
+2. 检查每个学生的记录是否满足螺旋学习模式。
+3. 如果满足，计算循环长度和总学习时长，并将结果存储在列表中。
+4. 最后对结果进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对每个学生的学习记录按日期排序。
+2. 检查每个学生的记录是否满足螺旋学习模式：
+   - 检查记录是否至少有 6 次学习记录。
+   - 检查记录是否至少有 3 个不同学科。
+   - 检查记录是否按循环模式重复至少 2 个完整周期。
+   - 检查记录是否连续日期间隔不超过 2 天。
+3. 如果满足，计算循环长度和总学习时长，并将结果存储在列表中。
+4. 对结果进行排序，按循环长度降序排序，然后按总学习时间降序排序。
 
 关键点:
-- [TODO]
+- 使用滑动窗口检查记录是否满足螺旋学习模式。
+- 使用集合检查学科是否至少有 3 个不同学科。
+- 使用日期差检查记录是否连续日期间隔不超过 2 天。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是学习记录的数量。排序操作的时间复杂度为 O(n log n)，后续的遍历操作为 O(n)。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
@@ -47,14 +59,60 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+from datetime import timedelta
 
+def find_students_with_study_spiral_pattern(students: pd.DataFrame, study_sessions: pd.DataFrame) -> pd.DataFrame:
+    # 按学生 ID 和日期排序
+    study_sessions = study_sessions.sort_values(by=['student_id', 'session_date']).reset_index(drop=True)
+    
+    result = []
+    
+    for student_id in study_sessions['student_id'].unique():
+        student_sessions = study_sessions[study_sessions['student_id'] == student_id]
+        
+        if len(student_sessions) < 6:
+            continue
+        
+        subjects = student_sessions['subject'].tolist()
+        dates = student_sessions['session_date'].tolist()
+        hours = student_sessions['hours_studied'].tolist()
+        
+        # 检查是否有至少 3 个不同学科
+        if len(set(subjects)) < 3:
+            continue
+        
+        # 检查是否按循环模式重复至少 2 个完整周期
+        pattern = subjects[:3]
+        if subjects != pattern * (len(subjects) // len(pattern)):
+            continue
+        
+        # 检查是否连续日期间隔不超过 2 天
+        for i in range(1, len(dates)):
+            if (dates[i] - dates[i - 1]).days > 2:
+                break
+        else:
+            # 计算循环长度和总学习时长
+            cycle_length = len(pattern)
+            total_study_hours = sum(hours)
+            
+            # 获取学生信息
+            student_info = students[students['student_id'] == student_id].iloc[0]
+            student_name = student_info['student_name']
+            major = student_info['major']
+            
+            result.append({
+                'student_id': student_id,
+                'student_name': student_name,
+                'major': major,
+                'cycle_length': cycle_length,
+                'total_study_hours': total_study_hours
+            })
+    
+    # 对结果进行排序
+    result_df = pd.DataFrame(result)
+    result_df = result_df.sort_values(by=['cycle_length', 'total_study_hours'], ascending=[False, False])
+    
+    return result_df
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_students_with_study_spiral_pattern)

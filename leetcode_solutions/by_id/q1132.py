@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个句子的前缀和后缀，然后通过拼接前缀和后缀生成结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历所有句子，提取每个句子的前缀和后缀，并存储在哈希表中。
+2. 遍历哈希表中的后缀，检查是否存在对应的前缀，如果存在则拼接成新的句子。
+3. 对结果进行去重并排序。
 
 关键点:
-- [TODO]
+- 提取句子的前缀和后缀时需要考虑空格和标点符号。
+- 使用哈希表存储前缀和后缀可以快速查找和拼接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m + n * log n)，其中 n 是句子的数量，m 是句子的平均长度。遍历句子和拼接操作的时间复杂度是 O(n * m)，排序操作的时间复杂度是 O(n * log n)。
+空间复杂度: O(n * m)，用于存储前缀和后缀。
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def beforeAndAfterPuzzles(phrases: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现前后拼接
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表存储后缀和前缀
+    suffix_map = {}
+    prefix_map = {}
+    
+    for phrase in phrases:
+        words = phrase.split()
+        prefix = words[0]
+        suffix = words[-1]
+        
+        if suffix not in suffix_map:
+            suffix_map[suffix] = []
+        suffix_map[suffix].append(phrase)
+        
+        if prefix not in prefix_map:
+            prefix_map[prefix] = []
+        prefix_map[prefix].append(phrase)
+    
+    result = set()
+    
+    for suffix, phrases_with_suffix in suffix_map.items():
+        if suffix in prefix_map:
+            for phrase1 in phrases_with_suffix:
+                for phrase2 in prefix_map[suffix]:
+                    if phrase1 != phrase2:
+                        result.add(phrase1 + phrase2[len(suffix):])
+    
+    return sorted(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(beforeAndAfterPuzzles)

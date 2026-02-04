@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用滑动窗口和哈希表来解决问题
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化左右指针 l 和 r，以及一个计数器 count 用于记录当前窗口内每个字符的出现次数。
+2. 扩展右指针 r，同时更新计数器 count。
+3. 如果当前窗口的长度减去窗口内出现次数最多的字符的数量大于 k，则收缩左指针 l。
+4. 更新最大长度 res。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用滑动窗口技术，确保在 O(n) 时间复杂度内解决问题。
+- 使用哈希表记录字符出现次数，方便快速查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 每个字符最多被处理两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(1) - 计数器 count 的大小固定为 26（大写字母的数量），因此是常数级别的空间复杂度。
 """
 
 # ============================================================================
@@ -51,25 +52,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def longest_repeating_character_replacement(params):
+def longest_repeating_character_replacement(s: str, k: int) -> int:
     """
-    函数式接口 - [待实现]
-    
+    函数式接口 - 返回包含相同字母的最长子字符串的长度
+
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    使用滑动窗口和哈希表来解决问题
+
     Args:
-        params: [待实现] 参数说明
-        
+        s (str): 输入字符串
+        k (int): 最多可以进行的替换次数
+
     Returns:
-        [待实现] 返回值说明
-        
+        int: 包含相同字母的最长子字符串的长度
+
     Example:
-        >>> longest_repeating_character_replacement([待实现])
-        [待实现]
+        >>> longest_repeating_character_replacement("ABAB", 2)
+        4
+        >>> longest_repeating_character_replacement("AABABBA", 1)
+        4
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    l = 0
+    max_count = 0
+    res = 0
+    
+    for r in range(len(s)):
+        count[s[r]] = count.get(s[r], 0) + 1
+        max_count = max(max_count, count[s[r]])
+        
+        if (r - l + 1) - max_count > k:
+            count[s[l]] -= 1
+            l += 1
+        
+        res = max(res, r - l + 1)
+    
+    return res
 
 
 # 自动生成Solution类（无需手动编写）

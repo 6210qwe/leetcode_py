@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划（Kadane's Algorithm）来找到最大子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `current_sum` 和 `max_sum`，分别表示当前子数组的和以及最大子数组的和。
+2. 遍历数组中的每个元素：
+   - 更新 `current_sum` 为当前元素与 `current_sum + 当前元素` 中的较大值。
+   - 更新 `max_sum` 为 `max_sum` 与 `current_sum` 中的较大值。
+3. 返回 `max_sum`。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程是 `current_sum = max(nums[i], current_sum + nums[i])`。
+- 通过一次遍历即可找到最大子数组和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划（Kadane's Algorithm）来找到最大子数组和。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    current_sum = max_sum = nums[0]
+    for num in nums[1:]:
+        current_sum = max(num, current_sum + num)
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

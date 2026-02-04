@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查数字的末尾是否为0来判断双重反转后是否等于原数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 num 为 0，直接返回 True。
+2. 如果 num 的末尾是 0，则双重反转后会丢失这些 0，返回 False。
+3. 否则，返回 True。
 
 关键点:
-- [TODO]
+- 检查 num 是否以 0 结尾。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_same_after_reversals(num: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断双重反转后的数字是否与原数字相同
     """
-    # TODO: 实现最优解法
-    pass
+    if num == 0:
+        return True
+    if num % 10 == 0:
+        return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_same_after_reversals)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的频率、第一次出现的位置和最后一次出现的位置，然后遍历哈希表找到度最大的元素，并计算其最短子数组的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个哈希表分别记录每个元素的频率、第一次出现的位置和最后一次出现的位置。
+2. 遍历数组，更新这三个哈希表。
+3. 遍历频率哈希表，找到度最大的元素，并计算其最短子数组的长度。
+4. 返回最短子数组的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个元素的频率、第一次出现的位置和最后一次出现的位置。
+- 通过遍历频率哈希表找到度最大的元素，并计算其最短子数组的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，一次用于填充哈希表，一次用于找到度最大的元素。
+空间复杂度: O(n)，我们使用了三个哈希表来存储每个元素的频率、第一次出现的位置和最后一次出现的位置。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_shortest_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到与 nums 拥有相同大小的度的最短连续子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表记录每个元素的频率
+    count = {}
+    # 哈希表记录每个元素第一次出现的位置
+    first_occurrence = {}
+    # 哈希表记录每个元素最后一次出现的位置
+    last_occurrence = {}
+    
+    # 遍历数组，更新哈希表
+    for i, num in enumerate(nums):
+        if num not in first_occurrence:
+            first_occurrence[num] = i
+        last_occurrence[num] = i
+        count[num] = count.get(num, 0) + 1
+    
+    # 找到度最大的元素，并计算其最短子数组的长度
+    max_degree = max(count.values())
+    min_length = float('inf')
+    for num in count:
+        if count[num] == max_degree:
+            min_length = min(min_length, last_occurrence[num] - first_occurrence[num] + 1)
+    
+    return min_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_shortest_subarray)

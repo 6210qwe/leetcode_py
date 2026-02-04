@@ -21,22 +21,24 @@ LCR 163. 找到第 k 位数字 - 某班级学号记录系统发生错乱，原�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算不同位数的数字范围，找到第 k 位数字所在的数字和具体位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 k 位数字所在的数字的位数。
+2. 确定 k 位数字所在的数字的具体值。
+3. 找到 k 位数字在该数字中的具体位置并返回。
 
 关键点:
-- [TODO]
+- 通过逐步缩小范围，确定 k 位数字所在的数字。
+- 使用数学公式计算不同位数的数字范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_nth_digit(k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到第 k 位数字
     """
-    # TODO: 实现最优解法
-    pass
+    if k < 0:
+        return -1
+
+    digit = 1
+    while True:
+        numbers = 9 * (10 ** (digit - 1))
+        if k <= digit * numbers:
+            break
+        k -= digit * numbers
+        digit += 1
+
+    index = k - 1
+    start_number = 10 ** (digit - 1)
+    target_number = start_number + index // digit
+    target_index = index % digit
+    return int(str(target_number)[target_index])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_nth_digit)

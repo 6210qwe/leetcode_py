@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀和来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中选择 j 个子数组的最大和。通过前缀和可以快速计算任意子数组的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 prefix_sum。
+2. 初始化 dp 数组，dp[i][j] 表示前 i 个元素中选择 j 个子数组的最大和。
+3. 遍历数组，更新 dp 数组。
+4. 返回 dp[n][k]，即整个数组中选择 k 个子数组的最大和。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算子数组的和。
+- 动态规划状态转移方程：dp[i][j] = max(dp[i-1][j], dp[p][j-1] + prefix_sum[i] - prefix_sum[p])，其中 p 的范围是 (i-m, i-m+1, ..., i-1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k * m)，其中 n 是数组长度，k 是子数组个数，m 是子数组最小长度。
+空间复杂度: O(n * k)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -48,13 +51,26 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def max_sum_of_k_subarrays(nums: List[int], k: int, m: int) -> int:
+    n = len(nums)
+    if n < k * m:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀和
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + nums[i - 1]
 
+    # 初始化 dp 数组
+    dp = [[float('-inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
 
-Solution = create_solution(solution_function_name)
+    # 动态规划
+    for i in range(1, n + 1):
+        for j in range(1, min(i // m + 1, k + 1)):
+            for p in range(max(0, i - m), i):
+                dp[i][j] = max(dp[i][j], dp[p][j - 1] + prefix_sum[i] - prefix_sum[p])
+
+    return dp[n][k]
+
+Solution = create_solution(max_sum_of_k_subarrays)

@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的子数组，使得该子数组中的所有元素可以通过不超过 numOperations 次操作变为相同的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用滑动窗口来找到最长的子数组，使得该子数组中的所有元素可以通过不超过 numOperations 次操作变为相同的值。
+3. 计算窗口内的元素是否可以通过 numOperations 次操作变为相同的值。
+4. 更新最大频率。
 
 关键点:
-- [TODO]
+- 通过排序和滑动窗口，可以有效地找到最长的子数组。
+- 通过计算窗口内的元素是否可以通过 numOperations 次操作变为相同的值，来更新最大频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序的时间复杂度是 O(n log n)，滑动窗口的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxFrequency(nums: List[int], k: int, numOperations: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行 numOperations 次操作后，nums 中出现频率最高的元素的出现次数。
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()
+    left = 0
+    max_freq = 0
+    total_operations = 0
+    
+    for right in range(len(nums)):
+        total_operations += (nums[right] - nums[right - 1]) * (right - left)
+        
+        while total_operations > numOperations * k:
+            total_operations -= (nums[right] - nums[left])
+            left += 1
+        
+        max_freq = max(max_freq, right - left + 1)
+    
+    return max_freq
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxFrequency)

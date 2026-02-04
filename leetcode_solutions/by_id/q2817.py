@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过前缀和计算每个位置的翻转成本，并选择最小的成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，表示从开头到当前索引的翻转成本。
+2. 计算后缀和数组，表示从当前索引到结尾的翻转成本。
+3. 遍历字符串，对于每个位置，计算将所有字符翻转为 '0' 或 '1' 的最小成本。
+4. 返回最小成本。
 
 关键点:
-- [TODO]
+- 使用前缀和和后缀和来优化计算成本。
+- 通过贪心选择最小的成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_cost_to_make_all_characters_equal(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使所有字符相等的最小成本
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    prefix_sum = [0] * (n + 1)
+    suffix_sum = [0] * (n + 1)
+
+    # 计算前缀和
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + (i if s[i - 1] == '1' else 0)
+
+    # 计算后缀和
+    for i in range(n - 1, -1, -1):
+        suffix_sum[i] = suffix_sum[i + 1] + (n - i if s[i] == '0' else 0)
+
+    min_cost = float('inf')
+
+    # 计算最小成本
+    for i in range(n + 1):
+        cost = prefix_sum[i] + suffix_sum[i]
+        min_cost = min(min_cost, cost)
+
+    return min_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_to_make_all_characters_equal)

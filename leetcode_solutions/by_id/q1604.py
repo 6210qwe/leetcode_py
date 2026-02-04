@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先移除出现次数最少的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个元素的出现次数。
+2. 按照出现次数从小到大排序。
+3. 依次移除出现次数最少的元素，直到移除 k 个元素。
+4. 计算剩余的不同整数的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表统计元素出现次数。
+- 按照出现次数排序，优先移除出现次数少的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。主要的时间开销在于排序操作。
+空间复杂度: O(n)，用于存储元素出现次数的哈希表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个元素的出现次数
+    count = Counter(arr)
+    
+    # 按照出现次数从小到大排序
+    freq = sorted(count.values())
+    
+    # 依次移除出现次数最少的元素，直到移除 k 个元素
+    for i in range(len(freq)):
+        if k >= freq[i]:
+            k -= freq[i]
+        else:
+            return len(freq) - i
+    
+    return 0
 
 Solution = create_solution(solution_function_name)

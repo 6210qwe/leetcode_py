@@ -21,22 +21,31 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用 SQL 查询将 `meeting_date` 转换为周标识符（例如，使用 `strftime` 函数提取年份和周数）。
+2. 按员工 ID 和周标识符分组，计算每组的总会议小时数。
+3. 过滤出每周会议小时数超过 20 小时的记录。
+4. 统计每个员工的会议密集周数，并过滤出至少有 2 周会议密集的员工。
+5. 按会议密集周数降序排列，再按员工姓名升序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表，将 `meeting_date` 转换为周标识符。
+2. 按员工 ID 和周标识符分组，计算每组的总会议小时数。
+3. 过滤出每周会议小时数超过 20 小时的记录。
+4. 统计每个员工的会议密集周数，并过滤出至少有 2 周会议密集的员工。
+5. 按会议密集周数降序排列，再按员工姓名升序排列。
 
 关键点:
-- [TODO]
+- 使用 SQL 的 `strftime` 函数提取年份和周数。
+- 使用 `GROUP BY` 和 `HAVING` 子句进行过滤和统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 meetings 表的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储中间结果和最终结果所需的空间。
 """
 
 # ============================================================================
@@ -49,12 +58,50 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(employees, meetings):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找会议密集型员工
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个临时表，将 meeting_date 转换为周标识符
+    query = """
+    WITH weekly_meetings AS (
+        SELECT 
+            employee_id,
+            strftime('%Y-%W', meeting_date) AS week,
+            SUM(duration_hours) AS total_hours
+        FROM 
+            meetings
+        GROUP BY 
+            employee_id, week
+    ),
+    heavy_weeks AS (
+        SELECT 
+            employee_id,
+            COUNT(*) AS meeting_heavy_weeks
+        FROM 
+            weekly_meetings
+        WHERE 
+            total_hours > 20
+        GROUP BY 
+            employee_id
+        HAVING 
+            COUNT(*) >= 2
+    )
+    SELECT 
+        e.employee_id,
+        e.employee_name,
+        e.department,
+        hw.meeting_heavy_weeks
+    FROM 
+        heavy_weeks hw
+    JOIN 
+        employees e
+    ON 
+        hw.employee_id = e.employee_id
+    ORDER BY 
+        hw.meeting_heavy_weeks DESC, e.employee_name ASC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

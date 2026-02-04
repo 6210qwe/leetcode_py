@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来设置指定位置的像素点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算出需要修改的整数索引范围。
+2. 对于每个整数，使用位运算设置对应的像素点。
 
 关键点:
-- [TODO]
+- 每 32 个像素点为一个整数，计算出需要修改的整数索引范围。
+- 使用位运算设置指定位置的像素点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为最多修改 32 个整数，所以时间复杂度是常数级。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def draw_line(length: int, w: int, x1: int, x2: int, y: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    在屏幕上绘制一条从点 (x1, y) 到点 (x2, y) 的直线，并返回绘制过后的数组。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化结果数组
+    result = [0] * length
+    
+    # 计算起始和结束的整数索引
+    start_index = (y * w + x1) // 32
+    end_index = (y * w + x2) // 32
+    
+    # 设置起始整数
+    if start_index == end_index:
+        mask = ((1 << (x2 - x1 + 1)) - 1) << (31 - (x2 % 32))
+        result[start_index] |= mask
+    else:
+        mask = (1 << (32 - (x1 % 32))) - 1
+        result[start_index] |= mask
+        for i in range(start_index + 1, end_index):
+            result[i] = -1
+        mask = (1 << (x2 % 32 + 1)) - 1
+        result[end_index] |= mask
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(draw_line)

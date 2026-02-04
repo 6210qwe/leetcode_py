@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二进制数来表示当前已经选择的数字集合，并通过递归来生成所有可能的排列。对于每个排列，检查它是否是自整除的。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp`，参数包括当前选择的数字集合 `mask` 和当前排列的最后一个数字 `last`。
+2. 如果 `mask` 表示所有数字都已选择，则返回 1（表示找到一个有效的自整除排列）。
+3. 对于每个未选择的数字 `i`，如果 `i` 能被 `last` 整除或 `last` 能被 `i` 整除，则递归调用 `dp`，更新 `mask` 和 `last`。
+4. 累加所有有效的递归结果。
 
 关键点:
-- [TODO]
+- 使用二进制数 `mask` 来表示当前选择的数字集合。
+- 通过递归和状态压缩来生成所有可能的排列。
+- 检查每个排列是否是自整除的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^n)，其中 n 是数字的个数。每个状态有 2^n 种可能，每种状态需要 O(n) 的时间来处理。
+空间复杂度: O(2^n)，递归调用栈的深度最多为 2^n。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 个数字的自整除排列数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 动态规划和状态压缩
+    def dp(mask: int, last: int) -> int:
+        if mask == (1 << n) - 1:
+            return 1
+        res = 0
+        for i in range(1, n + 1):
+            if not (mask & (1 << i)) and (last % i == 0 or i % last == 0):
+                res += dp(mask | (1 << i), i)
+        return res
+
+    if n == 0:
+        return 0
+    return sum(dp(1 << i, i) for i in range(1, n + 1))
 
 
 Solution = create_solution(solution_function_name)

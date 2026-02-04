@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算奇数位置和偶数位置的筹码数量，选择最小的移动代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化奇数位置和偶数位置的筹码计数器。
+2. 遍历位置数组，更新奇数和偶数位置的筹码计数。
+3. 返回奇数位置和偶数位置筹码数量的最小值作为最小移动代价。
 
 关键点:
-- [TODO]
+- 奇数位置和偶数位置的移动代价分别为0和1。
+- 选择奇数位置和偶数位置中较小的一个作为最终移动代价。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是position的长度，因为我们需要遍历整个位置数组。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_to_move_chips(position: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算将所有筹码移动到同一位置上的最小代价。
     """
-    # TODO: 实现最优解法
-    pass
+    odd_count = 0
+    even_count = 0
+    
+    for pos in position:
+        if pos % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+    
+    return min(odd_count, even_count)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_move_chips)

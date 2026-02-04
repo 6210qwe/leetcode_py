@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为在前 i 个点中选择 j 个不重叠线段的方案数。通过递推关系可以计算出最终结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示在前 i 个点中选择 j 个不重叠线段的方案数。
+2. 基本情况：dp[0][0] = 1，表示在 0 个点中选择 0 个线段的方案数为 1。
+3. 递推公式：dp[i][j] = dp[i-1][j] + dp[i-1][j-1] + (i-1) * dp[i-1][j]，其中 dp[i-1][j] 表示不使用第 i 个点的情况，dp[i-1][j-1] 表示使用第 i 个点作为新线段的起点的情况，(i-1) * dp[i-1][j] 表示将第 i 个点添加到现有线段的情况。
+4. 最终结果为 dp[n][k]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 对结果取模 10^9 + 7。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def number_of_sets(n: int, k: int) -> int:
+    MOD = 10**9 + 7
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            dp[i][j] = (dp[i - 1][j] + dp[i - 1][j - 1] + (i - 1) * dp[i - 1][j]) % MOD
+
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_sets)

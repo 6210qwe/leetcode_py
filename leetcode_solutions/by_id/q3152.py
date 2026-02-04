@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀最大值来优化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `max_left` 和 `max_right`，分别记录每个位置左边和右边的最大值。
+2. 遍历数组，填充 `max_left` 和 `max_right`。
+3. 再次遍历数组，计算每个可能的三元组 `(i, j, k)` 的值，并更新最大值。
 
 关键点:
-- [TODO]
+- 使用 `max_left` 和 `max_right` 来避免重复计算，从而优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximum_triplet_value(nums: List[int]) -> int:
+    n = len(nums)
+    max_left = [0] * n
+    max_right = [0] * n
+    
+    # 填充 max_left 数组
+    max_left[0] = nums[0]
+    for i in range(1, n):
+        max_left[i] = max(max_left[i - 1], nums[i])
+    
+    # 填充 max_right 数组
+    max_right[-1] = nums[-1]
+    for i in range(n - 2, -1, -1):
+        max_right[i] = max(max_right[i + 1], nums[i])
+    
+    max_value = 0
+    for j in range(1, n - 1):
+        if max_left[j - 1] > nums[j]:
+            max_value = max(max_value, (max_left[j - 1] - nums[j]) * max_right[j + 1])
+    
+    return max_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_triplet_value)

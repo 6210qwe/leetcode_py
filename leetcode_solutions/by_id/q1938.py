@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，逐个检查数组中的每个元素，确保当前元素大于前一个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `prev` 用于记录前一个元素的值。
+2. 初始化一个变量 `operations` 用于记录所需的操作次数。
+3. 遍历数组，对于每个元素：
+   - 如果当前元素小于等于 `prev`，则需要进行操作使其大于 `prev`。
+   - 计算所需的操作次数并更新 `prev`。
+4. 返回 `operations`。
 
 关键点:
-- [TODO]
+- 通过贪心算法，每次只考虑当前元素和前一个元素的关系，确保数组严格递增。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_make_array_increasing(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组严格递增的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    prev = nums[0]
+    operations = 0
+
+    for i in range(1, len(nums)):
+        if nums[i] <= prev:
+            # 计算所需的操作次数
+            diff = prev - nums[i] + 1
+            operations += diff
+            # 更新当前元素
+            nums[i] += diff
+        # 更新前一个元素
+        prev = nums[i]
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_array_increasing)

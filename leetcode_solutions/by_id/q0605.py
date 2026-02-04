@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右遍历花坛数组，找到可以种花的位置并种下花。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在花坛数组的开头和结尾添加虚拟的 0，以简化边界条件处理。
+2. 遍历花坛数组，检查当前位置及其左右是否都为 0，如果是，则可以种花，并将该位置标记为 1。
+3. 每次种花后，减少需要种花的数量 n。
+4. 如果 n 减少到 0 或以下，返回 True；否则，返回 False。
 
 关键点:
-- [TODO]
+- 在花坛数组的开头和结尾添加虚拟的 0，以简化边界条件处理。
+- 使用贪心算法，从左到右遍历花坛数组，找到可以种花的位置并种下花。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 flowerbed 的长度。我们只需要遍历一次 flowerbed 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_place_flowers(flowerbed: List[int], n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以在不打破种植规则的情况下种入 n 朵花。
+    
+    :param flowerbed: 花坛数组
+    :param n: 需要种花的数量
+    :return: 是否可以种入 n 朵花
     """
-    # TODO: 实现最优解法
-    pass
+    # 在花坛数组的开头和结尾添加虚拟的 0
+    extended_flowerbed = [0] + flowerbed + [0]
+    
+    for i in range(1, len(extended_flowerbed) - 1):
+        if extended_flowerbed[i - 1] == 0 and extended_flowerbed[i] == 0 and extended_flowerbed[i + 1] == 0:
+            extended_flowerbed[i] = 1
+            n -= 1
+            if n <= 0:
+                return True
+    
+    return n <= 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_place_flowers)

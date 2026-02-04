@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用队列进行层次遍历，找到第一个不完全的节点作为插入点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用队列进行层次遍历，找到所有未满的节点。
+2. 插入时，找到队列中的第一个未满节点，插入新节点并更新队列。
+3. 如果插入后该节点满了，则将其从队列中移除。
 
 关键点:
-- [TODO]
+- 使用队列维护未满节点，确保插入操作的时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 插入和获取根节点的操作都是常数时间。
+空间复杂度: O(n) - 最坏情况下，队列中可能包含所有节点。
 """
 
 # ============================================================================
@@ -44,17 +45,36 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class CBTInserter:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, root: TreeNode):
+        self.root = root
+        self.queue = []
+        queue = [root]
+        while queue:
+            node = queue.pop(0)
+            if not node.left or not node.right:
+                self.queue.append(node)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
 
+    def insert(self, v: int) -> int:
+        parent = self.queue[0]
+        new_node = TreeNode(v)
+        if not parent.left:
+            parent.left = new_node
+        else:
+            parent.right = new_node
+            self.queue.pop(0)
+        self.queue.append(new_node)
+        return parent.val
 
-Solution = create_solution(solution_function_name)
+    def get_root(self) -> TreeNode:
+        return self.root
+
+Solution = create_solution(CBTInserter)

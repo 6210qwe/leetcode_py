@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和遍历找到最大连续非特殊楼层。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将特殊楼层列表 special 排序。
+2. 初始化变量 `max_gap` 为 0，记录最大连续非特殊楼层数。
+3. 计算从 `bottom` 到第一个特殊楼层之间的楼层数。
+4. 遍历排序后的特殊楼层列表，计算相邻特殊楼层之间的楼层数。
+5. 计算从最后一个特殊楼层到 `top` 之间的楼层数。
+6. 返回 `max_gap`。
 
 关键点:
-- [TODO]
+- 通过排序和遍历找到最大连续非特殊楼层。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 special 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_consecutive_floors(bottom: int, top: int, special: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回不含特殊楼层的最大连续楼层数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对特殊楼层进行排序
+    special.sort()
+    
+    # 初始化最大连续楼层数
+    max_gap = 0
+    
+    # 计算从 bottom 到第一个特殊楼层之间的楼层数
+    max_gap = max(max_gap, special[0] - bottom)
+    
+    # 遍历排序后的特殊楼层列表，计算相邻特殊楼层之间的楼层数
+    for i in range(1, len(special)):
+        max_gap = max(max_gap, special[i] - special[i - 1] - 1)
+    
+    # 计算从最后一个特殊楼层到 top 之间的楼层数
+    max_gap = max(max_gap, top - special[-1])
+    
+    return max_gap
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_consecutive_floors)

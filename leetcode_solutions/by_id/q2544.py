@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法逐步增加 n 的值，直到其各位数字之和小于等于 target。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `digit_sum` 来计算一个整数的各位数字之和。
+2. 初始化变量 `x` 为 0，表示需要增加的最小值。
+3. 使用一个循环不断检查当前 n 的各位数字之和是否小于等于 target：
+   - 如果是，则返回 x。
+   - 否则，增加 x 的值，使得 n 的最低位变为 0，并将 n 更新为新的值。
+4. 重复上述过程直到找到满足条件的 x。
 
 关键点:
-- [TODO]
+- 通过逐步增加 x 的值，确保 n 的各位数字之和最终小于等于 target。
+- 每次增加 x 的值时，确保 n 的最低位变为 0，从而减少后续的计算量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，因为每次增加 x 的值时，n 的位数会减少。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def digit_sum(n: int) -> int:
+    """计算一个整数的各位数字之和"""
+    return sum(int(digit) for digit in str(n))
+
+
+def solution_function_name(n: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出并返回满足 n + x 是美丽整数的最小非负整数 x。
     """
-    # TODO: 实现最优解法
-    pass
+    x = 0
+    while digit_sum(n) > target:
+        # 计算 n 的最低位变为 0 需要增加的值
+        increment = 10 - (n % 10)
+        x += increment
+        n += increment
+        # 去掉最低位
+        n //= 10
+    return x
 
 
 Solution = create_solution(solution_function_name)

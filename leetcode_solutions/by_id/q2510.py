@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和滚动哈希来解决这个问题。通过预处理字符串的哈希值，可以在常数时间内比较子字符串是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串的滚动哈希值。
+2. 使用动态规划数组 `dp`，其中 `dp[i]` 表示从第 `i` 个字符开始删除的最大操作数。
+3. 从后向前遍历字符串，对于每个位置 `i`，尝试所有可能的 `j`，使得 `s[i:j] == s[j:2*j-i]`，更新 `dp[i]`。
+4. 最终结果是 `dp[0] + 1`，因为最后一步总是删除整个剩余字符串。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来快速比较子字符串是否相等。
+- 动态规划数组 `dp` 用于存储从每个位置开始的最大删除操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_deletions(s: str) -> int:
+    n = len(s)
+    base = 26
+    mod = 10**9 + 7
+    hash_values = [0] * (n + 1)
+    power = [1] * (n + 1)
+
+    # 计算滚动哈希值
+    for i in range(1, n + 1):
+        hash_values[i] = (hash_values[i - 1] * base + ord(s[i - 1]) - ord('a')) % mod
+        power[i] = (power[i - 1] * base) % mod
+
+    def get_hash(l: int, r: int) -> int:
+        return (hash_values[r] - hash_values[l] * power[r - l] % mod + mod) % mod
+
+    dp = [0] * n
+
+    # 动态规划计算最大删除操作数
+    for i in range(n - 1, -1, -1):
+        dp[i] = 1  # 最坏情况下，每次只删除一个字符
+        for j in range(i + 1, n + 1):
+            if j - i > n - j:
+                break
+            if get_hash(i, j) == get_hash(j, 2 * j - i):
+                dp[i] = max(dp[i], dp[j] + 1)
+
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_deletions)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过生成所有可能的回文数，并检查它们的平方是否也在给定范围内且是回文数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有长度不超过 9 的回文数。
+2. 对每个回文数，计算其平方。
+3. 检查平方是否在给定范围内且是回文数。
+4. 统计满足条件的超级回文数的数量。
 
 关键点:
-- [TODO]
+- 生成回文数时，只需生成一半的数字，然后镜像生成另一半。
+- 使用字符串操作来检查回文性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 生成和检查的回文数数量是常数级别的。
+空间复杂度: O(1) - 只使用了常数级别的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_palindrome(s: str) -> bool:
+    return s == s[::-1]
 
 
-Solution = create_solution(solution_function_name)
+def generate_palindromes(n: int) -> List[int]:
+    palindromes = []
+    for i in range(1, n + 1):
+        for j in range(10 ** (i - 1), 10 ** i):
+            half = str(j)
+            palindromes.append(int(half + half[::-1]))
+            if i > 1:
+                palindromes.append(int(half + half[-2::-1]))
+    return palindromes
+
+
+def superpalindromesInRange(left: str, right: str) -> int:
+    l, r = int(left), int(right)
+    count = 0
+    palindromes = generate_palindromes(9)
+    
+    for p in palindromes:
+        square = p * p
+        if l <= square <= r and is_palindrome(str(square)):
+            count += 1
+    
+    return count
+
+
+Solution = create_solution(superpalindromesInRange)

@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到连续的最长的可删除的水平线和竖直线段，然后取它们的最小值作为正方形的边长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 hBars 和 vBars 进行排序。
+2. 计算连续的可删除的水平线和竖直线段的长度。
+3. 取这些长度的最小值作为正方形的边长。
+4. 返回正方形的面积。
 
 关键点:
-- [TODO]
+- 排序后的 hBars 和 vBars 可以方便地计算连续的可删除线段的长度。
+- 使用 min 函数来找到正方形的最大边长。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h + v log v)，其中 h 是 hBars 的长度，v 是 vBars 的长度。排序操作的时间复杂度是 O(v log v)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximize_square_hole_area(n: int, m: int, hBars: List[int], vBars: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算移除一些线条后网格中正方形空洞的最大面积。
+    
+    :param n: 水平线的数量
+    :param m: 竖直线的数量
+    :param hBars: 可以删除的水平线
+    :param vBars: 可以删除的竖直线
+    :return: 最大正方形空洞的面积
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 hBars 和 vBars 进行排序
+    hBars.sort()
+    vBars.sort()
 
+    # 计算连续的可删除的水平线和竖直线段的长度
+    max_h_gap = 1
+    max_v_gap = 1
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, len(hBars)):
+        if hBars[i] == hBars[i - 1] + 1:
+            max_h_gap += 1
+        else:
+            max_h_gap = 1
+
+    for i in range(1, len(vBars)):
+        if vBars[i] == vBars[i - 1] + 1:
+            max_v_gap += 1
+        else:
+            max_v_gap = 1
+
+    # 取这些长度的最小值作为正方形的边长
+    side_length = min(max_h_gap, max_v_gap)
+
+    # 返回正方形的面积
+    return side_length * side_length
+
+Solution = create_solution(maximize_square_hole_area)

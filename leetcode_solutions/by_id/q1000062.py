@@ -21,22 +21,25 @@ LCP 10. 二叉树任务调度 - 任务调度优化是计算机性能优化的关
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和深度优先搜索 (DFS) 来计算每个节点的最小执行时间。对于每个节点，我们需要考虑其子节点的执行时间，并选择最优的调度策略。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算每个节点的最小执行时间和子节点的最大执行时间。
+2. 对于每个节点，计算其左子节点和右子节点的最小执行时间和最大执行时间。
+3. 计算当前节点的最小执行时间和最大执行时间。
+4. 返回根节点的最小执行时间。
 
 关键点:
-- [TODO]
+- 通过递归遍历树来计算每个节点的最小执行时间。
+- 选择最优的调度策略，使得总执行时间最小化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +47,27 @@ LCP 10. 二叉树任务调度 - 任务调度优化是计算机性能优化的关
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def dfs(node: TreeNode) -> (float, float):
+    if not node:
+        return 0, 0
+    
+    left_min, left_max = dfs(node.left)
+    right_min, right_max = dfs(node.right)
+    
+    # 计算当前节点的最小执行时间和最大执行时间
+    current_min = max(left_min, right_min) + node.val
+    current_max = max(left_max, right_max, (left_min + right_min + node.val) / 2)
+    
+    return current_min, current_max
 
-def solution_function_name(params):
+def solution_function_name(root: Optional[TreeNode]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算二叉树任务调度的最小执行时间
     """
-    # TODO: 实现最优解法
-    pass
-
+    min_time, _ = dfs(root)
+    return min_time
 
 Solution = create_solution(solution_function_name)

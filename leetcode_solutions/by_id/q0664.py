@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 dp[i][j] 表示打印 s[i:j+1] 的最小打印次数。
+2. 初始化 dp 数组，dp[i][i] = 1，因为单个字符只需要一次打印。
+3. 从长度为 2 的子串开始，逐步增加子串长度，计算每个子串的最小打印次数。
+4. 对于每个子串 s[i:j+1]，如果 s[i] == s[j]，则 dp[i][j] = dp[i][j-1]，否则 dp[i][j] = min(dp[i][k] + dp[k+1][j]) for i <= k < j。
 
 关键点:
-- [TODO]
+- 利用 dp 数组记录子问题的解，避免重复计算。
+- 通过状态转移方程优化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是字符串 s 的长度。三重循环的时间复杂度。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def strange_printer(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算打印字符串 s 所需的最少打印次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0] * n for _ in range(n)]
+
+    # 单个字符的打印次数为 1
+    for i in range(n):
+        dp[i][i] = 1
+
+    # 逐步增加子串长度
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = dp[i][j - 1] + 1
+            for k in range(i, j):
+                if s[k] == s[j]:
+                    dp[i][j] = min(dp[i][j], dp[i][k] + (dp[k + 1][j - 1] if k < j - 1 else 0))
+
+    return dp[0][n - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(strange_printer)

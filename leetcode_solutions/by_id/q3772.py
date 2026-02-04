@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针方法来找到需要移除的最小数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向当前处理的元素和下一个需要比较的元素。
+2. 遍历数组，如果 nums[j] < nums[i]，说明需要移除一对元素，将 j 向右移动直到找到一个满足条件的位置。
+3. 记录移除的次数，并更新 i 和 j 的位置。
+4. 重复上述步骤直到遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用双指针方法来找到需要移除的最小数对。
+- 通过贪心算法确保每次移除的都是最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_sort(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将数组变为非递减所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n <= 1:
+        return 0
+
+    operations = 0
+    i = 0
+    while i < n - 1:
+        if nums[i] > nums[i + 1]:
+            # 找到需要移除的最小数对
+            j = i + 1
+            while j < n and nums[j] < nums[i]:
+                j += 1
+            operations += 1
+            i = j
+        else:
+            i += 1
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_sort)

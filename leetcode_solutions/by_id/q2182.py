@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历链表，找到所有临界点，并记录它们的位置。然后计算这些位置之间的最小和最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化指针 prev, curr, next，分别指向链表的前一个节点、当前节点和下一个节点。
+2. 遍历链表，检查当前节点是否是临界点（即局部极大值或局部极小值）。
+3. 如果是临界点，记录其位置。
+4. 计算临界点之间的最小和最大距离。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 临界点的定义：当前节点的值严格大于或小于前后节点的值。
+- 记录临界点的位置以便计算距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需遍历链表一次。
+空间复杂度: O(1)，只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_min_max_distance(head: ListNode) -> List[int]:
+    if not head or not head.next or not head.next.next:
+        return [-1, -1]
+
+    prev = head
+    curr = head.next
+    next_node = head.next.next
+
+    critical_points = []
+    index = 1
+
+    while next_node:
+        if (prev.val < curr.val > next_node.val) or (prev.val > curr.val < next_node.val):
+            critical_points.append(index)
+        prev = curr
+        curr = next_node
+        next_node = next_node.next
+        index += 1
+
+    if len(critical_points) < 2:
+        return [-1, -1]
+
+    min_distance = min(critical_points[i + 1] - critical_points[i] for i in range(len(critical_points) - 1))
+    max_distance = critical_points[-1] - critical_points[0]
+
+    return [min_distance, max_distance]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_max_distance)

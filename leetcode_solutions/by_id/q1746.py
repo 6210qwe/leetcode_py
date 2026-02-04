@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符第一次出现的位置，然后在遍历过程中找到相同的字符并计算子字符串的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典来存储每个字符第一次出现的位置。
+2. 遍历字符串，对于每个字符：
+   - 如果该字符已经在字典中，计算当前索引与字典中存储的索引之间的距离，并更新最大长度。
+   - 如果该字符不在字典中，将其添加到字典中，并记录其索引。
+3. 返回最大长度，如果没有找到符合条件的子字符串则返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录字符第一次出现的位置，从而在 O(1) 时间内查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，因为字母表的大小是固定的（26个小写字母），所以哈希表的空间复杂度是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_substring_between_two_equal_characters(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回两个相同字符之间的最长子字符串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化字典来存储每个字符第一次出现的位置
+    first_occurrence = {}
+    max_length = -1
+    
+    for i, char in enumerate(s):
+        if char in first_occurrence:
+            # 计算当前索引与第一次出现的索引之间的距离
+            current_length = i - first_occurrence[char] - 1
+            max_length = max(max_length, current_length)
+        else:
+            # 记录字符第一次出现的位置
+            first_occurrence[char] = i
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_substring_between_two_equal_characters)

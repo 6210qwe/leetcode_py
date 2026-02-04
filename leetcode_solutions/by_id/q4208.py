@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 统计每个用户的反应次数和每种反应的出现次数。
+2. 筛选出至少对 5 个不同内容项作出反应的用户。
+3. 计算每个用户的主导反应及其比例。
+4. 过滤出主导反应比例大于等于 60% 的用户。
+5. 按照 reaction_ratio 降序排序，然后按 user_id 升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Pandas 读取数据。
+2. 分组统计每个用户的反应次数和每种反应的出现次数。
+3. 筛选出至少对 5 个不同内容项作出反应的用户。
+4. 计算每个用户的主导反应及其比例。
+5. 过滤出主导反应比例大于等于 60% 的用户。
+6. 按照 reaction_ratio 降序排序，然后按 user_id 升序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 进行高效的分组和聚合操作。
+- 通过分组和聚合计算每个用户的主导反应及其比例。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 reactions 表的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储分组后的数据。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import pandas as pd
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_emotionally_consistent_users(reactions: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找情绪一致的用户
     """
-    # TODO: 实现最优解法
-    pass
+    # 分组统计每个用户的反应次数和每种反应的出现次数
+    user_reactions = reactions.groupby(['user_id', 'reaction']).size().reset_index(name='count')
+    
+    # 统计每个用户的总反应次数
+    total_reactions = user_reactions.groupby('user_id')['count'].sum().reset_index(name='total_count')
+    
+    # 找出每个用户的主导反应
+    dominant_reactions = user_reactions.loc[user_reactions.groupby('user_id')['count'].idxmax()]
+    
+    # 合并主导反应和总反应次数
+    result = pd.merge(dominant_reactions, total_reactions, on='user_id')
+    
+    # 计算反应比例
+    result['reaction_ratio'] = (result['count'] / result['total_count']).round(2)
+    
+    # 筛选出至少对 5 个不同内容项作出反应的用户
+    valid_users = reactions.groupby('user_id')['content_id'].nunique().reset_index(name='unique_content_count')
+    valid_users = valid_users[valid_users['unique_content_count'] >= 5]
+    
+    # 过滤出主导反应比例大于等于 60% 的用户
+    result = pd.merge(result, valid_users, on='user_id')
+    result = result[result['reaction_ratio'] >= 0.6]
+    
+    # 按照 reaction_ratio 降序排序，然后按 user_id 升序排序
+    result = result.sort_values(by=['reaction_ratio', 'user_id'], ascending=[False, True])
+    
+    # 选择最终的列
+    result = result[['user_id', 'reaction', 'reaction_ratio']]
+    result.columns = ['user_id', 'dominant_reaction', 'reaction_ratio']
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_emotionally_consistent_users)

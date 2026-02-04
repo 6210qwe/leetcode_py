@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法来最小化切割成本。首先判断是否需要切割木材，如果需要切割，则选择最优的切割点以最小化成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查是否需要切割木材。如果 n 和 m 都小于等于 k，则不需要切割，直接返回 0。
+2. 如果 n > k，则计算将 n 切割成不超过 k 的最小成本。
+3. 如果 m > k，则计算将 m 切割成不超过 k 的最小成本。
+4. 返回总成本。
 
 关键点:
-- [TODO]
+- 通过贪心算法选择最优的切割点，使得切割成本最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, m: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算木材运输的最小成本
     """
-    # TODO: 实现最优解法
-    pass
+    def min_cost_to_cut(length: int, k: int) -> int:
+        if length <= k:
+            return 0
+        # 贪心选择最优切割点
+        for i in range(1, k + 1):
+            if (length - i) <= k:
+                return i * (length - i)
+
+    # 检查是否需要切割木材
+    if n <= k and m <= k:
+        return 0
+
+    # 计算切割成本
+    cost_n = min_cost_to_cut(n, k)
+    cost_m = min_cost_to_cut(m, k)
+
+    return (cost_n if cost_n is not None else 0) + (cost_m if cost_m is not None else 0)
 
 
 Solution = create_solution(solution_function_name)

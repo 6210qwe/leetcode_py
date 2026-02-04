@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序和动态规划来计算每个节点的最小符文需求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图和入度表。
+2. 初始化队列，将所有入度为0的节点加入队列。
+3. 使用动态规划计算每个节点的最小符文需求。
+4. 返回目标节点的最小符文需求。
 
 关键点:
-- [TODO]
+- 使用拓扑排序确保节点按依赖顺序处理。
+- 动态规划状态转移方程：dp[node] = max(dp[node], dp[prev] + runes[node])
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。
+空间复杂度: O(V + E)，用于存储图和动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, connections: List[List[int]], runes: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算施法所需最低符文数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 构建图和入度表
+    graph = defaultdict(list)
+    in_degree = [0] * n
+    for u, v in connections:
+        graph[u].append(v)
+        in_degree[v] += 1
+    
+    # 初始化队列，将所有入度为0的节点加入队列
+    queue = deque([i for i in range(n) if in_degree[i] == 0])
+    
+    # 动态规划数组
+    dp = runes[:]
+    
+    while queue:
+        node = queue.popleft()
+        for next_node in graph[node]:
+            dp[next_node] = max(dp[next_node], dp[node] + runes[next_node])
+            in_degree[next_node] -= 1
+            if in_degree[next_node] == 0:
+                queue.append(next_node)
+    
+    return dp[n - 1]
 
 Solution = create_solution(solution_function_name)

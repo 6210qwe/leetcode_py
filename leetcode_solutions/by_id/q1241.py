@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用列表推导式来生成解压后的列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 `nums` 列表，每次取两个元素 `[freq, val]`。
+2. 对于每一对 `[freq, val]`，生成 `freq` 个 `val` 的列表。
+3. 将所有生成的子列表合并成一个最终的解压列表。
 
 关键点:
-- [TODO]
+- 使用列表推导式可以简洁地实现上述步骤。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是解压后的列表长度。
+空间复杂度: O(n)，存储解压后的列表需要 O(n) 的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decompressRLElist(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解压缩行程长度编码列表
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用列表推导式生成解压后的列表
+    return [val for freq, val in zip(nums[::2], nums[1::2]) for _ in range(freq)]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decompressRLElist)

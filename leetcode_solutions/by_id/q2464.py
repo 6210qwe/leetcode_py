@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历来计算所需的秒数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`seconds` 用于记录所需的时间，`zeros` 用于记录当前遇到的 '0' 的数量。
+2. 遍历字符串 `s`：
+   - 如果遇到 '0'，增加 `zeros` 计数。
+   - 如果遇到 '1'，更新 `seconds` 为 `max(seconds, zeros)`。
+3. 返回 `seconds`。
 
 关键点:
-- [TODO]
+- 通过维护 '0' 的计数来确定每个 '1' 需要移动的最大步数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def time_needed_to_rearrange(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算二进制字符串重新排列所需的时间
     """
-    # TODO: 实现最优解法
-    pass
+    seconds = 0
+    zeros = 0
+    for char in s:
+        if char == '0':
+            zeros += 1
+        else:
+            seconds = max(seconds, zeros)
+    return seconds
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(time_needed_to_rearrange)

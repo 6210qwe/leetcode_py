@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来存储每个字母在字母板上的坐标，然后根据当前坐标和目标坐标的差异生成移动指令。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化字母板和字母到坐标的映射。
+2. 从起点 (0, 0) 开始，遍历目标字符串中的每个字符。
+3. 对于每个字符，计算从当前坐标到目标坐标的移动指令，并更新当前坐标。
+4. 特别处理 'z' 的情况，确保先左右移动再上下移动。
+5. 将移动指令和 '!' 添加到结果字符串中。
 
 关键点:
-- [TODO]
+- 使用字典存储字母到坐标的映射，快速查找坐标。
+- 特殊处理 'z' 的情况，避免无效移动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是目标字符串的长度。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+def alphabet_board_path(target: str) -> str:
+    # 字母板
+    board = ["abcde", "fghij", "klmno", "pqrst", "uvwxy", "z"]
+    
+    # 字母到坐标的映射
+    char_to_pos = {char: (i, j) for i, row in enumerate(board) for j, char in enumerate(row)}
+    
+    # 起点坐标
+    x, y = 0, 0
+    result = []
+    
+    for char in target:
+        # 目标坐标
+        tx, ty = char_to_pos[char]
+        
+        # 先左右移动
+        if y > ty:
+            result.append('L' * (y - ty))
+        elif y < ty:
+            result.append('R' * (ty - y))
+        
+        # 再上下移动
+        if x > tx:
+            result.append('U' * (x - tx))
+        elif x < tx:
+            result.append('D' * (tx - x))
+        
+        # 添加 '!'
+        result.append('!')
+        
+        # 更新当前坐标
+        x, y = tx, ty
+    
+    return ''.join(result)
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(alphabet_board_path)

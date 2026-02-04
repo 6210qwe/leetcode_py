@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个功能的出现次数，然后根据出现次数对功能进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表来统计每个功能在所有产品中的出现次数。
+2. 遍历每个产品的功能列表，更新哈希表中的计数。
+3. 根据哈希表中的计数对功能进行排序，如果两个功能的计数相同，则按它们在 features 列表中的顺序排序。
+4. 返回排序后的功能列表。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效统计每个功能的出现次数。
+- 在排序时，使用稳定的排序算法以确保相同的计数时保持原始顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)，其中 n 是所有产品中功能的总数，m 是 features 的长度。
+空间复杂度: O(m)，用于存储哈希表和排序结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(features: List[str], responses: List[List[str]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按受欢迎程度排列功能
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 创建一个哈希表来统计每个功能的出现次数
+    feature_count = {feature: 0 for feature in features}
+    
+    # 遍历每个产品的功能列表，更新哈希表中的计数
+    for response in responses:
+        for feature in response:
+            if feature in feature_count:
+                feature_count[feature] += 1
+    
+    # 根据哈希表中的计数对功能进行排序
+    sorted_features = sorted(features, key=lambda x: (-feature_count[x], features.index(x)))
+    
+    return sorted_features
 
 Solution = create_solution(solution_function_name)

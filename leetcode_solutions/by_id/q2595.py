@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断将 n 替换为其质因数之和，直到 n 不再变化为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `prime_factors_sum` 来计算 n 的所有质因数之和。
+2. 在主函数中，不断调用 `prime_factors_sum` 并更新 n，直到 n 不再变化。
+3. 返回最终的 n 值。
 
 关键点:
-- [TODO]
+- 使用试除法找到所有质因数并求和。
+- 通过循环不断更新 n 直到其不再变化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n) * log n)
+- 每次找质因数的时间复杂度是 O(sqrt(n))，最坏情况下需要多次迭代。
+空间复杂度: O(1)
+- 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def prime_factors_sum(n: int) -> int:
+    """计算 n 的所有质因数之和"""
+    factor_sum = 0
+    # 试除法找质因数
+    for i in range(2, int(n**0.5) + 1):
+        while n % i == 0:
+            factor_sum += i
+            n //= i
+    if n > 1:
+        factor_sum += n
+    return factor_sum
+
+
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用质因数之和替换后可以取到的最小值
     """
-    # TODO: 实现最优解法
-    pass
+    while True:
+        new_n = prime_factors_sum(n)
+        if new_n == n:
+            break
+        n = new_n
+    return n
 
 
 Solution = create_solution(solution_function_name)

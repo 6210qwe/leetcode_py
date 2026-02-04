@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或数组来计算每个坐标的异或值，并使用最小堆来找到第 k 大的异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或数组。
+2. 遍历所有坐标，计算每个坐标的异或值，并将其加入最小堆。
+3. 保持堆的大小为 k，最后堆顶元素即为第 k 大的异或值。
 
 关键点:
-- [TODO]
+- 前缀异或数组可以高效地计算任意子矩阵的异或值。
+- 使用最小堆来维护前 k 大的异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log k)，其中 m 和 n 分别是矩阵的行数和列数，k 是需要找到的第 k 大的值。
+空间复杂度: O(m * n + k)，前缀异或数组的空间复杂度为 O(m * n)，堆的空间复杂度为 O(k)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def kth_largest_xor_coordinate_value(matrix: List[List[int]], k: int) -> int:
+    m, n = len(matrix), len(matrix[0])
+    
+    # 计算前缀异或数组
+    prefix_xor = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix_xor[i][j] = prefix_xor[i-1][j] ^ prefix_xor[i][j-1] ^ prefix_xor[i-1][j-1] ^ matrix[i-1][j-1]
+    
+    # 使用最小堆来找到第 k 大的异或值
+    min_heap = []
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            value = prefix_xor[i][j]
+            if len(min_heap) < k:
+                heapq.heappush(min_heap, value)
+            elif value > min_heap[0]:
+                heapq.heappushpop(min_heap, value)
+    
+    return min_heap[0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_largest_xor_coordinate_value)

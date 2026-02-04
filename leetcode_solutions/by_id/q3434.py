@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个球的颜色，并使用集合记录当前出现的颜色种类。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `ball_colors` 用于记录每个球的颜色。
+2. 初始化一个集合 `distinct_colors` 用于记录当前出现的颜色种类。
+3. 遍历 `queries`，对于每个查询：
+   - 如果球已经染过色，从 `distinct_colors` 中移除旧颜色。
+   - 更新 `ball_colors` 和 `distinct_colors`。
+   - 记录当前 `distinct_colors` 的大小作为结果的一部分。
 
 关键点:
-- [TODO]
+- 使用哈希表和集合来高效地记录和更新颜色信息。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 queries 的长度。每个查询的操作都是 O(1) 的。
+空间复杂度: O(n)，需要存储每个球的颜色和当前出现的颜色种类。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def distinct_colors_after_queries(limit: int, queries: List[List[int]]) -> List[int]:
+    ball_colors = {}  # 记录每个球的颜色
+    distinct_colors = set()  # 记录当前出现的颜色种类
+    result = []  # 存储每次操作后的颜色数目
+    
+    for query in queries:
+        ball, color = query
+        if ball in ball_colors:
+            old_color = ball_colors[ball]
+            distinct_colors.discard(old_color)
+        ball_colors[ball] = color
+        distinct_colors.add(color)
+        result.append(len(distinct_colors))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_colors_after_queries)

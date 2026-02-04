@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个 x 坐标对应的 y 坐标集合，然后遍历所有可能的对角线组合，检查是否存在其他两个顶点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典来存储每个 x 坐标对应的 y 坐标集合。
+2. 遍历所有可能的对角线组合 (x1, y1) 和 (x2, y2)，检查是否存在其他两个顶点 (x1, y2) 和 (x2, y1)。
+3. 如果存在，计算矩形的面积并更新最小面积。
 
 关键点:
-- [TODO]
+- 使用哈希表来快速查找 y 坐标。
+- 只需要遍历一次点集，时间复杂度为 O(n^2)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_area_rect(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回由这些点形成的矩形的最小面积，矩形的边与 X 轴和 Y 轴平行。如果不存在这样的矩形，则返回 0。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
 
+    # 存储每个 x 坐标对应的 y 坐标集合
+    x_to_ys = defaultdict(set)
+    for x, y in points:
+        x_to_ys[x].add(y)
 
-Solution = create_solution(solution_function_name)
+    min_area = float('inf')
+    last_x = {}
+
+    for x in sorted(x_to_ys):
+        ys = list(x_to_ys[x])
+        for i in range(len(ys)):
+            for j in range(i):
+                y1, y2 = ys[j], ys[i]
+                if (y1, y2) in last_x:
+                    area = (x - last_x[y1, y2]) * abs(y2 - y1)
+                    min_area = min(min_area, area)
+                last_x[y1, y2] = x
+
+    return min_area if min_area < float('inf') else 0
+
+Solution = create_solution(min_area_rect)

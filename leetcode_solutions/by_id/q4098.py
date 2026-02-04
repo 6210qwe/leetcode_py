@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来跟踪当前的最长非递减子数组，并记录在替换一个元素后的最长非递减子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `no_replace` 和 `one_replace` 分别表示没有替换和替换一个元素后的最长非递减子数组长度。
+2. 遍历数组，根据当前元素与前一个元素的关系更新 `no_replace` 和 `one_replace`。
+3. 返回 `no_replace` 和 `one_replace` 中的最大值。
 
 关键点:
-- [TODO]
+- 通过动态规划来维护两个状态：没有替换和替换一个元素后的最长非递减子数组长度。
+- 在遍历过程中，根据当前元素与前一个元素的关系更新这两个状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_non_decreasing_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回在执行至多一次替换后，可以获得的最长非递减子数组的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    no_replace = 1
+    one_replace = 1
+    max_length = 1
+
+    for i in range(1, len(nums)):
+        if nums[i] >= nums[i - 1]:
+            no_replace += 1
+            one_replace += 1
+        else:
+            one_replace = no_replace + 1
+            no_replace = 1
+
+        max_length = max(max_length, no_replace, one_replace)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_non_decreasing_subarray)

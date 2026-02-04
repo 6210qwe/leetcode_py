@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为递增顺序搜索树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个全局变量 `prev` 用于记录上一个访问的节点。
+2. 定义一个辅助函数 `inorder` 进行中序遍历。
+3. 在中序遍历过程中，将当前节点的左子节点设为 `None`，并将 `prev` 的右子节点设为当前节点。
+4. 更新 `prev` 为当前节点。
+5. 最后返回新的根节点。
 
 关键点:
-- [TODO]
+- 使用中序遍历确保节点按递增顺序排列。
+- 通过修改节点的左右子节点来构建新的树结构。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的空间复杂度为 O(h)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def increasingBST(self, root: TreeNode) -> TreeNode:
+        def inorder(node: Optional[TreeNode]) -> None:
+            nonlocal prev, new_root
+            if node is None:
+                return
+            inorder(node.left)
+            if prev is None:
+                new_root = node  # 第一个访问的节点是新的根节点
+            else:
+                prev.right = node  # 将上一个节点的右子节点设为当前节点
+                node.left = None  # 当前节点的左子节点设为 None
+            prev = node  # 更新 prev 为当前节点
+            inorder(node.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        prev = None
+        new_root = None
+        inorder(root)
+        return new_root
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

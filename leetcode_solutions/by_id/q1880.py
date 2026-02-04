@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择当前剩余部分字典序较大的字符串的首字符加入结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 word1 和 word2 的起始位置。
+2. 比较 word1[i:] 和 word2[j:] 的字典序，选择较大的那个字符串的首字符加入结果。
+3. 移动相应的指针。
+4. 重复步骤 2 和 3，直到其中一个字符串被完全处理。
+5. 将另一个字符串的剩余部分直接加入结果。
 
 关键点:
-- [TODO]
+- 每次选择当前剩余部分字典序较大的字符串的首字符，确保最终结果是字典序最大的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 word1 和 word2 的长度。每次比较和移动指针的操作都是 O(1)。
+空间复杂度: O(n + m)，用于存储结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_merge(word1: str, word2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现构造字典序最大的合并字符串
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    merge = []
+    
+    while i < len(word1) and j < len(word2):
+        if word1[i:] > word2[j:]:
+            merge.append(word1[i])
+            i += 1
+        else:
+            merge.append(word2[j])
+            j += 1
+    
+    # 将剩余部分加入结果
+    merge.extend(word1[i:])
+    merge.extend(word2[j:])
+    
+    return ''.join(merge)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_merge)

@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个单调栈来分别存储第一大和第二大的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个单调栈 `stack1` 和 `stack2`。
+2. 从右到左遍历数组 `nums`，维护两个栈：
+   - 如果当前元素大于 `stack1` 的栈顶元素，则将 `stack1` 的栈顶元素弹出并压入 `stack2`。
+   - 将当前元素压入 `stack1`。
+3. 再次从右到左遍历数组 `nums`，构建结果数组 `answer`：
+   - 如果当前元素大于 `stack2` 的栈顶元素，则将 `stack2` 的栈顶元素弹出并记录为当前元素的第二大整数。
+   - 如果当前元素大于 `stack1` 的栈顶元素，则将 `stack1` 的栈顶元素弹出并压入 `stack2`。
+   - 将当前元素压入 `stack1`。
+4. 返回结果数组 `answer`。
 
 关键点:
-- [TODO]
+- 使用两个单调栈来分别存储第一大和第二大的元素。
+- 从右到左遍历两次数组，确保正确找到第二大整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +57,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def next_greater_element_iv(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    stack1, stack2 = [], []
+    answer = [-1] * n
+
+    # 从右到左遍历数组，构建两个单调栈
+    for i in range(n - 1, -1, -1):
+        while stack1 and nums[i] >= stack1[-1]:
+            stack1.pop()
+        if stack2 and nums[i] < stack2[-1]:
+            answer[i] = stack2[-1]
+        while stack2 and nums[i] >= stack2[-1]:
+            stack2.pop()
+        stack2.append(stack1[-1] if stack1 else -1)
+        stack1.append(nums[i])
+
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(next_greater_element_iv)

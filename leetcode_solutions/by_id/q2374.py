@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护当前的非递减序列，并记录每个元素被移除所需的步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个单调栈和一个计数器数组，用于记录每个元素被移除所需的步数。
+2. 遍历数组，对于每个元素，如果它小于栈顶元素，则更新计数器并移除栈顶元素，直到找到一个合适的插入位置。
+3. 将当前元素及其需要的步数压入栈中。
+4. 返回计数器中的最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护当前的非递减序列。
+- 记录每个元素被移除所需的步数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def steps_to_make_array_non_decreasing(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使数组按非递减顺序排列所需的操作数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    stack = []
+    count = [0] * n
+
+    for i in range(n):
+        max_steps = 0
+        while stack and nums[stack[-1]] > nums[i]:
+            max_steps = max(max_steps, count[stack.pop()])
+        if stack:
+            count[i] = max_steps + 1
+        stack.append(i)
+
+    return max(count) if count else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(steps_to_make_array_non_decreasing)

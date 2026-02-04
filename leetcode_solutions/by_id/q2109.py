@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用分治法来解决这个问题。我们可以通过对 sums 进行排序，并利用子集和的性质来逐步恢复原数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 sums 进行排序。
+2. 找到最小的两个元素 diff 和 zero，diff 是原数组中的一个元素，zero 是原数组中的另一个元素。
+3. 通过 diff 和 zero 来划分 sums，分别处理两个子集。
+4. 递归地处理这两个子集，直到恢复出原数组。
 
 关键点:
-- [TODO]
+- 通过对 sums 进行排序，我们可以利用子集和的性质来逐步恢复原数组。
+- 递归地处理子集，确保每个子集都能恢复出原数组的一部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * log(2^n)) = O(n * 2^n)，其中 n 是数组的长度。每次递归的时间复杂度是 O(2^n)，总共需要递归 n 次。
+空间复杂度: O(2^n)，用于存储递归调用栈和中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def recover_array(n: int, sums: List[int]) -> List[int]:
+    def helper(sums):
+        if len(sums) == 1:
+            return [sums[0]]
+        
+        # 对 sums 进行排序
+        sums.sort()
+        
+        # 找到最小的两个元素 diff 和 zero
+        diff = sums[1] - sums[0]
+        zero = sums[0]
+        
+        # 通过 diff 和 zero 来划分 sums
+        left, right = [], []
+        count = {}
+        for s in sums:
+            if s not in count:
+                count[s] = 0
+            count[s] += 1
+        
+        for s in sums:
+            if count[s] > 0:
+                left.append(s)
+                right.append(s + diff)
+                count[s] -= 1
+                count[s + diff] -= 1
+        
+        # 递归地处理这两个子集
+        left_result = helper(left)
+        right_result = helper(right)
+        
+        # 合并结果
+        result = [diff] + [x for x in left_result if x != zero]
+        return result
+    
+    # 递归处理 sums
+    return helper(sums)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(recover_array)

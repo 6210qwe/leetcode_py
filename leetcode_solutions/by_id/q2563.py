@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的分割部分数量，并验证是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的范围。
+2. 计算每个可能的分割部分数量是否满足条件。
+3. 构造最终的分割结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来减少不必要的计算。
+- 计算每个分割部分的有效长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n) * n)，其中 n 是 message 的长度。二分查找的时间复杂度是 O(log(n))，每次检查的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def split_message(message: str, limit: int) -> List[str]:
+    def can_split(k: int) -> bool:
+        total_length = 0
+        for i in range(1, k + 1):
+            total_length += len(str(i)) + len(str(k))
+        total_length += (k - 1) * 3  # '<a/b>' 中的 '/>' 部分
+        return total_length + len(message) <= k * limit
+
+    left, right = 1, len(message)
+    while left < right:
+        mid = (left + right) // 2
+        if can_split(mid):
+            right = mid
+        else:
+            left = mid + 1
+
+    if not can_split(left):
+        return []
+
+    result = []
+    current_index = 0
+    for i in range(1, left + 1):
+        part_length = limit - (len(str(i)) + len(str(left)) + 3)
+        part = message[current_index:current_index + part_length]
+        result.append(f"{part}<{i}/{left}>")
+        current_index += part_length
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_message)

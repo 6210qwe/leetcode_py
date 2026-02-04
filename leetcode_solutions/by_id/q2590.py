@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，对于每个节点，选择其最大的 k 个邻居节点值进行累加。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图。
+2. 对于每个节点，获取其所有邻居节点的值，并选择最大的 k 个邻居节点值。
+3. 计算每个节点的最大星和，并记录全局最大值。
 
 关键点:
-- [TODO]
+- 使用邻接表来存储图的结构。
+- 使用堆来选择每个节点的前 k 大邻居节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log k)，其中 n 是节点数，m 是边数，k 是最大邻居数。
+空间复杂度: O(n + m)，用于存储邻接表和堆。
 """
 
 # ============================================================================
@@ -47,14 +49,32 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(vals: List[int], edges: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回至多包含 k 条边的星图中的最大星和
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(vals)
+    graph = [[] for _ in range(n)]
+    
+    # 构建邻接表
+    for u, v in edges:
+        if vals[v] > 0:
+            heapq.heappush(graph[u], vals[v])
+            if len(graph[u]) > k:
+                heapq.heappop(graph[u])
+        if vals[u] > 0:
+            heapq.heappush(graph[v], vals[u])
+            if len(graph[v]) > k:
+                heapq.heappop(graph[v])
+    
+    # 计算最大星和
+    max_star_sum = float('-inf')
+    for i in range(n):
+        star_sum = vals[i] + sum(graph[i])
+        max_star_sum = max(max_star_sum, star_sum)
+    
+    return max_star_sum
 
 Solution = create_solution(solution_function_name)

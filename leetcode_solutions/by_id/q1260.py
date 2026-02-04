@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将日期拆分为年、月、日，然后计算该日期是这一年的第几天。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 拆分输入字符串，获取年、月、日。
+2. 使用一个数组存储每个月的天数。
+3. 如果是闰年，2月的天数加1。
+4. 遍历前几个月，累加天数。
+5. 加上当前月份的天数，得到结果。
 
 关键点:
-- [TODO]
+- 判断是否为闰年。
+- 通过累加前几个月的天数来计算总天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定的常数次操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def day_of_the_year(date: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算给定日期是这一年的第几天。
     """
-    # TODO: 实现最优解法
-    pass
+    # 拆分输入字符串，获取年、月、日
+    year, month, day = map(int, date.split('-'))
+    
+    # 每个月的天数
+    days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    
+    # 判断是否为闰年
+    if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+        days_in_month[2] = 29
+    
+    # 计算总天数
+    total_days = sum(days_in_month[:month]) + day
+    
+    return total_days
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(day_of_the_year)

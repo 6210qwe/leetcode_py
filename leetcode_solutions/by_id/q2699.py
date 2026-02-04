@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来统计符合条件的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化两个指针 left 和 right，分别指向数组的起始位置和末尾位置。
+3. 遍历数组，对于每个元素 nums[i]，使用双指针找到所有满足条件的数对。
+4. 更新计数器，记录满足条件的数对数量。
 
 关键点:
-- [TODO]
+- 通过排序和双指针可以高效地找到所有满足条件的数对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_fair_pairs(nums: List[int], lower: int, upper: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计公平数对的数目
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()  # 对数组进行排序
+    n = len(nums)
+    count = 0
+
+    for i in range(n):
+        left, right = i + 1, n - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[i] + nums[mid] >= lower:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        l = left
+
+        left, right = i + 1, n - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[i] + nums[mid] > upper:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        r = right
+
+        count += r - l + 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_fair_pairs)

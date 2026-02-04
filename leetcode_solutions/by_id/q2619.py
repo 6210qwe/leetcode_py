@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断箱子是否为 "Bulky" 和 "Heavy"，并根据判断结果返回相应的类别。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算箱子的体积。
+2. 检查箱子是否为 "Bulky"（至少一个维度大于等于 10^4 或体积大于等于 10^9）。
+3. 检查箱子是否为 "Heavy"（质量大于等于 100）。
+4. 根据 "Bulky" 和 "Heavy" 的检查结果返回相应的类别。
 
 关键点:
-- [TODO]
+- 使用简单的条件判断来确定箱子的类别。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只涉及常数次的计算和比较。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def categorize_box(length: int, width: int, height: int, mass: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据规则将箱子分类
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算箱子的体积
+    volume = length * width * height
+    
+    # 检查箱子是否为 "Bulky"
+    is_bulky = (length >= 10**4 or width >= 10**4 or height >= 10**4 or volume >= 10**9)
+    
+    # 检查箱子是否为 "Heavy"
+    is_heavy = (mass >= 100)
+    
+    # 根据 "Bulky" 和 "Heavy" 的检查结果返回相应的类别
+    if is_bulky and is_heavy:
+        return "Both"
+    elif is_bulky:
+        return "Bulky"
+    elif is_heavy:
+        return "Heavy"
+    else:
+        return "Neither"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(categorize_box)

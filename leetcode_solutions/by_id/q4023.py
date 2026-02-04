@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过递归生成所有可能的二进制回文数，并检查它们是否小于等于给定的 n。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `generate_palindromes` 来生成长度为 `length` 的二进制回文数。
+2. 使用递归生成所有可能的二进制回文数，并检查它们是否小于等于给定的 n。
+3. 计算并返回满足条件的二进制回文数的数量。
 
 关键点:
-- [TODO]
+- 递归生成二进制回文数时，需要考虑奇数长度和偶数长度的情况。
+- 使用位运算来生成和比较二进制数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log^2(n))
+空间复杂度: O(log(n))
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_binary_palindromic_numbers(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计二进制回文数字的数目
     """
-    # TODO: 实现最优解法
-    pass
+    def generate_palindromes(length: int, left: int, right: int):
+        if left > right:
+            if left == 0 or (left & (1 << (left - 1))):
+                num = 0
+                for i in range(length):
+                    if (i < left) or (i >= right):
+                        num = (num << 1) | 1
+                    else:
+                        num = (num << 1) | ((left >> (left - i - 1)) & 1)
+                if num <= n:
+                    nonlocal count
+                    count += 1
+            return
+        for bit in [0, 1]:
+            generate_palindromes(length, left + 1, right - 1)
+    
+    count = 0
+    length = n.bit_length()
+    for l in range(1, length + 1):
+        generate_palindromes(l, 0, l - 1)
+    return count + 1  # 包含 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_binary_palindromic_numbers)

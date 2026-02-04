@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算整数 n 的各位数字之积和各位数字之和，然后返回它们的差。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化乘积 prod 和和 sum 分别为 1 和 0。
+2. 遍历整数 n 的每一位数字，更新乘积和和。
+3. 返回乘积减去和的结果。
 
 关键点:
-- [TODO]
+- 使用取模运算和整除运算来逐位处理整数 n。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是整数 n 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def subtract_product_and_sum(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算整数 n 的各位数字之积和各位数字之和的差。
     """
-    # TODO: 实现最优解法
-    pass
+    prod = 1
+    sum_ = 0
+    
+    while n > 0:
+        digit = n % 10
+        prod *= digit
+        sum_ += digit
+        n //= 10
+    
+    return prod - sum_
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(subtract_product_and_sum)

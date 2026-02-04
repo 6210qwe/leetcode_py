@@ -21,40 +21,77 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来找到城市 1 和城市 n 之间的所有路径，并在过程中记录每条路径的最小分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，用于连接城市。
+2. 遍历所有道路，将城市连接起来，并记录每条道路的距离。
+3. 使用并查集找到城市 1 和城市 n 之间的所有路径。
+4. 在遍历过程中记录每条路径的最小分数。
+5. 返回所有路径中的最小分数。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地连接和查找城市。
+- 在连接城市时记录每条道路的距离。
+- 在查找路径时记录每条路径的最小分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是城市的数量，m 是道路的数量。
+空间复杂度: O(n + m)，存储并查集和道路信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_score(n: int, roads: List[List[int]]) -> int:
+    uf = UnionFind(n + 1)
+    min_distances = [float('inf')] * (n + 1)
+    
+    for a, b, distance in roads:
+        uf.union(a, b)
+        min_distances[a] = min(min_distances[a], distance)
+        min_distances[b] = min(min_distances[b], distance)
+    
+    root_1 = uf.find(1)
+    root_n = uf.find(n)
+    
+    if root_1 != root_n:
+        return -1  # 如果城市 1 和城市 n 不连通，返回 -1
+    
+    min_score = float('inf')
+    for i in range(1, n + 1):
+        if uf.find(i) == root_1:
+            min_score = min(min_score, min_distances[i])
+    
+    return min_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_score)

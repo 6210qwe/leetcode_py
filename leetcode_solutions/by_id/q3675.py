@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和深度优先搜索来解决这个问题。我们需要维护每个节点的子树中的最大权重和，并根据节点的度数来决定是否移除某些边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用深度优先搜索遍历树，计算每个节点的子树中的最大权重和。
+3. 在遍历过程中，根据节点的度数和当前子树的最大权重和来决定是否移除某些边。
+4. 返回最终的最大权重和。
 
 关键点:
-- [TODO]
+- 使用动态规划来存储每个节点的子树中的最大权重和。
+- 在深度优先搜索过程中，根据节点的度数来决定是否移除某些边。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_weight_sum(edges: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算移除边后的最大权重和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(edges) + 1
+    graph = [[] for _ in range(n)]
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+
+    def dfs(node: int, parent: int) -> List[int]:
+        # dp[node][0] 表示不移除任何边的最大权重和
+        # dp[node][1] 表示移除一条边的最大权重和
+        dp = [0, 0]
+        children_weights = []
+        for neighbor, weight in graph[node]:
+            if neighbor == parent:
+                continue
+            child_dp = dfs(neighbor, node)
+            children_weights.append((child_dp[0] + weight, child_dp[1] + weight))
+        
+        # 按权重降序排序
+        children_weights.sort(reverse=True)
+        
+        # 计算不移除任何边的最大权重和
+        dp[0] = sum(w for w, _ in children_weights)
+        
+        # 计算移除一条边的最大权重和
+        for i in range(min(k, len(children_weights))):
+            dp[1] = max(dp[1], dp[0] - (children_weights[i][0] - children_weights[i][1]))
+        
+        return dp
+    
+    root_dp = dfs(0, -1)
+    return max(root_dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_weight_sum)

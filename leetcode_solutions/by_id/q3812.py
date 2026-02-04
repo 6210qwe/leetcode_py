@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序来构建按字典序最小的回文字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的出现次数。
+2. 构建前半部分字符串，按字典序从小到大排列。
+3. 构建中间部分字符串，如果字符总数为奇数，则中间部分为出现次数为奇数的字符。
+4. 构建后半部分字符串，按字典序从大到小排列。
+5. 将前半部分、中间部分和后半部分拼接成最终结果。
 
 关键点:
-- [TODO]
+- 使用计数数组来统计字符出现次数。
+- 按字典序构建前半部分和后半部分字符串。
+- 处理字符总数为奇数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串一次进行字符计数，然后再次遍历计数数组构建结果字符串。
+空间复杂度: O(1)，因为计数数组的大小是固定的（26 个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +54,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_palindromic_rearrangement(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 s 的按字典序排列的最小回文排列
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的出现次数
+    count = [0] * 26
+    for char in s:
+        count[ord(char) - ord('a')] += 1
+    
+    # 构建前半部分字符串
+    first_half = []
+    for i in range(26):
+        if count[i] > 0:
+            first_half.append(chr(i + ord('a')) * (count[i] // 2))
+            count[i] %= 2
+    
+    # 构建中间部分字符串
+    middle_part = []
+    for i in range(26):
+        if count[i] == 1:
+            middle_part.append(chr(i + ord('a')))
+            break
+    
+    # 构建后半部分字符串
+    second_half = first_half[::-1]
+    
+    # 拼接成最终结果
+    result = ''.join(first_half) + ''.join(middle_part) + ''.join(second_half)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_palindromic_rearrangement)

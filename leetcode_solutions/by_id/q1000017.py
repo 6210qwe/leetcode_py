@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算 n! 中包含的 5 的因子数量，因为每个 5 和 2 的组合会产生一个尾随零，而 2 的因子总是比 5 的因子多。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用循环计算 n 中包含的 5 的因子数量。
+3. 每次将 n 除以 5，并将结果加到计数器 count 中。
+4. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 通过不断除以 5 来计算 5 的因子数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n! 中尾随零的数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    while n >= 5:
+        n //= 5
+        count += n
+    return count
 
 
 Solution = create_solution(solution_function_name)

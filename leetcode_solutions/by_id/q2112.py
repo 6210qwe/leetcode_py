@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对数组进行排序，然后使用滑动窗口找到最小的 k 个连续元素的最大值和最小值的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用滑动窗口遍历排序后的数组，找到 k 个连续元素的最大值和最小值的差值。
+3. 记录并返回最小的差值。
 
 关键点:
-- [TODO]
+- 排序后，滑动窗口可以有效地找到 k 个连续元素的最大值和最小值的差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，排序的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_difference(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 k 个连续元素的最大值和最小值的最小差值
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 1 or not nums:
+        return 0
+
+    # 对数组进行排序
+    nums.sort()
+
+    # 初始化最小差值
+    min_diff = float('inf')
+
+    # 使用滑动窗口找到最小的 k 个连续元素的最大值和最小值的差值
+    for i in range(len(nums) - k + 1):
+        current_diff = nums[i + k - 1] - nums[i]
+        min_diff = min(min_diff, current_diff)
+
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_difference)

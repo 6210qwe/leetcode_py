@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历每个节点，并计算其子树的总和和节点数。然后检查当前节点的值是否等于其子树的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `dfs`，该函数返回一个元组 (sum, count, result)，其中 sum 是子树的总和，count 是子树的节点数，result 是满足条件的节点数。
+2. 在 `dfs` 函数中，递归地处理左子树和右子树，获取它们的总和和节点数。
+3. 计算当前节点的子树总和和节点数。
+4. 检查当前节点的值是否等于其子树的平均值，如果是，则增加结果计数。
+5. 返回当前节点的子树总和、节点数和结果计数。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，并在遍历过程中计算每个节点的子树总和和节点数。
+- 检查当前节点的值是否等于其子树的平均值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。这是由于递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_nodes_equal_to_average_of_subtree(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计值等于子树平均值的节点数
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode]) -> (int, int, int):
+        if not node:
+            return 0, 0, 0
+        
+        left_sum, left_count, left_result = dfs(node.left)
+        right_sum, right_count, right_result = dfs(node.right)
+        
+        current_sum = left_sum + right_sum + node.val
+        current_count = left_count + right_count + 1
+        current_result = left_result + right_result
+        
+        if node.val == current_sum // current_count:
+            current_result += 1
+        
+        return current_sum, current_count, current_result
+    
+    _, _, result = dfs(root)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_nodes_equal_to_average_of_subtree)

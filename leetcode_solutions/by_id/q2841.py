@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每辆自行车的最后使用时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Bikes` 表中选择所有列。
+2. 使用 `GROUP BY bike_id` 对每辆自行车进行分组。
+3. 使用 `MAX(started_at)` 获取每辆自行车的最后使用时间。
+4. 使用 `ORDER BY bike_id` 按自行车 ID 排序结果。
 
 关键点:
-- [TODO]
+- 使用 `MAX` 函数获取每辆自行车的最后使用时间。
+- 使用 `GROUP BY` 和 `ORDER BY` 来确保结果按自行车 ID 排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回每辆自行车的最后使用时间
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT bike_id, MAX(started_at) AS last_used
+    FROM Bikes
+    GROUP BY bike_id
+    ORDER BY bike_id
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

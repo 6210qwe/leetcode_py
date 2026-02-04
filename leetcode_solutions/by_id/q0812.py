@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查 s+s 是否包含 goal 来判断 s 是否可以通过旋转得到 goal。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 s 和 goal 的长度不同，直接返回 False。
+2. 检查 s+s 是否包含 goal，如果包含则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 利用字符串拼接和子串查找来简化旋转操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是 s 的长度，因为字符串拼接和子串查找的时间复杂度都是 O(n)。
+空间复杂度: O(n) - 因为需要创建一个新的字符串 s+s。
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, goal: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 s 是否可以通过旋转得到 goal。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) != len(goal):
+        return False
+    return goal in (s + s)
 
 
 Solution = create_solution(solution_function_name)

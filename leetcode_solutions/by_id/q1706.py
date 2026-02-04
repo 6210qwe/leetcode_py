@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Prim 算法来找到最小生成树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列（最小堆），并将第一个点加入队列。
+2. 使用一个集合来记录已经访问过的点。
+3. 从优先队列中取出当前最小边，并将其对应的点加入已访问集合。
+4. 对于每个未访问的相邻点，计算其与当前点的曼哈顿距离，并将该距离和点加入优先队列。
+5. 重复步骤 3 和 4，直到所有点都被访问。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地找到当前最小边。
+- 使用集合来记录已访问的点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是点的数量。因为每次从优先队列中取出元素的时间复杂度是 O(log n)，而最多需要进行 n 次这样的操作。
+空间复杂度: O(n^2)，因为我们需要存储所有的边及其权重。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minCostConnectPoints(points: List[List[int]]) -> int:
+    def manhattan_distance(p1, p2):
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+    
+    n = len(points)
+    if n == 1:
+        return 0
+    
+    # 优先队列
+    pq = [(0, 0)]  # (cost, point_index)
+    visited = set()
+    total_cost = 0
+    
+    while len(visited) < n:
+        cost, i = heapq.heappop(pq)
+        if i in visited:
+            continue
+        visited.add(i)
+        total_cost += cost
+        
+        for j in range(n):
+            if j not in visited:
+                heapq.heappush(pq, (manhattan_distance(points[i], points[j]), j))
+    
+    return total_cost
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minCostConnectPoints)

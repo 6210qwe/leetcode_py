@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储和查找，以减少时间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 为 0。
+2. 使用两个嵌套循环遍历所有可能的 (b, c) 对。
+3. 对于每个 (b, c) 对，计算 `target = nums[d] - (nums[b] + nums[c])`。
+4. 使用哈希表记录 `nums[a]` 出现的次数。
+5. 如果 `target` 在哈希表中存在，则将哈希表中 `target` 的值加到 `count` 中。
+6. 返回 `count`。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储 `nums[a]` 的出现次数，以快速查找。
+- 通过两层循环遍历 (b, c) 对，并计算 `target` 来减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。我们需要两层循环来遍历 (b, c) 对。
+空间复杂度: O(n)，哈希表的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_special_quadruplets(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计满足条件的四元组 (a, b, c, d) 的数目。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    count = 0
+    for b in range(1, n - 2):
+        for c in range(b + 1, n - 1):
+            target = nums[c] + nums[b]
+            seen = {}
+            for a in range(b):
+                if nums[a] not in seen:
+                    seen[nums[a]] = 0
+                seen[nums[a]] += 1
+            for d in range(c + 1, n):
+                if nums[d] - target in seen:
+                    count += seen[nums[d] - target]
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_special_quadruplets)

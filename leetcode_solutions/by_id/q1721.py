@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 模拟摩天轮的运转过程，记录每一轮转的利润。
+2. 记录最大利润和对应的最小轮转次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量：等待的游客数、总利润、最大利润、最优轮转次数。
+2. 遍历 `customers` 数组，模拟每一轮转：
+   - 更新等待的游客数。
+   - 计算本轮转登舱的游客数（最多 4 位）。
+   - 更新总利润。
+   - 更新最大利润和最优轮转次数。
+3. 处理剩余的等待游客，直到所有游客都登舱。
+4. 返回最优轮转次数，如果最大利润为负则返回 -1。
 
 关键点:
-- [TODO]
+- 每次轮转最多登舱 4 位游客。
+- 记录每一轮转的利润，并更新最大利润和最优轮转次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `customers` 数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations_max_profit(customers: List[int], boardingCost: int, runningCost: int) -> int:
+    waiting_customers = 0
+    total_profit = 0
+    max_profit = 0
+    optimal_rotations = -1
+    rotations = 0
+    
+    for i in range(len(customers)):
+        waiting_customers += customers[i]
+        boarding_customers = min(4, waiting_customers)
+        waiting_customers -= boarding_customers
+        total_profit += (boarding_customers * boardingCost) - runningCost
+        rotations += 1
+        
+        if total_profit > max_profit:
+            max_profit = total_profit
+            optimal_rotations = rotations
+    
+    while waiting_customers > 0:
+        boarding_customers = min(4, waiting_customers)
+        waiting_customers -= boarding_customers
+        total_profit += (boarding_customers * boardingCost) - runningCost
+        rotations += 1
+        
+        if total_profit > max_profit:
+            max_profit = total_profit
+            optimal_rotations = rotations
+    
+    return optimal_rotations if max_profit > 0 else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_max_profit)

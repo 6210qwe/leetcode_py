@@ -21,40 +21,61 @@ LCP 78. 城墙防线 - 在探险营地间，小扣意外发现了一片城墙遗
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定城墙的最大膨胀值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界。
+2. 在每次迭代中，计算中间值 `mid`，并检查是否可以以 `mid` 为膨胀值使所有城墙无重叠。
+3. 如果可以，则更新左边界，否则更新右边界。
+4. 最终返回左边界作为最大膨胀值。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程。
+- 检查是否可以以某个膨胀值使所有城墙无重叠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_diff))
+空间复杂度: O(1)
+其中 n 是城墙的数量，max_diff 是城墙之间的最大间隔。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_expand(rampart: List[List[int]], expansion: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以以某个膨胀值使所有城墙无重叠。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(rampart)
+    for i in range(1, n - 1):
+        left_expansion = min(expansion, rampart[i][0] - rampart[i - 1][1])
+        right_expansion = min(expansion - left_expansion, rampart[i + 1][0] - rampart[i][1])
+        if left_expansion + right_expansion < expansion:
+            return False
+    return True
 
+def solution_function_name(rampart: List[List[int]]) -> int:
+    """
+    函数式接口 - 实现最优解法
+    """
+    n = len(rampart)
+    max_diff = max(rampart[i + 1][0] - rampart[i][1] for i in range(n - 1))
+    left, right = 0, max_diff
+    
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_expand(rampart, mid):
+            left = mid
+        else:
+            right = mid - 1
+    
+    return left
 
 Solution = create_solution(solution_function_name)

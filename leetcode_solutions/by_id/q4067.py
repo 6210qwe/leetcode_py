@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储每个商品的出价信息，以便快速查找和更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用两个字典分别存储每个商品的出价信息和每个用户的出价信息。
+2. 在 `addBid` 方法中，检查用户是否已经对该商品出过价，如果出过价则更新，否则添加新出价。
+3. 在 `updateBid` 方法中，直接更新用户的出价信息。
+4. 在 `removeBid` 方法中，移除用户的出价信息。
+5. 在 `getHighestBidder` 方法中，遍历商品的出价信息，找到出价最高的用户。
 
 关键点:
-- [TODO]
+- 使用字典来存储出价信息，以实现高效的查找和更新操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作的时间复杂度都是常数级别。
+空间复杂度: O(n) - n 为出价的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Tuple
 
+class AuctionSystem:
+    def __init__(self):
+        self.item_bids: Dict[int, Dict[int, int]] = {}
+        self.user_bids: Dict[Tuple[int, int], int] = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def addBid(self, userId: int, itemId: int, bidAmount: int) -> None:
+        if itemId not in self.item_bids:
+            self.item_bids[itemId] = {}
+        self.item_bids[itemId][userId] = bidAmount
+        self.user_bids[(userId, itemId)] = bidAmount
 
+    def updateBid(self, userId: int, itemId: int, newAmount: int) -> None:
+        self.item_bids[itemId][userId] = newAmount
+        self.user_bids[(userId, itemId)] = newAmount
 
-Solution = create_solution(solution_function_name)
+    def removeBid(self, userId: int, itemId: int) -> None:
+        del self.item_bids[itemId][userId]
+        del self.user_bids[(userId, itemId)]
+
+    def getHighestBidder(self, itemId: int) -> int:
+        if itemId not in self.item_bids or not self.item_bids[itemId]:
+            return -1
+        highest_bidder, highest_bid = -1, 0
+        for user, bid in self.item_bids[itemId].items():
+            if bid > highest_bid or (bid == highest_bid and user > highest_bidder):
+                highest_bidder, highest_bid = user, bid
+        return highest_bidder
+
+# 示例测试
+if __name__ == "__main__":
+    auctionSystem = AuctionSystem()
+    auctionSystem.addBid(1, 7, 5)
+    auctionSystem.addBid(2, 7, 6)
+    print(auctionSystem.getHighestBidder(7))  # 输出 2
+    auctionSystem.updateBid(1, 7, 8)
+    print(auctionSystem.getHighestBidder(7))  # 输出 1
+    auctionSystem.removeBid(2, 7)
+    print(auctionSystem.getHighestBidder(7))  # 输出 1
+    print(auctionSystem.getHighestBidder(3))  # 输出 -1

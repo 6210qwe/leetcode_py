@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用优先队列来管理会议室的使用情况。
+- 先将会议按开始时间排序。
+- 使用两个优先队列：一个用于存储当前正在使用的会议室，另一个用于存储当前空闲的会议室。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将会议按开始时间排序。
+2. 初始化两个优先队列：一个用于存储当前正在使用的会议室（按结束时间排序），另一个用于存储当前空闲的会议室（按编号排序）。
+3. 遍历每个会议：
+   - 释放所有已经结束的会议室到空闲队列。
+   - 如果有空闲的会议室，选择编号最小的会议室。
+   - 如果没有空闲的会议室，选择最早结束的会议室，并更新其结束时间。
+4. 统计每个会议室举办的会议次数，返回举办最多次会议的房间编号。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效管理会议室的使用情况。
+- 通过排序和优先队列，确保每次选择的会议室都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m + m log n)，其中 m 是会议的数量，n 是会议室的数量。排序的时间复杂度是 O(m log m)，优先队列的操作时间复杂度是 O(log n)。
+空间复杂度: O(n + m)，用于存储会议室的状态和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def most_booked(n: int, meetings: List[List[int]]) -> int:
+    # 将会议按开始时间排序
+    meetings.sort()
+    
+    # 优先队列：(结束时间, 会议室编号)
+    used_rooms = []
+    # 优先队列：(会议室编号)
+    free_rooms = list(range(n))
+    
+    # 统计每个会议室举办的会议次数
+    room_count = [0] * n
+    
+    for start, end in meetings:
+        # 释放所有已经结束的会议室
+        while used_rooms and used_rooms[0][0] <= start:
+            _, room = heapq.heappop(used_rooms)
+            heapq.heappush(free_rooms, room)
+        
+        if free_rooms:
+            # 选择编号最小的空闲会议室
+            room = heapq.heappop(free_rooms)
+            heapq.heappush(used_rooms, (end, room))
+        else:
+            # 选择最早结束的会议室
+            end_time, room = heapq.heappop(used_rooms)
+            heapq.heappush(used_rooms, (end_time + end - start, room))
+        
+        # 更新会议室的会议次数
+        room_count[room] += 1
+    
+    # 返回举办最多次会议的房间编号
+    return room_count.index(max(room_count))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_booked)

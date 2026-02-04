@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 或广度优先搜索 (BFS) 遍历二叉树，检查每个节点的值是否与根节点的值相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `root_val` 保存根节点的值。
+2. 使用 DFS 或 BFS 遍历二叉树，检查每个节点的值是否等于 `root_val`。
+3. 如果遇到一个节点的值不等于 `root_val`，则返回 `False`。
+4. 如果遍历完整棵树都没有发现不同值的节点，则返回 `True`。
 
 关键点:
-- [TODO]
+- 使用递归或迭代的方式进行树的遍历。
+- 在遍历过程中，只需检查当前节点的值是否与根节点的值相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。我们需要遍历每个节点一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。在最坏情况下，二叉树的高度为 n（退化成链表），此时空间复杂度为 O(n)。在最好情况下，二叉树高度为 log(n)，此时空间复杂度为 O(log(n))。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_unival_tree(root: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的二叉树是否为单值二叉树。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return True
+
+    def dfs(node: Optional[TreeNode], value: int) -> bool:
+        if not node:
+            return True
+        if node.val != value:
+            return False
+        return dfs(node.left, value) and dfs(node.right, value)
+
+    return dfs(root, root.val)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_unival_tree)

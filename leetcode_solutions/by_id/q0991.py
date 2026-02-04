@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，并按绝对值从小到大处理每个元素，确保每个元素及其二倍都能配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计数组中每个元素的出现次数。
+2. 按绝对值从小到大对数组进行排序。
+3. 遍历排序后的数组，检查每个元素及其二倍是否都在哈希表中有足够的数量。
+4. 如果有，则减少哈希表中对应元素的数量；如果没有，则返回 False。
+5. 如果所有元素都能成功配对，则返回 True。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个元素的出现次数，以便快速查找和更新。
+- 按绝对值排序以确保先处理较小的元素，避免遗漏负数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(n)，用于存储哈希表和排序后的数组。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_reorder_doubled(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定数组是否可以重组为二倍数对数组
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+
+    # 统计每个元素的出现次数
+    count = Counter(arr)
+
+    # 按绝对值从小到大排序
+    for x in sorted(arr, key=abs):
+        if count[x] == 0:
+            continue
+        if count[2 * x] == 0:
+            return False
+        count[x] -= 1
+        count[2 * x] -= 1
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_reorder_doubled)

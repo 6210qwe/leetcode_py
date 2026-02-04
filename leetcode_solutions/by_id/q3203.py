@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用前缀和来快速计算任意子字符串的字符频率。
+- 对于每个查询，检查重新排列后的子字符串是否可以使整个字符串变成回文串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，用于快速计算任意子字符串的字符频率。
+2. 对于每个查询，使用前缀和数组计算指定子字符串的字符频率。
+3. 检查重新排列后的子字符串是否可以使整个字符串变成回文串。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来优化字符频率的计算。
+- 检查字符频率是否满足回文串的要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是字符串 s 的长度，q 是查询的数量。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_form_palindrome(s: str, queries: List[List[int]]) -> List[bool]:
+    n = len(s)
+    half_n = n // 2
+    prefix_sum = [[0] * 26 for _ in range(half_n + 1)]
+    
+    # 计算前缀和数组
+    for i in range(half_n):
+        for j in range(26):
+            prefix_sum[i + 1][j] = prefix_sum[i][j]
+        prefix_sum[i + 1][ord(s[i]) - ord('a')] += 1
+        prefix_sum[i + 1][ord(s[n - 1 - i]) - ord('a')] -= 1
+    
+    def get_freq(left: int, right: int) -> List[int]:
+        freq = [0] * 26
+        for j in range(26):
+            freq[j] = prefix_sum[right + 1][j] - prefix_sum[left][j]
+        return freq
+    
+    def is_palindrome_possible(freq1: List[int], freq2: List[int]) -> bool:
+        for i in range(26):
+            if (freq1[i] + freq2[i]) % 2 != 0:
+                return False
+        return True
+    
+    result = []
+    for a, b, c, d in queries:
+        freq1 = get_freq(a, b)
+        freq2 = get_freq(n - 1 - d, n - 1 - c)
+        result.append(is_palindrome_possible(freq1, freq2))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_form_palindrome)

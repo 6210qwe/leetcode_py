@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出没有进行交易的顾客及其访问次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找出所有有交易记录的 visit_id。
+2. 从 Visits 表中筛选出不在上述 visit_id 列表中的记录。
+3. 按 customer_id 分组并计算每个 customer_id 的访问次数。
 
 关键点:
-- [TODO]
+- 使用子查询和 NOT IN 来过滤没有交易的访问记录。
+- 使用 GROUP BY 和 COUNT 来统计每个顾客的访问次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Visits 表的行数，m 是 Transactions 表的行数。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(visits: List[List[int]], transactions: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+
+    # 1. 找出所有有交易记录的 visit_id
+    trans_visit_ids = set([t[1] for t in transactions])
+
+    # 2. 从 Visits 表中筛选出不在上述 visit_id 列表中的记录
+    no_trans_visits = [v for v in visits if v[0] not in trans_visit_ids]
+
+    # 3. 按 customer_id 分组并计算每个 customer_id 的访问次数
+    customer_count = defaultdict(int)
+    for visit in no_trans_visits:
+        customer_count[visit[1]] += 1
+
+    # 返回结果
+    result = [[customer_id, count] for customer_id, count in customer_count.items()]
+    return result
 
 
 Solution = create_solution(solution_function_name)

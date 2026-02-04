@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法找到最接近中位数的回文数，并计算将其变为该回文数的总代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 找到中位数。
+3. 找到最接近中位数的回文数。
+4. 计算将所有元素变为该回文数的总代价。
 
 关键点:
-- [TODO]
+- 中位数是最优的选择，因为它最小化了绝对差的总和。
+- 通过生成回文数并比较距离来找到最接近中位数的回文数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_palindrome(x: int) -> bool:
+    return str(x) == str(x)[::-1]
 
-def solution_function_name(params):
+def next_palindrome(x: int) -> int:
+    while True:
+        x += 1
+        if is_palindrome(x):
+            return x
+
+def prev_palindrome(x: int) -> int:
+    while True:
+        x -= 1
+        if is_palindrome(x):
+            return x
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组成为等数数组的最小代价
     """
-    # TODO: 实现最优解法
-    pass
-
+    nums.sort()
+    median = nums[len(nums) // 2]
+    
+    # 找到最接近中位数的两个回文数
+    lower_palindrome = prev_palindrome(median)
+    upper_palindrome = next_palindrome(median)
+    
+    # 计算将所有元素变为这两个回文数的总代价
+    cost_lower = sum(abs(num - lower_palindrome) for num in nums)
+    cost_upper = sum(abs(num - upper_palindrome) for num in nums)
+    
+    return min(cost_lower, cost_upper)
 
 Solution = create_solution(solution_function_name)

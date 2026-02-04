@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，逐个字符比较字符串 s 和 words 中的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 s 和 words 的起始位置。
+2. 遍历 words 中的每个字符串，逐个字符与 s 进行比较。
+3. 如果在遍历过程中发现不匹配的字符，返回 False。
+4. 如果遍历完 s 或者 words，检查是否已经完全匹配 s。
 
 关键点:
-- [TODO]
+- 使用双指针方法逐个字符比较，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 s 的长度。最坏情况下需要遍历 s 的所有字符。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_prefix_of_array(s: str, words: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查字符串 s 是否为 words 的前缀字符串
     """
-    # TODO: 实现最优解法
-    pass
+    i = 0  # 指向 s 的指针
+    for word in words:
+        for char in word:
+            if i < len(s) and s[i] == char:
+                i += 1
+            else:
+                return False
+        if i == len(s):
+            return True
+    return i == len(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_prefix_of_array)

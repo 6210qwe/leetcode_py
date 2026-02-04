@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列（堆）来找到最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个工人的工资与质量比 (wage/quality)。
+2. 按照工资与质量比从小到大排序。
+3. 使用一个最大堆来维护当前选择的 k 个工人的质量总和。
+4. 遍历排序后的工人列表，对于每个工人：
+   - 将其质量加入堆中，并更新质量总和。
+   - 如果堆的大小超过 k，则移除堆中质量最大的工人。
+   - 计算当前选择的 k 个工人的总成本，并更新最小成本。
 
 关键点:
-- [TODO]
+- 通过按工资与质量比排序，确保了每次选择的工人都能满足最低工资要求。
+- 使用最大堆来维护当前选择的 k 个工人的质量总和，从而可以快速找到最小成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n log k)，其中 n 是工人数，k 是要雇佣的工人数。排序的时间复杂度是 O(n log n)，遍历和堆操作的时间复杂度是 O(n log k)。
+空间复杂度: O(n + k)，用于存储工人的工资与质量比以及堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def mincostToHireWorkers(quality: List[int], wage: List[int], k: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算雇佣 k 名工人的最低成本
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个工人的工资与质量比
+    workers = sorted([(w / q, q) for w, q in zip(wage, quality)])
+    
+    # 使用最大堆来维护当前选择的 k 个工人的质量总和
+    max_heap = []
+    total_quality = 0
+    min_cost = float('inf')
+    
+    for ratio, q in workers:
+        total_quality += q
+        heapq.heappush(max_heap, -q)
+        
+        if len(max_heap) > k:
+            total_quality += heapq.heappop(max_heap)
+        
+        if len(max_heap) == k:
+            min_cost = min(min_cost, total_quality * ratio)
+    
+    return min_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(mincostToHireWorkers)

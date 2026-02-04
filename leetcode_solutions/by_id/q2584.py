@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历整棵树，统计值为 1 的节点数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于遍历树的每个节点。
+2. 在 `dfs` 函数中，如果当前节点为空，则返回 0。
+3. 如果当前节点的值为 1，则计数加 1，并继续递归遍历其左子节点和右子节点。
+4. 返回当前节点及其子节点中值为 1 的节点总数。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索，确保每个节点都被访问到。
+- 通过递归调用累加每个子树中值为 1 的节点数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_nodes_with_value_one(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计二叉树中值为 1 的节点数。
+    
+    :param root: 二叉树的根节点
+    :return: 值为 1 的节点数
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+        count = 0
+        if node.val == 1:
+            count += 1
+        count += dfs(node.left)
+        count += dfs(node.right)
+        return count
 
+    return dfs(root)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_nodes_with_value_one)

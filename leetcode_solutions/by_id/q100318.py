@@ -21,22 +21,24 @@ LCR 170. 交易逆序对的总数 - 在股票交易中，如果前一天的股�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用归并排序来统计逆序对。归并排序在合并两个有序子数组时，可以通过比较和计数来统计逆序对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组分成两半，递归地对每一半进行归并排序。
+2. 在合并两个有序子数组时，统计逆序对的数量。
+3. 合并两个有序子数组，并返回逆序对的总数。
 
 关键点:
-- [TODO]
+- 归并排序的时间复杂度为 O(n log n)，并且可以在合并过程中统计逆序对。
+- 通过比较左右子数组的元素，可以高效地统计逆序对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +50,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def merge_sort_and_count(nums, temp, left, right):
+    if left >= right:
+        return 0
+    
+    mid = (left + right) // 2
+    count = merge_sort_and_count(nums, temp, left, mid) + merge_sort_and_count(nums, temp, mid + 1, right)
+    
+    i, j, pos = left, mid + 1, left
+    while i <= mid and j <= right:
+        if nums[i] <= nums[j]:
+            temp[pos] = nums[i]
+            i += 1
+        else:
+            temp[pos] = nums[j]
+            j += 1
+            count += mid - i + 1
+        pos += 1
+    
+    for k in range(i, mid + 1):
+        temp[pos] = nums[k]
+        pos += 1
+    for k in range(j, right + 1):
+        temp[pos] = nums[k]
+        pos += 1
+    
+    nums[left:right+1] = temp[left:right+1]
+    return count
 
-def solution_function_name(params):
+def solution_function_name(record: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用归并排序统计逆序对
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not record:
+        return 0
+    temp = [0] * len(record)
+    return merge_sort_and_count(record, temp, 0, len(record) - 1)
 
 Solution = create_solution(solution_function_name)

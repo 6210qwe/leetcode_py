@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，从左到右遍历 target 字符串，记录当前字符是否需要翻转。如果当前字符与前一个字符不同，则需要一次翻转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化翻转次数为 0。
+2. 遍历 target 字符串，从第二个字符开始。
+3. 如果当前字符与前一个字符不同，则增加翻转次数。
+4. 返回翻转次数。
 
 关键点:
-- [TODO]
+- 通过比较相邻字符来确定是否需要翻转。
+- 从左到右遍历可以确保每次翻转都尽可能覆盖更多的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 target 的长度。我们只需要遍历一次 target 字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_flips(target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 s 与 target 相等需要的最少翻转次数
     """
-    # TODO: 实现最优解法
-    pass
+    flips = 0
+    current_char = '0'
+    
+    for char in target:
+        if char != current_char:
+            flips += 1
+            current_char = char
+    
+    return flips
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips)

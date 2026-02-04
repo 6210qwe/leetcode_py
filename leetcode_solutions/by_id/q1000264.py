@@ -21,40 +21,64 @@ LCR 028. 扁平化多级双向链表 - 多级双向链表中，除了指向下�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历多级双向链表，并在遍历过程中调整节点的 next 和 prev 指针，将子链表插入到当前节点的 next 位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 dfs(node) 来处理每个节点。
+2. 如果当前节点有子节点，则先保存当前节点的 next 节点，然后递归处理子节点。
+3. 将子节点插入到当前节点的 next 位置，并更新相关节点的 prev 和 next 指针。
+4. 继续处理保存的 next 节点。
+5. 返回扁平化后的链表头节点。
 
 关键点:
-- [TODO]
+- 通过递归处理每个节点及其子节点，确保所有节点都被正确地插入到单级双向链表中。
+- 在插入子节点时，需要更新相关节点的 prev 和 next 指针，确保链表的双向性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表中的节点数。每个节点只会被访问一次。
+空间复杂度: O(1)，除了递归调用栈外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Node:
+    def __init__(self, val: int, prev: 'Node' = None, next: 'Node' = None, child: 'Node' = None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
 
 
-Solution = create_solution(solution_function_name)
+def flatten(head: 'Node') -> 'Node':
+    if not head:
+        return head
+
+    def dfs(node: 'Node') -> 'Node':
+        cur = node
+        while cur:
+            next_node = cur.next
+            if cur.child:
+                cur.next = dfs(cur.child)
+                cur.child.prev = cur
+                cur.child = None
+                if next_node:
+                    while cur.next:
+                        cur = cur.next
+                    cur.next = next_node
+                    next_node.prev = cur
+            cur = next_node
+        return node
+
+    return dfs(head)
+
+
+Solution = create_solution(flatten)

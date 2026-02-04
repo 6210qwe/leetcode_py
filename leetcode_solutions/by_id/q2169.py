@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个数组来存储每个账户的余额，并通过索引进行操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将输入的余额数组存储在类的实例变量中。
+2. 对于转账操作，检查两个账户是否有效且有足够的余额，然后进行转账。
+3. 对于存款操作，检查账户是否有效，然后进行存款。
+4. 对于取款操作，检查账户是否有效且有足够的余额，然后进行取款。
 
 关键点:
-- [TODO]
+- 使用数组索引来快速访问和更新账户余额。
+- 在每次操作前检查账户的有效性和余额。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次操作的时间复杂度都是常数级别。
+空间复杂度: O(n) - 使用一个长度为 n 的数组来存储账户余额。
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Bank:
+    def __init__(self, balance: List[int]):
+        self.balance = balance
+        self.n = len(balance)
+
+    def transfer(self, account1: int, account2: int, money: int) -> bool:
+        if not self._is_valid_account(account1) or not self._is_valid_account(account2):
+            return False
+        if self.balance[account1 - 1] < money:
+            return False
+        self.balance[account1 - 1] -= money
+        self.balance[account2 - 1] += money
+        return True
+
+    def deposit(self, account: int, money: int) -> bool:
+        if not self._is_valid_account(account):
+            return False
+        self.balance[account - 1] += money
+        return True
+
+    def withdraw(self, account: int, money: int) -> bool:
+        if not self._is_valid_account(account):
+            return False
+        if self.balance[account - 1] < money:
+            return False
+        self.balance[account - 1] -= money
+        return True
+
+    def _is_valid_account(self, account: int) -> bool:
+        return 1 <= account <= self.n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Bank)

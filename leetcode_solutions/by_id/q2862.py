@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用定时器来实现函数的周期性调用，并在指定时间后取消定时器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 立即调用一次函数 fn 并记录返回值。
+2. 设置一个定时器，每隔 t 毫秒调用一次函数 fn。
+3. 返回一个取消函数 cancelFn，当调用 cancelFn 时，清除定时器并停止调用 fn。
 
 关键点:
-- [TODO]
+- 使用 `setTimeout` 和 `setInterval` 来控制函数的调用时间和周期。
+- 使用 `clearInterval` 来取消定时器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用和取消操作都是常数时间复杂度。
+空间复杂度: O(1) - 只使用了固定数量的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def cancellable(fn, args, t):
     """
-    函数式接口 - [TODO] 实现
+    返回一个取消函数 cancelFn，该函数在经过 cancelTimeMs 毫秒的延迟后被调用。
+    函数 fn 会立即使用参数 args 调用，然后每隔 t 毫秒调用一次，直到调用 cancelFn。
     """
-    # TODO: 实现最优解法
-    pass
+    # 立即调用一次函数 fn
+    fn(*args)
+    
+    # 设置一个定时器，每隔 t 毫秒调用一次函数 fn
+    interval_id = setInterval(lambda: fn(*args), t)
+    
+    def cancel_fn():
+        # 清除定时器
+        clearInterval(interval_id)
+    
+    return cancel_fn
 
+def setInterval(callback, t):
+    """
+    封装 setInterval 功能，方便测试
+    """
+    import threading
+    def wrapper():
+        while not event.is_set():
+            callback()
+            event.wait(t / 1000)
+    event = threading.Event()
+    thread = threading.Thread(target=wrapper)
+    thread.start()
+    return (event, thread)
 
-Solution = create_solution(solution_function_name)
+def clearInterval(interval):
+    """
+    封装 clearInterval 功能，方便测试
+    """
+    event, _ = interval
+    event.set()
+
+Solution = create_solution(cancellable)

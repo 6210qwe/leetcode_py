@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，将交易分为两类：成本大于或等于回扣的交易和成本小于回扣的交易。对于成本大于或等于回扣的交易，我们按成本降序排序；对于成本小于回扣的交易，我们按回扣升序排序。然后计算完成所有交易所需的最少初始资金。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将交易分为两类：成本大于或等于回扣的交易和成本小于回扣的交易。
+2. 对于成本大于或等于回扣的交易，按成本降序排序。
+3. 对于成本小于回扣的交易，按回扣升序排序。
+4. 计算完成所有交易所需的最少初始资金。
 
 关键点:
-- [TODO]
+- 通过分类和排序，确保在任意顺序下都能完成所有交易。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 transactions 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_money_required(transactions: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回完成所有交易所需的最少初始资金
     """
-    # TODO: 实现最优解法
-    pass
+    # 分类交易
+    high_cost_transactions = []
+    low_cost_transactions = []
+    
+    for cost, cashback in transactions:
+        if cost >= cashback:
+            high_cost_transactions.append((cost, cashback))
+        else:
+            low_cost_transactions.append((cost, cashback))
+    
+    # 排序
+    high_cost_transactions.sort(key=lambda x: -x[0])
+    low_cost_transactions.sort(key=lambda x: x[1])
+    
+    # 计算最少初始资金
+    max_cost = 0
+    current_money = 0
+    
+    for cost, cashback in high_cost_transactions + low_cost_transactions:
+        if current_money < cost:
+            max_cost = max(max_cost, cost - current_money)
+        current_money += cashback - cost
+    
+    return max_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_money_required)

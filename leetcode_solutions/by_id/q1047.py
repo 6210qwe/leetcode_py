@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，每次选择最小的负数进行取反，如果没有负数，则选择绝对值最小的数进行取反。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用 k 次操作，每次选择最小的负数进行取反。
+3. 如果 k 还有剩余，且 k 是奇数，则选择绝对值最小的数进行取反。
+4. 返回数组的和。
 
 关键点:
-- [TODO]
+- 优先处理负数，因为取反后会增加总和。
+- 如果 k 用完后还有剩余，且 k 是奇数，则选择绝对值最小的数进行取反。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_sum_after_k_negations(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化数组和
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 使用 k 次操作，每次选择最小的负数进行取反
+    for i in range(len(nums)):
+        if k > 0 and nums[i] < 0:
+            nums[i] = -nums[i]
+            k -= 1
+    
+    # 如果 k 还有剩余，且 k 是奇数，则选择绝对值最小的数进行取反
+    if k % 2 == 1:
+        nums.sort()  # 再次排序，确保最小的数在前面
+        nums[0] = -nums[0]
+    
+    # 返回数组的和
+    return sum(nums)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_sum_after_k_negations)

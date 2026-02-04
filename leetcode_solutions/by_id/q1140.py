@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来确保频率最高的条形码尽可能分散。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个条形码的频率。
+2. 使用最大堆存储条形码及其频率。
+3. 每次从堆中取出频率最高的两个条形码，将它们依次放入结果数组中，并更新其频率。
+4. 如果某个条形码的频率仍未为0，则将其重新放回堆中。
+5. 重复上述过程直到堆为空。
 
 关键点:
-- [TODO]
+- 使用最大堆来确保频率最高的条形码尽可能分散。
+- 每次处理两个条形码以确保相邻条形码不相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是条形码的数量，k 是不同条形码的数量。
+空间复杂度: O(n)，用于存储条形码的频率和结果数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def rearrange_barcodes(barcodes: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新排列条形码，使任意两个相邻的条形码不相等。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个条形码的频率
+    frequency = {}
+    for barcode in barcodes:
+        if barcode in frequency:
+            frequency[barcode] += 1
+        else:
+            frequency[barcode] = 1
+    
+    # 使用最大堆存储条形码及其频率
+    max_heap = []
+    for barcode, freq in frequency.items():
+        heapq.heappush(max_heap, (-freq, barcode))
+    
+    result = []
+    while len(max_heap) > 1:
+        # 取出频率最高的两个条形码
+        freq1, barcode1 = heapq.heappop(max_heap)
+        freq2, barcode2 = heapq.heappop(max_heap)
+        
+        # 将它们依次放入结果数组中
+        result.append(barcode1)
+        result.append(barcode2)
+        
+        # 更新频率
+        if freq1 + 1 < 0:
+            heapq.heappush(max_heap, (freq1 + 1, barcode1))
+        if freq2 + 1 < 0:
+            heapq.heappush(max_heap, (freq2 + 1, barcode2))
+    
+    # 如果堆中还有剩余的条形码
+    if max_heap:
+        freq, barcode = heapq.heappop(max_heap)
+        result.append(barcode)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(rearrange_barcodes)

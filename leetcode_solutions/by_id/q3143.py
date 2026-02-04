@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右遍历数组，选择满足条件的最长子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表 `result` 和上一个选中的组 `last_group`。
+2. 遍历 `words` 和 `groups`，如果当前组与 `last_group` 不同，则将当前单词加入 `result` 并更新 `last_group`。
+3. 返回 `result`。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到最长的交替子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 words 的长度。
+空间复杂度: O(1)，除了结果列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str], groups: List[int]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    last_group = None
+    
+    for i in range(len(words)):
+        if last_group is None or groups[i] != last_group:
+            result.append(words[i])
+            last_group = groups[i]
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

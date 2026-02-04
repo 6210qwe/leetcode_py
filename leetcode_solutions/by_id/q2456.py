@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和栈来构造最小的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈 `stack` 和结果列表 `result`。
+2. 遍历 `pattern` 字符串，同时维护一个计数器 `num` 从 1 开始。
+3. 对于每个字符：
+   - 将当前 `num` 压入栈中。
+   - 如果当前字符是 'I' 或者已经遍历到 `pattern` 的末尾：
+     - 将栈中的所有元素依次弹出并加入 `result`。
+4. 最后将 `result` 转换为字符串并返回。
 
 关键点:
-- [TODO]
+- 使用栈来处理连续的 'D' 字符，确保在遇到 'I' 时可以逆序输出。
+- 通过贪心算法确保每次选择的数字尽可能小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 pattern 的长度。每个字符只处理一次。
+空间复杂度: O(n)，栈的最大深度为 n。
 """
 
 # ============================================================================
@@ -49,12 +55,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_number(pattern: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构造满足 pattern 条件的最小数字。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = []
+    num = 1
+    
+    for i, char in enumerate(pattern + 'I'):
+        stack.append(num)
+        if char == 'I' or i == len(pattern):
+            while stack:
+                result.append(stack.pop())
+        num += 1
+    
+    return ''.join(map(str, result))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_number)

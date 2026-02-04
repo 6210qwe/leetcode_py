@@ -6,7 +6,7 @@
 题号: 3423
 标题: Maximum Sum of Subsequence With Non-adjacent Elements
 难度: hard
-链接: https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
+链接: https://leetcode.cn/problems/maximum_sum_of_subsequence_with_non_adjacent_elements/
 题目类型: 线段树、数组、分治、动态规划
 """
 
@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们需要维护一个动态规划数组 dp，其中 dp[i] 表示以 nums[i] 结尾的不包含相邻元素的子序列的最大和。对于每个查询，我们需要更新 nums 数组，并重新计算 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = max(0, nums[0]), dp[1] = max(dp[0], nums[1])。
+2. 计算初始的 dp 数组。
+3. 对于每个查询，更新 nums 数组，并重新计算受影响的 dp 值。
+4. 计算每个查询后的最大和，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用动态规划来维护不包含相邻元素的子序列的最大和。
+- 对于每个查询，只需要更新受影响的 dp 值，而不需要重新计算整个 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是 queries 的长度。初始化 dp 数组的时间复杂度是 O(n)，每个查询的时间复杂度是 O(1)。
+空间复杂度: O(n)，需要额外的空间来存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[int], queries: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    
+    # 初始化 dp 数组
+    dp = [0] * n
+    dp[0] = max(0, nums[0])
+    if n > 1:
+        dp[1] = max(dp[0], nums[1])
+    
+    # 计算初始的 dp 数组
+    for i in range(2, n):
+        dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+    
+    result = 0
+    
+    for pos, x in queries:
+        # 更新 nums 数组
+        nums[pos] = x
+        
+        # 重新计算受影响的 dp 值
+        if pos == 0:
+            dp[0] = max(0, nums[0])
+            if n > 1:
+                dp[1] = max(dp[0], nums[1])
+        elif pos == 1:
+            dp[1] = max(dp[0], nums[1])
+        
+        for i in range(max(2, pos), n):
+            dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+        
+        # 计算当前查询的结果
+        result += max(dp[-1], 0)
+        result %= MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

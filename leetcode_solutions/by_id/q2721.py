@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个值的所有索引，然后利用前缀和计算每个索引的距离和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表 `indices` 记录每个值的所有索引。
+2. 对于每个值，计算其索引的前缀和 `prefix_sum`。
+3. 利用前缀和计算每个索引的距离和，并存储在结果数组 `result` 中。
 
 关键点:
-- [TODO]
+- 使用前缀和可以高效地计算每个索引的距离和。
+- 哈希表用于快速查找每个值的所有索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sum_of_distances(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算等值距离和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    indices = {}
+    for i, num in enumerate(nums):
+        if num not in indices:
+            indices[num] = []
+        indices[num].append(i)
 
+    result = [0] * n
+    for num, idx_list in indices.items():
+        m = len(idx_list)
+        prefix_sum = [0] * (m + 1)
+        for i in range(m):
+            prefix_sum[i + 1] = prefix_sum[i] + idx_list[i]
 
-Solution = create_solution(solution_function_name)
+        for i, idx in enumerate(idx_list):
+            left_sum = idx * (i + 1) - prefix_sum[i + 1]
+            right_sum = prefix_sum[m] - prefix_sum[i] - idx * (m - i)
+            result[idx] = left_sum + right_sum
+
+    return result
+
+Solution = create_solution(sum_of_distances)

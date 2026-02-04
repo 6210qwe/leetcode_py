@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来选择最优的操作顺序。首先尽量使用操作2（减去k），然后使用操作1（除以2并向上取整）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，存储每个元素及其索引。
+2. 尽量使用操作2，选择大于等于k的最大元素进行减法操作。
+3. 尽量使用操作1，选择当前最大元素进行除法操作。
+4. 计算最终数组的和。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地选择最大元素。
+- 优先使用操作2，因为它的效果更明显。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_array_sum(nums: List[int], k: int, op1: int, op2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回在执行任意次数的操作后，nums 中所有元素的 最小 可能 和 。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用优先队列存储每个元素及其索引
+    pq = [(-num, i) for i, num in enumerate(nums)]
+    heapq.heapify(pq)
 
+    # 尽量使用操作2
+    while op2 > 0 and pq:
+        num, i = heapq.heappop(pq)
+        if -num >= k:
+            nums[i] -= k
+            op2 -= 1
+            heapq.heappush(pq, (-nums[i], i))
 
-Solution = create_solution(solution_function_name)
+    # 尽量使用操作1
+    while op1 > 0 and pq:
+        num, i = heapq.heappop(pq)
+        if -num > 0:
+            nums[i] = -(-num // 2)
+            op1 -= 1
+            heapq.heappush(pq, (-nums[i], i))
+
+    # 计算最终数组的和
+    return sum(nums)
+
+Solution = create_solution(min_array_sum)

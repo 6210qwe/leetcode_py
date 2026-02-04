@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个辅助数组来记录每个位置左边和右边的最小值，然后遍历中间位置，找到满足条件的最小和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 left_min 和 right_min，分别记录每个位置左边和右边的最小值。
+2. 填充 left_min 数组，left_min[i] 表示 nums[0:i] 中的最小值。
+3. 填充 right_min 数组，right_min[i] 表示 nums[i+1:] 中的最小值。
+4. 遍历中间位置 j，检查是否存在满足条件的山形三元组 (i, j, k)，并更新最小和。
 
 关键点:
-- [TODO]
+- 使用两个辅助数组来减少重复计算。
+- 遍历中间位置时，确保 i < j < k 并且 nums[i] < nums[j] 且 nums[k] < nums[j]。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_sum_of_mountain_triplets(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 nums 中元素和最小的山形三元组，并返回其元素和。如果不存在满足条件的三元组，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return -1
+    
+    # 初始化 left_min 和 right_min 数组
+    left_min = [float('inf')] * n
+    right_min = [float('inf')] * n
+    
+    # 填充 left_min 数组
+    for i in range(1, n):
+        left_min[i] = min(left_min[i - 1], nums[i - 1])
+    
+    # 填充 right_min 数组
+    for i in range(n - 2, -1, -1):
+        right_min[i] = min(right_min[i + 1], nums[i + 1])
+    
+    # 遍历中间位置 j，找到满足条件的最小和
+    min_sum = float('inf')
+    for j in range(1, n - 1):
+        if left_min[j] < nums[j] and right_min[j] < nums[j]:
+            min_sum = min(min_sum, left_min[j] + nums[j] + right_min[j])
+    
+    return min_sum if min_sum != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_sum_of_mountain_triplets)

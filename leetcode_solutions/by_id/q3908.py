@@ -21,40 +21,81 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集和二分查找来找到最小的时间 t，使得移除所有满足条件 time <= t 的边之后，图包含至少 k 个连通分量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对边按时间进行排序。
+2. 使用并查集来管理连通分量。
+3. 使用二分查找来找到最小的时间 t。
 
 关键点:
-- [TODO]
+- 并查集用于高效地管理连通分量。
+- 二分查找用于快速找到最小的时间 t。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E + E log V) 其中 E 是边的数量，V 是节点的数量。
+空间复杂度: O(V) 并查集的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
 
-Solution = create_solution(solution_function_name)
+def min_time_to_k_components(n: int, edges: List[List[int]], k: int) -> int:
+    if n < k:
+        return 0
+
+    # 按时间排序边
+    edges.sort(key=lambda x: x[2])
+
+    def can_form_k_components(time):
+        uf = UnionFind(n)
+        for u, v, t in edges:
+            if t > time:
+                break
+            uf.union(u, v)
+        return uf.count >= k
+
+    left, right = 0, max(edge[2] for edge in edges)
+
+    while left < right:
+        mid = (left + right) // 2
+        if can_form_k_components(mid):
+            right = mid
+        else:
+            left = mid + 1
+
+    return left
+
+Solution = create_solution(min_time_to_k_components)

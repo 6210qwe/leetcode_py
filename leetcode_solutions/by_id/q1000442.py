@@ -21,22 +21,25 @@ LCP 60. 力扣泡泡龙 - 欢迎各位勇者来到力扣城，本次试炼主题
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用层次遍历计算每一层的和，并记录可以被击破的节点及其对层和的影响。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 层次遍历二叉树，记录每一层的节点和。
+2. 在遍历过程中，记录可以被击破的节点及其对层和的影响。
+3. 计算击破某个节点后的最大层和。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 记录每一层的节点和。
+- 记录可以被击破的节点及其对层和的影响。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(n)，队列和层和记录所需的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,44 @@ LCP 60. 力扣泡泡龙 - 欢迎各位勇者来到力扣城，本次试炼主题
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def max_layer_sum(root: Optional[TreeNode]) -> int:
+    if not root:
+        return 0
+    
+    # 初始化队列和层和记录
+    queue = [root]
+    layer_sums = []
+    removable_nodes = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    while queue:
+        level_size = len(queue)
+        current_sum = 0
+        next_level = []
+        
+        for _ in range(level_size):
+            node = queue.pop(0)
+            current_sum += node.val
+            
+            # 记录可以被击破的节点
+            if (node.left and not node.right) or (node.right and not node.left):
+                removable_nodes.append((node, current_sum - node.val))
+            
+            if node.left:
+                next_level.append(node.left)
+            if node.right:
+                next_level.append(node.right)
+        
+        layer_sums.append(current_sum)
+        queue = next_level
+    
+    # 计算击破某个节点后的最大层和
+    max_sum = max(layer_sums)
+    for node, new_sum in removable_nodes:
+        max_sum = max(max_sum, new_sum + sum(layer_sums[node.level + 1:]))
+    
+    return max_sum
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_layer_sum)

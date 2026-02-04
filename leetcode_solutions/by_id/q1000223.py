@@ -21,22 +21,24 @@ LCP 38. 守卫城堡 - 城堡守卫游戏的胜利条件为使恶魔无法从出
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来检查恶魔是否可以到达城堡，并使用二分查找来确定最少需要放置的障碍物数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化地图，找到所有恶魔出生点和城堡的位置。
+2. 使用 BFS 检查恶魔是否可以到达城堡。
+3. 使用二分查找来确定最少需要放置的障碍物数量。
 
 关键点:
-- [TODO]
+- 使用 BFS 检查恶魔是否可以到达城堡。
+- 使用二分查找来优化障碍物数量的确定。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N log N)，其中 N 是网格的宽度。BFS 的时间复杂度是 O(N)，二分查找的时间复杂度是 O(log N)。
+空间复杂度: O(N)，用于存储 BFS 的队列和访问标记。
 """
 
 # ============================================================================
@@ -49,12 +51,56 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_obstacles_to_defend_castle(grid: List[str]) -> int:
+    def can_reach_castle(obstacles: int) -> bool:
+        # 创建一个新的地图，添加障碍物
+        new_grid = [list(row) for row in grid]
+        placed = 0
+        for i in range(2):
+            for j in range(n):
+                if new_grid[i][j] == '.' and placed < obstacles:
+                    new_grid[i][j] = '#'
+                    placed += 1
+        
+        # 初始化 BFS
+        queue = []
+        visited = set()
+        for i in range(2):
+            for j in range(n):
+                if new_grid[i][j] == 'S':
+                    queue.append((i, j))
+                    visited.add((i, j))
+        
+        while queue:
+            x, y = queue.pop(0)
+            if new_grid[x][y] == 'C':
+                return True
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < 2 and 0 <= ny < n and (nx, ny) not in visited and new_grid[nx][ny] != '#':
+                    if new_grid[nx][ny] == 'P':
+                        for px, py in portals:
+                            if (px, py) not in visited:
+                                queue.append((px, py))
+                                visited.add((px, py))
+                    else:
+                        queue.append((nx, ny))
+                        visited.add((nx, ny))
+        
+        return False
+    
+    n = len(grid[0])
+    portals = [(i, j) for i in range(2) for j in range(n) if grid[i][j] == 'P']
+    
+    left, right = 0, n
+    while left < right:
+        mid = (left + right) // 2
+        if can_reach_castle(mid):
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left if left < n else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_obstacles_to_defend_castle)

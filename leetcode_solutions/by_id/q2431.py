@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找出连续两年有 3 个及以上订单的产品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每一年每个产品的订单数。
+2. 使用自连接找到连续两年的订单数，并筛选出订单数大于等于 3 的产品。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `LAG` 或 `LEAD` 来获取前一年或后一年的数据。
+- 确保在自连接时正确处理年份和产品 ID。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是订单表的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储中间结果。
 """
 
 # ============================================================================
@@ -48,13 +49,44 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 实现最优解法
+    query = """
+    WITH OrderCounts AS (
+        SELECT 
+            product_id, 
+            YEAR(order_date) AS order_year, 
+            COUNT(*) AS order_count
+        FROM 
+            Orders
+        GROUP BY 
+            product_id, 
+            YEAR(order_date)
+    ),
+    ConsecutiveYears AS (
+        SELECT 
+            o1.product_id,
+            o1.order_year AS year1,
+            o2.order_year AS year2,
+            o1.order_count AS count1,
+            o2.order_count AS count2
+        FROM 
+            OrderCounts o1
+        JOIN 
+            OrderCounts o2
+        ON 
+            o1.product_id = o2.product_id AND o1.order_year + 1 = o2.order_year
+    )
+    SELECT DISTINCT 
+        product_id
+    FROM 
+        ConsecutiveYears
+    WHERE 
+        count1 >= 3 AND count2 >= 3
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

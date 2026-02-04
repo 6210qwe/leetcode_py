@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大字体大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_fit`，用于判断给定的字体大小是否可以适应屏幕。
+2. 初始化二分查找的左右边界。
+3. 在二分查找过程中，使用 `can_fit` 函数来调整左右边界，直到找到最大的适应屏幕的字体大小。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化时间复杂度。
+- 辅助函数 `can_fit` 用于判断当前字体大小是否适合屏幕。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log m)，其中 n 是句子中字符的数量，m 是字体大小的范围。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -44,17 +46,40 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def can_fit(sentence: str, screen_width: int, screen_height: int, font_size: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的字体大小是否可以适应屏幕。
     """
-    # TODO: 实现最优解法
-    pass
+    words = sentence.split()
+    max_width = 0
+    current_width = 0
+    lines = 1
+    
+    for word in words:
+        word_width = len(word) * font_size
+        if current_width + word_width > screen_width:
+            lines += 1
+            current_width = word_width
+            max_width = max(max_width, current_width)
+        else:
+            current_width += word_width + font_size  # 空格宽度
+    
+    return lines * font_size <= screen_height and max_width <= screen_width
 
+def max_font_to_fit_sentence(sentence: str, screen_width: int, screen_height: int, fonts: List[int]) -> int:
+    """
+    找出适应屏幕的最大字号。
+    """
+    left, right = 0, len(fonts) - 1
+    
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_fit(sentence, screen_width, screen_height, fonts[mid]):
+            left = mid
+        else:
+            right = mid - 1
+    
+    return fonts[left] if can_fit(sentence, screen_width, screen_height, fonts[left]) else -1
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_font_to_fit_sentence)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滚动哈希来检测字符串是否回到初始状态。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始字符串的哈希值。
+2. 逐次移除前 k 个字符，并在末尾添加 k 个任意字符，同时更新哈希值。
+3. 检查当前哈希值是否与初始哈希值相同，如果相同则返回所需的时间。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来高效地更新哈希值。
+- 通过模运算来避免哈希冲突。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_time_to_revert(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将单词恢复到初始状态所需的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    base = 257  # 基数
+    mod = 10**9 + 7  # 模数
+    n = len(word)
+    
+    # 计算初始字符串的哈希值
+    initial_hash = 0
+    power = 1
+    for i in range(n):
+        initial_hash = (initial_hash * base + ord(word[i])) % mod
+        power = (power * base) % mod
+    
+    # 计算初始子串的哈希值
+    current_hash = 0
+    for i in range(k):
+        current_hash = (current_hash * base + ord(word[i])) % mod
+    
+    # 检查每一步是否回到初始状态
+    for t in range(1, (n + k - 1) // k + 1):
+        if current_hash == initial_hash:
+            return t
+        # 更新哈希值
+        for i in range(k):
+            index = (t * k + i) % n
+            current_hash = (current_hash * base + ord(word[index])) % mod
+            current_hash = (current_hash - (ord(word[(t - 1) * k + i]) * power) % mod + mod) % mod
+    
+    return (n + k - 1) // k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_revert)

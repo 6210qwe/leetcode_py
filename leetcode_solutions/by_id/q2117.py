@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的频率，然后从小到大处理每个元素，确保每个元素和其两倍都存在且数量匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果数组长度为奇数，直接返回空数组。
+2. 使用哈希表记录每个元素的频率。
+3. 对数组进行排序。
+4. 遍历排序后的数组，对于每个元素：
+   - 如果该元素在哈希表中的频率为0，跳过。
+   - 检查该元素的两倍是否在哈希表中且频率大于0，如果不是，返回空数组。
+   - 否则，将该元素加入结果数组，并更新哈希表中该元素及其两倍的频率。
+5. 返回结果数组。
 
 关键点:
-- [TODO]
+- 通过排序确保先处理较小的元素。
+- 使用哈希表记录频率，确保每个元素及其两倍的数量匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 changed 的长度。主要由排序操作决定。
+空间复杂度: O(n)，用于存储哈希表和结果数组。
 """
 
 # ============================================================================
@@ -49,12 +56,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_original_array(changed: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从双倍数组中还原原数组
     """
-    # TODO: 实现最优解法
-    pass
+    if len(changed) % 2 != 0:
+        return []
+
+    from collections import Counter
+    count = Counter(changed)
+    changed.sort()
+
+    original = []
+    for num in changed:
+        if count[num] == 0:
+            continue
+        if count[2 * num] == 0:
+            return []
+        original.append(num)
+        count[num] -= 1
+        count[2 * num] -= 1
+
+    return original
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_original_array)

@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和动态规划来解决这个问题。我们首先计算每个可能的线段的最大奖品数，然后使用动态规划找到两个不重叠线段的最大奖品数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个可能的线段的最大奖品数。
+2. 使用动态规划找到两个不重叠线段的最大奖品数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来计算每个可能的线段的最大奖品数。
+- 使用动态规划来找到两个不重叠线段的最大奖品数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maximize_win(prize_positions: List[int], k: int) -> int:
+    n = len(prize_positions)
+    dp = [0] * (n + 1)
+    max_prizes = 0
+    j = 0
+    
+    for i in range(n):
+        # 移动右边界，直到找到一个有效的线段
+        while j < n and prize_positions[j] - prize_positions[i] <= k:
+            j += 1
+        # 更新 dp 数组
+        dp[j] = max(dp[j], dp[i] + j - i)
+        # 更新最大奖品数
+        max_prizes = max(max_prizes, dp[j] + i - j + n)
+    
+    return max_prizes
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_win)

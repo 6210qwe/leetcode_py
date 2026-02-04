@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并具有相同按位与结果的边，并使用深度优先搜索 (DFS) 来检查连通性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将所有节点初始化为独立集合。
+2. 遍历所有边，按位与计算每条边的权重，并将具有相同按位与结果的边合并到同一个集合中。
+3. 对于每个查询，使用并查集检查起点和终点是否在同一集合中，如果是，则返回该集合的按位与结果；否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地管理连通性。
+- 按位与操作的性质使得我们可以将具有相同按位与结果的边合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E + Q * α(n))，其中 E 是边的数量，Q 是查询的数量，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.min_cost = [float('inf')] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y, cost):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+                self.min_cost[root_x] &= cost
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+                self.min_cost[root_y] &= cost
+            else:
+                self.parent[root_y] = root_x
+                self.min_cost[root_x] &= cost
+                self.rank[root_x] += 1
 
-Solution = create_solution(solution_function_name)
+def min_cost_walk(n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
+    uf = UnionFind(n)
+    
+    for u, v, w in edges:
+        uf.union(u, v, w)
+    
+    result = []
+    for s, t in query:
+        if uf.find(s) == uf.find(t):
+            result.append(uf.min_cost[uf.find(s)])
+        else:
+            result.append(-1)
+    
+    return result
+
+Solution = create_solution(min_cost_walk)

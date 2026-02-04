@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 `dp[i][j]` 表示将前 `i` 个字符分成 `j` 个子字符串的最小修改次数。我们需要计算每个子字符串变成半回文串所需的最小修改次数，并更新 `dp` 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp` 数组，`dp[i][j]` 表示将前 `i` 个字符分成 `j` 个子字符串的最小修改次数。
+2. 计算每个子字符串变成半回文串所需的最小修改次数。
+3. 使用动态规划更新 `dp` 数组。
+4. 返回 `dp[n][k]`，即最终结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来优化子问题的解。
+- 计算每个子字符串变成半回文串所需的最小修改次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 * k)，其中 n 是字符串的长度，k 是子字符串的数量。
+空间复杂度: O(n * k)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_changes_to_make_k_semi_palindromes(s: str, k: int) -> int:
+    n = len(s)
+    
+    def min_changes_to_semi_palindrome(sub: str) -> int:
+        m = len(sub)
+        changes = float('inf')
+        for d in range(1, m):
+            if m % d == 0:
+                is_semi_palindrome = True
+                for i in range(d):
+                    if sub[i::d] != sub[i::d][::-1]:
+                        is_semi_palindrome = False
+                        break
+                if is_semi_palindrome:
+                    return 0
+        # 如果没有找到合适的 d，则计算将其变成回文串所需的最小修改次数
+        return sum(a != b for a, b in zip(sub, sub[::-1])) // 2
+    
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            for l in range(j - 1, i):
+                dp[i][j] = min(dp[i][j], dp[l][j - 1] + min_changes_to_semi_palindrome(s[l:i]))
+    
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_changes_to_make_k_semi_palindromes)

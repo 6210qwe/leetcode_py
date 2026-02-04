@@ -21,22 +21,31 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径，然后枚举所有可能的关闭分部组合，检查每种组合是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接矩阵表示图。
+2. 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径。
+3. 枚举所有可能的关闭分部组合。
+4. 对于每种组合，检查剩余分部之间的最远距离是否不超过 maxDistance。
+5. 计算满足条件的组合数量。
 
 关键点:
-- [TODO]
+- 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径。
+- 枚举所有可能的关闭分部组合，并检查每种组合是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 + 2^n * n^2)
+- Floyd-Warshall 算法的时间复杂度是 O(n^3)。
+- 枚举所有可能的关闭分部组合的时间复杂度是 O(2^n)，对于每种组合，检查最远距离的时间复杂度是 O(n^2)。
+
+空间复杂度: O(n^2)
+- 存储邻接矩阵的空间复杂度是 O(n^2)。
+- 其他辅助变量的空间复杂度是 O(1)。
 """
 
 # ============================================================================
@@ -49,12 +58,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, maxDistance: int, roads: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算关闭分部的可行集合数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接矩阵
+    dist = [[float('inf')] * n for _ in range(n)]
+    for i in range(n):
+        dist[i][i] = 0
+    for u, v, w in roads:
+        dist[u][v] = min(dist[u][v], w)
+        dist[v][u] = min(dist[v][u], w)
+
+    # 使用 Floyd-Warshall 算法计算所有节点对之间的最短路径
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    # 枚举所有可能的关闭分部组合
+    def is_valid_subset(subset: List[bool]) -> bool:
+        remaining_nodes = [i for i in range(n) if not subset[i]]
+        if not remaining_nodes:
+            return True
+        for i in remaining_nodes:
+            for j in remaining_nodes:
+                if dist[i][j] > maxDistance:
+                    return False
+        return True
+
+    count = 0
+    for mask in range(1 << n):
+        subset = [bool(mask & (1 << i)) for i in range(n)]
+        if is_valid_subset(subset):
+            count += 1
+
+    return count
 
 
 Solution = create_solution(solution_function_name)

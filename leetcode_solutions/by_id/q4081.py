@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列（堆）来确保在每一步都能选择最优的交易。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，用于存储当前可以进行的交易。
+2. 遍历所有交易，将每个交易加入堆中。
+3. 每次从堆中取出最大的交易，并更新当前余额。
+4. 如果当前余额小于0，则需要从堆中取出一些较小的交易来补偿，直到余额非负。
+5. 重复上述过程，直到所有交易都处理完毕。
 
 关键点:
-- [TODO]
+- 使用最大堆来动态选择最优的交易。
+- 确保在每一步操作后，余额始终非负。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是交易的数量。因为每次插入和删除堆的操作都是 O(log n)。
+空间复杂度: O(n)，因为我们需要存储所有的交易。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(transactions: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现不出现负余额的最大交易额
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将所有交易取反，以便使用最小堆
+    transactions = [-t for t in transactions]
+    heapq.heapify(transactions)
+    
+    max_balance = 0
+    current_balance = 0
+    
+    while transactions:
+        # 取出当前最大的交易
+        t = -heapq.heappop(transactions)
+        current_balance += t
+        max_balance = max(max_balance, current_balance)
+        
+        if current_balance < 0:
+            # 如果当前余额小于0，需要从堆中取出一些较小的交易来补偿
+            while current_balance < 0 and transactions:
+                small_t = -heapq.heappop(transactions)
+                current_balance -= small_t
+    
+    return max_balance
 
 Solution = create_solution(solution_function_name)

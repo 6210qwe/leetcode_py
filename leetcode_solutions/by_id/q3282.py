@@ -14,47 +14,52 @@
 # 问题描述
 # ============================================================================
 """
-2985. 计算订单平均商品数量 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+计算压缩后的平均值 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算压缩后的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从表中选择所有记录。
+2. 计算每个记录的压缩值。
+3. 计算所有记录的压缩值的平均值。
 
 关键点:
-- [TODO]
+- 使用 SQL 聚合函数和窗口函数来简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询来计算压缩后的平均值
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询
+    query = """
+    SELECT AVG(compressed_value) AS compressed_mean
+    FROM (
+        SELECT value, 
+               CASE 
+                   WHEN value > 0 THEN value * 0.5
+                   ELSE value * 2
+               END AS compressed_value
+        FROM table_name
+    ) AS subquery;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

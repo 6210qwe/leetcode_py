@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储宝石类型，然后遍历石头字符串，统计宝石的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将宝石类型字符串转换为一个集合，以便 O(1) 时间复杂度进行查找。
+2. 遍历石头字符串，对于每个字符，检查它是否在宝石集合中，如果是，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用集合来存储宝石类型，以实现高效的查找。
+- 遍历石头字符串时，使用集合的成员检查操作来判断当前石头是否为宝石。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 jewels 的长度，m 是 stones 的长度。需要 O(n) 的时间将 jewels 转换为集合，O(m) 的时间遍历 stones。
+空间复杂度: O(n)，用于存储珠宝集合。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_jewels_in_stones(jewels: str, stones: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算石头中有多少是宝石
     """
-    # TODO: 实现最优解法
-    pass
+    # 将宝石类型转换为集合
+    jewel_set = set(jewels)
+    
+    # 初始化计数器
+    count = 0
+    
+    # 遍历石头字符串
+    for stone in stones:
+        if stone in jewel_set:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_jewels_in_stones)

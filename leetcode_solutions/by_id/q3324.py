@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的出现次数，如果某个元素出现次数超过2次，则无法满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的出现次数。
+2. 检查是否有任何元素出现次数超过2次，如果有则返回 False。
+3. 否则返回 True。
 
 关键点:
-- [TODO]
+- 使用哈希表统计元素出现次数。
+- 检查是否有元素出现次数超过2次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历整个数组来统计元素出现次数。
+空间复杂度: O(n) - 使用哈希表存储元素出现次数。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以将数组分割成两个长度相等且各包含不同元素的部分
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表统计每个元素的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 检查是否有元素出现次数超过2次
+    for value in count.values():
+        if value > 2:
+            return False
+    
+    return True
 
 
 Solution = create_solution(solution_function_name)

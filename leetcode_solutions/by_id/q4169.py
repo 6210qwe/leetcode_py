@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 筛选出符合条件的顶尖学生。
+2. 对每个顶尖学生，按时间顺序获取他们的课程序列。
+3. 生成所有连续课程对，并统计每对课程的出现次数。
+4. 返回按频率排序的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个用户的完成课程数和平均评分。
+2. 筛选出完成至少 5 门课程且平均评分 4 分或以上的用户。
+3. 对每个筛选出的用户，按时间顺序获取他们的课程序列。
+4. 生成所有连续课程对，并使用字典统计每对课程的出现次数。
+5. 将统计结果转换为 DataFrame，并按要求排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行数据处理和统计。
+- 通过字典高效统计课程对的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 course_completions 表的行数。主要的时间开销在于排序操作。
+空间复杂度: O(m)，其中 m 是生成的课程对数量。需要存储每对课程的出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+from collections import defaultdict
 
+def solution(course_completions: pd.DataFrame) -> pd.DataFrame:
+    # 计算每个用户的完成课程数和平均评分
+    user_stats = course_completions.groupby('user_id').agg(
+        course_count=('course_id', 'count'),
+        average_rating=('course_rating', 'mean')
+    ).reset_index()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出完成至少 5 门课程且平均评分 4 分或以上的用户
+    top_students = user_stats[(user_stats['course_count'] >= 5) & (user_stats['average_rating'] >= 4)]['user_id']
 
+    # 筛选出顶尖学生的课程记录
+    top_student_courses = course_completions[course_completions['user_id'].isin(top_students)]
 
-Solution = create_solution(solution_function_name)
+    # 按用户和时间排序
+    top_student_courses = top_student_courses.sort_values(by=['user_id', 'completion_date'])
+
+    # 生成所有连续课程对
+    course_pairs = defaultdict(int)
+    for user_id, group in top_student_courses.groupby('user_id'):
+        courses = group['course_name'].tolist()
+        for i in range(1, len(courses)):
+            pair = (courses[i-1], courses[i])
+            course_pairs[pair] += 1
+
+    # 将统计结果转换为 DataFrame
+    result = pd.DataFrame({
+        'first_course': [pair[0] for pair in course_pairs.keys()],
+        'second_course': [pair[1] for pair in course_pairs.keys()],
+        'transition_count': list(course_pairs.values())
+    })
+
+    # 按要求排序
+    result = result.sort_values(by=['transition_count', 'first_course', 'second_course'], ascending=[False, True, True])
+
+    return result
+
+Solution = create_solution(solution)

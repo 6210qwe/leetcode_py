@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个字符串的字符计数作为键，值为具有相同字符计数的字符串列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表。
+2. 遍历输入的字符串数组，对于每个字符串，计算其字符计数并将其转换为元组（作为键）。
+3. 将字符串添加到哈希表中对应的键的列表中。
+4. 最后，将哈希表中的所有值（即字符串列表）收集起来作为结果返回。
 
 关键点:
-- [TODO]
+- 使用字符计数作为键，可以有效地将变位词归类在一起。
+- 字符计数可以通过排序后的字符串来表示，这样可以确保相同的变位词具有相同的键。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k log k)，其中 n 是输入字符串数组的长度，k 是字符串的最大长度。每个字符串需要 O(k log k) 的时间进行排序。
+空间复杂度: O(n * k)，哈希表需要存储所有字符串及其字符计数。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def group_anagrams(strs: List[str]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将所有变位词组合在一起
     """
-    # TODO: 实现最优解法
-    pass
+    anagram_map = {}
+    for s in strs:
+        # 使用排序后的字符串作为键
+        key = tuple(sorted(s))
+        if key not in anagram_map:
+            anagram_map[key] = []
+        anagram_map[key].append(s)
+    
+    return list(anagram_map.values())
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(group_anagrams)

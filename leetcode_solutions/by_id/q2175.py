@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点的子树大小，并在遍历过程中计算每个节点的分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 计算每个节点的子树大小。
+3. 在 DFS 过程中，计算每个节点的分数，并记录最高分数及其对应的节点数目。
 
 关键点:
-- [TODO]
+- 使用 DFS 递归地计算子树大小。
+- 在计算分数时，考虑删除当前节点后形成的子树大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数目。每个节点只被访问一次。
+空间复杂度: O(n)，用于存储树的邻接表和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_highest_score_nodes(parents: List[int]) -> int:
+    n = len(parents)
+    tree = [[] for _ in range(n)]
+    
+    # 构建树的邻接表
+    for i in range(1, n):
+        tree[parents[i]].append(i)
+    
+    max_score = 0
+    count = 0
+    
+    def dfs(node: int) -> int:
+        nonlocal max_score, count
+        size = 1
+        score = 1
+        
+        # 计算子树大小
+        for child in tree[node]:
+            child_size = dfs(child)
+            size += child_size
+            score *= child_size
+        
+        # 计算剩余部分的大小
+        if node != 0:
+            score *= (n - size)
+        
+        # 更新最高分数及其对应的节点数目
+        if score > max_score:
+            max_score = score
+            count = 1
+        elif score == max_score:
+            count += 1
+        
+        return size
+    
+    dfs(0)
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_highest_score_nodes)

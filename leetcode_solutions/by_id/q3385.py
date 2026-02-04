@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来匹配模式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历矩阵的每一个位置，作为可能的起点。
+2. 对于每个起点，使用 DFS 进行匹配。
+3. 在 DFS 中，检查当前位置是否符合模式，并递归地检查相邻位置。
+4. 如果找到一个完整的匹配路径，则返回 True。
+5. 如果遍历完所有位置都没有找到匹配路径，则返回 False。
 
 关键点:
-- [TODO]
+- 使用一个访问数组来记录已经访问过的位置，避免重复访问。
+- 递归时需要传递当前匹配到的模式字符索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 4^k)，其中 m 和 n 是矩阵的行数和列数，k 是模式的长度。每个位置最多有 4 个方向可以走。
+空间复杂度: O(k)，递归调用栈的深度最多为 k。
 """
 
 # ============================================================================
@@ -44,17 +48,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(matrix: List[List[str]], pattern: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查矩阵中是否存在给定的字母数字模式
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not matrix or not pattern:
+        return False
+    
+    m, n = len(matrix), len(matrix[0])
+    k = len(pattern)
+    
+    def dfs(x: int, y: int, index: int) -> bool:
+        if index == k:
+            return True
+        if x < 0 or x >= m or y < 0 or y >= n or matrix[x][y] != pattern[index]:
+            return False
+        temp, matrix[x][y] = matrix[x][y], '#'  # 标记已访问
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if dfs(x + dx, y + dy, index + 1):
+                return True
+        matrix[x][y] = temp  # 回溯
+        return False
+    
+    for i in range(m):
+        for j in range(n):
+            if dfs(i, j, 0):
+                return True
+    return False
 
 Solution = create_solution(solution_function_name)

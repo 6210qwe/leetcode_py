@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用闭包来记录函数是否已经被调用过。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个闭包函数 `once_fn`，并在其中定义一个标志变量 `called` 来记录函数是否已经被调用。
+2. 在 `once_fn` 中，如果 `called` 为 `False`，则调用原函数 `fn` 并将结果返回，同时将 `called` 置为 `True`。
+3. 如果 `called` 为 `True`，则直接返回 `None`。
 
 关键点:
-- [TODO]
+- 使用闭包来保存状态。
+- 通过标志变量 `called` 来控制函数的调用次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用的时间复杂度都是常数级。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any
 
+def once(fn: Callable) -> Callable:
+    called = False
+    result = None
+    
+    def once_fn(*args, **kwargs):
+        nonlocal called, result
+        if not called:
+            result = fn(*args, **kwargs)
+            called = True
+        return result if called else None
+    
+    return once_fn
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(once)

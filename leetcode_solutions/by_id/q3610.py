@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和最大堆来维护每个子数组的 x-sum。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个滑动窗口和一个最大堆。
+2. 滑动窗口从左到右遍历数组，更新窗口内的元素频率。
+3. 使用最大堆来维护频率最高的前 x 个元素。
+4. 对于每个窗口，计算 x-sum 并将其添加到结果数组中。
+5. 更新滑动窗口时，移除左侧元素并添加右侧元素，同时更新最大堆。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地处理子数组。
+- 使用最大堆来维护频率最高的前 x 个元素。
+- 在滑动窗口移动时，动态更新最大堆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log x)，其中 n 是数组长度，x 是需要保留的元素数量。每次插入和删除堆的操作时间复杂度为 O(log x)。
+空间复杂度: O(k)，其中 k 是子数组的长度。滑动窗口和最大堆的空间复杂度为 O(k)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def find_x_sum_subarrays(nums: List[int], k: int, x: int) -> List[int]:
+    def get_x_sum(freq):
+        # 获取频率最高的前 x 个元素的和
+        max_heap = [(-freq[num], num) for num in freq]
+        heapq.heapify(max_heap)
+        x_sum = 0
+        for _ in range(x):
+            if not max_heap:
+                break
+            _, num = heapq.heappop(max_heap)
+            x_sum += num
+        return x_sum
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = []
+    freq = {}
+    
+    # 初始化滑动窗口
+    for i in range(k):
+        freq[nums[i]] = freq.get(nums[i], 0) + 1
+    
+    # 计算第一个窗口的 x-sum
+    result.append(get_x_sum(freq))
+    
+    # 滑动窗口
+    for i in range(k, n):
+        # 移除左侧元素
+        freq[nums[i - k]] -= 1
+        if freq[nums[i - k]] == 0:
+            del freq[nums[i - k]]
+        
+        # 添加右侧元素
+        freq[nums[i]] = freq.get(nums[i], 0) + 1
+        
+        # 计算当前窗口的 x-sum
+        result.append(get_x_sum(freq))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_x_sum_subarrays)

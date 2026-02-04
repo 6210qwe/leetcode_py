@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次找到最左边的 0 并将其及其后的所有元素反转，直到所有元素都变为 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数为 0。
+2. 遍历数组，找到最左边的 0。
+3. 如果找到 0，则将其及其后的所有元素反转，并增加操作次数。
+4. 重复步骤 2 和 3，直到数组中没有 0。
 
 关键点:
-- [TODO]
+- 每次只反转最左边的 0 及其后的所有元素，这样可以确保每次操作都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_one(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 nums 中所有元素变为 1 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    n = len(nums)
+    
+    for i in range(n):
+        if nums[i] == 0:
+            # 反转从 i 到末尾的所有元素
+            for j in range(i, n):
+                nums[j] = 1 - nums[j]
+            operations += 1
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_one)

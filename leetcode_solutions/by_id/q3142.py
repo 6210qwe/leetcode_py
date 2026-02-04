@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为以第 i 个单词结尾的最长有效子序列的长度，并记录其前驱节点。通过遍历每个单词，检查其与之前单词的关系，更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i] 表示以第 i 个单词结尾的最长有效子序列的长度。
+2. 遍历每个单词，对于每个单词，再遍历之前的单词，检查是否满足条件（groups 不同且汉明距离为 1）。
+3. 更新 dp 数组，并记录前驱节点。
+4. 通过 dp 数组找到最长的有效子序列，并构造结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = max(dp[i], dp[j] + 1)，其中 j < i 且满足条件。
+- 记录前驱节点以便构造最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是 words 的长度，m 是每个单词的最大长度。
+空间复杂度: O(n)，用于存储 dp 数组和前驱节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(words: List[str], groups: List[int]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(words)
+    dp = [1] * n
+    prev = [-1] * n
+    max_len = 1
+    max_idx = 0
 
+    def hamming_distance(s1: str, s2: str) -> int:
+        return sum(c1 != c2 for c1, c2 in zip(s1, s2))
+
+    for i in range(1, n):
+        for j in range(i):
+            if groups[i] != groups[j] and len(words[i]) == len(words[j]) and hamming_distance(words[i], words[j]) == 1:
+                if dp[j] + 1 > dp[i]:
+                    dp[i] = dp[j] + 1
+                    prev[i] = j
+                    if dp[i] > max_len:
+                        max_len = dp[i]
+                        max_idx = i
+
+    result = []
+    while max_idx != -1:
+        result.append(words[max_idx])
+        max_idx = prev[max_idx]
+
+    return result[::-1]
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 递归比较两个 JSON 对象的每一个键值对
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查两个 JSON 对象是否都是字典或都是列表。如果不是，则直接返回 False。
+2. 如果是字典，检查键的数量和键的集合是否相同。然后递归比较每个键对应的值。
+3. 如果是列表，检查长度是否相同。然后递归比较每个位置的元素。
+4. 如果是基本类型（如字符串、数字、布尔值、None），直接比较。
 
 关键点:
-- [TODO]
+- 递归比较时需要处理不同类型的 JSON 值
+- 使用 `type` 函数来判断 JSON 值的类型
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 JSON 对象的总节点数
+空间复杂度: O(d)，其中 d 是 JSON 对象的最大深度
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any
 
 
-def solution_function_name(params):
+def is_json_deep_equal(json1: Any, json2: Any) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两个 JSON 对象是否完全相等
     """
-    # TODO: 实现最优解法
-    pass
+    if type(json1) != type(json2):
+        return False
+
+    if isinstance(json1, dict):
+        if len(json1) != len(json2):
+            return False
+        for key in json1:
+            if key not in json2 or not is_json_deep_equal(json1[key], json2[key]):
+                return False
+        return True
+
+    if isinstance(json1, list):
+        if len(json1) != len(json2):
+            return False
+        for i in range(len(json1)):
+            if not is_json_deep_equal(json1[i], json2[i]):
+                return False
+        return True
+
+    # 基本类型
+    return json1 == json2
 
 
-Solution = create_solution(solution_function_name)
+Solution = is_json_deep_equal

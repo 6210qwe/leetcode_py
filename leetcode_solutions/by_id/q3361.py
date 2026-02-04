@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的替换，找到最晚的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串分割成小时和分钟部分。
+2. 对小时部分进行处理，确保其在 00 到 11 之间。
+3. 对分钟部分进行处理，确保其在 00 到 59 之间。
+4. 返回拼接后的最晚时间。
 
 关键点:
-- [TODO]
+- 通过枚举所有可能的替换，找到最晚的时间。
+- 确保小时和分钟部分都在有效范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定长度的字符串处理。
+空间复杂度: O(1) - 只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换字符可以得到的最晚时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串分割成小时和分钟部分
+    hour, minute = s[:2], s[3:]
+
+    # 处理小时部分
+    if hour[0] == '?':
+        if hour[1] == '?' or int(hour[1]) <= 3:
+            hour = '2' + (hour[1] if hour[1] != '?' else '3')
+        else:
+            hour = '1' + hour[1]
+    if hour[1] == '?':
+        hour = hour[0] + ('9' if hour[0] == '1' else '3')
+
+    # 处理分钟部分
+    if minute[0] == '?':
+        minute = '5' + minute[1]
+    if minute[1] == '?':
+        minute = minute[0] + '9'
+
+    return f"{hour}:{minute}"
 
 
 Solution = create_solution(solution_function_name)

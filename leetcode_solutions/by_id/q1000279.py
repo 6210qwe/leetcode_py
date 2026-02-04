@@ -21,22 +21,26 @@ LCR 036. 逆波兰表达式求值 - 根据 逆波兰表示法 [https://baike.bai
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理逆波兰表达式。遍历表达式中的每个元素，如果是数字则入栈，如果是运算符则从栈中弹出两个数字进行计算，并将结果重新入栈。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历表达式中的每个元素：
+   - 如果是数字，则将其转换为整数并入栈。
+   - 如果是运算符，则从栈中弹出两个数字，进行相应的运算，并将结果重新入栈。
+3. 最后栈中剩下的唯一元素即为表达式的计算结果。
 
 关键点:
-- [TODO]
+- 使用栈来存储中间结果。
+- 注意运算符的顺序和优先级。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 tokens 的长度。每个元素只会被处理一次。
+空间复杂度: O(n)，最坏情况下栈的大小为 n/2。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def eval_rpn(tokens: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算逆波兰表达式的值
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+
+    for token in tokens:
+        if token in {"+", "-", "*", "/"}:
+            right_operand = stack.pop()
+            left_operand = stack.pop()
+            if token == "+":
+                result = left_operand + right_operand
+            elif token == "-":
+                result = left_operand - right_operand
+            elif token == "*":
+                result = left_operand * right_operand
+            else:  # token == "/"
+                result = int(left_operand / right_operand)  # 向零取整
+            stack.append(result)
+        else:
+            stack.append(int(token))
+
+    return stack[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(eval_rpn)

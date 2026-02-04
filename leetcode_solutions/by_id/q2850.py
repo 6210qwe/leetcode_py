@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法构造最长的新字符串。首先尽量使用 "AB" 字符串，然后交替使用 "AA" 和 "BB" 字符串以避免出现 "AAA" 或 "BBB"。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 "AB" 字符串的数量。
+2. 计算 "AA" 和 "BB" 字符串的数量，取较小值并交替使用。
+3. 如果 "AA" 和 "BB" 数量不相等，额外使用一个剩余的 "AA" 或 "BB" 字符串。
 
 关键点:
-- [TODO]
+- 优先使用 "AB" 字符串，因为它不会导致 "AAA" 或 "BBB"。
+- 交替使用 "AA" 和 "BB" 字符串以避免连续相同的字符。
+- 最后处理剩余的 "AA" 或 "BB" 字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为只涉及常数次的计算。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(x: int, y: int, z: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回新字符串的最大可能长度
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用所有的 "AB" 字符串
+    max_length = z * 2
+    
+    # 交替使用 "AA" 和 "BB" 字符串
+    min_pairs = min(x, y)
+    max_length += min_pairs * 4
+    
+    # 如果 "AA" 和 "BB" 数量不相等，额外使用一个剩余的 "AA" 或 "BB" 字符串
+    if x != y:
+        max_length += 2
+    
+    return max_length
 
 Solution = create_solution(solution_function_name)

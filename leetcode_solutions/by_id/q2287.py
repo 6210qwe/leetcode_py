@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每对点之间的斜率来确定它们是否在同一条直线上。如果两个点 (x1, y1) 和 (x2, y2) 在同一条直线上，那么它们的斜率 (y2 - y1) / (x2 - x1) 应该是相同的。为了避免浮点数精度问题，我们使用分数表示斜率，并将每个点与其斜率存储在一个字典中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `lines` 来存储每条直线上的点。
+2. 遍历所有点，对于每一对点，计算它们的斜率并将其存储在字典中。
+3. 统计字典中每条直线上的点的数量，找到最多的点数。
 
 关键点:
-- [TODO]
+- 使用最大公约数 (GCD) 来简化斜率的表示，避免浮点数精度问题。
+- 使用字典来存储每条直线上的点，便于统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log(max_val))，其中 n 是点的数量，max_val 是点坐标的最大值。需要遍历所有点对，并计算每对点的 GCD。
+空间复杂度: O(n^2)，最坏情况下每对点都在不同的直线上，需要存储 n^2 个斜率。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def minimum_lines(points: List[List[int]]) -> int:
+    def gcd(a: int, b: int) -> int:
+        while b:
+            a, b = b, a % b
+        return a
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    lines = {}
+    n = len(points)
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            x1, y1 = points[i]
+            x2, y2 = points[j]
+            dx = x2 - x1
+            dy = y2 - y1
+            g = gcd(dx, dy)
+            slope = (dx // g, dy // g)
+            if slope not in lines:
+                lines[slope] = set()
+            lines[slope].add(i)
+            lines[slope].add(j)
+    
+    max_points_on_line = 0
+    for line in lines.values():
+        max_points_on_line = max(max_points_on_line, len(line))
+    
+    return n - max_points_on_line + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_lines)

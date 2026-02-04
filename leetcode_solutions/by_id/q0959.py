@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，然后通过两层循环和哈希表查找来计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Counter 记录数组中每个元素的出现次数。
+2. 遍历数组中的每一对元素 (i, j)，计算它们的和 sum_ij。
+3. 在哈希表中查找 target - sum_ij 的出现次数，并累加到结果中。
+4. 特殊处理重复元素的情况，确保不重复计算。
 
 关键点:
-- [TODO]
+- 使用 Counter 来高效统计元素出现次数。
+- 通过哈希表查找来快速计算满足条件的三元组数量。
+- 处理重复元素时，使用组合数学公式来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def threeSumMulti(arr: List[int], target: int) -> int:
+    MOD = 10**9 + 7
+    count = Counter(arr)
+    keys = sorted(count.keys())
+    result = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(keys)):
+        for j in range(i, len(keys)):
+            k = target - keys[i] - keys[j]
+            if k in count:
+                if i < j < k:
+                    result += count[keys[i]] * count[keys[j]] * count[k]
+                elif i == j < k:
+                    result += count[keys[i]] * (count[keys[i]] - 1) // 2 * count[k]
+                elif i < j == k:
+                    result += count[keys[i]] * count[keys[j]] * (count[keys[j]] - 1) // 2
+                elif i == j == k:
+                    result += count[keys[i]] * (count[keys[i]] - 1) * (count[keys[i]] - 2) // 6
 
+    return result % MOD
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(threeSumMulti)

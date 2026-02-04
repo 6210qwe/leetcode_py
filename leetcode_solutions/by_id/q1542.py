@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历来找到最长的连续相同字符子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`max_length` 用于记录最大连续字符长度，`current_length` 用于记录当前连续字符长度。
+2. 遍历字符串 `s`：
+   - 如果当前字符与前一个字符相同，则增加 `current_length`。
+   - 如果当前字符与前一个字符不同，则更新 `max_length` 并重置 `current_length` 为 1。
+3. 最后返回 `max_length` 和 `current_length` 中的最大值。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到最长的连续相同字符子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串 s 的能量
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return 0
+
+    max_length = 1
+    current_length = 1
+
+    for i in range(1, len(s)):
+        if s[i] == s[i - 1]:
+            current_length += 1
+        else:
+            max_length = max(max_length, current_length)
+            current_length = 1
+
+    return max(max_length, current_length)
 
 
 Solution = create_solution(solution_function_name)

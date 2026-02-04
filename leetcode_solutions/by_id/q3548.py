@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算满足条件的好整数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个动态规划数组 dp，其中 dp[i][j] 表示长度为 i 的回文数且模 k 余 j 的数量。
+2. 遍历所有可能的数字组合，更新 dp 数组。
+3. 计算最终结果，即所有长度为 n 且模 k 余 0 的回文数的数量。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 使用组合数学来处理数字的排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 10 * 10 * k) = O(1000 * n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_integers(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 个数位的整数中，有多少个好整数。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [[[0 for _ in range(k)] for _ in range(10)] for _ in range(n + 1)]
+    
+    # 初始化 dp 数组
+    for d in range(1, 10):
+        dp[1][d][d % k] = 1
+    
+    # 动态规划更新 dp 数组
+    for length in range(2, n + 1):
+        for d1 in range(1, 10):
+            for d2 in range(10):
+                for mod in range(k):
+                    new_mod = (mod * 10 + d2) % k
+                    dp[length][d1][new_mod] += dp[length - 1][d2][mod]
+                    dp[length][d1][new_mod] %= MOD
+    
+    # 计算最终结果
+    result = sum(dp[n][d][0] for d in range(1, 10)) % MOD
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_integers)

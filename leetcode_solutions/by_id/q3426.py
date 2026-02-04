@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串 s，维护当前候诊室中的人数，并记录最大人数以确定最少椅子数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：current_people 用于记录当前候诊室中的人数，max_people 用于记录最大人数。
+2. 遍历字符串 s：
+   - 如果字符为 'E'，则 current_people 加 1。
+   - 如果字符为 'L'，则 current_people 减 1。
+   - 更新 max_people 为 current_people 和 max_people 中的较大值。
+3. 返回 max_people 作为最少椅子数。
 
 关键点:
-- [TODO]
+- 通过遍历字符串并维护当前人数和最大人数，可以高效地确定最少椅子数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_chairs(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算候诊室中的最少椅子数
     """
-    # TODO: 实现最优解法
-    pass
+    current_people = 0
+    max_people = 0
+    
+    for event in s:
+        if event == 'E':
+            current_people += 1
+        elif event == 'L':
+            current_people -= 1
+        max_people = max(max_people, current_people)
+    
+    return max_people
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_chairs)

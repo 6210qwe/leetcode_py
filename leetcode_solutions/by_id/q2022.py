@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义两个状态变量：
+- even_sum: 当前以偶数下标结尾的最大交替和
+- odd_sum: 当前以奇数下标结尾的最大交替和
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 even_sum 为第一个元素，odd_sum 为 0。
+2. 遍历数组，从第二个元素开始，更新 even_sum 和 odd_sum。
+3. 返回 even_sum 和 odd_sum 中的最大值。
 
 关键点:
-- [TODO]
+- 通过维护两个状态变量，我们可以在线性时间内找到最大交替和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_alternating_subsequence_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组的最大交替子序列和
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    even_sum = nums[0]
+    odd_sum = 0
+
+    for i in range(1, len(nums)):
+        new_even_sum = max(even_sum, odd_sum + nums[i])
+        new_odd_sum = max(odd_sum, even_sum - nums[i])
+        even_sum, odd_sum = new_even_sum, new_odd_sum
+
+    return max(even_sum, odd_sum)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_alternating_subsequence_sum)

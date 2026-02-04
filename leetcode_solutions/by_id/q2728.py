@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 每次从每一行中选择最大的数，然后在这些数中选择最大的数加入分数。重复这个过程直到矩阵为空。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对每一行进行降序排序。
+2. 逐列遍历矩阵，每次选择当前列中最大的数加入分数。
+3. 重复步骤2直到所有列都被处理完。
 
 关键点:
-- [TODO]
+- 通过预先对每一行进行降序排序，可以简化后续的选择过程。
+- 每次选择当前列中最大的数，确保每一步都选择了当前最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(n))，其中 m 是矩阵的行数，n 是矩阵的列数。每一行的排序时间复杂度是 O(n * log(n))，共需要对 m 行进行排序。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中的和
     """
-    # TODO: 实现最优解法
-    pass
+    # 对每一行进行降序排序
+    for row in nums:
+        row.sort(reverse=True)
+    
+    score = 0
+    # 逐列遍历矩阵
+    for col in range(len(nums[0])):
+        max_val = 0
+        for row in nums:
+            max_val = max(max_val, row[col])
+        score += max_val
+    
+    return score
 
 
 Solution = create_solution(solution_function_name)

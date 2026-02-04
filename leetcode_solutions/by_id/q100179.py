@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归的方法来查找两个节点的最近公共祖先。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点是 None 或者等于 p 或 q，则返回当前节点。
+2. 递归查找左子树和右子树。
+3. 如果左右子树都找到了 p 或 q，则当前节点是最近公共祖先。
+4. 如果只有一边找到了 p 或 q，则返回找到的那个节点。
 
 关键点:
-- [TODO]
+- 递归地查找左右子树。
+- 如果左右子树都找到了 p 或 q，则当前节点是最近公共祖先。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数，因为每个节点最多被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度，这是由于递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def lowest_common_ancestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+    if not root or root == p or root == q:
+        return root
+    
+    left = lowest_common_ancestor(root.left, p, q)
+    right = lowest_common_ancestor(root.right, p, q)
+    
+    if left and right:
+        return root
+    return left if left else right
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(lowest_common_ancestor)

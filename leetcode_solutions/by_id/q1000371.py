@@ -21,22 +21,24 @@ LCP 42. 玩具套圈 - 「力扣挑战赛」场地外，小力组织了一个套
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用几何距离判断玩具是否被圈套中
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每个玩具，计算其与每个圈的距离。
+2. 如果某个圈的中心到玩具中心的距离小于等于圈的半径减去玩具的半径，则该玩具被套中。
+3. 统计被套中的玩具数量。
 
 关键点:
-- [TODO]
+- 使用欧几里得距离公式计算两点之间的距离。
+- 通过遍历和比较来确定玩具是否被套中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 toys 的长度，m 是 circles 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(toys: List[List[int]], circles: List[List[int]], r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算成功套中的玩具数量
     """
-    # TODO: 实现最优解法
-    pass
+    def is_covered(toy, circle):
+        toy_x, toy_y, toy_r = toy
+        circle_x, circle_y = circle
+        distance = ((toy_x - circle_x) ** 2 + (toy_y - circle_y) ** 2) ** 0.5
+        return distance <= r - toy_r
+
+    count = 0
+    for toy in toys:
+        if any(is_covered(toy, circle) for circle in circles):
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

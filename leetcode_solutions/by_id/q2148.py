@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，将学生和座位分别排序后，计算每个学生移动到对应座位的最小步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 seats 和 students 数组进行排序。
+2. 计算每个学生移动到对应座位的步数，并累加总步数。
 
 关键点:
-- [TODO]
+- 通过排序，我们可以确保每个学生移动到最近的座位，从而达到最少移动次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 seats 和 students 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_moves_to_seat_everyone(seats: List[int], students: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使每位学生都有座位的最少移动次数。
+    
+    :param seats: 座位的位置列表
+    :param students: 学生的位置列表
+    :return: 最少移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 seats 和 students 进行排序
+    seats.sort()
+    students.sort()
+    
+    # 计算每个学生移动到对应座位的步数，并累加总步数
+    total_moves = sum(abs(seat - student) for seat, student in zip(seats, students))
+    
+    return total_moves
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_seat_everyone)

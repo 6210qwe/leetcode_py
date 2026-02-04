@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算字符串中偶数下标和奇数下标的数字之和，并比较它们是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `even_sum` 和 `odd_sum` 为 0，分别用于存储偶数下标和奇数下标的数字之和。
+2. 遍历字符串中的每个字符，根据其下标是偶数还是奇数，将对应的数字加到 `even_sum` 或 `odd_sum` 中。
+3. 比较 `even_sum` 和 `odd_sum` 是否相等，如果相等则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 通过一次遍历字符串来计算偶数下标和奇数下标的数字之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_balanced_string(num: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查给定的字符串是否为平衡字符串
     """
-    # TODO: 实现最优解法
-    pass
+    even_sum = 0
+    odd_sum = 0
+    
+    for i, char in enumerate(num):
+        if i % 2 == 0:
+            even_sum += int(char)
+        else:
+            odd_sum += int(char)
+    
+    return even_sum == odd_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_balanced_string)

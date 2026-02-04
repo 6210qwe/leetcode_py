@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 分别提取字母和特殊字符，分别反转后再放回原位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 提取字符串中的所有字母并存储在一个列表中。
+2. 提取字符串中的所有特殊字符并存储在一个列表中。
+3. 反转字母列表和特殊字符列表。
+4. 构建新的字符串，按原位置将反转后的字母和特殊字符放回。
 
 关键点:
-- [TODO]
+- 使用两个指针分别指向字母和特殊字符列表，构建新的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符只处理一次。
+空间复杂度: O(n)，需要额外的空间存储字母和特殊字符。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 反转字符串中的字母和特殊字符
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取字母和特殊字符
+    letters = [c for c in s if c.isalpha()]
+    specials = [c for c in s if not c.isalpha()]
+
+    # 反转字母和特殊字符
+    letters.reverse()
+    specials.reverse()
+
+    # 构建新的字符串
+    letter_index = 0
+    special_index = 0
+    result = []
+
+    for c in s:
+        if c.isalpha():
+            result.append(letters[letter_index])
+            letter_index += 1
+        else:
+            result.append(specials[special_index])
+            special_index += 1
+
+    return ''.join(result)
 
 
 Solution = create_solution(solution_function_name)

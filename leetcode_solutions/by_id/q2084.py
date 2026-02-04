@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法来最大化工作周数。如果最大的项目任务数大于其他所有项目的任务数之和，则最多可以工作 (总任务数 - 最大任务数) * 2 + 1 周。否则，可以工作总任务数周。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总任务数 total 和最大任务数 max_milestone。
+2. 如果 max_milestone 大于等于 total - max_milestone，则返回 (total - max_milestone) * 2 + 1。
+3. 否则，返回 total。
 
 关键点:
-- [TODO]
+- 通过比较最大任务数和其他任务数之和来决定最大工作周数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 milestones 的长度。需要遍历一次数组来计算总任务数和最大任务数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_weeks(milestones: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多能工作多少周
     """
-    # TODO: 实现最优解法
-    pass
+    total = sum(milestones)
+    max_milestone = max(milestones)
+    
+    if max_milestone >= total - max_milestone:
+        return (total - max_milestone) * 2 + 1
+    else:
+        return total
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_weeks)

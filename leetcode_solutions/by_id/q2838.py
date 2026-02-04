@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逆序处理查询来避免重复计算，并使用集合来记录已经更新过的行和列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果总和为 0。
+2. 使用两个集合分别记录已经更新过的行和列。
+3. 逆序遍历查询列表：
+   - 对于每条查询，检查该行或列是否已经被更新过。
+   - 如果没有被更新过，则根据查询类型更新总和，并将该行或列标记为已更新。
+4. 返回最终的总和。
 
 关键点:
-- [TODO]
+- 逆序处理查询可以确保每次更新都是基于最新的状态。
+- 使用集合来记录已经更新过的行和列，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(q)，其中 q 是查询的数量。
+空间复杂度: O(n)，用于存储已经更新过的行和列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sum_of_matrix_after_queries(n: int, queries: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算执行完所有查询后的矩阵元素之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化结果总和
+    total_sum = 0
+    # 使用集合记录已经更新过的行和列
+    updated_rows = set()
+    updated_cols = set()
 
+    # 逆序遍历查询列表
+    for query in reversed(queries):
+        query_type, index, value = query
+        if query_type == 0:  # 更新行
+            if index not in updated_rows:
+                total_sum += value * (n - len(updated_cols))
+                updated_rows.add(index)
+        else:  # 更新列
+            if index not in updated_cols:
+                total_sum += value * (n - len(updated_rows))
+                updated_cols.add(index)
 
-Solution = create_solution(solution_function_name)
+    return total_sum
+
+Solution = create_solution(sum_of_matrix_after_queries)

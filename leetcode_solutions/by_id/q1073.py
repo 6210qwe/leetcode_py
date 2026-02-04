@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来标记所有可以从边界到达的陆地单元格，然后计算剩余的陆地单元格数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与 grid 大小相同的 visited 矩阵，用于记录访问状态。
+2. 从边界上的每个陆地单元格开始进行 DFS，将所有可以到达的陆地单元格标记为已访问。
+3. 遍历整个 grid，统计未被标记的陆地单元格数量。
 
 关键点:
-- [TODO]
+- 从边界开始进行 DFS，确保所有可以到达边界的陆地单元格都被标记。
+- 只统计未被标记的陆地单元格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 grid 的行数和列数。每个单元格最多访问一次。
+空间复杂度: O(m * n)，最坏情况下递归栈的深度可能达到 m * n。
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def numEnclaves(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算飞地的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    rows, cols = len(grid), len(grid[0])
+    visited = [[False] * cols for _ in range(rows)]
+
+    def dfs(r: int, c: int):
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == 0 or visited[r][c]:
+            return
+        visited[r][c] = True
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        for dr, dc in directions:
+            dfs(r + dr, c + dc)
+
+    # 从边界开始进行 DFS
+    for r in range(rows):
+        dfs(r, 0)
+        dfs(r, cols - 1)
+    for c in range(cols):
+        dfs(0, c)
+        dfs(rows - 1, c)
+
+    # 统计未被标记的陆地单元格数量
+    enclaves = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1 and not visited[r][c]:
+                enclaves += 1
+
+    return enclaves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numEnclaves)

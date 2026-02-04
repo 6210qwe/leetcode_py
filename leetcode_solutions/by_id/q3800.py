@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 预计算每个相邻对的最长公共前缀。
+2. 对于每个下标 i，移除该下标后，只需要考虑移除前后相邻对的变化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算原始数组中所有相邻对的最长公共前缀。
+2. 对于每个下标 i，移除该下标后，更新相邻对的最长公共前缀。
+3. 返回每个下标 i 移除后的最长公共前缀的最大值。
 
 关键点:
-- [TODO]
+- 使用预计算来减少重复计算。
+- 通过动态更新相邻对的最长公共前缀来优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是单词的平均长度。
+空间复杂度: O(n)，用于存储相邻对的最长公共前缀。
 """
 
 # ============================================================================
@@ -49,12 +53,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_common_prefix(s1: str, s2: str) -> int:
+    """计算两个字符串的最长公共前缀长度"""
+    min_len = min(len(s1), len(s2))
+    for i in range(min_len):
+        if s1[i] != s2[i]:
+            return i
+    return min_len
+
+
+def solution_function_name(words: List[str]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(words)
+    if n == 1:
+        return [0]
+
+    # 预计算所有相邻对的最长公共前缀
+    lcp = [0] * (n - 1)
+    for i in range(n - 1):
+        lcp[i] = longest_common_prefix(words[i], words[i + 1])
+
+    # 结果数组
+    result = [0] * n
+
+    # 处理第一个和最后一个元素
+    result[0] = lcp[0]
+    result[-1] = lcp[-1]
+
+    # 处理中间元素
+    for i in range(1, n - 1):
+        result[i] = max(lcp[i - 1], lcp[i])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

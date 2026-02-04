@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来记录那些在正面和背面相同的数字，然后遍历所有数字，找到最小的且不在集合中的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个集合来存储那些在正面和背面相同的数字。
+2. 初始化一个变量 `min_value` 为无穷大。
+3. 遍历所有卡片，如果某个数字不在集合中且小于 `min_value`，更新 `min_value`。
+4. 返回 `min_value`，如果 `min_value` 仍为无穷大，则返回 0。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找那些在正面和背面相同的数字。
+- 遍历所有数字，找到最小的且不在集合中的数字。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def flip_game(fronts: List[int], backs: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现翻转卡片游戏
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个集合来存储那些在正面和背面相同的数字
+    same_numbers = set()
+    for i in range(len(fronts)):
+        if fronts[i] == backs[i]:
+            same_numbers.add(fronts[i])
+    
+    # 初始化最小值
+    min_value = float('inf')
+    
+    # 遍历所有卡片，找到最小的且不在集合中的数字
+    for num in fronts + backs:
+        if num not in same_numbers and num < min_value:
+            min_value = num
+    
+    # 返回结果
+    return min_value if min_value != float('inf') else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(flip_game)

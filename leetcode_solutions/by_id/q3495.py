@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来维护前 k 个最近的障碍物。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，用于存储前 k 个最近的障碍物。
+2. 遍历每个查询，计算当前障碍物到原点的距离。
+3. 如果堆的大小小于 k，直接将当前障碍物加入堆中。
+4. 如果堆的大小等于 k，比较当前障碍物与堆顶元素的距离：
+   - 如果当前障碍物更近，则移除堆顶元素，并将当前障碍物加入堆中。
+5. 每次查询后，如果堆的大小小于 k，结果为 -1；否则，结果为堆顶元素的距离。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地维护前 k 个最近的障碍物。
+- 通过比较和替换堆顶元素来保持堆的大小不超过 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是 queries 的长度，每次插入和删除操作的时间复杂度为 O(log k)。
+空间复杂度: O(k)，堆的最大大小为 k。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def kth_nearest_obstacle_queries(queries: List[List[int]], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回每次查询后离原点第 k 近障碍物的距离。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最大堆
+    max_heap = []
+    results = []
 
+    for x, y in queries:
+        distance = abs(x) + abs(y)
+        
+        # 如果堆的大小小于 k，直接将当前障碍物加入堆中
+        if len(max_heap) < k:
+            heapq.heappush(max_heap, -distance)
+        else:
+            # 如果当前障碍物比堆顶元素更近，则替换堆顶元素
+            if distance < -max_heap[0]:
+                heapq.heapreplace(max_heap, -distance)
+        
+        # 如果堆的大小小于 k，结果为 -1；否则，结果为堆顶元素的距离
+        if len(max_heap) < k:
+            results.append(-1)
+        else:
+            results.append(-max_heap[0])
+    
+    return results
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_nearest_obstacle_queries)

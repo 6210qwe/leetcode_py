@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算数组和对 k 的余数，然后通过减少数组中的元素来消除这个余数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组和对 k 的余数。
+2. 如果余数为 0，直接返回 0。
+3. 否则，计算每个元素对 k 的余数，并统计这些余数的频率。
+4. 通过减少数组中的元素来消除余数，找到最小的操作次数。
 
 关键点:
-- [TODO]
+- 使用哈希表统计每个余数的频率。
+- 通过贪心算法找到最小的操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +52,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组和对 k 的余数
+    total_sum = sum(nums)
+    remainder = total_sum % k
+    
+    if remainder == 0:
+        return 0
+    
+    # 统计每个元素对 k 的余数
+    freq = [0] * k
+    for num in nums:
+        freq[num % k] += 1
+    
+    # 通过减少数组中的元素来消除余数
+    operations = 0
+    for i in range(1, k // 2 + 1):
+        while freq[i] > 0 and freq[k - i] > 0:
+            freq[i] -= 1
+            freq[k - i] -= 1
+            operations += 2
+    
+    # 处理中间的余数
+    if k % 2 == 0 and freq[k // 2] > 0:
+        operations += 1
+    
+    # 处理剩余的余数
+    for i in range(1, k // 2 + 1):
+        if freq[i] > 0:
+            operations += min(freq[i], remainder // i)
+    
+    return operations
 
 
 Solution = create_solution(solution_function_name)

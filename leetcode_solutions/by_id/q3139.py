@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录每个元素上次出现的位置，从而快速计算出每个子数组的不同元素数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量：模数 MOD = 10^9 + 7，前缀和数组 prefix_sum，结果 result = 0。
+2. 遍历数组 nums，对于每个元素 nums[i]：
+   - 更新前缀和数组 prefix_sum。
+   - 使用哈希表 last_seen 记录每个元素上次出现的位置。
+   - 计算当前子数组的不同元素数目，并更新结果 result。
+3. 返回结果 result。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表来高效计算每个子数组的不同元素数目。
+- 通过遍历数组并更新前缀和和哈希表，可以在线性时间内完成计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。每个元素只处理一次。
+空间复杂度: O(n)，需要额外的空间来存储前缀和数组和哈希表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def sum_of_squares(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    last_seen = {}
+    result = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        # 更新前缀和
+        prefix_sum[i + 1] = prefix_sum[i] + 1
+        if nums[i] in last_seen:
+            # 如果元素之前出现过，更新前缀和
+            prefix_sum[i + 1] -= prefix_sum[last_seen[nums[i]]]
+        # 更新哈希表
+        last_seen[nums[i]] = i + 1
+        # 计算当前子数组的不同元素数目
+        distinct_count = prefix_sum[i + 1]
+        # 更新结果
+        result = (result + distinct_count * distinct_count) % MOD
 
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_squares)

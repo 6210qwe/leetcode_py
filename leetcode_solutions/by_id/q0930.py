@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和记忆化搜索来生成所有可能的真二叉树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `all_possible_FBT` 来生成所有可能的真二叉树。
+2. 如果 n 为 1，返回一个只有一个节点的树。
+3. 对于奇数 n，尝试将 n 分成两个部分，分别生成左子树和右子树。
+4. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 只有当 n 为奇数时，才能生成真二叉树。
+- 使用记忆化搜索来优化递归过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n) - 每个节点都有两种选择（左子树或右子树），且递归深度为 n。
+空间复杂度: O(n) - 递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -44,17 +47,37 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def all_possible_FBT(N: int) -> List[Optional[TreeNode]]:
+    if N % 2 == 0:
+        return []
+    
+    memo = {}
+    
+    def helper(n):
+        if n in memo:
+            return memo[n]
+        
+        if n == 1:
+            return [TreeNode(0)]
+        
+        result = []
+        for i in range(1, n, 2):
+            left_trees = helper(i)
+            right_trees = helper(n - i - 1)
+            
+            for left in left_trees:
+                for right in right_trees:
+                    root = TreeNode(0)
+                    root.left = left
+                    root.right = right
+                    result.append(root)
+        
+        memo[n] = result
+        return result
+    
+    return helper(N)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(all_possible_FBT)

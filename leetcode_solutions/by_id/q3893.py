@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将输入字符串转换为驼峰命名格式，并进行必要的字符过滤和截断。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 分割输入字符串为单词列表。
+2. 将第一个单词保持原样，其余单词首字母大写，其余字母小写。
+3. 合并所有单词为一个字符串，并在前面加上 '#'。
+4. 移除所有非英文字母字符。
+5. 截断结果字符串为最多 100 个字符。
 
 关键点:
-- [TODO]
+- 使用 `str.split()` 方法分割字符串。
+- 使用 `str.capitalize()` 方法将单词首字母大写。
+- 使用 `isalpha()` 方法检查字符是否为英文字母。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。我们需要遍历整个字符串进行处理。
+空间复杂度: O(n)，最坏情况下需要存储与输入字符串等长的结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def generate_tag_for_video_caption(caption: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    生成视频标题的有效标签。
     """
-    # TODO: 实现最优解法
-    pass
+    # 分割输入字符串为单词列表
+    words = caption.split()
+    
+    # 将第一个单词保持原样，其余单词首字母大写，其余字母小写
+    camel_case_words = [words[0].lower()] + [word.capitalize() for word in words[1:]]
+    
+    # 合并所有单词为一个字符串，并在前面加上 '#'
+    tag = "#" + "".join(camel_case_words)
+    
+    # 移除所有非英文字母字符
+    tag = ''.join(char for char in tag if char.isalpha() or char == '#')
+    
+    # 截断结果字符串为最多 100 个字符
+    tag = tag[:100]
+    
+    return tag
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_tag_for_video_caption)

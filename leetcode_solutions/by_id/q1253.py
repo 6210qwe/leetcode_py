@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每条对角线进行排序，然后将排序后的值放回原矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典来存储每条对角线的元素。
+2. 遍历矩阵，将每条对角线的元素存入字典中。
+3. 对字典中的每条对角线进行排序。
+4. 再次遍历矩阵，将排序后的对角线元素放回原矩阵。
 
 关键点:
-- [TODO]
+- 使用字典存储对角线元素，键为对角线的起始位置 (i - j)。
+- 对每条对角线进行排序。
+- 将排序后的对角线元素放回原矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(min(m, n)))，其中 m 和 n 分别是矩阵的行数和列数。排序操作的时间复杂度为 O(k * log k)，k 为对角线的长度。
+空间复杂度: O(m * n)，用于存储对角线元素的字典。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_matrix_diagonally(mat: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 对矩阵的每条对角线进行排序
     """
-    # TODO: 实现最优解法
-    pass
+    if not mat or not mat[0]:
+        return mat
+
+    m, n = len(mat), len(mat[0])
+    diagonals = {}
+
+    # 存储每条对角线的元素
+    for i in range(m):
+        for j in range(n):
+            if i - j not in diagonals:
+                diagonals[i - j] = []
+            diagonals[i - j].append(mat[i][j])
+
+    # 对每条对角线进行排序
+    for key in diagonals:
+        diagonals[key].sort()
+
+    # 将排序后的对角线元素放回原矩阵
+    for i in range(m):
+        for j in range(n):
+            mat[i][j] = diagonals[i - j].pop(0)
+
+    return mat
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_matrix_diagonally)

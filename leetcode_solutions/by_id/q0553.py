@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 为了使表达式的值最大，我们需要尽可能地减少除法操作。通过将所有除法操作放在括号内，可以确保第一个数被后面的数的最大乘积除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果数组长度为1，直接返回该数。
+2. 如果数组长度为2，直接返回 "a/b"。
+3. 如果数组长度大于2，返回 "a/(b/c/d/...)" 的形式。
 
 关键点:
-- [TODO]
+- 通过将所有除法操作放在括号内，确保第一个数被后面的数的最大乘积除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。我们需要遍历整个数组来构建表达式。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def optimal_division(nums: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回具有最大值的对应表达式
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) == 1:
+        return str(nums[0])
+    if len(nums) == 2:
+        return f"{nums[0]}/{nums[1]}"
+    
+    # 构建 "a/(b/c/d/...)" 形式的表达式
+    return f"{nums[0]}/(" + "/".join(map(str, nums[1:])) + ")"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(optimal_division)

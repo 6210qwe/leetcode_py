@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 模拟水滴的流动过程，优先向左流，其次向右流，最后垂直下落。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从当前位置开始，尝试向左流动，找到最低点。
+2. 如果最低点比当前高度低，更新位置。
+3. 否则，尝试向右流动，找到最低点。
+4. 如果最低点比当前高度低，更新位置。
+5. 否则，垂直下落。
+6. 更新高度数组，并返回最终的高度数组。
 
 关键点:
-- [TODO]
+- 通过双指针方法找到左右两侧的最低点。
+- 保持高度数组的实时更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是高度数组的长度，m 是倒水的数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def pourWater(heights: List[int], volume: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    for _ in range(volume):
+        # 尝试向左流动
+        i = k
+        while i > 0 and heights[i] >= heights[i - 1]:
+            i -= 1
+        while i < k and heights[i] == heights[i + 1]:
+            i += 1
+        if i != k:
+            heights[i] += 1
+            continue
+        
+        # 尝试向右流动
+        i = k
+        while i < len(heights) - 1 and heights[i] >= heights[i + 1]:
+            i += 1
+        while i > k and heights[i] == heights[i - 1]:
+            i -= 1
+        if i != k:
+            heights[i] += 1
+            continue
+        
+        # 垂直下落
+        heights[k] += 1
+    
+    return heights
 
-
-Solution = create_solution(solution_function_name)
+Solution = pourWater

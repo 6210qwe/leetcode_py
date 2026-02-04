@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储键值对及其过期时间，并使用一个计时器来管理过期时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `cache` 来存储键值对及其过期时间。
+2. `set` 方法：检查键是否已存在且未过期，如果存在则更新值和过期时间并返回 True，否则插入新键值对并返回 False。
+3. `get` 方法：检查键是否存在且未过期，如果存在则返回值，否则返回 -1。
+4. `count` 方法：遍历字典，统计未过期的键的数量。
 
 关键点:
-- [TODO]
+- 使用字典来存储键值对及其过期时间。
+- 使用 `time.time()` 来管理过期时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - `set` 和 `get` 操作的时间复杂度都是 O(1)，`count` 操作的时间复杂度是 O(n)，其中 n 是缓存中的键的数量。
+空间复杂度: O(n) - 存储键值对及其过期时间的空间复杂度是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import time
 
+class TimeLimitedCache:
+    def __init__(self):
+        self.cache = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def set(self, key: int, value: int, duration: int) -> bool:
+        current_time = time.time()
+        if key in self.cache and self.cache[key][1] > current_time:
+            self.cache[key] = (value, current_time + duration / 1000)
+            return True
+        else:
+            self.cache[key] = (value, current_time + duration / 1000)
+            return False
 
+    def get(self, key: int) -> int:
+        current_time = time.time()
+        if key in self.cache and self.cache[key][1] > current_time:
+            return self.cache[key][0]
+        return -1
 
-Solution = create_solution(solution_function_name)
+    def count(self) -> int:
+        current_time = time.time()
+        return sum(1 for key in self.cache if self.cache[key][1] > current_time)
+
+# 示例测试
+if __name__ == "__main__":
+    cache = TimeLimitedCache()
+    print(cache.set(1, 42, 100))  # False
+    print(cache.get(1))           # 42
+    print(cache.count())          # 1
+    time.sleep(0.15)
+    print(cache.get(1))           # -1
+    print(cache.count())          # 0

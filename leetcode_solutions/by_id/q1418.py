@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）和剪枝来找到最小的不公平程度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `distribution` 来记录每个孩子的饼干总数。
+2. 使用递归函数 `dfs` 来尝试将每个饼干包分配给每个孩子，并更新 `distribution`。
+3. 在每次递归中，计算当前分配方案的不公平程度，并更新全局最小值 `min_unfairness`。
+4. 使用剪枝技术来减少不必要的递归调用，例如如果当前不公平程度已经大于 `min_unfairness`，则停止递归。
 
 关键点:
-- [TODO]
+- 使用剪枝技术来优化DFS，避免不必要的计算。
+- 通过递归和回溯来遍历所有可能的分配方案。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k^n)，其中 n 是饼干包的数量，k 是孩子的数量。由于使用了剪枝技术，实际运行时间会比最坏情况好很多。
+空间复杂度: O(n + k)，递归调用栈的深度为 n，`distribution` 数组的大小为 k。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def distribute_cookies(cookies: List[int], k: int) -> int:
+    def dfs(index: int, distribution: List[int]):
+        nonlocal min_unfairness
+        if index == len(cookies):
+            min_unfairness = min(min_unfairness, max(distribution))
+            return
+        if min_unfairness <= max(distribution):
+            return
+        for i in range(k):
+            distribution[i] += cookies[index]
+            dfs(index + 1, distribution)
+            distribution[i] -= cookies[index]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    min_unfairness = float('inf')
+    dfs(0, [0] * k)
+    return min_unfairness
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_cookies)

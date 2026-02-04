@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找在列方向上找到峰值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右边界 l 和 r。
+2. 进行二分查找：
+   - 计算中间列 mid。
+   - 找到中间列的最大值及其行索引。
+   - 比较最大值与其左边和右边的值：
+     - 如果最大值大于左边和右边的值，则返回该位置。
+     - 如果左边的值大于最大值，则将右边界移动到 mid - 1。
+     - 否则，将左边界移动到 mid + 1。
+3. 返回找到的峰值位置。
 
 关键点:
-- [TODO]
+- 利用二分查找在列方向上进行搜索，确保时间复杂度为 O(m log(n))。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findPeakGrid(mat: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找峰值元素
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    l, r = 0, n - 1
+    
+    while l <= r:
+        mid = (l + r) // 2
+        max_row = 0
+        for i in range(m):
+            if mat[i][mid] > mat[max_row][mid]:
+                max_row = i
+        
+        left_val = mat[max_row][mid - 1] if mid > 0 else float('-inf')
+        right_val = mat[max_row][mid + 1] if mid < n - 1 else float('-inf')
+        
+        if mat[max_row][mid] > left_val and mat[max_row][mid] > right_val:
+            return [max_row, mid]
+        elif left_val > mat[max_row][mid]:
+            r = mid - 1
+        else:
+            l = mid + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = findPeakGrid

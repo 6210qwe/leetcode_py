@@ -21,22 +21,26 @@ LCP 61. 气温变化趋势 - 力扣城计划在两地设立「力扣嘉年华」
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个温度数组，比较相邻两天的趋势是否相同，并记录最长的相同趋势天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，分别指向 `temperatureA` 和 `temperatureB` 的起始位置。
+2. 遍历数组，比较 `temperatureA[i]` 和 `temperatureA[i+1]` 以及 `temperatureB[j]` 和 `temperatureB[j+1]` 的趋势。
+3. 如果趋势相同，增加计数器 `count`，否则重置 `count`。
+4. 更新最大连续天数 `max_count`。
+5. 返回 `max_count`。
 
 关键点:
-- [TODO]
+- 使用双指针遍历数组，确保每次比较相邻两天的趋势。
+- 使用变量 `count` 记录当前连续相同趋势的天数，使用 `max_count` 记录最大连续天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是温度数组的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(temperatureA: List[int], temperatureB: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回两地气温变化趋势相同的最大连续天数
     """
-    # TODO: 实现最优解法
-    pass
+    def get_trend(temp1: int, temp2: int) -> int:
+        if temp1 < temp2:
+            return 1  # 上升趋势
+        elif temp1 == temp2:
+            return 0  # 平稳趋势
+        else:
+            return -1  # 下降趋势
+
+    max_count = 0
+    count = 0
+    n = len(temperatureA)
+
+    for i in range(n - 1):
+        trendA = get_trend(temperatureA[i], temperatureA[i + 1])
+        trendB = get_trend(temperatureB[i], temperatureB[i + 1])
+
+        if trendA == trendB:
+            count += 1
+        else:
+            count = 0
+
+        max_count = max(max_count, count)
+
+    return max_count
 
 
 Solution = create_solution(solution_function_name)

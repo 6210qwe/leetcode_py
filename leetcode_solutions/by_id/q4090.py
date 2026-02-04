@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来记录字符 'a' 和 'b' 的平衡情况。当遇到 'a' 时，将其压入栈中；当遇到 'b' 时，如果栈顶是 'a'，则弹出栈顶元素。最后栈中剩下的元素即为无法配对的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s：
+   - 如果当前字符是 'a'，将其压入栈中。
+   - 如果当前字符是 'b' 且栈顶是 'a'，则弹出栈顶元素。
+3. 最后栈中剩下的元素个数即为最小长度。
 
 关键点:
-- [TODO]
+- 使用栈来记录和匹配 'a' 和 'b'。
+- 通过弹出栈顶元素来实现 'a' 和 'b' 的配对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会存储所有的字符。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_length_after_removals(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算经过任意次数的操作后，字符串可能的最小长度。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if char == 'a':
+            stack.append(char)
+        elif char == 'b' and stack and stack[-1] == 'a':
+            stack.pop()
+    return len(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_length_after_removals)

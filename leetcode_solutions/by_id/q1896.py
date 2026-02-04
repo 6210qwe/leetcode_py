@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示在前 i 步操作中选择了 j 个开头元素的最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维 DP 数组 dp，大小为 (m+1) x (m+1)，并将其所有值初始化为负无穷。
+2. 设置 dp[0][0] = 0，表示初始状态下的分数为 0。
+3. 遍历每一步操作，对于每一步操作，考虑两种情况：选择开头元素或选择末尾元素。
+4. 更新 DP 数组中的值，取两种情况中的最大值。
+5. 最终结果是 dp[m][0] 到 dp[m][m] 中的最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过二维 DP 数组来记录不同状态下的最大分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m^2)
+空间复杂度: O(m^2)
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_score(nums: List[int], multipliers: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算执行乘法运算的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(nums), len(multipliers)
+    dp = [[float('-inf')] * (m + 1) for _ in range(m + 1)]
+    dp[0][0] = 0
 
+    for i in range(1, m + 1):
+        for j in range(i + 1):
+            if j > 0:
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + multipliers[i - 1] * nums[j - 1])
+            if i - j > 0:
+                dp[i][j] = max(dp[i][j], dp[i - 1][j] + multipliers[i - 1] * nums[n - (i - j)])
 
-Solution = create_solution(solution_function_name)
+    return max(dp[m])
+
+Solution = create_solution(max_score)

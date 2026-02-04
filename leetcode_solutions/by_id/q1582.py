@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储浏览历史，并使用一个指针来表示当前所在的页面。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将 homepage 添加到历史记录列表中，并将指针指向该页面。
+2. 当调用 visit 方法时，将新的 URL 添加到历史记录列表中，并更新指针位置。同时，删除指针之后的所有记录。
+3. 当调用 back 方法时，根据给定的步数向后移动指针，并返回指针所在位置的 URL。
+4. 当调用 forward 方法时，根据给定的步数向前移动指针，并返回指针所在位置的 URL。
 
 关键点:
-- [TODO]
+- 使用一个列表来存储浏览历史，使用一个指针来表示当前所在的页面。
+- 在 visit 方法中，删除指针之后的所有记录。
+- 在 back 和 forward 方法中，确保指针不会越界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 所有操作的时间复杂度都是常数级别。
+空间复杂度: O(n) - 其中 n 是浏览历史的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+class BrowserHistory:
+
+    def __init__(self, homepage: str):
+        self.history = [homepage]  # 存储浏览历史
+        self.current_index = 0  # 当前页面的索引
+
+    def visit(self, url: str) -> None:
+        # 删除当前页面之后的所有记录
+        self.history = self.history[:self.current_index + 1]
+        self.history.append(url)
+        self.current_index += 1
+
+    def back(self, steps: int) -> str:
+        # 向后移动指针
+        self.current_index = max(0, self.current_index - steps)
+        return self.history[self.current_index]
+
+    def forward(self, steps: int) -> str:
+        # 向前移动指针
+        self.current_index = min(len(self.history) - 1, self.current_index + steps)
+        return self.history[self.current_index]
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(BrowserHistory)

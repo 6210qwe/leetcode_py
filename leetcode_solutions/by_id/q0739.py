@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来解决这个问题。从右向左遍历温度数组，维护一个递减栈，栈中存储的是温度的索引。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果数组 `answer`，长度与 `temperatures` 相同，初始值为 0。
+2. 从右向左遍历 `temperatures` 数组。
+3. 对于每个温度，使用一个循环来弹出栈顶元素，直到栈为空或栈顶元素对应的温度大于当前温度。
+4. 如果栈不为空，则栈顶元素对应的索引就是下一个更高温度的索引，计算天数差并存入 `answer`。
+5. 将当前温度的索引入栈。
 
 关键点:
-- [TODO]
+- 使用单调栈可以在线性时间内找到每个温度的下一个更高温度。
+- 从右向左遍历可以确保每次处理时栈中的元素都是当前温度右侧的温度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `temperatures` 的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下栈中会存储所有的温度索引。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def daily_temperatures(temperatures: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个数组，表示每个温度的下一个更高温度出现在几天后。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(temperatures)
+    answer = [0] * n
+    stack = []
+
+    for i in range(n - 1, -1, -1):
+        while stack and temperatures[stack[-1]] <= temperatures[i]:
+            stack.pop()
+        if stack:
+            answer[i] = stack[-1] - i
+        stack.append(i)
+
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(daily_temperatures)

@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索 (DFS) 来计算每个节点的最大路径和和最小路径和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树。
+2. 第一次 DFS 计算每个节点的最大路径和。
+3. 第二次 DFS 计算每个节点的最小路径和。
+4. 遍历所有节点，计算每个节点作为根节点时的最大开销，并返回最大值。
 
 关键点:
-- [TODO]
+- 使用两次 DFS 分别计算最大路径和和最小路径和。
+- 通过维护父节点信息来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_min_price_sum(n: int, edges: List[List[int]], price: List[int]) -> int:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 第一次 DFS 计算每个节点的最大路径和
+    def dfs_max(node: int, parent: int) -> int:
+        max_sum = price[node]
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                max_sum = max(max_sum, price[node] + dfs_max(neighbor, node))
+        return max_sum
 
+    # 第二次 DFS 计算每个节点的最小路径和
+    def dfs_min(node: int, parent: int) -> int:
+        min_sum = price[node]
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                min_sum = min(min_sum, price[node] + dfs_min(neighbor, node))
+        return min_sum
 
-Solution = create_solution(solution_function_name)
+    # 计算每个节点作为根节点时的最大开销
+    max_cost = 0
+    for i in range(n):
+        max_path_sum = dfs_max(i, -1)
+        min_path_sum = dfs_min(i, -1)
+        max_cost = max(max_cost, max_path_sum - min_path_sum)
+
+    return max_cost
+
+Solution = create_solution(max_min_price_sum)

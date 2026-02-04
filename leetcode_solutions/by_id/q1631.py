@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与计数的方法来计算和为奇数的子数组数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `even_count` 和 `odd_count`，分别记录当前前缀和为偶数和奇数的子数组数量。
+2. 遍历数组，更新前缀和，并根据前缀和的奇偶性更新计数器。
+3. 根据前缀和的奇偶性计算当前子数组的贡献。
 
 关键点:
-- [TODO]
+- 使用前缀和的奇偶性来判断子数组的和是否为奇数。
+- 通过维护两个计数器来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回和为奇数的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    even_count, odd_count = 1, 0  # 初始时，前缀和为0，是偶数
+    prefix_sum, result = 0, 0
+
+    for num in arr:
+        prefix_sum += num
+        if prefix_sum % 2 == 0:
+            # 当前前缀和为偶数，之前的奇数前缀和可以构成奇数和的子数组
+            result += odd_count
+            even_count += 1
+        else:
+            # 当前前缀和为奇数，之前的偶数前缀和可以构成奇数和的子数组
+            result += even_count
+            odd_count += 1
+
+    return result % MOD
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，先对数组进行排序，然后遍历数组，确保每个元素都比前一个元素大。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化一个变量 `moves` 来记录操作次数。
+3. 遍历排序后的数组，对于每个元素，如果它不大于前一个元素，则将其增加到前一个元素加一，并更新 `moves`。
+4. 返回 `moves`。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每个元素都比前一个元素大，从而使得数组中的每个值都唯一。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_increment_for_unique(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组唯一的最小增量
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    nums.sort()
+    moves = 0
+    for i in range(1, len(nums)):
+        if nums[i] <= nums[i - 1]:
+            diff = nums[i - 1] - nums[i] + 1
+            nums[i] += diff
+            moves += diff
+
+    return moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_increment_for_unique)

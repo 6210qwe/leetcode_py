@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和最小公倍数（LCM）来找到第 k 小的金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count` 来计算在给定金额 x 下，所有硬币面额的倍数中小于等于 x 的数量。
+2. 使用二分查找来确定第 k 小的金额。初始范围是 [1, 2 * 10^9]。
+3. 在每次二分查找中，计算中间值 mid，并使用 `count` 函数来判断小于等于 mid 的金额数量是否大于等于 k。
+4. 如果数量大于等于 k，则缩小右边界；否则，缩小左边界。
+5. 最终返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用最小公倍数来避免重复计算。
+- 二分查找的时间复杂度较低，适合处理大范围的 k 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_k))，其中 n 是 coins 的长度，max_k 是 k 的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +51,32 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from math import gcd
 
 
-def solution_function_name(params):
+def lcm(a, b):
+    return a * b // gcd(a, b)
+
+
+def count(coins, x):
+    total = 0
+    for coin in coins:
+        total += x // coin
+    return total
+
+
+def solution_function_name(coins: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找和最小公倍数来找到第 k 小的金额。
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 1, 2 * 10**9
+    while left < right:
+        mid = (left + right) // 2
+        if count(coins, mid) < k:
+            left = mid + 1
+        else:
+            right = mid
+    return left
 
 
 Solution = create_solution(solution_function_name)

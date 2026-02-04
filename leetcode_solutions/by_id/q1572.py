@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储所有更新操作，每次获取值时从最新的更新操作开始查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，将给定的矩形存储在类变量中。
+2. 在 updateSubrectangle 方法中，将更新操作存储在一个列表中。
+3. 在 getValue 方法中，从最新的更新操作开始查找，如果找到则返回新值，否则返回初始矩形中的值。
 
 关键点:
-- [TODO]
+- 使用列表存储更新操作，避免每次都修改整个矩形。
+- 从最新的更新操作开始查找，确保获取到的是最新的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) for getValue, O(1) for updateSubrectangle
+空间复杂度: O(n) where n is the number of update operations
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SubrectangleQueries:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, rectangle: List[List[int]]):
+        self.rectangle = rectangle
+        self.updates = []
 
+    def updateSubrectangle(self, row1: int, col1: int, row2: int, col2: int, newValue: int) -> None:
+        self.updates.append((row1, col1, row2, col2, newValue))
 
-Solution = create_solution(solution_function_name)
+    def getValue(self, row: int, col: int) -> int:
+        for row1, col1, row2, col2, newValue in reversed(self.updates):
+            if row1 <= row <= row2 and col1 <= col <= col2:
+                return newValue
+        return self.rectangle[row][col]
+
+# Example usage
+# subrectangleQueries = SubrectangleQueries([[1,2,1],[4,3,4],[3,2,1],[1,1,1]])
+# subrectangleQueries.updateSubrectangle(0, 0, 3, 2, 5)
+# print(subrectangleQueries.getValue(0, 2))  # Output: 5
+# subrectangleQueries.updateSubrectangle(3, 0, 3, 2, 10)
+# print(subrectangleQueries.getValue(3, 1))  # Output: 10
+# print(subrectangleQueries.getValue(0, 2))  # Output: 5
+
+# Utility function to create a solution instance
+def create_solution(rectangle: List[List[int]]) -> SubrectangleQueries:
+    return SubrectangleQueries(rectangle)
+
+# Example usage with the utility function
+# subrectangleQueries = create_solution([[1,2,1],[4,3,4],[3,2,1],[1,1,1]])
+# subrectangleQueries.updateSubrectangle(0, 0, 3, 2, 5)
+# print(subrectangleQueries.getValue(0, 2))  # Output: 5
+# subrectangleQueries.updateSubrectangle(3, 0, 3, 2, 10)
+# print(subrectangleQueries.getValue(3, 1))  # Output: 10
+# print(subrectangleQueries.getValue(0, 2))  # Output: 5

@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将原矩阵展平成一维数组，然后按新矩阵的形状重新排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查重塑是否可行，即原矩阵的元素总数是否等于新矩阵的元素总数。
+2. 如果可行，将原矩阵展平成一维数组。
+3. 按新矩阵的形状重新排列一维数组中的元素。
+4. 返回重塑后的矩阵。
 
 关键点:
-- [TODO]
+- 使用列表推导式来展平和重新排列矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是原矩阵的行数和列数。
+空间复杂度: O(m * n)，因为需要存储展平后的一维数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def matrix_reshape(mat: List[List[int]], r: int, c: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    重塑矩阵 - 将一个 m x n 矩阵重塑为另一个大小不同（r x c）的新矩阵，但保留其原始数据。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    
+    # 检查重塑是否可行
+    if m * n != r * c:
+        return mat
+    
+    # 展平原矩阵
+    flat_list = [element for row in mat for element in row]
+    
+    # 重新排列成新矩阵
+    reshaped_matrix = [flat_list[i * c:(i + 1) * c] for i in range(r)]
+    
+    return reshaped_matrix
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(matrix_reshape)

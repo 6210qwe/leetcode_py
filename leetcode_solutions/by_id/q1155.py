@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用子查询来找到每个产品的最早销售年份，然后筛选出该年份的所有销售记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每个产品的最早销售年份。
+2. 筛选出这些最早年份的所有销售记录。
 
 关键点:
-- [TODO]
+- 使用 `MIN` 函数和 `GROUP BY` 来找到每个产品的最早销售年份。
+- 使用 `IN` 子查询来筛选出这些最早年份的所有销售记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是销售记录的数量。子查询和连接操作的时间复杂度通常为 O(n log n)。
+空间复杂度: O(1)，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(sales: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现产品销售分析 III
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入转换为字典，方便后续处理
+    sales_dict = {}
+    for sale in sales:
+        sale_id, product_id, year, quantity, price = sale
+        if product_id not in sales_dict:
+            sales_dict[product_id] = []
+        sales_dict[product_id].append((year, quantity, price))
+
+    # 找到每个产品的最早销售年份
+    earliest_years = {product_id: min(years) for product_id, years in ((product_id, [year for year, _, _ in sales]) for product_id, sales in sales_dict.items())}
+
+    # 筛选出这些最早年份的所有销售记录
+    result = []
+    for product_id, sales in sales_dict.items():
+        for year, quantity, price in sales:
+            if year == earliest_years[product_id]:
+                result.append([product_id, year, quantity, price])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列和广度优先搜索来处理每个查询。首先对查询进行排序，然后使用优先队列来扩展可以访问的单元格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将查询按值从小到大排序。
+2. 使用优先队列存储可以访问的单元格及其值。
+3. 对于每个查询，从优先队列中取出所有小于当前查询值的单元格，并将其相邻单元格加入优先队列。
+4. 记录每个查询的结果。
 
 关键点:
-- [TODO]
+- 使用优先队列来高效地扩展可以访问的单元格。
+- 每个查询的结果基于前一个查询的结果进行更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m * n + k) log(m * n))
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def maxPoints(grid: List[List[int]], queries: List[int]) -> List[int]:
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    visited = [[False] * n for _ in range(m)]
+    
+    def in_bounds(x, y):
+        return 0 <= x < m and 0 <= y < n
+    
+    # 优先队列，存储 (值, 行, 列)
+    pq = []
+    heapq.heappush(pq, (grid[0][0], 0, 0))
+    visited[0][0] = True
+    result = [0] * len(queries)
+    query_indices = sorted(range(len(queries)), key=lambda i: queries[i])
+    
+    points = 0
+    for i in query_indices:
+        while pq and pq[0][0] < queries[i]:
+            val, x, y = heapq.heappop(pq)
+            points += 1
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if in_bounds(nx, ny) and not visited[nx][ny]:
+                    visited[nx][ny] = True
+                    heapq.heappush(pq, (grid[nx][ny], nx, ny))
+        result[i] = points
+    
+    return [result[i] for i in query_indices]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxPoints)

@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用两个堆（优先队列）分别存储采购订单和销售订单。
+- 对于每笔订单，根据其类型进行处理：
+  - 采购订单：尝试与积压订单中价格最低的销售订单匹配。
+  - 销售订单：尝试与积压订单中价格最高的采购订单匹配。
+- 无法匹配的订单加入积压订单。
+- 最后计算积压订单中的订单总数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个堆：`buy_heap` 和 `sell_heap`，分别用于存储采购订单和销售订单。
+2. 遍历所有订单：
+   - 对于采购订单，尝试与 `sell_heap` 中价格最低的销售订单匹配。
+   - 对于销售订单，尝试与 `buy_heap` 中价格最高的采购订单匹配。
+   - 无法匹配的订单加入相应的堆。
+3. 计算积压订单中的订单总数。
 
 关键点:
-- [TODO]
+- 使用 Python 的 `heapq` 模块来实现堆。
+- 通过负数来实现最大堆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是订单的数量。每次插入和弹出堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，最坏情况下所有订单都进入积压订单。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def getNumberOfBacklogOrders(orders: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    buy_heap = []  # 最大堆，存储采购订单
+    sell_heap = []  # 最小堆，存储销售订单
+    
+    for price, amount, order_type in orders:
+        if order_type == 0:  # 采购订单
+            while amount > 0 and sell_heap and sell_heap[0][0] <= price:
+                sell_price, sell_amount = heapq.heappop(sell_heap)
+                match_amount = min(amount, sell_amount)
+                amount -= match_amount
+                sell_amount -= match_amount
+                if sell_amount > 0:
+                    heapq.heappush(sell_heap, (sell_price, sell_amount))
+            if amount > 0:
+                heapq.heappush(buy_heap, (-price, amount))
+        else:  # 销售订单
+            while amount > 0 and buy_heap and -buy_heap[0][0] >= price:
+                buy_price, buy_amount = heapq.heappop(buy_heap)
+                match_amount = min(amount, buy_amount)
+                amount -= match_amount
+                buy_amount -= match_amount
+                if buy_amount > 0:
+                    heapq.heappush(buy_heap, (buy_price, buy_amount))
+            if amount > 0:
+                heapq.heappush(sell_heap, (price, amount))
+    
+    total_orders = sum(amount for _, amount in buy_heap + sell_heap) % MOD
+    return total_orders
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(getNumberOfBacklogOrders)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和计数来找到最小的删除次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的频率。
+2. 将字符频率排序。
+3. 从最高频率开始，尝试将其他频率调整到当前频率的范围内 [freq - k, freq + k]。
+4. 计算需要删除的字符数，选择最小的删除次数。
 
 关键点:
-- [TODO]
+- 通过排序和贪心算法，确保每次调整都尽量减少删除次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。排序操作的时间复杂度是 O(n log n)，统计频率和遍历操作是 O(n)。
+空间复杂度: O(1)，因为只使用了常数级的额外空间（忽略输入输出）。
 """
 
 # ============================================================================
@@ -49,12 +51,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_deletions_to_make_k_special(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使字符串成为 k 特殊字符串需要删除的最少字符数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的频率
+    freq = [0] * 26
+    for char in word:
+        freq[ord(char) - ord('a')] += 1
+    
+    # 去除频率为 0 的字符
+    freq = [f for f in freq if f > 0]
+    
+    # 将字符频率排序
+    freq.sort()
+    
+    # 计算最小删除次数
+    min_deletions = float('inf')
+    for i in range(len(freq)):
+        target_freq = freq[i]
+        deletions = 0
+        for j in range(len(freq)):
+            if freq[j] < target_freq - k:
+                deletions += freq[j]
+            elif freq[j] > target_freq + k:
+                deletions += freq[j] - (target_freq + k)
+        
+        min_deletions = min(min_deletions, deletions)
+    
+    return min_deletions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_deletions_to_make_k_special)

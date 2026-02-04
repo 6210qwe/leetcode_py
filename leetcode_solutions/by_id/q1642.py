@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过循环不断计算可以兑换的新瓶子数量，并累加到总瓶子数量中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总瓶子数量 total_bottles 为 numBottles。
+2. 初始化当前空瓶子数量 empty_bottles 为 numBottles。
+3. 当空瓶子数量大于等于 numExchange 时，继续循环：
+   - 计算可以兑换的新瓶子数量 new_bottles。
+   - 更新总瓶子数量 total_bottles。
+   - 更新空瓶子数量 empty_bottles 为 (empty_bottles - numExchange) + new_bottles。
+4. 返回总瓶子数量 total_bottles。
 
 关键点:
-- [TODO]
+- 循环条件是空瓶子数量大于等于 numExchange。
+- 每次兑换后更新空瓶子数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(numBottles)) - 每次循环中空瓶子数量都会减少。
+空间复杂度: O(1) - 使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(numBottles: int, numExchange: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以喝到多少瓶水
     """
-    # TODO: 实现最优解法
-    pass
+    total_bottles = numBottles
+    empty_bottles = numBottles
+
+    while empty_bottles >= numExchange:
+        new_bottles = empty_bottles // numExchange
+        total_bottles += new_bottles
+        empty_bottles = (empty_bottles % numExchange) + new_bottles
+
+    return total_bottles
 
 
 Solution = create_solution(solution_function_name)

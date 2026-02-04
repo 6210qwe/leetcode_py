@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用哈希表记录每个数字的二进制表示中 1 的个数。
+- 利用排序和双指针方法来计算符合条件的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字的二进制表示中 1 的个数，并去重。
+2. 对这些 1 的个数进行排序。
+3. 使用双指针方法遍历排序后的列表，计算符合条件的数对数量。
 
 关键点:
-- [TODO]
+- 去重后计算每个数字的二进制表示中 1 的个数。
+- 使用双指针方法高效地计算符合条件的数对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。主要的时间开销在于排序操作。
+空间复杂度: O(n)，用于存储每个数字的二进制表示中 1 的个数。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_excellent_pairs(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算优质数对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个数字的二进制表示中 1 的个数，并去重
+    bit_counts = [bin(num).count('1') for num in set(nums)]
+    
+    # 对 1 的个数进行排序
+    bit_counts.sort()
+    
+    # 使用双指针方法计算符合条件的数对数量
+    left, right = 0, len(bit_counts) - 1
+    result = 0
+    
+    while left <= right:
+        if bit_counts[left] + bit_counts[right] >= k:
+            result += (right - left) * 2 + 1
+            right -= 1
+        else:
+            left += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_excellent_pairs)

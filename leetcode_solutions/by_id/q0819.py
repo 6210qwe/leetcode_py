@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义两个状态：
+- dp[i][0] 表示到第 i 个位置为止，不交换 nums1[i] 和 nums2[i] 的最小交换次数。
+- dp[i][1] 表示到第 i 个位置为止，交换 nums1[i] 和 nums2[i] 的最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 0, dp[0][1] = 1。
+2. 遍历数组，对于每个位置 i，根据 nums1 和 nums2 的值更新 dp[i][0] 和 dp[i][1]。
+3. 最终结果是 dp[n-1][0] 和 dp[n-1][1] 中的最小值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑当前元素和前一个元素的关系。
+- 通过维护两个状态，可以有效地计算出最小交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(n)，我们需要一个大小为 n*2 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_swap(nums1: List[int], nums2: List[int]) -> int:
+    n = len(nums1)
+    dp = [[float('inf')] * 2 for _ in range(n)]
+    dp[0][0] = 0
+    dp[0][1] = 1
+
+    for i in range(1, n):
+        if nums1[i] > nums1[i - 1] and nums2[i] > nums2[i - 1]:
+            dp[i][0] = dp[i - 1][0]
+            dp[i][1] = dp[i - 1][1] + 1
+        if nums1[i] > nums2[i - 1] and nums2[i] > nums1[i - 1]:
+            dp[i][0] = min(dp[i][0], dp[i - 1][1])
+            dp[i][1] = min(dp[i][1], dp[i - 1][0] + 1)
+
+    return min(dp[n - 1][0], dp[n - 1][1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swap)

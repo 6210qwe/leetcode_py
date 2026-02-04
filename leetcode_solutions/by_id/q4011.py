@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算数组的平均值，然后从 1 开始逐个检查正整数是否在数组中出现过，直到找到第一个大于平均值且未出现的正整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的平均值。
+2. 从 1 开始逐个检查正整数是否在数组中出现过，直到找到第一个大于平均值且未出现的正整数。
 
 关键点:
-- [TODO]
+- 使用集合来存储数组中的元素，以便快速查找。
+- 从 1 开始逐个检查正整数，确保找到的是最小的未出现正整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回大于平均值的最小未出现正整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组的平均值
+    average = sum(nums) / len(nums)
+    
+    # 使用集合存储数组中的元素
+    num_set = set(nums)
+    
+    # 从 1 开始逐个检查正整数
+    i = 1
+    while True:
+        if i > average and i not in num_set:
+            return i
+        i += 1
 
 
 Solution = create_solution(solution_function_name)

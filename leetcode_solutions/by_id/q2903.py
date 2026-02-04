@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历链表，在每对相邻节点之间插入它们的最大公约数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `gcd` 来计算两个数的最大公约数。
+2. 遍历链表，对于每对相邻节点，计算它们的最大公约数，并插入一个新的节点。
+3. 返回修改后的链表头节点。
 
 关键点:
-- [TODO]
+- 使用欧几里得算法计算最大公约数。
+- 在遍历链表时，确保正确地插入新节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需要遍历链表一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def gcd(a: int, b: int) -> int:
+    """计算两个数的最大公约数"""
+    while b:
+        a, b = b, a % b
+    return a
 
-def solution_function_name(params):
+def insert_gcds(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    在链表中插入最大公约数
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or not head.next:
+        return head
 
+    current = head
+    while current and current.next:
+        next_node = current.next
+        gcd_value = gcd(current.val, next_node.val)
+        new_node = ListNode(gcd_value)
+        current.next = new_node
+        new_node.next = next_node
+        current = next_node
 
-Solution = create_solution(solution_function_name)
+    return head
+
+Solution = create_solution(insert_gcds)

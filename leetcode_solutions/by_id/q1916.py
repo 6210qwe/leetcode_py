@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查前两条边的交集来找到中心节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查前两条边的两个节点。
+2. 返回这两个节点中共同的那个节点作为中心节点。
 
 关键点:
-- [TODO]
+- 由于星型图的特性，中心节点必然出现在每条边中。
+- 只需要检查前两条边即可确定中心节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_center(edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出星型图的中心节点
     """
-    # TODO: 实现最优解法
-    pass
+    # 通过检查前两条边的交集来找到中心节点
+    u1, v1 = edges[0]
+    u2, v2 = edges[1]
+    
+    # 找到共同的节点
+    if u1 == u2 or u1 == v2:
+        return u1
+    else:
+        return v1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_center)

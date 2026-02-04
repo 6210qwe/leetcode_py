@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护当前节点的深度，并在插入过程中更新最大深度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈和一个变量 `max_depth` 来记录最大深度。
+2. 遍历插入顺序数组，对于每个元素：
+   - 如果栈不为空且当前元素大于栈顶元素，则弹出栈顶元素并更新当前深度。
+   - 将当前元素及其深度压入栈中。
+   - 更新 `max_depth` 为当前深度和 `max_depth` 的较大值。
+3. 返回 `max_depth`。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护当前节点的深度。
+- 在插入过程中动态更新最大深度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是插入顺序数组的长度。每个元素最多被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下栈的大小为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_depth_bst(order: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给定插入顺序的二叉搜索树的最大深度
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    max_depth = 0
+    current_depth = 0
+    
+    for num in order:
+        while stack and num > stack[-1]:
+            stack.pop()
+            current_depth -= 1
+        current_depth += 1
+        max_depth = max(max_depth, current_depth)
+        stack.append(num)
+    
+    return max_depth
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_depth_bst)

@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定每个小孩可以分到的最大糖果数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_distribute`，用于判断是否可以将糖果分配给 k 个小孩，使得每个小孩至少得到 `mid` 颗糖果。
+2. 使用二分查找来确定最大糖果数：
+   - 初始化左边界 `left` 为 0，右边界 `right` 为 `sum(candies) // k`。
+   - 在每次迭代中，计算中间值 `mid`，并使用 `can_distribute` 函数检查是否可以分配。
+   - 如果可以分配，则更新左边界 `left` 为 `mid + 1`，否则更新右边界 `right` 为 `mid - 1`。
+3. 返回 `right` 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地确定最大糖果数。
+- 辅助函数 `can_distribute` 用于验证当前糖果数是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(sum(candies) // k))，其中 n 是 candies 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_distribute(candies: List[int], mid: int, k: int) -> bool:
+    count = 0
+    for candy in candies:
+        count += candy // mid
+        if count >= k:
+            return True
+    return False
 
-def solution_function_name(params):
+def solution_function_name(candies: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找来确定每个小孩可以分到的最大糖果数
     """
-    # TODO: 实现最优解法
-    pass
-
+    left, right = 0, sum(candies) // k
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_distribute(candies, mid, k):
+            left = mid
+        else:
+            right = mid - 1
+    return right
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法，通过前序遍历的第一个元素找到根节点，然后在后序遍历中找到左子树和右子树的边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前序和后序遍历的索引。
+2. 从前序遍历中获取根节点。
+3. 在后序遍历中找到左子树的边界。
+4. 递归构建左子树和右子树。
 
 关键点:
-- [TODO]
+- 通过前序遍历的第一个元素找到根节点。
+- 在后序遍历中找到左子树的边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -44,17 +47,31 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def build_tree(preorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    def construct(pre_start, pre_end, post_start, post_end):
+        if pre_start > pre_end:
+            return None
+        
+        # 前序遍历的第一个元素是根节点
+        root_val = preorder[pre_start]
+        root = TreeNode(root_val)
+        
+        if pre_start == pre_end:
+            return root
+        
+        # 在后序遍历中找到左子树的边界
+        left_root_val = preorder[pre_start + 1]
+        left_size = postorder.index(left_root_val) - post_start + 1
+        
+        # 递归构建左子树和右子树
+        root.left = construct(pre_start + 1, pre_start + left_size, post_start, post_start + left_size - 1)
+        root.right = construct(pre_start + left_size + 1, pre_end, post_start + left_size, post_end - 1)
+        
+        return root
+    
+    return construct(0, len(preorder) - 1, 0, len(postorder) - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(build_tree)

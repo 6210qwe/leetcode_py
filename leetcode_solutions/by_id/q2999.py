@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较特定位置的字符是否相同来判断两个字符串是否可以通过交换操作变得相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 比较 s1 和 s2 在下标 0 和 2 的字符是否相同。
+2. 比较 s1 和 s2 在下标 1 和 3 的字符是否相同。
+3. 如果两组字符都相同，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 由于只能交换距离为 2 的字符，因此只需要检查这两组字符是否相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定的比较次数
+空间复杂度: O(1) - 不需要额外的空间
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_equal(s1: str, s2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断通过操作能否让字符串相等 I
     """
-    # TODO: 实现最优解法
-    pass
+    # 比较 s1 和 s2 在下标 0 和 2 的字符是否相同
+    if s1[0] != s2[0] or s1[2] != s2[2]:
+        return False
+    # 比较 s1 和 s2 在下标 1 和 3 的字符是否相同
+    if s1[1] != s2[1] or s1[3] != s2[3]:
+        return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_equal)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来维护当前可以采摘的水果种类不超过两种。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个字典 basket 来记录当前窗口内的水果种类及其数量。
+3. 移动右指针 right，扩展窗口，并更新 basket。
+4. 当 basket 中的水果种类超过两种时，移动左指针 left，缩小窗口，并更新 basket。
+5. 记录窗口的最大长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前窗口内的水果种类不超过两种。
+- 通过字典来记录当前窗口内的水果种类及其数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 fruits 的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，因为 basket 中最多只会存储三种水果类型。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(fruits: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以收集的水果的最大数目
     """
-    # TODO: 实现最优解法
-    pass
+    if not fruits:
+        return 0
+
+    left, right = 0, 0
+    max_fruits = 0
+    basket = {}
+
+    while right < len(fruits):
+        # 将当前水果加入篮子
+        basket[fruits[right]] = basket.get(fruits[right], 0) + 1
+
+        # 如果篮子中的水果种类超过两种，移动左指针
+        while len(basket) > 2:
+            basket[fruits[left]] -= 1
+            if basket[fruits[left]] == 0:
+                del basket[fruits[left]]
+            left += 1
+
+        # 更新最大水果数目
+        max_fruits = max(max_fruits, right - left + 1)
+        right += 1
+
+    return max_fruits
 
 
 Solution = create_solution(solution_function_name)

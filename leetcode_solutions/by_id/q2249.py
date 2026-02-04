@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 通过前缀和计算隐藏数组的变化范围。
+- 确定初始值的范围，使得整个隐藏数组的值都在 [lower, upper] 之间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 `prefix_sum`，其中 `prefix_sum[i]` 表示从 `hidden[0]` 到 `hidden[i]` 的累积差值。
+2. 找到 `prefix_sum` 中的最大值 `max_prefix` 和最小值 `min_prefix`。
+3. 计算初始值 `hidden[0]` 的有效范围，使得 `hidden[0] + min_prefix >= lower` 且 `hidden[0] + max_prefix <= upper`。
+4. 返回满足条件的 `hidden[0]` 的数量。
 
 关键点:
-- [TODO]
+- 通过前缀和来确定隐藏数组的变化范围。
+- 通过计算初始值的有效范围来确定符合条件的隐藏数组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 differences 的长度。我们需要遍历一次 differences 来计算前缀和。
+空间复杂度: O(1)，除了输入和输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_hidden_sequences(differences: List[int], lower: int, upper: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算符合要求的隐藏数组的数目。
+
+    :param differences: 整数数组，表示隐藏数组相邻元素之间的差值。
+    :param lower: 隐藏数组中所有数字的最小值。
+    :param upper: 隐藏数组中所有数字的最大值。
+    :return: 符合要求的隐藏数组的数目。
     """
-    # TODO: 实现最优解法
-    pass
+    current_sum = 0
+    min_prefix = 0
+    max_prefix = 0
+    
+    for diff in differences:
+        current_sum += diff
+        min_prefix = min(min_prefix, current_sum)
+        max_prefix = max(max_prefix, current_sum)
+    
+    # 计算初始值 hidden[0] 的有效范围
+    min_start = lower - min_prefix
+    max_start = upper - max_prefix
+    
+    # 返回满足条件的 hidden[0] 的数量
+    return max(0, max_start - min_start + 1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_hidden_sequences)

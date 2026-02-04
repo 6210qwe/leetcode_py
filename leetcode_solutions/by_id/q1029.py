@@ -21,22 +21,31 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，并记录每个节点的行和列信息。使用字典存储每个列的所有节点及其对应的行信息，最后对结果进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点 (0, 0, root) 加入队列。
+2. 使用一个字典 `col_map` 来存储每个列的所有节点及其对应的行信息。
+3. 开始广度优先搜索：
+   - 从队列中取出一个节点 (row, col, node)。
+   - 将该节点的信息 (row, node.val) 添加到 `col_map[col]` 中。
+   - 如果左子节点存在，将其 (row + 1, col - 1, left) 加入队列。
+   - 如果右子节点存在，将其 (row + 1, col + 1, right) 加入队列。
+4. 遍历结束后，对 `col_map` 中的每个列进行排序，先按列排序，再按行排序，最后按节点值排序。
+5. 构建最终结果并返回。
 
 关键点:
-- [TODO]
+- 使用 BFS 遍历二叉树，确保按层次遍历。
+- 使用字典存储每个列的所有节点及其对应的行信息。
+- 最后对结果进行排序，确保同一列内的节点按行排序，同一行内的节点按值排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是树中节点的数量。因为我们需要对每个节点进行排序。
+空间复杂度: O(n)，用于存储节点信息和结果。
 """
 
 # ============================================================================
@@ -44,17 +53,35 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def vertical_traversal(root: Optional[TreeNode]) -> List[List[int]]:
+    if not root:
+        return []
+
+    from collections import defaultdict, deque
+
+    # 用于存储每个列的所有节点及其对应的行信息
+    col_map = defaultdict(list)
+    queue = deque([(0, 0, root)])
+
+    while queue:
+        row, col, node = queue.popleft()
+        col_map[col].append((row, node.val))
+        if node.left:
+            queue.append((row + 1, col - 1, node.left))
+        if node.right:
+            queue.append((row + 1, col + 1, node.right))
+
+    # 对每个列进行排序，先按列排序，再按行排序，最后按节点值排序
+    result = []
+    for col in sorted(col_map.keys()):
+        col_nodes = sorted(col_map[col], key=lambda x: (x[0], x[1]))
+        result.append([val for _, val in col_nodes])
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(vertical_traversal)

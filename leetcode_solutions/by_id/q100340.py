@@ -21,22 +21,32 @@ LCR 192. 把字符串转换成整数 (atoi) - 请你来实现一个 myAtoi(strin
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 去除前导空格。
+2. 检查符号。
+3. 读取数字字符，直到遇到非数字字符或结束。
+4. 处理溢出情况。
+5. 返回结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 去除前导空格。
+2. 检查第一个非空字符是否为正负号，确定符号。
+3. 读取连续的数字字符，直到遇到非数字字符或结束。
+4. 将读取的数字字符转换为整数，并处理溢出。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 `strip` 去除前导空格。
+- 使用 `isdigit` 检查字符是否为数字。
+- 使用 `int` 转换字符串为整数，并处理溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +59,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def my_atoi(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现字符串转换成整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 去除前导空格
+    s = s.strip()
+    if not s:
+        return 0
+
+    # 检查符号
+    sign = 1
+    i = 0
+    if s[i] == '-':
+        sign = -1
+        i += 1
+    elif s[i] == '+':
+        i += 1
+
+    # 读取数字字符
+    num = 0
+    while i < len(s) and s[i].isdigit():
+        num = num * 10 + int(s[i])
+        i += 1
+
+    # 处理溢出
+    num *= sign
+    num = max(min(num, 2**31 - 1), -2**31)
+
+    return num
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(my_atoi)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用分治法构造漂亮数组
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 为 1，直接返回 [1]
+2. 将 n 分解为两个子问题，分别求解奇数部分和偶数部分
+3. 合并两个子问题的结果，构造最终的漂亮数组
 
 关键点:
-- [TODO]
+- 奇数部分和偶数部分的构造可以递归地进行
+- 通过合并奇数部分和偶数部分来避免出现 2 * nums[k] == nums[i] + nums[j] 的情况
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n log n)
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用分治法构造漂亮数组
     """
-    # TODO: 实现最优解法
-    pass
+    def beautiful_array(n: int) -> List[int]:
+        if n == 1:
+            return [1]
+        
+        # 递归构造奇数部分和偶数部分
+        odd_part = [x * 2 - 1 for x in beautiful_array((n + 1) // 2)]
+        even_part = [x * 2 for x in beautiful_array(n // 2)]
+        
+        # 合并奇数部分和偶数部分
+        return odd_part + even_part
+
+    return beautiful_array(n)
 
 
 Solution = create_solution(solution_function_name)

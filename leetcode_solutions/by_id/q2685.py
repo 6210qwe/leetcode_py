@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素在矩阵中的位置，然后遍历 arr 数组，更新每行和每列的涂色计数，直到某一行或某一列被完全涂色。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个哈希表 `pos_map`，记录每个元素在矩阵中的位置 (r, c)。
+2. 初始化两个数组 `row_count` 和 `col_count`，分别记录每行和每列的涂色计数。
+3. 遍历 arr 数组，对于每个元素，获取其在矩阵中的位置 (r, c)，并更新 `row_count[r]` 和 `col_count[c]`。
+4. 检查 `row_count[r]` 或 `col_count[c]` 是否等于矩阵的列数或行数，如果是，则返回当前元素的下标。
+5. 如果遍历完 arr 数组后没有找到符合条件的元素，返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表快速查找元素的位置。
+- 使用两个数组分别记录每行和每列的涂色计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。构建哈希表和遍历 arr 数组的时间复杂度都是 O(m * n)。
+空间复杂度: O(m * n)，哈希表 `pos_map` 和两个计数数组 `row_count` 和 `col_count` 需要 O(m * n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def firstCompleteIndex(arr: List[int], mat: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    找出第一个使得矩阵的某一行或某一列都被涂色的元素的下标。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    pos_map = {}
+    
+    # 构建哈希表，记录每个元素在矩阵中的位置
+    for r in range(m):
+        for c in range(n):
+            pos_map[mat[r][c]] = (r, c)
+    
+    # 初始化行和列的涂色计数
+    row_count = [0] * m
+    col_count = [0] * n
+    
+    # 遍历 arr 数组
+    for i, num in enumerate(arr):
+        r, c = pos_map[num]
+        row_count[r] += 1
+        col_count[c] += 1
+        
+        # 检查当前行或列是否被完全涂色
+        if row_count[r] == n or col_count[c] == m:
+            return i
+    
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(firstCompleteIndex)

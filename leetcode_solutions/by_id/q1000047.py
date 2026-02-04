@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典存储数字和字母的映射关系，然后遍历单词列表，检查每个单词是否与输入的数字序列匹配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，存储每个数字对应的字母。
+2. 遍历单词列表，对于每个单词，检查其每个字符是否与输入的数字序列中的对应字符匹配。
+3. 如果匹配，则将该单词加入结果列表。
 
 关键点:
-- [TODO]
+- 使用字典快速查找每个数字对应的字母。
+- 逐字符比较单词和数字序列，确保每个字符都匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是每个单词的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def t9_keyboard(num: str, words: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    返回与输入数字序列匹配的单词列表。
     """
-    # TODO: 实现最优解法
-    pass
+    # 数字到字母的映射
+    digit_to_letters = {
+        '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',
+        '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'
+    }
+    
+    # 结果列表
+    result = []
+    
+    # 遍历单词列表
+    for word in words:
+        if len(word) != len(num):
+            continue
+        
+        # 检查每个字符是否匹配
+        for i, char in enumerate(word):
+            if char not in digit_to_letters[num[i]]:
+                break
+        else:
+            result.append(word)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(t9_keyboard)

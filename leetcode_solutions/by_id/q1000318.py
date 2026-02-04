@@ -21,22 +21,23 @@ LCR 118. 冗余连接 - 树可以看成是一个连通且 无环 的 无向 图�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来检测图中的环，并找到冗余的边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，用于管理节点的连通性。
+2. 遍历每条边，如果两个节点已经在同一个集合中，则说明这条边是冗余的，返回这条边。
+3. 如果两个节点不在同一个集合中，则将它们合并到同一个集合中。
 
 关键点:
-- [TODO]
+- 并查集的路径压缩和按秩合并优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * α(n))，其中 n 是节点数，α 是阿克曼函数的反函数，接近于常数。
+空间复杂度: O(n)，并查集需要存储每个节点的父节点信息。
 """
 
 # ============================================================================
@@ -48,13 +49,36 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # 路径压缩
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
-Solution = create_solution(solution_function_name)
+def find_redundant_connection(edges: List[List[int]]) -> List[int]:
+    n = len(edges)
+    uf = UnionFind(n + 1)
+    
+    for edge in edges:
+        u, v = edge
+        if uf.find(u) == uf.find(v):
+            return edge
+        uf.union(u, v)
+
+Solution = create_solution(find_redundant_connection)

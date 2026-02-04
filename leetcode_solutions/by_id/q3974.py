@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历每个查询并更新指定范围内的元素，最后计算整个数组的异或结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 MOD 为 10^9 + 7。
+2. 遍历每个查询，对于每个查询：
+   - 获取起始索引 idx。
+   - 在 idx <= ri 的范围内，更新 nums[idx] = (nums[idx] * vi) % MOD。
+   - 将 idx 增加 ki。
+3. 计算并返回数组 nums 的异或结果。
 
 关键点:
-- [TODO]
+- 使用模运算来防止溢出。
+- 逐个更新指定范围内的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * q)，其中 n 是 nums 的长度，q 是 queries 的长度。每个查询最多需要更新 n 个元素。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def xor_after_range_multiplication_queries(nums: List[int], queries: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    for query in queries:
+        li, ri, ki, vi = query
+        idx = li
+        while idx <= ri:
+            nums[idx] = (nums[idx] * vi) % MOD
+            idx += ki
+    return reduce(lambda x, y: x ^ y, nums)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(xor_after_range_multiplication_queries)

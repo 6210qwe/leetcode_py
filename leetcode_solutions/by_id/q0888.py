@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学方法找到光线首次遇到接收器的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算光线在水平方向和垂直方向上的步数，直到光线到达某个接收器。
+2. 通过计算最小公倍数 (LCM) 和最大公约数 (GCD) 来确定光线的路径。
+3. 根据路径判断光线最终遇到的接收器编号。
 
 关键点:
-- [TODO]
+- 使用 GCD 和 LCM 来简化计算。
+- 通过奇偶性判断光线最终遇到的接收器编号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(min(p, q))) - 主要由 GCD 计算决定。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +49,25 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
-
-def solution_function_name(params):
+def solution_function_name(p: int, q: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现镜面反射问题的最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算 p 和 q 的最大公约数
+    gcd = math.gcd(p, q)
+    
+    # 计算 p 和 q 的最小公倍数
+    lcm = (p * q) // gcd
+    
+    # 判断光线最终遇到的接收器编号
+    if (lcm // p) % 2 == 0:
+        return 2
+    else:
+        if (lcm // q) % 2 == 0:
+            return 0
+        else:
+            return 1
 
 Solution = create_solution(solution_function_name)

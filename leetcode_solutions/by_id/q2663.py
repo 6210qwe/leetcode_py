@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先让尽可能多的儿童获得 8 美元，然后处理剩余的钱。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个儿童至少获得 1 美元后剩余的钱。
+2. 计算最多可以让多少个儿童获得 8 美元。
+3. 处理剩余的钱，确保没有儿童获得 4 美元。
 
 关键点:
-- [TODO]
+- 优先分配 8 美元。
+- 确保没有儿童获得 4 美元。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(money: int, children: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 每个儿童至少获得 1 美元
+    if money < children:
+        return -1
+    
+    # 剩余的钱
+    remaining_money = money - children
+    
+    # 计算最多可以让多少个儿童获得 8 美元
+    max_children_with_8 = min(children, remaining_money // 7)
+    
+    # 剩余的钱
+    remaining_money -= max_children_with_8 * 7
+    
+    # 如果剩余的钱正好是 3 且只有一个儿童没有获得 8 美元，则需要调整
+    if remaining_money == 3 and children - max_children_with_8 == 1:
+        max_children_with_8 -= 1
+    
+    return max_children_with_8
 
 
 Solution = create_solution(solution_function_name)

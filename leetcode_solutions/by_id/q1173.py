@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到每个产品在每个商店的销售日期和数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Product` 表中选择所有列。
+2. 从 `Sales` 表中选择 `store`, `sale_date`, 和 `total` 列。
+3. 使用 `INNER JOIN` 将 `Product` 表和 `Sales` 表连接起来，条件是 `product_id` 相同。
+4. 按照 `product_name`, `store`, `sale_date` 排序结果。
 
 关键点:
-- [TODO]
+- 使用 `INNER JOIN` 来连接两个表。
+- 确保查询结果按要求排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `Sales` 表的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，不考虑输出结果的空间消耗。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
+    query = """
+    SELECT p.product_name, s.store, s.sale_date, s.total
+    FROM Product p
+    INNER JOIN Sales s ON p.product_id = s.product_id
+    ORDER BY p.product_name, s.store, s.sale_date;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

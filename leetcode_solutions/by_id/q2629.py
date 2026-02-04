@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算满足固定比率的子字符串数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix`，用于记录到当前位置为止的字符 'a' 和 'b' 的数量差。
+2. 遍历字符串，更新前缀和数组。
+3. 使用哈希表 `count` 记录每个前缀和出现的次数。
+4. 对于每个位置，计算当前前缀和与目标比率的差值，并在哈希表中查找该差值出现的次数，累加到结果中。
+5. 更新哈希表中当前前缀和的计数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组和哈希表来高效计算满足条件的子字符串数。
+- 通过差值来判断是否满足固定比率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(n)，哈希表 `count` 在最坏情况下需要存储 n 个不同的前缀和。
 """
 
 # ============================================================================
@@ -49,12 +53,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_substrings_with_fixed_ratio(s: str, a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算满足固定比率的子字符串数。
+    :param s: 输入字符串
+    :param a: 字符 'a' 的期望数量
+    :param b: 字符 'b' 的期望数量
+    :return: 满足固定比率的子字符串数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    prefix = 0
+    count = {0: 1}
+    result = 0
+    
+    for i in range(n):
+        if s[i] == 'a':
+            prefix += 1
+        else:
+            prefix -= 1
+        
+        # 计算当前前缀和与目标比率的差值
+        diff = prefix - (a - b)
+        
+        # 累加满足条件的子字符串数
+        result += count.get(diff, 0)
+        
+        # 更新哈希表中当前前缀和的计数
+        count[prefix] = count.get(prefix, 0) + 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_substrings_with_fixed_ratio)

@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。通过递归地尝试所有可能的操作，并使用缓存来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，它接受当前子数组的起始和结束索引以及目标分数。
+2. 如果子数组长度小于2，返回0，因为无法进行操作。
+3. 尝试三种可能的操作：
+   - 删除前两个元素
+   - 删除后两个元素
+   - 删除第一个和最后一个元素
+4. 对每种操作，递归调用 `dfs` 并加上当前操作的结果。
+5. 返回最大操作数。
 
 关键点:
-- [TODO]
+- 使用 `@lru_cache` 来缓存中间结果，避免重复计算。
+- 递归地尝试所有可能的操作，并选择最大操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。每个子数组的状态最多计算一次。
+空间复杂度: O(n^2)，缓存的空间复杂度。
 """
 
 # ============================================================================
@@ -47,14 +54,31 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
+def max_operations(nums: List[int]) -> int:
+    @lru_cache(None)
+    def dfs(start: int, end: int, target: int) -> int:
+        if end - start < 2:
+            return 0
+        
+        # 删除前两个元素
+        op1 = (nums[start] + nums[start + 1] == target) + dfs(start + 2, end, target)
+        # 删除后两个元素
+        op2 = (nums[end - 1] + nums[end - 2] == target) + dfs(start, end - 2, target)
+        # 删除第一个和最后一个元素
+        op3 = (nums[start] + nums[end - 1] == target) + dfs(start + 1, end - 1, target)
+        
+        return max(op1, op2, op3)
+    
+    n = len(nums)
+    max_ops = 0
+    
+    # 尝试所有可能的目标分数
+    for i in range(n - 1):
+        target = nums[0] + nums[i + 1]
+        max_ops = max(max_ops, dfs(0, n, target))
+    
+    return max_ops
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_operations)

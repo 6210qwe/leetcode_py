@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来计算最少的操作步数。通过计算每个洗衣机的前缀和以及后缀和，可以确定每个洗衣机需要移动的衣服数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总衣服数量 `total` 和每台洗衣机的目标衣服数量 `target`。
+2. 如果 `total` 不能被 `n` 整除，返回 -1。
+3. 计算每个洗衣机的前缀和 `prefix_sum` 和后缀和 `suffix_sum`。
+4. 遍历每个洗衣机，计算其需要移动的衣服数量，并更新最大操作步数 `max_steps`。
 
 关键点:
-- [TODO]
+- 通过前缀和和后缀和来确定每个洗衣机需要移动的衣服数量。
+- 每个洗衣机的最大操作步数是其需要移入的衣服数量和需要移出的衣服数量的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_min_moves(machines: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少的操作步数使所有洗衣机中的衣物数量相等
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(machines)
+    total = sum(machines)
+    
+    if total % n != 0:
+        return -1
+    
+    target = total // n
+    max_steps = 0
+    balance = 0
+    
+    for i in range(n):
+        balance += machines[i] - target
+        max_steps = max(max_steps, abs(balance), machines[i] - target)
+    
+    return max_steps
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_moves)

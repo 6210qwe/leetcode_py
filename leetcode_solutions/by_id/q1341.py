@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，遍历字符串并维护一个计数器，当计数器归零时，表示找到了一个平衡字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `balance` 为 0。
+2. 遍历字符串 `s`：
+   - 如果当前字符是 'L'，则 `balance` 减 1。
+   - 如果当前字符是 'R'，则 `balance` 加 1。
+   - 当 `balance` 为 0 时，表示找到了一个平衡字符串，计数器 `count` 加 1。
+3. 返回 `count` 作为结果。
 
 关键点:
-- [TODO]
+- 使用单个变量 `balance` 来跟踪 'L' 和 'R' 的平衡状态。
+- 每次 `balance` 归零时，增加平衡字符串的计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回通过分割得到的平衡字符串的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    balance = 0
+    count = 0
+    
+    for char in s:
+        if char == 'L':
+            balance -= 1
+        else:
+            balance += 1
+        
+        if balance == 0:
+            count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

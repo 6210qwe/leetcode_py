@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来确定每个节点的位置，并填充矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算树的高度。
+2. 初始化结果矩阵，行数为高度加一，列数为 2^height - 1。
+3. 使用 DFS 遍历树，递归地将每个节点放置在矩阵中的正确位置。
+4. 返回结果矩阵。
 
 关键点:
-- [TODO]
+- 使用 DFS 递归地计算每个节点的位置。
+- 通过计算左右子节点的位置来确保节点正确放置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(n)，存储结果矩阵所需的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def print_tree(root: Optional[TreeNode]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    构造一个下标从 0 开始、大小为 m x n 的字符串矩阵 res，用以表示树的格式化布局。
     """
-    # TODO: 实现最优解法
-    pass
+    def get_height(node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+        return 1 + max(get_height(node.left), get_height(node.right))
 
+    def fill_matrix(node: Optional[TreeNode], row: int, col: int, left: int, right: int):
+        if not node:
+            return
+        mid = (left + right) // 2
+        matrix[row][mid] = str(node.val)
+        fill_matrix(node.left, row + 1, mid, left, mid - 1)
+        fill_matrix(node.right, row + 1, mid, mid + 1, right)
 
-Solution = create_solution(solution_function_name)
+    height = get_height(root)
+    width = 2**height - 1
+    matrix = [[""] * width for _ in range(height)]
+    fill_matrix(root, 0, 0, 0, width - 1)
+    return matrix
+
+Solution = create_solution(print_tree)

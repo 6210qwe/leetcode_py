@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先使用尽可能大的数字来构建结果，以最大化分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `result` 用于存储结果的每一位。
+2. 从最大的数字 9 开始，逐个尝试将数字添加到 `result` 中，直到 `sum` 用完或 `num` 位数用完。
+3. 如果 `sum` 大于 9 * num，说明无法构造出满足条件的整数，返回空字符串。
+4. 将 `result` 列表转换为字符串并返回。
 
 关键点:
-- [TODO]
+- 优先使用较大的数字来最大化分数。
+- 确保生成的整数位数和数字和都满足要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(num)
+空间复杂度: O(num)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_sum_of_squares(num: int, target_sum: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成最大分数的好整数
     """
-    # TODO: 实现最优解法
-    pass
+    if target_sum > 9 * num:
+        return ""
+
+    result = []
+    for i in range(num):
+        for digit in range(9, -1, -1):
+            if target_sum - digit >= 0 and (num - i - 1) * 9 >= target_sum - digit:
+                result.append(str(digit))
+                target_sum -= digit
+                break
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_sum_of_squares)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 逐个检查每个单词是否以给定的前缀开头。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器为 0。
+2. 遍历字符串数组 words，对于每个单词，检查其是否以 pref 作为前缀。
+3. 如果是，则将计数器加 1。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用 Python 的字符串方法 `startswith` 来检查前缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是 pref 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def prefix_count(words: List[str], pref: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计包含给定前缀的字符串数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for word in words:
+        if word.startswith(pref):
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(prefix_count)

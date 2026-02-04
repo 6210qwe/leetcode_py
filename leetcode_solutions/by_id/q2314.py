@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查每一行和每一列的 1 的奇偶性来判断是否可以通过翻转行和列将所有 1 变为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查每一行 1 的个数是否都是偶数。
+2. 如果是，则可以将所有 1 变为 0；否则，无法实现。
 
 关键点:
-- [TODO]
+- 只有当每一行的 1 的个数都是偶数时，才能通过翻转行和列将所有 1 变为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(matrix: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过翻转行和列将所有 1 变为 0
     """
-    # TODO: 实现最优解法
-    pass
+    for row in matrix:
+        if sum(row) % 2 != 0:
+            return False
+    return True
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来寻找从起点到终点的路径，并在每一步检查健康值是否为正数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将起点 (0, 0) 加入队列，并设置初始健康值。
+2. 使用一个二维数组 visited 来记录每个格子的最小健康值需求。
+3. 开始 BFS 遍历：
+   - 从队列中取出一个格子 (i, j)。
+   - 检查当前格子的健康值是否为正数，如果不是则跳过。
+   - 如果当前格子是终点且健康值为正数，返回 True。
+   - 将当前格子的四个相邻格子加入队列，并更新它们的健康值需求。
+4. 如果遍历完所有可能的路径仍未找到满足条件的路径，返回 False。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以保证找到最短路径。
+- 通过维护 visited 数组来避免重复计算和不必要的路径探索。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个格子最多被访问一次。
+空间复杂度: O(m * n)，用于存储 visited 数组和队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def can_reach_end(grid: List[List[int]], health: int) -> bool:
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # 初始化 visited 数组，记录每个格子的最小健康值需求
+    visited = [[float('inf')] * n for _ in range(m)]
+    visited[0][0] = health
+    
+    # 初始化队列
+    queue = deque([(0, 0, health)])
+    
+    while queue:
+        i, j, current_health = queue.popleft()
+        
+        # 如果当前格子是终点且健康值为正数，返回 True
+        if i == m - 1 and j == n - 1 and current_health > 0:
+            return True
+        
+        # 遍历四个相邻格子
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < m and 0 <= nj < n:
+                next_health = current_health - grid[ni][nj]
+                
+                # 如果下一个格子的健康值需求更小，更新并加入队列
+                if next_health > 0 and next_health < visited[ni][nj]:
+                    visited[ni][nj] = next_health
+                    queue.append((ni, nj, next_health))
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_reach_end)

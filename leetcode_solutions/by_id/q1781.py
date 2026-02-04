@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将两个字符串数组分别拼接成一个完整的字符串，然后比较这两个字符串是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 word1 中的所有字符串拼接成一个完整的字符串。
+2. 将 word2 中的所有字符串拼接成一个完整的字符串。
+3. 比较这两个字符串是否相等。
 
 关键点:
-- [TODO]
+- 使用 join 方法将字符串数组拼接成一个完整的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 word1 的总字符数，m 是 word2 的总字符数。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def array_strings_are_equal(word1: List[str], word2: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查两个字符串数组是否相等
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 word1 中的所有字符串拼接成一个完整的字符串
+    str1 = ''.join(word1)
+    
+    # 将 word2 中的所有字符串拼接成一个完整的字符串
+    str2 = ''.join(word2)
+    
+    # 比较这两个字符串是否相等
+    return str1 == str2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_strings_are_equal)

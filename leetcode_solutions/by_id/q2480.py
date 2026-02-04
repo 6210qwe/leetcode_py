@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个长度为2的子数组的和，如果发现某个和已经存在于哈希表中，则说明存在两个和相等的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表 seen_sums。
+2. 遍历数组 nums，对于每个元素 nums[i]，计算其与下一个元素 nums[i+1] 的和。
+3. 检查这个和是否已经在 seen_sums 中，如果在则返回 True。
+4. 如果不在 seen_sums 中，则将这个和加入 seen_sums。
+5. 如果遍历完数组后没有找到和相等的子数组，则返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录和，可以快速检查是否存在重复的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，最坏情况下哈希表需要存储 n-1 个不同的和。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否存在两个长度为2的子数组且它们的和相等
     """
-    # TODO: 实现最优解法
-    pass
+    seen_sums = set()
+    
+    for i in range(len(nums) - 1):
+        current_sum = nums[i] + nums[i + 1]
+        if current_sum in seen_sums:
+            return True
+        seen_sums.add(current_sum)
+    
+    return False
 
 
 Solution = create_solution(solution_function_name)

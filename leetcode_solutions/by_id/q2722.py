@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 遍历两条对角线上的所有元素。
+2. 检查每个元素是否为质数。
+3. 找到最大质数并返回。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `is_prime` 来检查一个数是否为质数。
+2. 初始化一个变量 `max_prime` 为 0，用于存储找到的最大质数。
+3. 遍历主对角线和副对角线上的所有元素。
+4. 对于每个元素，使用 `is_prime` 函数检查其是否为质数。
+5. 如果是质数且大于当前 `max_prime`，更新 `max_prime`。
+6. 返回 `max_prime`。
 
 关键点:
-- [TODO]
+- 使用高效的质数检测方法。
+- 遍历对角线时避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是矩阵的边长，m 是矩阵中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_prime(num: int) -> bool:
+    """检查一个数是否为质数"""
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-def solution_function_name(params):
+def solution_function_name(nums: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回位于 nums 至少一条对角线上的最大质数
     """
-    # TODO: 实现最优解法
-    pass
-
+    max_prime = 0
+    n = len(nums)
+    
+    # 遍历主对角线
+    for i in range(n):
+        if is_prime(nums[i][i]):
+            max_prime = max(max_prime, nums[i][i])
+    
+    # 遍历副对角线
+    for i in range(n):
+        if is_prime(nums[i][n - i - 1]):
+            max_prime = max(max_prime, nums[i][n - i - 1])
+    
+    return max_prime
 
 Solution = create_solution(solution_function_name)

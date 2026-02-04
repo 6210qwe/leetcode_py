@@ -21,40 +21,82 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个指针来遍历链表并反转偶数长度的组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个虚拟头节点 `dummy`，指向链表的头节点 `head`。
+2. 使用两个指针 `prev` 和 `curr` 来遍历链表。
+3. 对于每个组，计算该组的长度 `group_length`。
+4. 如果 `group_length` 是偶数，则反转该组的节点。
+5. 更新 `prev` 和 `curr` 指针，继续处理下一个组。
+6. 返回修改后的链表头节点。
 
 关键点:
-- [TODO]
+- 使用辅助函数 `reverse_group` 来反转指定长度的节点。
+- 通过 `prev` 和 `curr` 指针来管理当前组和下一个组的连接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def reverse_group(head: ListNode, length: int) -> ListNode:
+    """反转链表中的前 length 个节点"""
+    prev, curr = None, head
+    for _ in range(length):
+        next_node = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_node
+    return prev, head
 
-def solution_function_name(params):
+def solution_function_name(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 反转偶数长度组的节点
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return head
 
+    dummy = ListNode(0)
+    dummy.next = head
+    prev, curr = dummy, head
+    group_length = 1
+
+    while curr:
+        # 计算当前组的实际长度
+        actual_length = 0
+        temp = curr
+        while temp and actual_length < group_length:
+            temp = temp.next
+            actual_length += 1
+
+        if actual_length % 2 == 0:
+            # 反转当前组
+            new_head, new_tail = reverse_group(curr, actual_length)
+            prev.next = new_head
+            new_tail.next = temp
+            prev = new_tail
+            curr = temp
+        else:
+            # 不反转，直接移动指针
+            for _ in range(actual_length):
+                prev = curr
+                curr = curr.next
+
+        group_length += 1
+
+    return dummy.next
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,84 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用深度优先搜索 (DFS) 来遍历树，并记录每个节点的子树大小。
+- 使用埃拉托色尼筛法生成所有质数。
+- 在 DFS 过程中，计算每个质数节点的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有质数。
+2. 构建树的邻接表表示。
+3. 使用 DFS 计算每个节点的子树大小。
+4. 在 DFS 过程中，计算每个质数节点的贡献。
 
 关键点:
-- [TODO]
+- 使用埃拉托色尼筛法高效生成质数。
+- 在 DFS 过程中，通过子树大小和质数节点来计算路径数目。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n + n) - 生成质数的时间复杂度为 O(n log log n)，DFS 的时间复杂度为 O(n)。
+空间复杂度: O(n) - 存储树的邻接表和子树大小。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+def count_valid_paths(n: int, edges: List[List[int]]) -> int:
+    def sieve_of_eratosthenes(limit):
+        is_prime = [True] * (limit + 1)
+        is_prime[0] = is_prime[1] = False
+        for i in range(2, int(math.sqrt(limit)) + 1):
+            if is_prime[i]:
+                for j in range(i * i, limit + 1, i):
+                    is_prime[j] = False
+        return [i for i in range(limit + 1) if is_prime[i]]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node, parent):
+        size = 1
+        nonlocal valid_paths
+        prime_count = 0
+        composite_count = 0
 
+        for neighbor in tree[node]:
+            if neighbor != parent:
+                sub_size, sub_prime, sub_composite = dfs(neighbor, node)
+                size += sub_size
+                if is_prime[neighbor]:
+                    prime_count += sub_size
+                    valid_paths += sub_size * composite_count
+                else:
+                    composite_count += sub_size
+                    valid_paths += sub_size * prime_count
 
-Solution = create_solution(solution_function_name)
+        if is_prime[node]:
+            valid_paths += composite_count
+            return size, prime_count + 1, 0
+        else:
+            return size, prime_count, composite_count
+
+    # 生成质数
+    primes = sieve_of_eratosthenes(n)
+    is_prime = [False] * (n + 1)
+    for prime in primes:
+        is_prime[prime] = True
+
+    # 构建树的邻接表
+    tree = [[] for _ in range(n + 1)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
+
+    valid_paths = 0
+    dfs(1, -1)
+    return valid_paths
+
+Solution = create_solution(count_valid_paths)

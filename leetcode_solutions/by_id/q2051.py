@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和滚动哈希来找到最长的公共子路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 `left` 和 `right`，分别为 1 和最短路径的长度。
+2. 在二分查找的过程中，使用滚动哈希来检查当前长度 `mid` 是否存在所有路径中。
+3. 如果存在，则更新左边界 `left` 为 `mid + 1`，否则更新右边界 `right` 为 `mid - 1`。
+4. 最终返回 `right` 作为最长公共子路径的长度。
 
 关键点:
-- [TODO]
+- 使用滚动哈希来高效地计算子路径的哈希值，并进行比较。
+- 通过二分查找来优化查找过程，减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * log(min_path_length) * max_path_length)，其中 m 是路径的数量，min_path_length 是最短路径的长度，max_path_length 是最长路径的长度。
+空间复杂度: O(m * max_path_length)，用于存储路径的哈希值。
 """
 
 # ============================================================================
@@ -48,13 +51,41 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def solution_function_name(n: int, paths: List[List[int]]) -> int:
+    def get_hash(path: List[int], length: int) -> set:
+        base = 1000000007
+        mod = 10**9 + 7
+        hash_value = 0
+        power = 1
+        hashes = set()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        for i in range(length):
+            hash_value = (hash_value * base + path[i]) % mod
+            power = (power * base) % mod
 
+        hashes.add(hash_value)
+
+        for i in range(length, len(path)):
+            hash_value = (hash_value * base - path[i - length] * power + path[i]) % mod
+            hashes.add(hash_value)
+
+        return hashes
+
+    def is_common_subpath(length: int) -> bool:
+        hashes = get_hash(paths[0], length)
+        for path in paths[1:]:
+            if not hashes & get_hash(path, length):
+                return False
+        return True
+
+    left, right = 1, min(len(path) for path in paths)
+    while left <= right:
+        mid = (left + right) // 2
+        if is_common_subpath(mid):
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return right
 
 Solution = create_solution(solution_function_name)

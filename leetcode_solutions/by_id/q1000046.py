@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Kadane's 算法来解决一维最大子数组和问题，并将其扩展到二维矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每一行，计算从该行开始的所有可能的高度累加数组。
+2. 对于每个高度累加数组，使用 Kadane's 算法找到最大子数组和及其起始和结束位置。
+3. 记录所有子矩阵中的最大和及其对应的坐标。
 
 关键点:
-- [TODO]
+- 将二维问题转化为多个一维问题，通过逐行累加高度来构建新的数组。
+- 使用 Kadane's 算法高效地找到一维数组中的最大子数组和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N^2 * M)，其中 N 是矩阵的行数，M 是矩阵的列数。
+空间复杂度: O(M)，用于存储高度累加数组。
 """
 
 # ============================================================================
@@ -49,12 +51,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_submatrix(matrix: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出元素总和最大的子矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return []
+
+    rows, cols = len(matrix), len(matrix[0])
+    max_sum = float('-inf')
+    result = [0, 0, 0, 0]
+
+    for top in range(rows):
+        height = [0] * cols
+        for bottom in range(top, rows):
+            for col in range(cols):
+                height[col] += matrix[bottom][col]
+            
+            # 使用 Kadane's 算法找到当前高度累加数组的最大子数组和
+            current_sum = 0
+            left = 0
+            for right in range(cols):
+                if current_sum <= 0:
+                    current_sum = height[right]
+                    left = right
+                else:
+                    current_sum += height[right]
+                
+                if current_sum > max_sum:
+                    max_sum = current_sum
+                    result = [top, left, bottom, right]
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_submatrix)

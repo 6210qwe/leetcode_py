@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用贪心算法，根据密码长度和字符要求进行优化
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 分析密码长度是否在 [6, 20] 之间，如果不是则计算需要插入或删除的字符数。
+2. 检查密码是否包含小写字母、大写字母和数字，记录缺失的字符类型。
+3. 检查密码中是否存在连续三个重复字符，记录需要替换的字符数。
+4. 根据需要插入、删除和替换的字符数，使用贪心算法进行优化。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 优先处理长度问题，再处理字符类型问题，最后处理重复字符问题。
+- 优化时间和空间复杂度，尽量减少不必要的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 需要遍历密码字符串
+空间复杂度: O(1) - 只使用常数级额外空间
 """
 
 # ============================================================================
@@ -51,26 +52,81 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def strong_password_checker(params):
+def strong_password_checker(password: str) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算将密码修改为强密码所需的最少修改步数
     
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    1. 检查密码长度是否在 [6, 20] 之间，如果不是则计算需要插入或删除的字符数。
+    2. 检查密码是否包含小写字母、大写字母和数字，记录缺失的字符类型。
+    3. 检查密码中是否存在连续三个重复字符，记录需要替换的字符数。
+    4. 根据需要插入、删除和替换的字符数，使用贪心算法进行优化。
+
     Args:
-        params: [待实现] 参数说明
+        password (str): 输入的密码字符串
         
     Returns:
-        [待实现] 返回值说明
+        int: 将密码修改为强密码所需的最少修改步数
         
     Example:
-        >>> strong_password_checker([待实现])
-        [待实现]
+        >>> strong_password_checker("a")
+        5
+        >>> strong_password_checker("aA1")
+        3
+        >>> strong_password_checker("1337C0d3")
+        0
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(password)
+    if n < 6:
+        return max(6 - n, 3 - check_requirements(password))
+    
+    if n > 20:
+        # 删除字符
+        to_delete = n - 20
+        one, two, three = 0, 0, 0
+        i = 0
+        while i < n:
+            j = i + 1
+            while j < n and password[j] == password[i]:
+                j += 1
+            length = j - i
+            if length >= 3:
+                if length % 3 == 0:
+                    one += 1
+                elif length % 3 == 1:
+                    two += 1
+                else:
+                    three += 1
+            i = j
+        delete_used = min(to_delete, one * 1 + two * 2 + three * 3)
+        to_delete -= delete_used
+        one = max(0, one - to_delete // 3)
+        two = max(0, two - to_delete // 3)
+        three = max(0, three - to_delete // 3)
+        to_replace = one + two * 2 + three * 3
+        return to_delete + max(to_replace, 3 - check_requirements(password))
+    
+    # 长度在 [6, 20] 之间
+    return max(3 - check_requirements(password), count_repeats(password))
 
+def check_requirements(password: str) -> int:
+    has_lower = any(c.islower() for c in password)
+    has_upper = any(c.isupper() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    return sum([has_lower, has_upper, has_digit])
+
+def count_repeats(password: str) -> int:
+    to_replace = 0
+    i = 0
+    while i < len(password):
+        j = i + 1
+        while j < len(password) and password[j] == password[i]:
+            j += 1
+        length = j - i
+        if length >= 3:
+            to_replace += length // 3
+        i = j
+    return to_replace
 
 # 自动生成Solution类（无需手动编写）
 Solution = create_solution(strong_password_checker)

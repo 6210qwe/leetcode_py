@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 表示 nums1 的前 i 个元素和 nums2 的前 j 个元素的最大不相交线数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 (m+1) x (n+1) 的二维数组 dp，其中 m 和 n 分别是 nums1 和 nums2 的长度。
+2. 遍历 nums1 和 nums2，更新 dp 数组：
+   - 如果 nums1[i-1] == nums2[j-1]，则 dp[i][j] = dp[i-1][j-1] + 1。
+   - 否则，dp[i][j] = max(dp[i-1][j], dp[i][j-1])。
+3. 返回 dp[m][n] 作为结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 初始化 dp 数组时，dp[0][j] 和 dp[i][0] 均为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划求解最大不相交线数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(nums1), len(nums2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if nums1[i - 1] == nums2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+    return dp[m][n]
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二维前缀和来快速计算子矩阵的和，并使用贪心算法来放置邮票。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算二维前缀和数组。
+2. 初始化一个二维数组 `covered` 来记录每个位置是否被邮票覆盖。
+3. 遍历每个可能的邮票左上角位置，检查该位置是否可以放置邮票。
+4. 如果可以放置邮票，则更新 `covered` 数组。
+5. 最后检查 `covered` 数组，确保所有空格子都被覆盖。
 
 关键点:
-- [TODO]
+- 使用二维前缀和快速计算子矩阵的和。
+- 使用贪心算法从左上到右下依次尝试放置邮票。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_stamp(grid: List[List[int]], stampHeight: int, stampWidth: int) -> bool:
+    m, n = len(grid), len(grid[0])
+    
+    # 计算二维前缀和数组
+    prefix_sum = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix_sum[i][j] = grid[i - 1][j - 1] + prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1]
+    
+    # 初始化 covered 数组
+    covered = [[False] * n for _ in range(m)]
+    
+    # 检查每个可能的邮票左上角位置
+    for i in range(m - stampHeight + 1):
+        for j in range(n - stampWidth + 1):
+            if prefix_sum[i + stampHeight][j + stampWidth] - prefix_sum[i + stampHeight][j] - prefix_sum[i][j + stampWidth] + prefix_sum[i][j] == 0:
+                for r in range(i, i + stampHeight):
+                    for c in range(j, j + stampWidth):
+                        covered[r][c] = True
+    
+    # 检查所有空格子是否被覆盖
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 0 and not covered[i][j]:
+                return False
+    
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_stamp)

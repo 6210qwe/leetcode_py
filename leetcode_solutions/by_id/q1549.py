@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和两个双端队列来维护当前窗口内的最大值和最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个双端队列 max_deque 和 min_deque 来分别维护当前窗口内的最大值和最小值。
+2. 使用两个指针 left 和 right 来表示当前窗口的左右边界。
+3. 移动右指针 right，将新元素加入窗口，并更新 max_deque 和 min_deque。
+4. 如果当前窗口内的最大值和最小值之差大于 limit，则移动左指针 left 缩小窗口，直到满足条件。
+5. 记录当前窗口的最大长度。
 
 关键点:
-- [TODO]
+- 使用双端队列来维护窗口内的最大值和最小值，确保在 O(1) 时间内获取到最大值和最小值。
+- 通过滑动窗口技术，可以在 O(n) 时间复杂度内找到满足条件的最长子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_subarray(nums: List[int], limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长连续子数组的长度，该子数组中的任意两个元素之间的绝对差必须小于或者等于 limit。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import deque
+
+    max_deque = deque()
+    min_deque = deque()
+    left = 0
+    max_length = 0
+
+    for right in range(len(nums)):
+        # 更新最大值队列
+        while max_deque and nums[right] > max_deque[-1]:
+            max_deque.pop()
+        max_deque.append(nums[right])
+
+        # 更新最小值队列
+        while min_deque and nums[right] < min_deque[-1]:
+            min_deque.pop()
+        min_deque.append(nums[right])
+
+        # 检查当前窗口是否满足条件
+        while max_deque[0] - min_deque[0] > limit:
+            if max_deque[0] == nums[left]:
+                max_deque.popleft()
+            if min_deque[0] == nums[left]:
+                min_deque.popleft()
+            left += 1
+
+        # 更新最大长度
+        max_length = max(max_length, right - left + 1)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subarray)

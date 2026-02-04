@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将给定的十进制数转换为十六进制，并将其中的数字替换为字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将十进制数转换为十六进制字符串。
+2. 将十六进制字符串中的数字替换为对应的字母：
+   - '0' 替换为 'O'
+   - '1' 替换为 'I'
+   - 其他数字则返回 "ERROR"。
+3. 如果转换后的字符串中包含其他数字，则返回 "ERROR"。
 
 关键点:
-- [TODO]
+- 使用字典进行字符替换。
+- 检查转换后的字符串是否包含非法字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是输入的十进制数。因为每次除以 16，最多需要 log_16(n) 次操作。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将给定的十进制数转换为 Hexspeak 字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义字符替换字典
+    hex_map = {10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F',
+               0: 'O', 1: 'I'}
+
+    # 将十进制数转换为十六进制字符串
+    hex_str = ''
+    while num > 0:
+        remainder = num % 16
+        if remainder in hex_map:
+            hex_str = hex_map[remainder] + hex_str
+        else:
+            return "ERROR"
+        num //= 16
+
+    # 检查是否有非法字符
+    for char in hex_str:
+        if char.isdigit() and char not in ['O', 'I']:
+            return "ERROR"
+
+    return hex_str
 
 
 Solution = create_solution(solution_function_name)

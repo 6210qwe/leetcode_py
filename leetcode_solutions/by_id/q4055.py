@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录字符频率，并检查每个子串是否平衡。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 以及一个哈希表 char_count 来记录字符频率。
+2. 使用右指针扩展窗口，更新字符频率。
+3. 当窗口内的字符频率不相同时，移动左指针缩小窗口，直到窗口内的字符频率相同。
+4. 记录当前窗口的长度，并更新最大长度。
+5. 重复步骤 2-4，直到右指针遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来动态调整子串的范围。
+- 使用哈希表来记录字符频率，确保子串内所有字符的频率相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(1)，哈希表的大小最多为 26 个字母。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_balanced_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长平衡子串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    max_length = 0
+    left = 0
+    char_count = {}
+
+    for right in range(n):
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+
+        while len(set(char_count.values())) > 1:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+
+        current_length = right - left + 1
+        max_length = max(max_length, current_length)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_balanced_substring)

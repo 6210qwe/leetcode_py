@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库的 fillna 方法来填充缺失值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 读取输入的 DataFrame。
+3. 使用 fillna 方法将 quantity 列中的缺失值填充为 0。
+4. 返回处理后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 pandas 库可以高效地处理数据。
+- fillna 方法可以方便地填充缺失值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。fillna 方法的时间复杂度是线性的。
+空间复杂度: O(1)，不考虑输入和输出的空间，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(products: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 填充缺失值
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 quantity 列中的缺失值填充为 0
+    products['quantity'] = products['quantity'].fillna(0)
+    return products
 
 
 Solution = create_solution(solution_function_name)

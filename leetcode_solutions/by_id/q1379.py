@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 优先将值为2的列分配给两行，然后将值为1的列分配给剩余的行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表 `row1` 和 `row2`，长度与 `colsum` 相同，初始值为0。
+2. 遍历 `colsum`，对于每个值：
+   - 如果值为2，则将当前列的 `row1` 和 `row2` 设为1，并减少 `upper` 和 `lower`。
+   - 如果值为1，则优先将1分配给 `upper` 更大的行，减少相应的 `upper` 或 `lower`。
+3. 如果 `upper` 或 `lower` 未减到0，说明无法构造符合条件的矩阵，返回空列表。
+4. 返回 `[row1, row2]`。
 
 关键点:
-- [TODO]
+- 优先处理值为2的列，确保两行都分配1。
+- 值为1的列根据 `upper` 和 `lower` 的大小进行分配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `colsum` 的长度。我们只需遍历 `colsum` 一次。
+空间复杂度: O(n)，用于存储结果矩阵。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def reconstruct_matrix(upper: int, lower: int, colsum: List[int]) -> List[List[int]]:
+    n = len(colsum)
+    row1, row2 = [0] * n, [0] * n
+    
+    for i in range(n):
+        if colsum[i] == 2:
+            if upper > 0 and lower > 0:
+                row1[i], row2[i] = 1, 1
+                upper -= 1
+                lower -= 1
+            else:
+                return []
+        elif colsum[i] == 1:
+            if upper > lower:
+                if upper > 0:
+                    row1[i] = 1
+                    upper -= 1
+                else:
+                    return []
+            else:
+                if lower > 0:
+                    row2[i] = 1
+                    lower -= 1
+                else:
+                    return []
+    
+    if upper == 0 and lower == 0:
+        return [row1, row2]
+    else:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reconstruct_matrix)

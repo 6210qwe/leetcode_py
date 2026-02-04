@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理相邻重复项
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s 中的每个字符：
+   - 如果栈不为空且当前字符与栈顶字符相同，则弹出栈顶字符。
+   - 否则，将当前字符压入栈中。
+3. 最终栈中的字符即为删除所有相邻重复项后的结果。
 
 关键点:
-- [TODO]
+- 使用栈来存储非重复字符，确保相邻重复项被移除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会存储所有的字符。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_duplicates(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除字符串中的所有相邻重复项
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if stack and stack[-1] == char:
+            stack.pop()
+        else:
+            stack.append(char)
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_duplicates)

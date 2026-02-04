@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历树，并在回溯时决定是否删除当前节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于从当前节点开始进行深度优先搜索。
+2. 在每个节点处，计算从根到当前节点的路径和。
+3. 如果当前节点是叶子节点，检查路径和是否小于 `limit`，如果是则删除该节点。
+4. 如果当前节点不是叶子节点，递归处理其左右子节点。
+5. 回溯时，如果当前节点的某个子节点被删除且另一个子节点也不存在或被删除，则删除当前节点。
+6. 返回处理后的根节点。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 在回溯时根据子节点的状态决定是否删除当前节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def insufficient_nodes_in_root_to_leaf_paths(root: Optional[TreeNode], limit: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    删除树中所有不足节点，并返回最终二叉树的根节点。
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], path_sum: int) -> bool:
+        if not node:
+            return True
+        
+        # 计算当前路径和
+        path_sum += node.val
+        
+        # 如果是叶子节点，检查路径和是否小于 limit
+        if not node.left and not node.right:
+            return path_sum < limit
+        
+        # 递归处理左右子节点
+        left_deleted = dfs(node.left, path_sum)
+        right_deleted = dfs(node.right, path_sum)
+        
+        # 如果左子节点被删除，设置左子节点为 None
+        if left_deleted:
+            node.left = None
+        # 如果右子节点被删除，设置右子节点为 None
+        if right_deleted:
+            node.right = None
+        
+        # 如果当前节点的两个子节点都被删除，则删除当前节点
+        return left_deleted and right_deleted
+    
+    # 如果根节点被删除，返回 None
+    if dfs(root, 0):
+        return None
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(insufficient_nodes_in_root_to_leaf_paths)

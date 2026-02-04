@@ -21,40 +21,86 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来模拟火的扩散和人的移动。使用二分查找来确定最大等待时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 BFS 计算火从每个格子蔓延到其他格子的时间。
+2. 使用 BFS 计算人从起点到终点的最短路径，并记录每一步的火蔓延时间。
+3. 使用二分查找来确定最大等待时间，使得人在等待后仍能安全到达终点。
 
 关键点:
-- [TODO]
+- 使用 BFS 来计算火的蔓延时间和人的移动时间。
+- 使用二分查找来优化等待时间的确定。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def can_escape(grid: List[List[int]], wait_time: int) -> bool:
+    m, n = len(grid), len(grid[0])
+    fire_time = [[float('inf')] * n for _ in range(m)]
+    directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+    
+    # BFS to calculate fire spread time
+    queue = deque()
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                queue.append((i, j, 0))
+                fire_time[i][j] = 0
+    
+    while queue:
+        x, y, t = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and grid[nx][ny] == 0 and fire_time[nx][ny] > t + 1:
+                fire_time[nx][ny] = t + 1
+                queue.append((nx, ny, t + 1))
+    
+    # BFS to check if person can escape
+    queue = deque([(0, 0, wait_time)])
+    visited = set([(0, 0)])
+    
+    while queue:
+        x, y, t = queue.popleft()
+        if (x, y) == (m - 1, n - 1):
+            return True
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and (nx, ny) not in visited and grid[nx][ny] == 0:
+                if t + 1 < fire_time[nx][ny]:
+                    visited.add((nx, ny))
+                    queue.append((nx, ny, t + 1))
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_wait_time(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    low, high = 0, m * n
+    result = -1
+    
+    while low <= high:
+        mid = (low + high) // 2
+        if can_escape(grid, mid):
+            result = mid
+            low = mid + 1
+        else:
+            high = mid - 1
+    
+    if result == m * n:
+        return 1000000000
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_wait_time)

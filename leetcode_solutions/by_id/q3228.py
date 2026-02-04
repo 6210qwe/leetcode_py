@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先保留唯一元素，再考虑重叠元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 和 nums2 的交集和并集。
+2. 从 nums1 和 nums2 中分别移除 n/2 个元素，优先移除不在交集中的元素。
+3. 计算剩余元素的并集大小。
 
 关键点:
-- [TODO]
+- 优先移除不在交集中的元素，以最大化最终集合的大小。
+- 使用集合操作来高效计算交集和并集。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_set_size(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算移除后集合的最大元素数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    set1 = set(nums1)
+    set2 = set(nums2)
+    intersection = set1 & set2
+    unique1 = set1 - intersection
+    unique2 = set2 - intersection
+    
+    # 优先移除不在交集中的元素
+    remove_from_unique1 = min(len(unique1), n // 2)
+    remove_from_unique2 = min(len(unique2), n // 2)
+    
+    # 更新剩余的唯一元素
+    remaining_unique1 = len(unique1) - remove_from_unique1
+    remaining_unique2 = len(unique2) - remove_from_unique2
+    
+    # 计算需要从交集中移除的元素数量
+    remove_from_intersection = max(0, (n // 2 - remove_from_unique1) + (n // 2 - remove_from_unique2))
+    
+    # 计算最终集合的大小
+    return remaining_unique1 + remaining_unique2 + (len(intersection) - remove_from_intersection)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_set_size)

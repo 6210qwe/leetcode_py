@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来记录每个位置之前的 '0' 和 '1' 的数量，然后通过遍历字符串来计算有效的三元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `count_0` 和 `count_1`，分别记录每个位置之前的 '0' 和 '1' 的数量。
+2. 遍历字符串，填充 `count_0` 和 `count_1` 数组。
+3. 再次遍历字符串，对于每个位置 `i`，计算以 `s[i]` 为中心的有效三元组的数量。
+4. 返回总的有效三元组数量。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意位置之前的 '0' 和 '1' 的数量。
+- 通过遍历字符串两次，可以在 O(n) 时间复杂度内解决问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(s: str) -> int:
+    n = len(s)
+    if n < 3:
+        return 0
+
+    # 前缀和数组
+    count_0 = [0] * (n + 1)
+    count_1 = [0] * (n + 1)
+
+    # 填充前缀和数组
+    for i in range(1, n + 1):
+        count_0[i] = count_0[i - 1] + (s[i - 1] == '0')
+        count_1[i] = count_1[i - 1] + (s[i - 1] == '1')
+
+    result = 0
+
+    # 计算有效三元组的数量
+    for i in range(1, n - 1):
+        if s[i] == '0':
+            result += count_1[i] * (count_1[n] - count_1[i + 1])
+        else:
+            result += count_0[i] * (count_0[n] - count_0[i + 1])
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

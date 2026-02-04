@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有工作按结束时间从小到大排序。
+2. 使用一个动态规划数组 dp，其中 dp[i] 表示前 i 个工作可以获得的最大报酬。
+3. 对于每个工作，使用二分查找找到它之前可以完成的最后一个工作 j。
+4. 更新 dp[i] 为 max(dp[i-1], dp[j] + profit[i])。
 
 关键点:
-- [TODO]
+- 通过二分查找快速找到可以完成的最后一个工作，从而降低时间复杂度。
+- 动态规划数组 dp 用于记录最大报酬。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是工作的数量。排序操作的时间复杂度是 O(n log n)，二分查找的时间复杂度是 O(log n)。
+空间复杂度: O(n)，动态规划数组 dp 的空间复杂度是 O(n)。
 """
 
 # ============================================================================
@@ -47,14 +50,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import bisect
 
-
-def solution_function_name(params):
+def solution_function_name(startTime: List[int], endTime: List[int], profit: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以获得的最大报酬
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将所有工作按结束时间从小到大排序
+    jobs = sorted(zip(endTime, startTime, profit), key=lambda x: x[0])
+    
+    # 初始化动态规划数组 dp
+    dp = [0] * (len(jobs) + 1)
+    
+    for i in range(1, len(jobs) + 1):
+        # 二分查找找到可以完成的最后一个工作
+        j = bisect.bisect_right(jobs, (jobs[i-1][1], float('inf'), float('inf'))) - 1
+        # 更新 dp[i]
+        dp[i] = max(dp[i-1], dp[j+1] + jobs[i-1][2])
+    
+    return dp[-1]
 
 Solution = create_solution(solution_function_name)

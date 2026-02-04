@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用异或操作找到不同位的数量
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 A 和 B 的异或结果
+2. 统计异或结果中 1 的数量，即为需要改变的位数
 
 关键点:
-- [TODO]
+- 异或操作可以找出两个数不同的位
+- 统计 1 的数量可以使用 Brian Kernighan 算法
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为整数的位数是固定的
+空间复杂度: O(1) - 只使用了常数级的额外空间
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(A: int, B: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将整数 A 转换成整数 B 需要改变的位数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 A 和 B 的异或结果
+    xor_result = A ^ B
+    
+    # 统计异或结果中 1 的数量
+    count = 0
+    while xor_result:
+        xor_result &= (xor_result - 1)
+        count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

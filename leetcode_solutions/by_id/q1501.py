@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断圆心到矩形四条边的距离是否小于等于半径，或者圆心是否在矩形内部。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算圆心到矩形四条边的最小距离。
+2. 判断圆心是否在矩形内部。
+3. 如果圆心到矩形四条边的最小距离小于等于半径，或者圆心在矩形内部，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 计算圆心到矩形四条边的最小距离时，需要考虑圆心在矩形外部的情况。
+- 判断圆心是否在矩形内部时，直接比较圆心的坐标是否在矩形的范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_overlap(radius: int, x_center: int, y_center: int, x1: int, y1: int, x2: int, y2: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断圆和矩形是否有重叠部分。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将矩形的四个顶点坐标转换为相对圆心的坐标
+    x1 -= x_center
+    y1 -= y_center
+    x2 -= x_center
+    y2 -= y_center
+    
+    # 计算圆心到矩形四条边的最小距离
+    min_dist = min(max(abs(x1), abs(x2)), max(abs(y1), abs(y2)))
+    
+    # 判断圆心是否在矩形内部
+    if x1 * x2 < 0 and y1 * y2 < 0:
+        return True
+    
+    # 判断圆心到矩形四条边的最小距离是否小于等于半径
+    return min_dist <= radius
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_overlap)

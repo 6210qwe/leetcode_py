@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，并通过两次遍历数组来计算特殊三元组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表 `count` 和 `right_count`，分别用于记录每个元素的总出现次数和右边元素的出现次数。
+2. 从右向左遍历数组，填充 `right_count`。
+3. 从左向右遍历数组，对于每个元素 `nums[j]`，计算其一半 `half` 和两倍 `double`。
+4. 如果 `half` 和 `double` 都在 `count` 中存在，则将 `count[half] * right_count[double]` 加到结果中。
+5. 更新 `count` 和 `right_count`。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和查找元素的出现次数。
+- 通过两次遍历数组来避免嵌套循环，从而降低时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_special_triplets(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    count = {}
+    right_count = {}
+    
+    # 从右向左遍历数组，填充 right_count
+    for num in reversed(nums):
+        if num in right_count:
+            right_count[num] += 1
+        else:
+            right_count[num] = 1
+    
+    result = 0
+    # 从左向右遍历数组
+    for i in range(n):
+        half = nums[i] // 2
+        double = nums[i] * 2
+        
+        if half in count and double in right_count:
+            result = (result + count[half] * right_count[double]) % MOD
+        
+        # 更新 count 和 right_count
+        if nums[i] in count:
+            count[nums[i]] += 1
+        else:
+            count[nums[i]] = 1
+        
+        right_count[nums[i]] -= 1
+        if right_count[nums[i]] == 0:
+            del right_count[nums[i]]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_special_triplets)

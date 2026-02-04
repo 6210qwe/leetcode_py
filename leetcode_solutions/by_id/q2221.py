@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个栈来分别记录左括号和可变位置的数量。通过遍历字符串，检查每个字符是否可以形成有效的括号对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个栈，分别用于存储左括号和可变位置的数量。
+2. 遍历字符串：
+   - 如果当前字符是左括号且锁定，增加左括号栈的计数。
+   - 如果当前字符是右括号且锁定，尝试匹配左括号栈中的左括号；如果没有足够的左括号，尝试使用可变位置栈中的位置。
+   - 如果当前字符是可变位置，增加可变位置栈的计数。
+3. 最后，检查剩余的左括号是否可以用可变位置来匹配。
 
 关键点:
-- [TODO]
+- 使用两个栈分别记录左括号和可变位置的数量。
+- 在遍历过程中动态调整栈的计数，确保每个右括号都能找到匹配的左括号或可变位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,49 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_valid(s: str, locked: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断一个括号字符串是否可以通过改变某些字符变为有效的括号字符串。
+    :param s: 括号字符串
+    :param locked: 锁定字符串
+    :return: 是否可以变为有效括号字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if len(s) % 2 != 0:
+        return False
+
+    open_brackets = 0
+    flexible_positions = 0
+
+    for i in range(len(s)):
+        if locked[i] == '0':
+            flexible_positions += 1
+        elif s[i] == '(':
+            open_brackets += 1
+        else:
+            if open_brackets > 0:
+                open_brackets -= 1
+            elif flexible_positions > 0:
+                flexible_positions -= 1
+            else:
+                return False
+
+    close_brackets = 0
+    flexible_positions = 0
+
+    for i in range(len(s) - 1, -1, -1):
+        if locked[i] == '0':
+            flexible_positions += 1
+        elif s[i] == ')':
+            close_brackets += 1
+        else:
+            if close_brackets > 0:
+                close_brackets -= 1
+            elif flexible_positions > 0:
+                flexible_positions -= 1
+            else:
+                return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_valid)

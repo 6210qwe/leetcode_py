@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到当前拥有最多糖果的孩子，然后检查每个孩子在加上额外糖果后是否能拥有至少这么多糖果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到当前拥有最多糖果的孩子。
+2. 遍历每个孩子，检查他们加上额外糖果后是否能拥有至少这么多糖果。
+3. 返回结果列表。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到最大值，再通过一次遍历生成结果列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输出结果占用的空间）
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def kids_with_candies(candies: List[int], extra_candies: int) -> List[bool]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断每个孩子在加上额外糖果后是否能拥有最多糖果
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到当前拥有最多糖果的孩子
+    max_candies = max(candies)
+    
+    # 生成结果列表
+    result = [candy + extra_candies >= max_candies for candy in candies]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kids_with_candies)

@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库来处理数据，并通过条件筛选和聚合操作来找到每个员工的直属部门。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取Employee表数据。
+2. 筛选出primary_flag为'Y'的记录。
+3. 对于每个员工，如果其没有primary_flag为'Y'的记录，则选择其唯一的部门作为直属部门。
+4. 合并上述两部分结果，得到最终的直属部门列表。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和transform方法来处理数据。
+- 通过条件筛选和聚合操作来确保每个员工只有一个直属部门。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是Employee表的行数。我们需要遍历整个表来进行筛选和聚合操作。
+空间复杂度: O(n)，我们使用了额外的数据结构来存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def find_primary_department(employee: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    查找每个员工的直属部门
     """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出primary_flag为'Y'的记录
+    primary_departments = employee[employee['primary_flag'] == 'Y'][['employee_id', 'department_id']]
+    
+    # 找到每个员工的部门数量
+    department_counts = employee.groupby('employee_id')['department_id'].transform('count')
+    
+    # 找到每个员工只有一个部门的情况
+    single_department_employees = employee[department_counts == 1][['employee_id', 'department_id']]
+    
+    # 合并两部分结果
+    result = pd.concat([primary_departments, single_department_employees]).drop_duplicates()
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_primary_department)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的小时和分钟组合，并检查其有效性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 分别处理小时和分钟部分，根据问号的位置确定可能的取值范围。
+2. 计算所有有效的时间组合数量。
 
 关键点:
-- [TODO]
+- 小时部分的取值范围需要根据第一个字符是否为问号来确定。
+- 分钟部分的取值范围相对固定。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_valid_clock_times(time: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有效时间的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 处理小时部分
+    if time[0] == '?' and time[1] == '?':
+        hour_options = 24
+    elif time[0] == '?':
+        hour_options = 3 if time[1] < '4' else 2
+    elif time[1] == '?':
+        hour_options = 10 if time[0] < '2' else 4
+    else:
+        hour_options = 1
+
+    # 处理分钟部分
+    if time[3] == '?' and time[4] == '?':
+        minute_options = 60
+    elif time[3] == '?':
+        minute_options = 6
+    elif time[4] == '?':
+        minute_options = 10
+    else:
+        minute_options = 1
+
+    return hour_options * minute_options
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_valid_clock_times)

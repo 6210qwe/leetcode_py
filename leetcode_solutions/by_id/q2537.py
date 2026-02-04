@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维DP数组dp[i][j]表示在第i秒时，杀死状态为j的怪物所需的最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化DP数组，dp[0][0] = 0，其他值设为无穷大。
+2. 遍历每一秒，对于每一个可能的状态，计算杀死当前状态下的怪物所需的最小时间。
+3. 更新DP数组，选择最小的时间。
+4. 最终结果是dp[n][all_monsters_state]，其中n是总时间，all_monsters_state是所有怪物都被杀死的状态。
 
 关键点:
-- [TODO]
+- 使用位运算来表示和操作怪物的状态。
+- 动态规划的状态转移方程需要考虑当前时间和当前状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^m)，其中n是总时间，m是怪物的数量。
+空间复杂度: O(n * 2^m)，用于存储DP数组。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_time_to_kill_monsters(n: int, m: int, monsters: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算杀死所有怪物的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化DP数组
+    dp = [[float('inf')] * (1 << m) for _ in range(n + 1)]
+    dp[0][0] = 0
+
+    # 遍历每一秒
+    for i in range(1, n + 1):
+        for state in range(1 << m):
+            # 如果当前状态已经全部杀死怪物
+            if state == (1 << m) - 1:
+                dp[i][state] = min(dp[i][state], dp[i - 1][state])
+            else:
+                # 尝试杀死当前状态下的每个怪物
+                for j in range(m):
+                    if not (state & (1 << j)):
+                        new_state = state | (1 << j)
+                        time_needed = (monsters[j] - 1) // i + 1
+                        dp[i][new_state] = min(dp[i][new_state], dp[i - 1][state] + time_needed)
+
+    return dp[n][(1 << m) - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_kill_monsters)

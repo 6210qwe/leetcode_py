@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历计算每个前缀的最大值，并在此过程中构建转换数组和分数数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大值变量 `max_val` 为 `nums[0]`。
+2. 初始化转换数组 `conver` 和分数数组 `ans`，并将 `conver[0]` 设为 `nums[0] + max_val`，`ans[0]` 设为 `conver[0]`。
+3. 遍历 `nums` 数组，从索引 1 开始：
+   - 更新 `max_val` 为当前 `max_val` 和 `nums[i]` 的较大值。
+   - 计算 `conver[i]` 为 `nums[i] + max_val`。
+   - 计算 `ans[i]` 为 `ans[i-1] + conver[i]`。
+4. 返回 `ans` 数组。
 
 关键点:
-- [TODO]
+- 在一次遍历中同时更新最大值、转换数组和分数数组，避免多次遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `nums` 的长度。我们只需要一次遍历。
+空间复杂度: O(n)，我们需要额外的空间来存储转换数组和分数数组。
 """
 
 # ============================================================================
@@ -49,12 +54,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_prefix_scores(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算一个数组所有前缀的分数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    max_val = nums[0]
+    conver = [0] * n
+    ans = [0] * n
+    
+    # 初始化第一个前缀
+    conver[0] = nums[0] + max_val
+    ans[0] = conver[0]
+    
+    # 遍历数组，计算每个前缀的分数
+    for i in range(1, n):
+        max_val = max(max_val, nums[i])
+        conver[i] = nums[i] + max_val
+        ans[i] = ans[i - 1] + conver[i]
+    
+    return ans
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_prefix_scores)

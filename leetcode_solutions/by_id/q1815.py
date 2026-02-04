@@ -21,40 +21,84 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理边和查询。首先将所有边按长度从小到大排序，然后将所有查询按限制长度从小到大排序。遍历查询，同时逐步加入符合条件的边，使用并查集来判断两点是否连通。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `edgeList` 按边长从小到大排序。
+2. 将 `queries` 按限制长度从小到大排序，并记录每个查询的原始索引。
+3. 初始化并查集。
+4. 遍历排序后的查询，对于每个查询：
+   - 逐步加入所有长度小于当前查询限制的边。
+   - 使用并查集检查查询中的两个点是否连通。
+5. 返回查询结果。
 
 关键点:
-- [TODO]
+- 使用并查集高效地处理连通性问题。
+- 通过排序和双指针方法，确保每次只加入符合条件的边。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + Q) log E)，其中 E 是边的数量，Q 是查询的数量。排序操作的时间复杂度是 O(E log E) 和 O(Q log Q)，而并查集的操作是近似 O(1)。
+空间复杂度: O(n + Q)，其中 n 是节点数量，Q 是查询数量。需要存储并查集的数据结构和查询结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+def solution_function_name(n: int, edgeList: List[List[int]], queries: List[List[int]]) -> List[bool]:
+    # 将边按长度从小到大排序
+    edgeList.sort(key=lambda x: x[2])
+    
+    # 将查询按限制长度从小到大排序，并记录原始索引
+    queries_with_index = sorted(enumerate(queries), key=lambda x: x[1][2])
+    
+    # 初始化并查集
+    uf = UnionFind(n)
+    
+    # 结果数组
+    result = [False] * len(queries)
+    
+    # 当前处理的边的索引
+    edge_index = 0
+    
+    for original_index, (p, q, limit) in queries_with_index:
+        # 加入所有长度小于当前查询限制的边
+        while edge_index < len(edgeList) and edgeList[edge_index][2] < limit:
+            u, v, _ = edgeList[edge_index]
+            uf.union(u, v)
+            edge_index += 1
+        
+        # 检查查询中的两个点是否连通
+        result[original_index] = uf.find(p) == uf.find(q)
+    
+    return result
 
 Solution = create_solution(solution_function_name)

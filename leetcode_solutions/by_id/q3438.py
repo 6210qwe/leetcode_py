@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来高效处理区间查询和单点更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，记录每个区间的峰值数量。
+2. 对于每种查询：
+   - 如果是更新操作，更新线段树中的相应节点。
+   - 如果是查询操作，查询线段树中指定区间的峰值数量。
 
 关键点:
-- [TODO]
+- 线段树的构建和维护。
+- 区间查询和单点更新的实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) 对于每次查询和更新操作。
+空间复杂度: O(n) 用于存储线段树。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.tree = [0] * (4 * self.n)
+        self.build_tree(nums, 0, 0, self.n - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def build_tree(self, nums, tree_index, lo, hi):
+        if lo == hi:
+            self.tree[tree_index] = 1 if (lo > 0 and nums[lo] > nums[lo - 1]) and (lo < self.n - 1 and nums[lo] > nums[lo + 1]) else 0
+            return
+        mid = (lo + hi) // 2
+        self.build_tree(nums, 2 * tree_index + 1, lo, mid)
+        self.build_tree(nums, 2 * tree_index + 2, mid + 1, hi)
+        self.tree[tree_index] = self.tree[2 * tree_index + 1] + self.tree[2 * tree_index + 2]
 
+    def update(self, index, value, nums, tree_index, lo, hi):
+        if lo == hi:
+            self.tree[tree_index] = 1 if (lo > 0 and nums[lo] > nums[lo - 1]) and (lo < self.n - 1 and nums[lo] > nums[lo + 1]) else 0
+            return
+        mid = (lo + hi) // 2
+        if index <= mid:
+            self.update(index, value, nums, 2 * tree_index + 1, lo, mid)
+        else:
+            self.update(index, value, nums, 2 * tree_index + 2, mid + 1, hi)
+        self.tree[tree_index] = self.tree[2 * tree_index + 1] + self.tree[2 * tree_index + 2]
 
-Solution = create_solution(solution_function_name)
+    def query(self, tree_index, lo, hi, query_lo, query_hi):
+        if query_lo > hi or query_hi < lo:
+            return 0
+        if query_lo <= lo and hi <= query_hi:
+            return self.tree[tree_index]
+        mid = (lo + hi) // 2
+        left_sum = self.query(2 * tree_index + 1, lo, mid, query_lo, query_hi)
+        right_sum = self.query(2 * tree_index + 2, mid + 1, hi, query_lo, query_hi)
+        return left_sum + right_sum
+
+def handle_queries(nums: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums)
+    segment_tree = SegmentTree(nums)
+    result = []
+    for query in queries:
+        if query[0] == 1:
+            result.append(segment_tree.query(0, 0, n - 1, query[1], query[2]))
+        elif query[0] == 2:
+            index, value = query[1], query[2]
+            nums[index] = value
+            segment_tree.update(index, value, nums, 0, 0, n - 1)
+    return result
+
+Solution = create_solution(handle_queries)

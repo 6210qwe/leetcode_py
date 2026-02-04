@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来存储链表节点的值，然后从栈顶开始处理每个节点，进行翻倍操作，并处理进位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用栈存储链表节点的值。
+2. 从栈顶开始处理每个节点，进行翻倍操作，并处理进位。
+3. 如果最后有进位，则在链表头部添加一个新的节点。
 
 关键点:
-- [TODO]
+- 使用栈来逆序处理链表节点。
+- 处理进位时，需要考虑是否需要在链表头部添加新的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们需要遍历链表一次将节点值存入栈中，再遍历栈一次进行翻倍和进位处理。
+空间复杂度: O(n)，我们使用了一个栈来存储链表节点的值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def double_linked_list(head: Optional[ListNode]) -> Optional[ListNode]:
+    if not head:
+        return None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 使用栈存储链表节点的值
+    stack = []
+    current = head
+    while current:
+        stack.append(current.val)
+        current = current.next
 
+    carry = 0
+    new_head = None
+    while stack:
+        val = stack.pop()
+        doubled_val = val * 2 + carry
+        node_val = doubled_val % 10
+        carry = doubled_val // 10
 
-Solution = create_solution(solution_function_name)
+        new_node = ListNode(node_val)
+        new_node.next = new_head
+        new_head = new_node
+
+    if carry:
+        new_node = ListNode(carry)
+        new_node.next = new_head
+        new_head = new_node
+
+    return new_head
+
+Solution = create_solution(double_linked_list)

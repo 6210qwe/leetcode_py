@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来遍历字符串，记录每个连续字符段的长度，然后比较相邻段的长度来计算符合条件的子串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `prev` 和 `curr` 分别记录前一段和当前段的长度。
+2. 遍历字符串，更新 `prev` 和 `curr`。
+3. 每当遇到不同的字符时，将 `prev` 和 `curr` 中的较小值加到结果中，并更新 `prev` 为 `curr`，重置 `curr` 为 1。
+4. 最后一次更新 `prev` 和 `curr` 后，再进行一次结果累加。
 
 关键点:
-- [TODO]
+- 使用双指针法可以在线性时间内完成遍历。
+- 通过记录每段连续字符的长度，可以方便地计算符合条件的子串数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_binary_substrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算具有相同数量 0 和 1 的非空（连续）子字符串的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    prev, curr, result = 0, 1, 0
+    
+    for i in range(1, len(s)):
+        if s[i] == s[i - 1]:
+            curr += 1
+        else:
+            result += min(prev, curr)
+            prev, curr = curr, 1
+    
+    result += min(prev, curr)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_binary_substrings)

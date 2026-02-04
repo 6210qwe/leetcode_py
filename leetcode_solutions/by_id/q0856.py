@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学公式来计算连续整数的和，并通过枚举可能的长度来找到所有满足条件的连续整数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为 0。
+2. 枚举可能的连续整数序列的长度 `k`，从 1 到 sqrt(2 * n)。
+3. 对于每个 `k`，检查是否存在一个起始整数 `a`，使得连续 `k` 个整数的和为 `n`。
+4. 如果存在这样的 `a`，则增加计数器 `count`。
+5. 返回计数器 `count`。
 
 关键点:
-- [TODO]
+- 使用公式 (k * (k - 1)) // 2 来计算前 k 个整数的和。
+- 检查 (n - (k * (k - 1)) // 2) 是否能被 k 整除，以确定是否存在满足条件的起始整数 `a`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def consecutive_numbers_sum(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算连续整数和为 n 的组数
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for k in range(1, int((2 * n) ** 0.5) + 1):
+        if (n - (k * (k - 1)) // 2) % k == 0:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(consecutive_numbers_sum)

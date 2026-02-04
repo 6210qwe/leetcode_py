@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符可以替换成的字符集合，然后通过滑动窗口检查 sub 是否可以通过替换变成 s 的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个哈希表，记录每个字符可以替换成的字符集合。
+2. 使用滑动窗口遍历 s，检查 sub 是否可以通过替换变成 s 的子字符串。
+3. 对于每个窗口位置，逐字符检查 sub 和 s 的对应字符是否相同或可以通过映射替换。
 
 关键点:
-- [TODO]
+- 使用哈希表高效记录字符替换关系。
+- 通过滑动窗口减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 s 的长度，m 是 sub 的长度。
+空间复杂度: O(k)，其中 k 是 mappings 的长度。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_match_substring(s: str, sub: str, mappings: List[List[str]]) -> bool:
+    # 构建字符替换哈希表
+    char_map = {}
+    for old_char, new_char in mappings:
+        if old_char not in char_map:
+            char_map[old_char] = set()
+        char_map[old_char].add(new_char)
+
+    # 滑动窗口检查
+    n, m = len(s), len(sub)
+    for i in range(n - m + 1):
+        match = True
+        for j in range(m):
+            if s[i + j] != sub[j]:
+                if sub[j] not in char_map or s[i + j] not in char_map[sub[j]]:
+                    match = False
+                    break
+        if match:
+            return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_match_substring)

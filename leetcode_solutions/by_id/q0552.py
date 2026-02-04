@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义状态 dp[i][j][k] 表示长度为 i 的记录中，包含 j 个 'A' 和 k 个连续 'L' 的有效记录数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][0] = 1，表示空记录是一种有效记录。
+2. 通过递推公式更新 dp 数组：
+   - 添加 'P'：dp[i][j][0] += sum(dp[i-1][j][k]) for k in range(3)
+   - 添加 'A'：dp[i][1][0] += sum(dp[i-1][0][k]) for k in range(3) （如果 j == 0）
+   - 添加 'L'：dp[i][j][k+1] = dp[i-1][j][k] （如果 k < 2）
+3. 最终结果是 dp[n][0][0] + dp[n][1][0]。
 
 关键点:
-- [TODO]
+- 使用三维数组 dp 来存储不同状态的有效记录数量。
+- 通过递推公式更新 dp 数组，确保不违反题目条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是记录的长度。
+空间复杂度: O(n)，使用了三维数组 dp，但可以通过滚动数组优化到 O(1)。
 """
 
 # ============================================================================
@@ -48,13 +53,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回长度为 n 的出勤记录中，可能获得出勤奖励的记录情况数量。
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 0
 
+    # dp[i][j][k] 表示长度为 i 的记录中，包含 j 个 'A' 和 k 个连续 'L' 的有效记录数量
+    dp = [[[0 for _ in range(3)] for _ in range(2)] for _ in range(n + 1)]
+    dp[0][0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(2):
+            for k in range(3):
+                # 添加 'P'
+                dp[i][j][0] = (dp[i][j][0] + sum(dp[i-1][j][kk] for kk in range(3))) % MOD
+                # 添加 'A'
+                if j > 0:
+                    dp[i][j][0] = (dp[i][j][0] + sum(dp[i-1][j-1][kk] for kk in range(3))) % MOD
+                # 添加 'L'
+                if k > 0:
+                    dp[i][j][k] = dp[i-1][j][k-1]
+
+    return (dp[n][0][0] + dp[n][1][0]) % MOD
 
 Solution = create_solution(solution_function_name)

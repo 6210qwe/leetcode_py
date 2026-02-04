@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历输入列表，将所有值为 None 的元素替换为 "null" 字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历输入列表。
+2. 对于每个元素，如果其值为 None，则将其替换为 "null" 字符串。
+3. 返回修改后的列表。
 
 关键点:
-- [TODO]
+- 使用列表推导式进行遍历和替换，简洁且高效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入列表的长度。我们需要遍历整个列表一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,11 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(input_list: List[Optional[str]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将输入列表中的 None 值替换为 "null" 字符串
     """
-    # TODO: 实现最优解法
-    pass
+    return [item if item is not None else "null" for item in input_list]
 
 
 Solution = create_solution(solution_function_name)

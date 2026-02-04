@@ -21,40 +21,81 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每一层进行逆时针旋转，利用取模运算来简化多次旋转的操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 确定矩阵的层数。
+2. 对每一层进行逆时针旋转 k 次。
+3. 将旋转后的值重新放回原矩阵中。
 
 关键点:
-- [TODO]
+- 通过取模运算简化多次旋转的操作。
+- 逐层处理矩阵，确保每一层的旋转独立进行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个元素最多被访问和移动一次。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def rotate_layer(layer: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    逆时针旋转一层 k 次
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(layer)
+    k = k % n  # 取模以简化多次旋转
+    return layer[k:] + layer[:k]
 
+def get_layer(grid: List[List[int]], layer: int) -> List[int]:
+    """
+    获取第 layer 层的所有元素
+    """
+    top = grid[layer][layer:-layer]
+    right = [grid[i][-layer-1] for i in range(layer, len(grid)-layer)]
+    bottom = grid[-layer-1][layer:-layer][::-1]
+    left = [grid[i][layer] for i in range(len(grid)-layer-1, layer, -1)]
+    return top + right[1:] + bottom + left[1:]
+
+def set_layer(grid: List[List[int]], layer: int, new_layer: List[int]):
+    """
+    将新一层的元素放回原矩阵
+    """
+    n = len(new_layer)
+    top = new_layer[:len(grid[layer])-2*layer]
+    right = new_layer[len(top):len(top)+len(grid)-2*(layer+1)]
+    bottom = new_layer[len(top)+len(right):len(top)+len(right)+len(grid)-2*(layer+1)][::-1]
+    left = new_layer[len(top)+len(right)+len(bottom):]
+
+    for j in range(layer, len(grid[layer])-layer):
+        grid[layer][j] = top[j-layer]
+    for i in range(layer+1, len(grid)-layer):
+        grid[i][-layer-1] = right[i-(layer+1)]
+    for j in range(len(grid[layer])-layer-2, layer-1, -1):
+        grid[-layer-1][j] = bottom[len(grid[layer])-layer-2-j]
+    for i in range(len(grid)-layer-2, layer, -1):
+        grid[i][layer] = left[len(grid)-layer-2-i]
+
+def solution_function_name(grid: List[List[int]], k: int) -> List[List[int]]:
+    """
+    函数式接口 - 实现最优解法
+    """
+    m, n = len(grid), len(grid[0])
+    layers = min(m, n) // 2
+    
+    for layer in range(layers):
+        current_layer = get_layer(grid, layer)
+        rotated_layer = rotate_layer(current_layer, k)
+        set_layer(grid, layer, rotated_layer)
+    
+    return grid
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集将可以互相交换的下标分组，然后在每个组内计算汉明距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将所有允许交换的下标进行合并。
+2. 遍历 source 和 target，统计每个连通分量中的元素频率。
+3. 计算每个连通分量内的汉明距离，并累加得到最终结果。
 
 关键点:
-- [TODO]
+- 并查集用于高效地管理连通分量。
+- 使用哈希表统计每个连通分量中的元素频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 source 和 target 的长度，m 是 allowedSwaps 的长度。
+空间复杂度: O(n)，用于存储并查集和频率统计。
 """
 
 # ============================================================================
@@ -49,12 +51,64 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
 
 
-Solution = create_solution(solution_function_name)
+def minimize_hamming_distance(source: List[int], target: List[int], allowed_swaps: List[List[int]]) -> int:
+    n = len(source)
+    uf = UnionFind(n)
+    
+    # 合并允许交换的下标
+    for a, b in allowed_swaps:
+        uf.union(a, b)
+    
+    # 将每个下标映射到其连通分量
+    components = {}
+    for i in range(n):
+        root = uf.find(i)
+        if root not in components:
+            components[root] = []
+        components[root].append(i)
+    
+    # 计算每个连通分量内的汉明距离
+    hamming_distance = 0
+    for indices in components.values():
+        source_count = {}
+        target_count = {}
+        for i in indices:
+            source_count[source[i]] = source_count.get(source[i], 0) + 1
+            target_count[target[i]] = target_count.get(target[i], 0) + 1
+        
+        # 计算当前连通分量内的汉明距离
+        for num, count in source_count.items():
+            if num in target_count:
+                common_count = min(count, target_count[num])
+                hamming_distance += (count - common_count)
+                target_count[num] -= common_count
+            else:
+                hamming_distance += count
+    
+    return hamming_distance
+
+
+Solution = create_solution(minimize_hamming_distance)

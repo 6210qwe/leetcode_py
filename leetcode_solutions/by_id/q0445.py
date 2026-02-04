@@ -21,55 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用栈来存储链表中的数字，然后从栈顶依次弹出进行相加。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 将两个链表的值分别压入两个栈中。
+2. 从栈顶依次弹出元素进行相加，并处理进位。
+3. 构建新的链表并返回。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用栈来存储链表中的数字，从而实现从低位到高位的相加。
+- 处理进位时要注意边界条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n + m) - 其中 n 和 m 分别是两个链表的长度。
+空间复杂度: O(n + m) - 使用了两个栈来存储链表中的数字。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def add_two_numbers_ii(params):
+def add_two_numbers_ii(l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [待实现]
-    
+    函数式接口 - 将两个链表表示的数字相加，并返回新的链表。
+
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    使用栈来存储链表中的数字，从栈顶依次弹出进行相加，并处理进位。
+
     Args:
-        params: [待实现] 参数说明
-        
+        l1: 第一个链表的头节点
+        l2: 第二个链表的头节点
+
     Returns:
-        [待实现] 返回值说明
-        
+        新链表的头节点
+
     Example:
-        >>> add_two_numbers_ii([待实现])
-        [待实现]
+        >>> l1 = ListNode.from_list([7, 2, 4, 3])
+        >>> l2 = ListNode.from_list([5, 6, 4])
+        >>> result = add_two_numbers_ii(l1, l2)
+        >>> print(result.to_list())
+        [7, 8, 0, 7]
     """
-    # TODO: 实现最优解法
-    pass
+    stack1, stack2 = [], []
+    
+    # 将链表中的数字压入栈中
+    while l1:
+        stack1.append(l1.val)
+        l1 = l1.next
+    while l2:
+        stack2.append(l2.val)
+        l2 = l2.next
+    
+    carry = 0
+    head = None
+    
+    # 从栈顶依次弹出元素进行相加
+    while stack1 or stack2 or carry:
+        val1 = stack1.pop() if stack1 else 0
+        val2 = stack2.pop() if stack2 else 0
+        total = val1 + val2 + carry
+        carry = total // 10
+        new_node = ListNode(total % 10)
+        new_node.next = head
+        head = new_node
+    
+    return head
 
 
 # 自动生成Solution类（无需手动编写）

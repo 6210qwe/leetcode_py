@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个余数对应的最小前缀和，从而在 O(n) 时间复杂度内找到满足条件的子数组最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，并使用哈希表记录每个余数对应的最小前缀和。
+2. 遍历前缀和数组，对于每个前缀和，计算其对 k 的余数。
+3. 如果当前余数已经存在于哈希表中，则更新最大子数组和。
+4. 更新哈希表中当前余数对应的最小前缀和。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算子数组和。
+- 使用哈希表来记录每个余数对应的最小前缀和，从而在 O(1) 时间内进行查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中一个非空子数组的最大和，要求该子数组的长度可以被 k 整除。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = 0
+    min_prefix_sum = {0: 0}
+    max_sum = float('-inf')
+    
+    for i in range(n):
+        prefix_sum += nums[i]
+        remainder = prefix_sum % k
+        
+        if remainder in min_prefix_sum:
+            max_sum = max(max_sum, prefix_sum - min_prefix_sum[remainder])
+        
+        if remainder not in min_prefix_sum or prefix_sum < min_prefix_sum[remainder]:
+            min_prefix_sum[remainder] = prefix_sum
+    
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，检查每个元素是否严格大于其相邻元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表来存储峰值的下标。
+2. 遍历数组（从第二个元素到倒数第二个元素）。
+3. 对于每个元素，检查它是否严格大于其前一个和后一个元素。
+4. 如果是，则将该元素的下标添加到结果列表中。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 只需要遍历一次数组，时间复杂度为 O(n)。
+- 使用常数空间存储结果列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，除了结果列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_peaks(mountain: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中的所有峰值
     """
-    # TODO: 实现最优解法
-    pass
+    peaks = []
+    for i in range(1, len(mountain) - 1):
+        if mountain[i] > mountain[i - 1] and mountain[i] > mountain[i + 1]:
+            peaks.append(i)
+    return peaks
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_peaks)

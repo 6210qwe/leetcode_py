@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在遍历过程中维护当前路径上的最小值和最大值。对于每个节点，计算其与当前路径上最小值和最大值的差值，并更新全局最大差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，该函数接受当前节点、当前路径上的最小值和最大值作为参数。
+2. 对于每个节点，计算其与当前路径上最小值和最大值的差值，并更新全局最大差值。
+3. 递归地调用 `dfs` 函数，更新当前路径上的最小值和最大值。
+4. 返回全局最大差值。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，并在遍历过程中维护当前路径上的最小值和最大值。
+- 递归地更新全局最大差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def max_ancestor_diff(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算节点与其祖先之间的最大差值
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node, min_val, max_val):
+        if not node:
+            return 0
+        
+        # 更新当前路径上的最小值和最大值
+        min_val = min(min_val, node.val)
+        max_val = max(max_val, node.val)
+        
+        # 计算当前节点与当前路径上最小值和最大值的差值
+        current_diff = max(abs(node.val - min_val), abs(node.val - max_val))
+        
+        # 递归地计算左子树和右子树的最大差值
+        left_diff = dfs(node.left, min_val, max_val)
+        right_diff = dfs(node.right, min_val, max_val)
+        
+        # 返回当前节点及其子树的最大差值
+        return max(current_diff, left_diff, right_diff)
+    
+    # 从根节点开始遍历
+    return dfs(root, root.val, root.val)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_ancestor_diff)

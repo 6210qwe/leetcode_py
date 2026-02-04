@@ -21,40 +21,97 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来高效处理区间查询和单点更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，记录每个区间的两种交替模式（以'A'开头和以'B'开头）的最小删除次数。
+2. 对于每种类型的查询：
+   - 类型 1：更新线段树中的对应节点。
+   - 类型 2：查询线段树中对应区间的最小删除次数。
 
 关键点:
-- [TODO]
+- 线段树的构建和更新操作。
+- 区间查询时，合并左右子区间的最小删除次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) * log n)，其中 n 是字符串的长度，q 是查询的数量。
+空间复杂度: O(n * log n)，用于存储线段树。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [None] * (4 * n)
+    
+    def build(self, arr, node, start, end):
+        if start == end:
+            self.tree[node] = (arr[start], arr[start])
+        else:
+            mid = (start + end) // 2
+            self.build(arr, 2 * node + 1, start, mid)
+            self.build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self._merge(self.tree[2 * node + 1], self.tree[2 * node + 2])
+    
+    def update(self, index, value, node, start, end):
+        if start == end:
+            self.tree[node] = (value, value)
+        else:
+            mid = (start + end) // 2
+            if start <= index <= mid:
+                self.update(index, value, 2 * node + 1, start, mid)
+            else:
+                self.update(index, value, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self._merge(self.tree[2 * node + 1], self.tree[2 * node + 2])
+    
+    def query(self, left, right, node, start, end):
+        if right < start or end < left:
+            return (float('inf'), float('inf'))
+        if left <= start and end <= right:
+            return self.tree[node]
+        mid = (start + end) // 2
+        left_result = self.query(left, right, 2 * node + 1, start, mid)
+        right_result = self.query(left, right, 2 * node + 2, mid + 1, end)
+        return self._merge(left_result, right_result)
+    
+    def _merge(self, left, right):
+        a1, b1 = left
+        a2, b2 = right
+        return (min(a1 + a2, b1 + b2), min(a1 + b2, b1 + a2))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_deletions_to_make_alternating_substring(s: str, queries: List[List[int]]) -> List[int]:
+    n = len(s)
+    arr = [0] * n
+    for i in range(1, n):
+        if s[i] == s[i - 1]:
+            arr[i] = arr[i - 1] + 1
+        else:
+            arr[i] = arr[i - 1]
+    
+    segment_tree = SegmentTree(n)
+    segment_tree.build(arr, 0, 0, n - 1)
+    
+    result = []
+    for query in queries:
+        if query[0] == 1:
+            index = query[1]
+            s = s[:index] + ('A' if s[index] == 'B' else 'B') + s[index + 1:]
+            new_value = arr[index] + 1 if s[index] == s[index - 1] else arr[index] - 1
+            segment_tree.update(index, new_value, 0, 0, n - 1)
+        elif query[0] == 2:
+            left, right = query[1], query[2]
+            a, b = segment_tree.query(left, right, 0, 0, n - 1)
+            result.append(min(a, b))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_deletions_to_make_alternating_substring)

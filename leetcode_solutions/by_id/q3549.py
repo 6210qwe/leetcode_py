@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归查询每个员工的直接下属，并构建层次结构。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个递归函数 `get_subordinates`，用于获取某个员工的所有下属。
+2. 在主函数中调用 `get_subordinates` 函数，传入 CEO 的 ID，获取所有下属的层次结构。
+3. 将结果格式化为所需的输出格式。
 
 关键点:
-- [TODO]
+- 使用递归查询每个员工的直接下属，并构建层次结构。
+- 使用字典存储员工及其下属的关系，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工的数量。每个员工最多被访问一次。
+空间复杂度: O(n)，递归调用栈和存储员工及其下属关系的字典。
 """
 
 # ============================================================================
@@ -48,13 +50,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def get_subordinates(employee_id: int, manager_to_employees: dict) -> List[dict]:
     """
-    函数式接口 - [TODO] 实现
+    递归获取某个员工的所有下属。
     """
-    # TODO: 实现最优解法
-    pass
+    if employee_id not in manager_to_employees:
+        return []
+    
+    subordinates = []
+    for subordinate in manager_to_employees[employee_id]:
+        subordinates.append({
+            "id": subordinate,
+            "subordinates": get_subordinates(subordinate, manager_to_employees)
+        })
+    
+    return subordinates
 
+def solution_function_name(employees: List[List[int]]) -> List[dict]:
+    """
+    函数式接口 - 获取 CEO 及其下属的层次结构。
+    """
+    # 构建员工及其下属的关系字典
+    manager_to_employees = {}
+    for employee in employees:
+        if employee[1] not in manager_to_employees:
+            manager_to_employees[employee[1]] = []
+        manager_to_employees[employee[1]].append(employee[0])
+    
+    # 获取 CEO 的 ID
+    ceo_id = next((e[0] for e in employees if e[1] is None), None)
+    
+    # 获取 CEO 及其下属的层次结构
+    result = {
+        "id": ceo_id,
+        "subordinates": get_subordinates(ceo_id, manager_to_employees)
+    }
+    
+    return [result]
 
 Solution = create_solution(solution_function_name)

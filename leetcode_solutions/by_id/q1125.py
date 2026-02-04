@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储文件路径，并使用哈希表来存储每个路径的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个根节点和一个哈希表来存储路径值。
+2. 创建 `createPath` 方法：如果路径不存在且父路径存在，则创建新路径并存储其值；否则返回错误。
+3. 创建 `get` 方法：如果路径存在，则返回其值；否则返回 -1。
+4. 创建 `set` 方法：如果路径存在，则更新其值；否则返回错误。
 
 关键点:
-- [TODO]
+- 使用字典树来高效地存储和查找路径。
+- 使用哈希表来存储路径的值，以实现快速访问和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(L) - 其中 L 是路径的长度。
+空间复杂度: O(NL) - 其中 N 是路径的数量，L 是路径的平均长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FileSystem:
+    def __init__(self):
+        self.root = {}
+        self.values = {}
+
+    def createPath(self, path: str, value: int) -> bool:
+        # 检查路径是否已经存在
+        if path in self.values:
+            return False
+
+        # 检查父路径是否存在
+        parent_path = '/'.join(path.split('/')[:-1])
+        if parent_path and parent_path not in self.values:
+            return False
+
+        # 创建新路径
+        current = self.root
+        for directory in path.split('/')[1:]:
+            if directory not in current:
+                current[directory] = {}
+            current = current[directory]
+
+        # 存储路径值
+        self.values[path] = value
+        return True
+
+    def get(self, path: str) -> int:
+        # 返回路径的值，如果路径不存在则返回 -1
+        return self.values.get(path, -1)
+
+    def set(self, path: str, value: int) -> bool:
+        # 更新路径的值，如果路径不存在则返回 False
+        if path not in self.values:
+            return False
+        self.values[path] = value
+        return True
 
 
-Solution = create_solution(solution_function_name)
+# 示例用法
+if __name__ == "__main__":
+    fs = FileSystem()
+    print(fs.createPath("/a", 1))  # 输出: True
+    print(fs.get("/a"))  # 输出: 1
+    print(fs.set("/a", 2))  # 输出: True
+    print(fs.get("/a"))  # 输出: 2
+    print(fs.createPath("/a/b", 3))  # 输出: True
+    print(fs.get("/a/b"))  # 输出: 3
+    print(fs.createPath("/c", 4))  # 输出: True
+    print(fs.get("/c"))  # 输出: 4

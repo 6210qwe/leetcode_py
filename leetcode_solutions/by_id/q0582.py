@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储每个进程的子进程列表，然后使用广度优先搜索（BFS）来找到并杀掉所有需要杀掉的进程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典，键为进程ID，值为该进程的所有子进程ID列表。
+2. 使用队列来进行广度优先搜索，初始时将要杀掉的进程ID加入队列。
+3. 在队列不为空时，取出队列中的进程ID，将其加入结果列表，并将其所有子进程ID加入队列。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用字典来快速查找每个进程的子进程。
+- 使用队列进行广度优先搜索，确保所有相关进程都被处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是进程的数量。每个进程最多只会被处理一次。
+空间复杂度: O(n)，字典和队列的空间复杂度均为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
-
-def solution_function_name(params):
+def killProcess(pid: List[int], ppid: List[int], kill: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 杀掉指定进程及其所有子进程
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建进程树
+    process_tree = defaultdict(list)
+    for i in range(len(ppid)):
+        process_tree[ppid[i]].append(pid[i])
+    
+    # 广度优先搜索
+    queue = deque([kill])
+    killed_processes = []
+    
+    while queue:
+        current_process = queue.popleft()
+        killed_processes.append(current_process)
+        for child_process in process_tree[current_process]:
+            queue.append(child_process)
+    
+    return killed_processes
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(killProcess)

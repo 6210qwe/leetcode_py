@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，并记录每个节点的访问顺序。通过访问顺序来确定最后标记的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 遍历树，记录每个节点的访问顺序。
+2. 找到最后标记的节点，即访问顺序最大的节点。
 
 关键点:
-- [TODO]
+- 使用字典记录每个节点的访问顺序。
+- 递归实现 DFS。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，同时需要额外的空间来存储访问顺序。
 """
 
 # ============================================================================
@@ -44,17 +45,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_last_marked_nodes(root: TreeNode) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找树中最后标记的节点
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], order: int) -> None:
+        if not node:
+            return
+        # 记录当前节点的访问顺序
+        visit_order[node.val] = order
+        # 递归遍历左子树和右子树
+        dfs(node.left, order + 1)
+        dfs(node.right, order + 1)
 
+    # 记录每个节点的访问顺序
+    visit_order = {}
+    # 从根节点开始进行 DFS
+    dfs(root, 0)
+    
+    # 找到最大访问顺序
+    max_order = max(visit_order.values())
+    # 返回所有具有最大访问顺序的节点值
+    return [node for node, order in visit_order.items() if order == max_order]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_last_marked_nodes)

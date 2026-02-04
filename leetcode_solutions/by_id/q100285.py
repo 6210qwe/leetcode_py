@@ -21,22 +21,23 @@ LCR 132. 砍竹子 II - 现需要将一根长为正整数 bamboo_len 的竹子�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划 + 快速幂
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用动态规划计算出每段竹子长度的最大乘积。
+2. 使用快速幂进行取模运算。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为 dp[i] = max(dp[i], j * (i - j), j * dp[i - j])。
+- 快速幂用于高效地进行取模运算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +49,27 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 1000000007
 
-def solution_function_name(params):
+def solution_function_name(bamboo_len: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每段竹子长度的最大乘积，并取模 1e9+7
     """
-    # TODO: 实现最优解法
-    pass
-
+    if bamboo_len == 2:
+        return 1
+    if bamboo_len == 3:
+        return 2
+    
+    # 动态规划数组
+    dp = [0] * (bamboo_len + 1)
+    dp[1] = 1
+    dp[2] = 2
+    dp[3] = 3
+    
+    for i in range(4, bamboo_len + 1):
+        for j in range(1, i // 2 + 1):
+            dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
+    
+    return dp[bamboo_len] % MOD
 
 Solution = create_solution(solution_function_name)

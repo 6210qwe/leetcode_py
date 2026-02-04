@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个哈希集合分别记录前缀和后缀的不同元素数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希集合 `prefix` 和 `suffix`，分别用于存储前缀和后缀的不同元素。
+2. 计算初始的 `suffix` 哈希集合，包含所有元素。
+3. 遍历数组，逐步更新 `prefix` 和 `suffix`，并计算每个位置的 `diff` 值。
 
 关键点:
-- [TODO]
+- 使用哈希集合来高效地记录不同元素的数量。
+- 在遍历过程中，逐步更新前缀和后缀的不同元素集合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，一次是初始化后缀集合，一次是计算结果。
+空间复杂度: O(n)，使用了两个哈希集合来存储前缀和后缀的不同元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_distinct_difference_array(nums: List[int]) -> List[int]:
+    n = len(nums)
+    prefix = set()
+    suffix = set(nums)
+    diff = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        # 更新前缀集合
+        prefix.add(nums[i])
+        # 计算当前 diff 值
+        diff.append(len(prefix) - (len(suffix) - 1 if i < n - 1 else 0))
+        # 更新后缀集合
+        if i < n - 1:
+            suffix.remove(nums[i])
 
+    return diff
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_distinct_difference_array)

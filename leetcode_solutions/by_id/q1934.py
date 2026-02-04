@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储键值对，并遍历字符串进行替换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个哈希表，存储 knowledge 中的键值对。
+2. 遍历字符串 s，使用一个标志变量 in_brackets 来判断当前是否在括号内。
+3. 如果遇到左括号，设置 in_brackets 为 True，并开始记录括号内的键。
+4. 如果遇到右括号，设置 in_brackets 为 False，并根据哈希表查找并替换括号内的键。
+5. 如果不在括号内，直接将字符添加到结果字符串中。
 
 关键点:
-- [TODO]
+- 使用哈希表快速查找键值对。
+- 通过标志变量 in_brackets 控制括号内的键的记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是 knowledge 的长度。
+空间复杂度: O(m)，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def evaluate_bracket_pairs(s: str, knowledge: List[List[str]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换字符串中的括号内容
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建哈希表
+    knowledge_dict = {key: value for key, value in knowledge}
+    
+    result = []
+    in_brackets = False
+    current_key = []
+    
+    for char in s:
+        if char == '(':
+            in_brackets = True
+            current_key = []
+        elif char == ')':
+            in_brackets = False
+            key = ''.join(current_key)
+            result.append(knowledge_dict.get(key, '?'))
+        elif in_brackets:
+            current_key.append(char)
+        else:
+            result.append(char)
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(evaluate_bracket_pairs)

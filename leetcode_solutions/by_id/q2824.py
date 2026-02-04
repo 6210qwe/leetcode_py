@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将 n, 2 * n, 3 * n 连接成一个字符串，检查该字符串是否恰好包含 1 到 9 各一次且不包含 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 2 * n 和 3 * n。
+2. 将 n, 2 * n, 3 * n 连接成一个字符串。
+3. 检查该字符串是否恰好包含 1 到 9 各一次且不包含 0。
 
 关键点:
-- [TODO]
+- 使用集合来检查字符串中的字符是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为 n 的范围是固定的（100 到 999），所以操作次数是常数级的。
+空间复杂度: O(1) - 使用的空间也是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_fascinating(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断一个数是否迷人
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 2 * n 和 3 * n
+    str_n = str(n)
+    str_2n = str(2 * n)
+    str_3n = str(3 * n)
+    
+    # 将 n, 2 * n, 3 * n 连接成一个字符串
+    concatenated_str = str_n + str_2n + str_3n
+    
+    # 检查该字符串是否恰好包含 1 到 9 各一次且不包含 0
+    return len(concatenated_str) == 9 and set(concatenated_str) == {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_fascinating)

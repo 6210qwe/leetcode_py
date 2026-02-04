@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的最短子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 初始化一个变量 or_value 来存储当前窗口内的按位或值。
+3. 移动右指针扩展窗口，更新 or_value。
+4. 当 or_value >= k 时，尝试收缩左指针以找到最短子数组。
+5. 记录最短子数组的长度。
+6. 如果遍历完数组仍未找到满足条件的子数组，返回 -1。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态调整子数组的大小。
+- 通过按位或操作来快速计算当前窗口的 OR 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_subarray_with_or_at_least_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到或值至少为 k 的最短子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    left = 0
+    or_value = 0
+    min_length = float('inf')
+
+    for right in range(n):
+        or_value |= nums[right]
+        while or_value >= k:
+            min_length = min(min_length, right - left + 1)
+            or_value ^= nums[left]
+            left += 1
+
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_subarray_with_or_at_least_k)

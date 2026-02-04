@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和前缀和来找到每个查询对应的最长子序列长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums 进行排序。
+2. 计算 nums 的前缀和。
+3. 对于每个查询，使用二分查找找到前缀和中小于等于查询值的最大索引。
 
 关键点:
-- [TODO]
+- 排序使得我们可以贪心地选择最小的元素来构建子序列。
+- 前缀和用于快速计算子序列的和。
+- 二分查找用于高效地找到满足条件的最大索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 nums 的长度，m 是 queries 的长度。排序的时间复杂度是 O(n log n)，计算前缀和是 O(n)，每次二分查找是 O(log n)。
+空间复杂度: O(n)，存储前缀和需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def longest_subsequence_with_limited_sum(nums: List[int], queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回每个查询对应的最长子序列长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 nums 进行排序
+    nums.sort()
+    
+    # 计算前缀和
+    prefix_sum = [0]
+    for num in nums:
+        prefix_sum.append(prefix_sum[-1] + num)
+    
+    # 对每个查询进行二分查找
+    def binary_search(target: int) -> int:
+        left, right = 0, len(prefix_sum) - 1
+        while left < right:
+            mid = (left + right + 1) // 2
+            if prefix_sum[mid] <= target:
+                left = mid
+            else:
+                right = mid - 1
+        return left
+    
+    result = []
+    for query in queries:
+        index = binary_search(query)
+        result.append(index)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subsequence_with_limited_sum)

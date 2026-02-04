@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到最早完成两个游乐设施的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将陆地游乐设施和水上游乐设施按开始时间排序。
+2. 使用双指针分别遍历陆地游乐设施和水上游乐设施，计算每种组合的最早完成时间。
+3. 返回最小的最早完成时间。
 
 关键点:
-- [TODO]
+- 通过排序和双指针优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 和 m 分别是陆地游乐设施和水上游乐设施的数量，排序操作的时间复杂度为 O(n log n) 和 O(m log m)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def earliest_finish_time(land_start_time: List[int], land_duration: List[int], water_start_time: List[int], water_duration: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最早完成两个游乐设施的时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 将陆地游乐设施和水上游乐设施按开始时间排序
+    land_rides = sorted(zip(land_start_time, land_duration), key=lambda x: x[0])
+    water_rides = sorted(zip(water_start_time, water_duration), key=lambda x: x[0])
+
+    # 初始化双指针
+    i, j = 0, 0
+    n, m = len(land_rides), len(water_rides)
+    min_time = float('inf')
+
+    while i < n and j < m:
+        # 获取当前游乐设施的开始时间和持续时间
+        land_start, land_dur = land_rides[i]
+        water_start, water_dur = water_rides[j]
+
+        # 计算当前组合的最早完成时间
+        if land_start + land_dur <= water_start:
+            min_time = min(min_time, water_start + water_dur)
+            i += 1
+        elif water_start + water_dur <= land_start:
+            min_time = min(min_time, land_start + land_dur)
+            j += 1
+        else:
+            min_time = min(min_time, max(land_start + land_dur, water_start + water_dur))
+            if land_start + land_dur < water_start + water_dur:
+                i += 1
+            else:
+                j += 1
+
+    return min_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliest_finish_time)

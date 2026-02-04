@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，从右向左遍历字符串，计算每个 '1' 可以移动的最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`max_ops` 用于记录最大操作次数，`zero_count` 用于记录当前 '0' 的数量。
+2. 从右向左遍历字符串：
+   - 如果遇到 '1'，则将 `zero_count` 加到 `max_ops` 中，并重置 `zero_count`。
+   - 如果遇到 '0'，则增加 `zero_count`。
+3. 返回 `max_ops`。
 
 关键点:
-- [TODO]
+- 从右向左遍历可以确保每次移动 '1' 时，不会影响后续的 '1' 的移动。
+- 使用 `zero_count` 记录当前 '0' 的数量，以便在遇到 '1' 时计算可移动的最大距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 1 移动到末尾的最大操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    max_ops = 0
+    zero_count = 0
+    
+    for char in reversed(s):
+        if char == '1':
+            max_ops += zero_count
+            zero_count = 0
+        else:
+            zero_count += 1
+    
+    return max_ops
 
 
 Solution = create_solution(solution_function_name)

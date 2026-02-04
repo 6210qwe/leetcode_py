@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从入口到最近出口的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列并将入口位置加入队列。
+2. 使用一个集合来记录已经访问过的格子，避免重复访问。
+3. 从队列中取出一个格子，检查它是否是出口（在边界上且不是入口）。
+4. 如果是出口，返回当前步数；否则，将该格子的四个相邻格子（上、下、左、右）加入队列，并标记为已访问。
+5. 如果队列为空且没有找到出口，返回 -1。
 
 关键点:
-- [TODO]
+- 使用 BFS 保证找到的路径是最短路径。
+- 使用集合记录已访问的格子，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是迷宫的行数和列数。每个格子最多访问一次。
+空间复杂度: O(m * n)，队列和已访问集合的最大空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def nearest_exit(maze: List[List[str]], entrance: List[int]) -> int:
+    rows, cols = len(maze), len(maze[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    queue = deque([(entrance[0], entrance[1], 0)])
+    visited = set([(entrance[0], entrance[1])])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    while queue:
+        r, c, steps = queue.popleft()
+        if (r == 0 or r == rows - 1 or c == 0 or c == cols - 1) and (r, c) != (entrance[0], entrance[1]):
+            return steps
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and maze[nr][nc] == '.' and (nr, nc) not in visited:
+                visited.add((nr, nc))
+                queue.append((nr, nc, steps + 1))
 
+    return -1
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(nearest_exit)

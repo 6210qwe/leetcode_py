@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过生成所有可能的排列组合，找到最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成 nums 数组的所有排列。
+2. 将每个排列转换为二进制字符串并连接。
+3. 将连接后的二进制字符串转换为整数，并记录最大值。
 
 关键点:
-- [TODO]
+- 使用 itertools.permutations 生成所有排列。
+- 使用 join 方法连接二进制字符串。
+- 使用 int 函数将二进制字符串转换为整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为 nums 的长度固定为 3，所以排列的数量是固定的（3! = 6）。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from itertools import permutations
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以由连接数组中所有元素的二进制表示形成的最大数值。
     """
-    # TODO: 实现最优解法
-    pass
-
+    max_value = 0
+    for perm in permutations(nums):
+        binary_str = ''.join(bin(num)[2:] for num in perm)
+        value = int(binary_str, 2)
+        max_value = max(max_value, value)
+    return max_value
 
 Solution = create_solution(solution_function_name)

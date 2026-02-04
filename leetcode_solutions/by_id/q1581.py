@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 找到数组的中位数。
+2. 根据与中位数的距离对数组进行排序。
+3. 取前 k 个最强值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序，找到中位数。
+2. 使用双指针方法，从数组两端向中间移动，比较与中位数的距离，选择距离更大的值。
+3. 将前 k 个最强值加入结果列表。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在 O(n) 时间复杂度内完成选择过程。
+- 排序的时间复杂度为 O(n log n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_k_strongest_values(arr: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中最强的 k 个值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    arr.sort()
+    
+    # 找到中位数
+    n = len(arr)
+    median = arr[(n - 1) // 2]
+    
+    # 使用双指针方法选择最强的 k 个值
+    left, right = 0, n - 1
+    result = []
+    while k > 0:
+        if abs(arr[left] - median) > abs(arr[right] - median):
+            result.append(arr[left])
+            left += 1
+        else:
+            result.append(arr[right])
+            right -= 1
+        k -= 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_k_strongest_values)

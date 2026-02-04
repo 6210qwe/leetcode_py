@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用模拟加法的方法，逐位相加并处理进位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将两个数组反转，以便从最低有效位开始处理。
+2. 初始化结果数组和进位变量。
+3. 逐位相加，并处理进位。
+4. 去掉结果数组中的前导零。
+5. 反转结果数组，得到最终结果。
 
 关键点:
-- [TODO]
+- 处理负二进制的进位规则：当前位和为 2 时，进位为 -1；当前位和为 3 时，进位为 1。
+- 去掉结果数组中的前导零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(max(len(arr1), len(arr2)))，因为我们需要遍历两个数组的最大长度。
+空间复杂度: O(max(len(arr1), len(arr2)))，结果数组的长度最多为输入数组的最大长度加一。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def add_negabinary(arr1: List[int], arr2: List[int]) -> List[int]:
+    # 反转数组，方便从最低有效位开始处理
+    arr1 = arr1[::-1]
+    arr2 = arr2[::-1]
+
+    carry = 0
+    result = []
+    i = 0
+
+    while i < len(arr1) or i < len(arr2) or carry != 0:
+        # 计算当前位的和
+        sum_ = (arr1[i] if i < len(arr1) else 0) + (arr2[i] if i < len(arr2) else 0) + carry
+        if sum_ >= 2:
+            result.append(sum_ - 2)
+            carry = -1
+        elif sum_ >= 0:
+            result.append(sum_)
+            carry = 0
+        else:
+            result.append(1)
+            carry = 1
+        i += 1
+
+    # 去掉结果数组中的前导零
+    while len(result) > 1 and result[-1] == 0:
+        result.pop()
+
+    # 反转结果数组，得到最终结果
+    return result[::-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_negabinary)

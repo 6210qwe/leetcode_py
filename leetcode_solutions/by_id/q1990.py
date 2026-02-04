@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和计算菱形和，并使用最大堆维护前三大的菱形和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 遍历所有可能的菱形中心点和边长，计算菱形和并更新最大堆。
+3. 从最大堆中取出前三大的菱形和。
 
 关键点:
-- [TODO]
+- 使用前缀和优化菱形和的计算。
+- 使用最大堆维护前三大的菱形和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * min(m, n))，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def get_biggest_three(grid: List[List[int]]) -> List[int]:
+    def get_prefix_sum(grid):
+        m, n = len(grid), len(grid[0])
+        prefix_sum = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                prefix_sum[i][j] = grid[i - 1][j - 1] + prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1]
+        return prefix_sum
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def get_rhombus_sum(prefix_sum, center, side_length):
+        if side_length == 0:
+            return grid[center[0]][center[1]]
+        
+        top, bottom = center[0] - side_length, center[0] + side_length
+        left, right = center[1] - side_length, center[1] + side_length
+        
+        if top < 0 or bottom >= len(grid) or left < 0 or right >= len(grid[0]):
+            return 0
+        
+        top_left = (top, center[1])
+        top_right = (top, right)
+        bottom_left = (bottom, left)
+        bottom_right = (bottom, center[1])
+        
+        sum_top = prefix_sum[top + 1][right + 1] - prefix_sum[top + 1][center[1]] - prefix_sum[top][right + 1] + prefix_sum[top][center[1]]
+        sum_bottom = prefix_sum[bottom + 1][center[1] + 1] - prefix_sum[bottom + 1][left] - prefix_sum[bottom][center[1] + 1] + prefix_sum[bottom][left]
+        sum_left = prefix_sum[center[0] + 1][left + 1] - prefix_sum[center[0] + 1][center[1]] - prefix_sum[top + 1][left + 1] + prefix_sum[top + 1][center[1]]
+        sum_right = prefix_sum[bottom + 1][right + 1] - prefix_sum[bottom + 1][center[1]] - prefix_sum[center[0] + 1][right + 1] + prefix_sum[center[0] + 1][center[1]]
+        
+        return sum_top + sum_bottom + sum_left + sum_right
 
+    m, n = len(grid), len(grid[0])
+    prefix_sum = get_prefix_sum(grid)
+    max_heap = []
+    
+    for i in range(m):
+        for j in range(n):
+            for k in range(min(m, n) // 2 + 1):
+                rhombus_sum = get_rhombus_sum(prefix_sum, (i, j), k)
+                if rhombus_sum > 0:
+                    heapq.heappush(max_heap, -rhombus_sum)
+                    if len(max_heap) > 3:
+                        heapq.heappop(max_heap)
+    
+    result = [-heapq.heappop(max_heap) for _ in range(len(max_heap))]
+    return sorted(result, reverse=True)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_biggest_three)

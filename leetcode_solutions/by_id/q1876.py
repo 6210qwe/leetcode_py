@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）从所有水域格子开始，逐层向外扩展，确保相邻格子的高度差不超过1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有水域格子加入队列，并将这些格子的高度设为0。
+2. 使用一个二维数组 `heights` 来存储每个格子的高度，初始时所有格子的高度设为-1。
+3. 从队列中取出一个格子，检查其四个方向的相邻格子：
+   - 如果相邻格子未被访问过（高度为-1），则将其高度设为当前格子高度+1，并将其加入队列。
+4. 重复步骤3直到队列为空。
 
 关键点:
-- [TODO]
+- 使用BFS确保从水域格子开始逐层向外扩展，保证高度差不超过1。
+- 使用一个二维数组 `heights` 来存储每个格子的高度，并初始化为-1表示未访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中m和n分别是矩阵的行数和列数。每个格子最多会被访问一次。
+空间复杂度: O(m * n)，队列和高度矩阵的空间复杂度都是O(m * n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def solution_function_name(isWater: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用广度优先搜索（BFS）从所有水域格子开始，逐层向外扩展，确保相邻格子的高度差不超过1。
     """
-    # TODO: 实现最优解法
-    pass
+    if not isWater:
+        return []
 
+    m, n = len(isWater), len(isWater[0])
+    heights = [[-1] * n for _ in range(m)]
+    queue = deque()
+
+    # 将所有水域格子加入队列，并将这些格子的高度设为0
+    for i in range(m):
+        for j in range(n):
+            if isWater[i][j] == 1:
+                heights[i][j] = 0
+                queue.append((i, j))
+
+    # 定义四个方向
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # BFS遍历
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and heights[nx][ny] == -1:
+                heights[nx][ny] = heights[x][y] + 1
+                queue.append((nx, ny))
+
+    return heights
 
 Solution = create_solution(solution_function_name)

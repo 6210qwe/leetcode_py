@@ -21,40 +21,63 @@ LCR 111. 除法求值 - 给定一个变量对数组 equations 和一个实数值
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用图的深度优先搜索（DFS）来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图：使用字典存储每个节点及其邻居节点和对应的权重。
+2. 对于每个查询，使用DFS来查找从起点到终点的路径，并计算路径上的权重乘积。
+3. 如果找到路径，则返回路径上的权重乘积；否则返回-1.0。
 
 关键点:
-- [TODO]
+- 使用字典构建有向加权图。
+- 使用DFS进行路径查找和权重计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E + Q * (V + E))，其中E是边的数量，Q是查询的数量，V是顶点的数量。每个查询需要遍历所有顶点和边。
+空间复杂度: O(V + E)，用于存储图的结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def calcEquation(equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
+    def build_graph(equations, values):
+        graph = {}
+        for (dividend, divisor), value in zip(equations, values):
+            if dividend not in graph:
+                graph[dividend] = {}
+            if divisor not in graph:
+                graph[divisor] = {}
+            graph[dividend][divisor] = value
+            graph[divisor][dividend] = 1 / value
+        return graph
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(start, end, visited):
+        if start not in graph or end not in graph:
+            return -1.0
+        if start == end:
+            return 1.0
+        visited.add(start)
+        for neighbor in graph[start]:
+            if neighbor not in visited:
+                weight = dfs(neighbor, end, visited)
+                if weight != -1.0:
+                    return graph[start][neighbor] * weight
+        return -1.0
 
+    graph = build_graph(equations, values)
+    results = []
+    for query in queries:
+        start, end = query
+        result = dfs(start, end, set())
+        results.append(result)
+    return results
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calcEquation)

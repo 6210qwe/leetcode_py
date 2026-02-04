@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来实现。首先对 nums1 进行排序，然后对 nums2 进行降序排序，并记录其原始索引。遍历 nums2，对于每个元素，如果 nums1 中的最大值大于当前 nums2 元素，则将其分配给该位置；否则，将 nums1 中的最小值分配给该位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums1 进行排序。
+2. 对 nums2 进行降序排序，并记录其原始索引。
+3. 使用双指针遍历 nums1 和 nums2，根据条件分配 nums1 中的元素。
 
 关键点:
-- [TODO]
+- 通过排序和双指针确保尽可能多的优势匹配。
+- 记录 nums2 的原始索引以保持结果的正确顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums1 和 nums2 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储排序后的 nums2 及其原始索引。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def advantage_count(nums1: List[int], nums2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现优势洗牌
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 nums1 进行排序
+    nums1.sort()
+    
+    # 对 nums2 进行降序排序，并记录其原始索引
+    sorted_nums2 = sorted(enumerate(nums2), key=lambda x: -x[1])
+    
+    # 初始化结果数组
+    result = [0] * len(nums1)
+    
+    # 使用双指针遍历 nums1 和 nums2
+    left, right = 0, len(nums1) - 1
+    for index, value in sorted_nums2:
+        if nums1[right] > value:
+            result[index] = nums1[right]
+            right -= 1
+        else:
+            result[index] = nums1[left]
+            left += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(advantage_count)

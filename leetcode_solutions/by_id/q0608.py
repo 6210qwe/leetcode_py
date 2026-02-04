@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来分类节点类型。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找出根节点：p_id 为 NULL 的节点。
+2. 找出内部节点：既是某个节点的父节点，也有父节点的节点。
+3. 找出叶子节点：有父节点但没有子节点的节点。
+4. 将这三类节点合并在一起，生成最终的结果表。
 
 关键点:
-- [TODO]
+- 使用 UNION ALL 来合并多个查询结果。
+- 使用子查询来找出内部节点和叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点最多被访问一次。
+空间复杂度: O(n)，用于存储中间结果和最终结果。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(tree):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义 SQL 查询
+    query = """
+    SELECT 
+        id, 
+        CASE 
+            WHEN p_id IS NULL THEN 'Root'
+            WHEN id IN (SELECT p_id FROM tree) THEN 'Inner'
+            ELSE 'Leaf'
+        END AS type
+    FROM 
+        tree
+    ORDER BY 
+        id
+    """
+    # 执行查询并返回结果
+    return query
 
 
 Solution = create_solution(solution_function_name)

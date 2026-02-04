@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每条直线上的点的数量，并找到通过最多点的直线。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来存储每条直线上的点的数量。
+2. 遍历所有点对，计算每条直线的斜率和截距。
+3. 将每条直线的斜率和截距作为键，点的索引作为值存储在哈希表中。
+4. 找出通过最多点的直线，并返回对应的点的索引。
 
 关键点:
-- [TODO]
+- 使用浮点数表示斜率时，可能会遇到精度问题，因此使用分数表示斜率。
+- 使用哈希表来高效地统计每条直线上的点的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是点的数量。需要遍历所有点对。
+空间复杂度: O(n^2)，哈希表在最坏情况下可能存储所有点对。
 """
 
 # ============================================================================
@@ -47,14 +50,41 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from fractions import Fraction
 
 
-def solution_function_name(params):
+def solution_function_name(points: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出通过最多点的直线，并返回对应的点的索引。
     """
-    # TODO: 实现最优解法
-    pass
+    if not points or len(points) < 2:
+        return []
+
+    n = len(points)
+    max_count = 0
+    best_line = (0, 1)
+
+    for i in range(n):
+        line_count = {}
+        for j in range(i + 1, n):
+            x1, y1 = points[i]
+            x2, y2 = points[j]
+            if x1 == x2:
+                slope = float('inf')
+                intercept = x1
+            else:
+                slope = Fraction(y2 - y1, x2 - x1)
+                intercept = y1 - slope * x1
+            key = (slope, intercept)
+            if key not in line_count:
+                line_count[key] = []
+            line_count[key].append(j)
+
+            if len(line_count[key]) > max_count:
+                max_count = len(line_count[key])
+                best_line = (i, min(line_count[key]))
+
+    return [best_line[0], best_line[1]]
 
 
 Solution = create_solution(solution_function_name)

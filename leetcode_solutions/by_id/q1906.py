@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有可能的数字对的最大公约数，并存储在一个二维数组中。
+2. 使用一个递归函数来计算在当前状态下，剩余操作次数所能获得的最大分数。
+3. 通过状态压缩技术，用一个整数表示哪些数字已经被使用。
+4. 递归地尝试所有可能的数字对组合，并更新最大分数。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示已经使用的数字。
+- 通过缓存递归结果来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)
+空间复杂度: O(2^n * n)
 """
 
 # ============================================================================
@@ -47,14 +50,27 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from math import gcd
+from functools import lru_cache
 
+def maxScore(nums: List[int]) -> int:
+    n = len(nums) // 2
+    gcds = [[gcd(nums[i], nums[j]) for j in range(i + 1, 2 * n)] for i in range(2 * n)]
+    
+    @lru_cache(None)
+    def dp(state, op):
+        if op > n:
+            return 0
+        max_score = 0
+        for i in range(2 * n):
+            if state & (1 << i) == 0:
+                for j in range(i + 1, 2 * n):
+                    if state & (1 << j) == 0:
+                        new_state = state | (1 << i) | (1 << j)
+                        score = op * gcds[i][j - (i + 1)] + dp(new_state, op + 1)
+                        max_score = max(max_score, score)
+        return max_score
+    
+    return dp(0, 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxScore)

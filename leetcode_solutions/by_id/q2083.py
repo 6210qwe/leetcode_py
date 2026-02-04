@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 一个数恰好有三个正除数当且仅当它是某个质数的平方。因为质数的平方只有 1, 质数本身和它的平方这三个因数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历从 2 到 sqrt(n) 的所有整数，检查是否有任何整数是 n 的平方根。
+2. 如果找到这样的整数，并且它是质数，则 n 是该质数的平方，返回 True。
+3. 否则，返回 False。
 
 关键点:
-- [TODO]
+- 通过检查平方根来确定 n 是否为某个质数的平方。
+- 通过遍历到 sqrt(n) 来优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(n)) - 我们只需要检查从 2 到 sqrt(n) 的整数。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 n 是否恰好有三个正除数
     """
-    # TODO: 实现最优解法
-    pass
+    if n < 4:
+        return False  # 1, 2, 3 都不符合条件
+
+    root = int(n ** 0.5)
+    if root * root != n:
+        return False  # n 不是某个整数的平方
+
+    for i in range(2, int(root ** 0.5) + 1):
+        if root % i == 0:
+            return False  # root 不是质数
+
+    return True  # root 是质数，n 是其平方
 
 
 Solution = create_solution(solution_function_name)

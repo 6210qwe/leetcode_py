@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 根据石子的价值对 3 取模的结果，将石子分为三类：余数为 0、余数为 1 和余数为 2。
+- 通过分析不同类别石子的数量关系来决定 Alice 是否能获胜。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每种余数的石子数量。
+2. 分析不同类别石子的数量关系，判断 Alice 是否能获胜。
 
 关键点:
-- [TODO]
+- 余数为 0 的石子对游戏结果没有直接影响，但会影响其他石子的选择。
+- 余数为 1 和余数为 2 的石子数量关系决定了最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 stones 的长度。我们需要遍历一次 stones 数组来统计每种余数的石子数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def stone_game_ix(stones: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 Alice 是否能获胜
     """
-    # TODO: 实现最优解法
-    pass
+    count = [0, 0, 0]
+    
+    # 统计每种余数的石子数量
+    for stone in stones:
+        count[stone % 3] += 1
+    
+    # 余数为 0 的石子数量
+    zero_count = count[0]
+    
+    # 余数为 1 和余数为 2 的石子数量
+    one_count = count[1]
+    two_count = count[2]
+    
+    # 如果余数为 0 的石子数量是奇数，那么 Alice 必须在某个时刻移除一个余数为 0 的石子
+    if zero_count % 2 == 1:
+        return abs(one_count - two_count) > 2
+    
+    # 如果余数为 0 的石子数量是偶数，那么 Alice 只需确保余数为 1 和余数为 2 的石子数量不相等
+    return one_count != two_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stone_game_ix)

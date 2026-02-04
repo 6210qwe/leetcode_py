@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆（优先队列）进行广度优先搜索（BFS），以找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，将起点 (0, 0) 和其高度加入堆。
+2. 使用一个集合记录已经访问过的节点，避免重复访问。
+3. 从堆中取出当前高度最小的节点，检查是否到达终点 (n-1, n-1)，如果是则返回当前高度。
+4. 否则，将该节点的四个相邻节点（如果未访问过且在网格范围内）及其高度加入堆。
+5. 重复上述过程，直到找到终点。
 
 关键点:
-- [TODO]
+- 使用最小堆确保每次处理的是当前高度最小的节点。
+- 通过集合记录已访问节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是网格的边长。每个节点最多被处理一次，每次处理需要 O(log n) 的时间来维护堆。
+空间复杂度: O(n^2)，用于存储访问过的节点和堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+import heapq
 
+def swimInWater(grid: List[List[int]]) -> int:
+    n = len(grid)
+    visited = set()
+    min_heap = [(grid[0][0], 0, 0)]  # (height, row, col)
+    visited.add((0, 0))
+    
+    while min_heap:
+        height, row, col = heapq.heappop(min_heap)
+        if row == n - 1 and col == n - 1:
+            return height
+        
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            new_row, new_col = row + dr, col + dc
+            if 0 <= new_row < n and 0 <= new_col < n and (new_row, new_col) not in visited:
+                visited.add((new_row, new_col))
+                new_height = max(height, grid[new_row][new_col])
+                heapq.heappush(min_heap, (new_height, new_row, new_col))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(swimInWater)

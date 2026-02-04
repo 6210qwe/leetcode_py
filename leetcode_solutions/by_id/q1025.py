@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为到第 i 天为止的最小花费。对于每个旅行日，我们考虑三种选择（1 天、7 天、30 天）并选择其中最小的一个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，长度为 days[-1] + 1。
+2. 遍历每一个旅行日，更新 dp 数组。
+3. 对于每个旅行日，计算三种选择的最小花费，并更新 dp 数组。
 
 关键点:
-- [TODO]
+- 使用 dp 数组来存储到每一天为止的最小花费。
+- 对于每个旅行日，考虑三种选择并选择最小的一个。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 days 数组的长度。
+空间复杂度: O(m)，其中 m 是 days 数组中的最大值。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def mincost_tickets(days: List[int], costs: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    动态规划解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    last_day = days[-1]
+    dp = [0] * (last_day + 1)
+    
+    # 将旅行日标记为 1
+    travel_days = set(days)
+    
+    for i in range(1, last_day + 1):
+        if i not in travel_days:
+            dp[i] = dp[i - 1]
+        else:
+            dp[i] = min(
+                dp[i - 1] + costs[0],  # 1 天通行证
+                dp[max(0, i - 7)] + costs[1],  # 7 天通行证
+                dp[max(0, i - 30)] + costs[2]  # 30 天通行证
+            )
+    
+    return dp[last_day]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(mincost_tickets)

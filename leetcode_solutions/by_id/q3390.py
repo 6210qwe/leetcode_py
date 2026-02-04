@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个 x 坐标，找到其对应的 y 坐标的最大值，并计算需要的矩形数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有点按 x 坐标分组，并记录每个 x 坐标对应的最大 y 坐标。
+2. 遍历 x 坐标，计算每个 x 坐标需要的矩形数量。
+3. 使用贪心算法，确保每个矩形的宽度不超过 w。
 
 关键点:
-- [TODO]
+- 使用字典来存储每个 x 坐标对应的最大 y 坐标。
+- 使用贪心算法来计算最小矩形数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 points 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储每个 x 坐标对应的最大 y 坐标。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_rectangles_to_cover_points(points: List[List[int]], w: int) -> int:
+    # 将所有点按 x 坐标分组，并记录每个 x 坐标对应的最大 y 坐标
+    x_to_max_y = {}
+    for x, y in points:
+        if x not in x_to_max_y:
+            x_to_max_y[x] = y
+        else:
+            x_to_max_y[x] = max(x_to_max_y[x], y)
+    
+    # 将 x 坐标排序
+    sorted_x = sorted(x_to_max_y.keys())
+    
+    # 计算需要的矩形数量
+    count = 0
+    i = 0
+    while i < len(sorted_x):
+        start_x = sorted_x[i]
+        end_x = start_x + w
+        max_y = x_to_max_y[start_x]
+        
+        # 找到当前矩形可以覆盖的最远 x 坐标
+        while i < len(sorted_x) and sorted_x[i] < end_x:
+            max_y = max(max_y, x_to_max_y[sorted_x[i]])
+            i += 1
+        
+        count += 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_rectangles_to_cover_points)

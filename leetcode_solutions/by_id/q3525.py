@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][0] 表示在第 i 小时结束时，最后饮用的是 A 的最大能量；dp[i][1] 表示在第 i 小时结束时，最后饮用的是 B 的最大能量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = energyDrinkA[0]，dp[0][1] = energyDrinkB[0]。
+2. 从第 1 小时开始遍历，更新 dp 数组：
+   - 如果当前小时饮用 A，则 dp[i][0] = max(dp[i-1][0] + energyDrinkA[i], dp[i-2][1] + energyDrinkA[i])。
+   - 如果当前小时饮用 B，则 dp[i][1] = max(dp[i-1][1] + energyDrinkB[i], dp[i-2][0] + energyDrinkB[i])。
+3. 最终结果是 dp[n-1][0] 和 dp[n-1][1] 中的最大值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程考虑了切换饮料的情况。
+- 使用滚动数组优化空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_energy_boost(energy_drink_a: List[int], energy_drink_b: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在接下来的 n 小时内你能获得的最大总强化能量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(energy_drink_a)
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0, 0] for _ in range(3)]
+    dp[0][0] = energy_drink_a[0]
+    dp[0][1] = energy_drink_b[0]
+
+    for i in range(1, n):
+        dp[i % 3][0] = max(dp[(i - 1) % 3][0] + energy_drink_a[i], dp[(i - 2) % 3][1] + energy_drink_a[i])
+        dp[i % 3][1] = max(dp[(i - 1) % 3][1] + energy_drink_b[i], dp[(i - 2) % 3][0] + energy_drink_b[i])
+
+    return max(dp[(n - 1) % 3][0], dp[(n - 1) % 3][1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_energy_boost)

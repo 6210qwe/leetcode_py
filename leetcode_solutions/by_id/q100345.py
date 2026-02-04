@@ -21,22 +21,23 @@ LCR 189. 设计机械累加器 - 请设计一个机械累加器，计算从 1、
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和逻辑运算来实现累加
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义递归函数 `sum_to_n`，用于计算从 1 到 n 的累加和。
+2. 使用逻辑运算符 `and` 和 `or` 来替代条件判断，实现递归终止和递归调用。
 
 关键点:
-- [TODO]
+- 使用逻辑运算符 `and` 和 `or` 来替代条件判断，避免使用 if-else 语句。
+- 递归调用自身来实现累加。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n) - 由于递归调用栈的深度
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_to_n(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算从 1 到 n 的累加和
     """
-    # TODO: 实现最优解法
-    pass
+    return n and n + sum_to_n(n - 1) or 0
+
+
+def solution_function_name(target: int) -> int:
+    """
+    函数式接口 - 计算从 1 到 target 的累加和
+    """
+    return sum_to_n(target)
 
 
 Solution = create_solution(solution_function_name)

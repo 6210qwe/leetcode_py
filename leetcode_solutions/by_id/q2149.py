@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 统计连续子串中可以删除的 'A' 和 'B' 的数量。Alice 和 Bob 分别统计 'A' 和 'B' 的可删除次数，比较两者大小来决定胜负。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `alice_count` 和 `bob_count`，分别记录 Alice 和 Bob 可以删除的次数。
+2. 遍历字符串，找到连续的 'A' 和 'B' 子串。
+3. 对于每个连续的 'A' 子串，计算其长度减去 2（因为两端不能删除），并累加到 `alice_count`。
+4. 对于每个连续的 'B' 子串，计算其长度减去 2（因为两端不能删除），并累加到 `bob_count`。
+5. 比较 `alice_count` 和 `bob_count`，如果 `alice_count` 大于 `bob_count`，则 Alice 获胜，否则 Bob 获胜。
 
 关键点:
-- [TODO]
+- 通过遍历一次字符串，统计连续子串的长度来计算可删除次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(colors: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 Alice 是否能获胜
     """
-    # TODO: 实现最优解法
-    pass
+    alice_count = 0
+    bob_count = 0
+    n = len(colors)
+    
+    i = 0
+    while i < n:
+        # 找到连续的 'A' 子串
+        if colors[i] == 'A':
+            start = i
+            while i < n and colors[i] == 'A':
+                i += 1
+            length = i - start
+            if length > 2:
+                alice_count += length - 2
+        # 找到连续的 'B' 子串
+        elif colors[i] == 'B':
+            start = i
+            while i < n and colors[i] == 'B':
+                i += 1
+            length = i - start
+            if length > 2:
+                bob_count += length - 2
+        else:
+            i += 1
+    
+    return alice_count > bob_count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间检查字符串是否可以构成回文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_palindrome` 来检查给定的子字符串是否是回文。
+2. 使用双指针从两端向中间遍历字符串 a 和 b，尝试找到一个分割点使得 aprefix + bsuffix 或 bprefix + asuffix 构成回文。
+3. 如果找到这样的分割点，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用双指针从两端向中间遍历，减少不必要的比较。
+- 辅助函数 `is_palindrome` 用于快速检查子字符串是否是回文。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_palindrome(s: str) -> bool:
+    """检查字符串 s 是否是回文"""
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+
+
+def check_palindrome_partition(a: str, b: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以通过分割 a 和 b 得到一个回文串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(a)
+    left, right = 0, n - 1
+    
+    while left < right and a[left] == b[right]:
+        left += 1
+        right -= 1
+    
+    if left >= right:
+        return True
+    
+    # 检查 a 的剩余部分和 b 的前缀是否能构成回文
+    if is_palindrome(a[left:right + 1]):
+        return True
+    
+    # 检查 b 的剩余部分和 a 的前缀是否能构成回文
+    if is_palindrome(b[left:right + 1]):
+        return True
+    
+    return False
+
+
+def solution_function_name(a: str, b: str) -> bool:
+    """
+    函数式接口 - 检查是否可以通过分割 a 和 b 得到一个回文串
+    """
+    return check_palindrome_partition(a, b)
 
 
 Solution = create_solution(solution_function_name)

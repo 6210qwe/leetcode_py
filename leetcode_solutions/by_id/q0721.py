@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并具有相同邮箱的账户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，用于存储每个邮箱对应的索引。
+2. 遍历每个账户，将每个邮箱映射到当前账户的索引，并将所有邮箱连接起来。
+3. 构建结果，将每个连通分量中的邮箱收集起来，并按字典序排序。
+4. 将每个连通分量的结果添加到最终结果中。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地合并和查找连通分量。
+- 使用字典来存储每个邮箱对应的索引，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log(m))，其中 n 是账户数量，m 是每个账户的平均邮箱数量。排序操作的时间复杂度为 O(m * log(m))。
+空间复杂度: O(n * m)，存储并查集和邮箱索引。
 """
 
 # ============================================================================
@@ -49,12 +52,58 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+
+def solution_function_name(accounts: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(accounts)
+    uf = UnionFind(n)
+    email_to_index = {}
+
+    for i, account in enumerate(accounts):
+        for email in account[1:]:
+            if email in email_to_index:
+                uf.union(email_to_index[email], i)
+            else:
+                email_to_index[email] = i
+
+    index_to_emails = {}
+    for email, index in email_to_index.items():
+        root = uf.find(index)
+        if root not in index_to_emails:
+            index_to_emails[root] = []
+        index_to_emails[root].append(email)
+
+    result = []
+    for index, emails in index_to_emails.items():
+        name = accounts[index][0]
+        emails.sort()
+        result.append([name] + emails)
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

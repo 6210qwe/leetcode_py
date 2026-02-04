@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式匹配条件中的 DIAB1 前缀
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库和 re 模块
+2. 读取输入数据
+3. 使用正则表达式筛选出符合条件的记录
+4. 返回筛选后的数据
 
 关键点:
-- [TODO]
+- 使用正则表达式匹配 DIAB1 前缀
+- 确保每条记录都包含至少一个 DIAB1 前缀的疾病代码
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是记录数，m 是每个记录中条件字符串的平均长度
+空间复杂度: O(1)，不考虑输出结果的空间占用
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+import re
 
 
-def solution_function_name(params):
+def solution_function_name(patients: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询患有 I 类糖尿病的患者
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用正则表达式筛选出符合条件的记录
+    pattern = r'\bDIAB1'
+    filtered_patients = patients[patients['conditions'].str.contains(pattern, regex=True)]
+    
+    return filtered_patients
 
 
 Solution = create_solution(solution_function_name)

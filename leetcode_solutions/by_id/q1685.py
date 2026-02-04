@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。定义 dp[i][j] 为从 i 到 j 的子数组中 Alice 可以获得的最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 prefix_sum，prefix_sum[i] 表示从 0 到 i 的元素和。
+2. 初始化 dp 数组，dp[i][i] = 0，因为只有一个石子时 Alice 无法得分。
+3. 从后往前遍历数组，外层循环控制子数组的长度，内层循环控制子数组的起始位置。
+4. 对于每个子数组，尝试所有可能的分割点 k，计算左右两侧的和 left_sum 和 right_sum。
+5. 根据 left_sum 和 right_sum 的大小关系更新 dp[i][j]。
 
 关键点:
-- [TODO]
+- 使用前缀和数组快速计算子数组的和。
+- 动态规划状态转移方程：dp[i][j] = max(left_sum + dp[i][k-1], right_sum + dp[k+1][j])。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是 stoneValue 的长度。三重循环的时间复杂度。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(stoneValue: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 Alice 能够获得的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(stoneValue)
+    if n == 1:
+        return 0
+
+    # 前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + stoneValue[i - 1]
+
+    # 动态规划数组
+    dp = [[0] * n for _ in range(n)]
+
+    # 从后往前遍历数组
+    for length in range(2, n + 1):  # 子数组长度
+        for i in range(n - length + 1):  # 子数组起始位置
+            j = i + length - 1  # 子数组结束位置
+            for k in range(i, j):  # 分割点
+                left_sum = prefix_sum[k + 1] - prefix_sum[i]
+                right_sum = prefix_sum[j + 1] - prefix_sum[k + 1]
+                if left_sum < right_sum:
+                    dp[i][j] = max(dp[i][j], left_sum + dp[i][k])
+                elif left_sum > right_sum:
+                    dp[i][j] = max(dp[i][j], right_sum + dp[k + 1][j])
+                else:
+                    dp[i][j] = max(dp[i][j], left_sum + max(dp[i][k], dp[k + 1][j]))
+
+    return dp[0][n - 1]
 
 
 Solution = create_solution(solution_function_name)

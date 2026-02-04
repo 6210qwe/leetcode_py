@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选符合条件的数据科学家候选人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 筛选出具有数据科学相关经验的候选人。
+2. 确保候选人具有至少 3 年的相关工作经验。
+3. 按照候选人的总评分进行排序，返回评分最高的前 5 名候选人。
 
 关键点:
-- [TODO]
+- 使用 INNER JOIN 来连接多个表，确保数据的一致性。
+- 使用 WHERE 子句来过滤符合条件的候选人。
+- 使用 ORDER BY 和 LIMIT 来获取评分最高的前 5 名候选人。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是候选人的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询过程中不使用额外的空间。
 """
 
 # ============================================================================
@@ -51,10 +54,20 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT c.id, c.name, SUM(e.experience_years) AS total_experience, AVG(c.score) AS average_score
+    FROM candidates c
+    INNER JOIN experiences e ON c.id = e.candidate_id
+    WHERE e.role LIKE '%Data Scientist%' AND e.experience_years >= 3
+    GROUP BY c.id, c.name
+    ORDER BY average_score DESC
+    LIMIT 5;
+    """
+    # 返回查询结果
+    return query
 
 
 Solution = create_solution(solution_function_name)

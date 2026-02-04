@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每个对角线分别进行排序，左下角三角形按非递增顺序排序，右上角三角形按非递减顺序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历矩阵，提取每个对角线的元素。
+2. 对左下角三角形的对角线按非递增顺序排序。
+3. 对右上角三角形的对角线按非递减顺序排序。
+4. 将排序后的对角线元素放回原矩阵。
 
 关键点:
-- [TODO]
+- 使用两个字典分别存储左下角和右上角的对角线元素。
+- 对每个对角线进行排序后，再将其放回原矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是矩阵的边长。每个对角线的长度最多为 n，排序的时间复杂度为 O(n log n)，总共有 2n-1 个对角线。
+空间复杂度: O(n^2)，用于存储对角线的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def sort_matrix_by_diagonals(grid: List[List[int]]) -> List[List[int]]:
+    n = len(grid)
+    left_diagonals = {}
+    right_diagonals = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 提取每个对角线的元素
+    for i in range(n):
+        for j in range(n):
+            if i >= j:
+                if i - j not in left_diagonals:
+                    left_diagonals[i - j] = []
+                left_diagonals[i - j].append(grid[i][j])
+            else:
+                if j - i not in right_diagonals:
+                    right_diagonals[j - i] = []
+                right_diagonals[j - i].append(grid[i][j])
 
+    # 对左下角三角形的对角线按非递增顺序排序
+    for key in left_diagonals:
+        left_diagonals[key].sort(reverse=True)
 
-Solution = create_solution(solution_function_name)
+    # 对右上角三角形的对角线按非递减顺序排序
+    for key in right_diagonals:
+        right_diagonals[key].sort()
+
+    # 将排序后的对角线元素放回原矩阵
+    for i in range(n):
+        for j in range(n):
+            if i >= j:
+                grid[i][j] = left_diagonals[i - j].pop(0)
+            else:
+                grid[i][j] = right_diagonals[j - i].pop(0)
+
+    return grid
+
+Solution = create_solution(sort_matrix_by_diagonals)

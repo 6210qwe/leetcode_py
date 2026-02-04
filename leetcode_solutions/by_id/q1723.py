@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来枚举所有可能的选择组合，并检查每个组合是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个递归函数来进行回溯。
+2. 在递归函数中，使用一个计数器来记录当前选择的请求数量。
+3. 对于每个请求，选择或不选择它，并递归处理下一个请求。
+4. 在每次递归结束后，检查当前选择的请求是否满足每栋楼的净变化为0。
+5. 如果满足条件，更新最大请求数量。
+6. 返回最大请求数量。
 
 关键点:
-- [TODO]
+- 使用回溯法枚举所有可能的选择组合。
+- 使用计数器记录当前选择的请求数量。
+- 检查每个组合是否满足每栋楼的净变化为0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^m)，其中 m 是 requests 的长度。因为每个请求都有两种选择（选或不选），总共有 2^m 种组合。
+空间复杂度: O(n + m)，其中 n 是楼的数量，m 是 requests 的长度。需要额外的空间来存储楼的变化和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxAchievableRequests(n: int, requests: List[List[int]]) -> int:
+    def backtrack(index: int, count: int, changes: List[int]) -> None:
+        if index == len(requests):
+            if all(change == 0 for change in changes):
+                nonlocal max_requests
+                max_requests = max(max_requests, count)
+            return
+        
+        # 不选择当前请求
+        backtrack(index + 1, count, changes)
+        
+        # 选择当前请求
+        from_i, to_i = requests[index]
+        changes[from_i] -= 1
+        changes[to_i] += 1
+        backtrack(index + 1, count + 1, changes)
+        
+        # 回溯
+        changes[from_i] += 1
+        changes[to_i] -= 1
+    
+    max_requests = 0
+    changes = [0] * n
+    backtrack(0, 0, changes)
+    return max_requests
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxAchievableRequests)

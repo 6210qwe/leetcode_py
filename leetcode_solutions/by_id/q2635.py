@@ -14,29 +14,30 @@
 # 问题描述
 # ============================================================================
 """
-2543. 判断一个点是否可以到达 - 给你一个无穷大的网格图。一开始你在 (1, 1) ，你需要通过有限步移动到达点 (targetX, targetY) 。 每一步 ，你可以从点 (x, y) 移动到以下点之一： * (x, y - x) * (x - y, y) * (2 * x, y) * (x, 2 * y) 给你两个整数 targetX 和 targetY ，分别表示你最后需要到达点的 X 和 Y 坐标。如果你可以从 (1, 1) 出发到达这个点，请你返回true ，否则返回 false 。 示例 1： 输入：targetX = 6, targetY = 9 输出：false 解释：没法从 (1,1) 出发到达 (6,9) ，所以返回 false 。 示例 2： 输入：targetX = 4, targetY = 7 输出：true 解释：你可以按照以下路径到达：(1,1) -> (1,2) -> (1,4) -> (1,8) -> (1,7) -> (2,7) -> (4,7) 。 提示： * 1 <= targetX, targetY <= 109
+2543. 判断一个点是否可以到达 - 给你一个无穷大的网格图。一开始你在 (1, 1) ，你需要通过有限步移动到达点 (targetX, targetY) 。 每一步 ，你可以从点 (x, y) 移动到以下点之一： * (x, y - x) * (x - y, y) * (2 * x, y) * (x, 2 * y) 给你两个整数 targetX 和 targetY ，分别表示你最后需要到达点的 X 和 Y 坐标。如果你可以从 (1,1) 出发到达这个点，请你返回true ，否则返回 false 。 示例 1： 输入：targetX = 6, targetY = 9 输出：false 解释：没法从 (1,1) 出发到达 (6,9) ，所以返回 false 。 示例 2： 输入：targetX = 4, targetY = 7 输出：true 解释：你可以按照以下路径到达：(1,1) -> (1,2) -> (1,4) -> (1,8) -> (1,7) -> (2,7) -> (4,7) 。 提示： * 1 <= targetX, targetY <= 109
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过最大公约数（GCD）来判断目标点是否可达。如果 gcd(targetX, targetY) 是 2 的幂次，则目标点可达。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 targetX 和 targetY 的最大公约数。
+2. 检查该最大公约数是否是 2 的幂次。
 
 关键点:
-- [TODO]
+- 使用欧几里得算法计算最大公约数。
+- 检查一个数是否是 2 的幂次可以通过位运算实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(min(targetX, targetY))) - 计算 GCD 的时间复杂度。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_reachable(targetX: int, targetY: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断目标点 (targetX, targetY) 是否可以从 (1, 1) 出发到达。
     """
-    # TODO: 实现最优解法
-    pass
+    def gcd(a: int, b: int) -> int:
+        while b:
+            a, b = b, a % b
+        return a
+
+    def is_power_of_two(n: int) -> bool:
+        return n & (n - 1) == 0 and n != 0
+
+    # 计算最大公约数
+    g = gcd(targetX, targetY)
+    
+    # 检查最大公约数是否是 2 的幂次
+    return is_power_of_two(g)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_reachable)

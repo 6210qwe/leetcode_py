@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算从第一行到最后一行的最小路径代价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示从第一行到第 i 行第 j 列的最小路径代价。
+2. 对于第一行，dp[0][j] 直接等于 grid[0][j]。
+3. 从第二行开始，对于每个单元格 (i, j)，计算从上一行的所有单元格 (i-1, k) 移动到 (i, j) 的代价，并更新 dp[i][j]。
+4. 最后一行的最小值即为所求的最小路径代价。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为 dp[i][j] = min(dp[i-1][k] + moveCost[grid[i-1][k]][j] + grid[i][j]) for all k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n^2)，其中 m 是网格的行数，n 是网格的列数。因为我们需要遍历每个单元格，并对每个单元格进行 n 次计算。
+空间复杂度: O(m * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_path_cost(grid: List[List[int]], move_cost: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    dp = [[float('inf')] * n for _ in range(m)]
+    
+    # 初始化第一行
+    for j in range(n):
+        dp[0][j] = grid[0][j]
+    
+    # 动态规划计算每一行的最小路径代价
+    for i in range(1, m):
+        for j in range(n):
+            for k in range(n):
+                dp[i][j] = min(dp[i][j], dp[i-1][k] + move_cost[grid[i-1][k]][j] + grid[i][j])
+    
+    # 返回最后一行的最小值
+    return min(dp[-1])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_path_cost)

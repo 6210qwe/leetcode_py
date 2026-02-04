@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历两棵树，并在遍历时合并节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果两个节点都存在，则将它们的值相加，并递归地合并它们的左子树和右子树。
+2. 如果其中一个节点不存在，则返回另一个节点。
 
 关键点:
-- [TODO]
+- 使用递归方法进行深度优先搜索。
+- 在每个节点处处理合并逻辑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是两棵树中节点数的总和。每个节点最多被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def merge_trees(root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    合并两棵二叉树。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root1:
+        return root2
+    if not root2:
+        return root1
+    
+    # 合并当前节点
+    root1.val += root2.val
+    
+    # 递归合并左子树
+    root1.left = merge_trees(root1.left, root2.left)
+    
+    # 递归合并右子树
+    root1.right = merge_trees(root1.right, root2.right)
+    
+    return root1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_trees)

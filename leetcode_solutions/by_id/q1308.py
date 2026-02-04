@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集将可以互相交换的索引归为一组，然后对每组内的字符进行排序，最后将排序后的字符放回原位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历 pairs 数组，将每对索引进行合并。
+3. 将每个索引与其所在的连通分量进行映射。
+4. 对每个连通分量内的字符进行排序。
+5. 构建最终结果字符串。
 
 关键点:
-- [TODO]
+- 使用并查集来管理连通分量。
+- 对每个连通分量内的字符进行排序，确保字典序最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m α(n))，其中 n 是字符串长度，m 是 pairs 的长度，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储并查集和连通分量。
 """
 
 # ============================================================================
@@ -49,12 +53,48 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallestStringWithSwaps(s: str, pairs: List[List[int]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    class UnionFind:
+        def __init__(self, n):
+            self.parent = list(range(n))
+        
+        def find(self, x):
+            if self.parent[x] != x:
+                self.parent[x] = self.find(self.parent[x])
+            return self.parent[x]
+        
+        def union(self, x, y):
+            rootX = self.find(x)
+            rootY = self.find(y)
+            if rootX != rootY:
+                self.parent[rootX] = rootY
+    
+    n = len(s)
+    uf = UnionFind(n)
+    
+    for a, b in pairs:
+        uf.union(a, b)
+    
+    # 将每个索引与其所在的连通分量进行映射
+    groups = {}
+    for i in range(n):
+        root = uf.find(i)
+        if root not in groups:
+            groups[root] = []
+        groups[root].append(i)
+    
+    # 对每个连通分量内的字符进行排序
+    result = list(s)
+    for indices in groups.values():
+        chars = [s[i] for i in indices]
+        chars.sort()
+        for i, char in zip(indices, chars):
+            result[i] = char
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallestStringWithSwaps)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字出现的次数，然后通过组合公式计算好数对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 用于记录每个数字出现的次数。
+2. 遍历数组 `nums`，更新哈希表 `count` 中每个数字的计数。
+3. 遍历哈希表 `count`，对于每个数字的计数 `n`，使用组合公式 `n * (n - 1) // 2` 计算好数对的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字的出现次数。
+- 使用组合公式计算好数对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们需要遍历数组一次来统计每个数字的出现次数，然后再遍历哈希表一次来计算好数对的数量。
+空间复杂度: O(n)，在最坏情况下，哈希表 `count` 需要存储数组中所有不同的数字及其计数。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好数对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个数字出现的次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 计算好数对的数量
+    good_pairs = 0
+    for n in count.values():
+        good_pairs += n * (n - 1) // 2
+    
+    return good_pairs
 
 
 Solution = create_solution(solution_function_name)

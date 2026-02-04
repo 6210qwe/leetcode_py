@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和贪心算法来最大化不同元素的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化两个指针 i 和 j，分别指向当前处理的元素和下一个待处理的元素。
+3. 遍历数组，对于每个元素 nums[i]，找到下一个与它不同的元素 nums[j]。
+4. 计算 nums[j] - nums[i] 是否大于 2 * k，如果是，则说明无法通过操作使 nums[i] 和 nums[j] 相同，增加计数器。
+5. 更新指针 i 和 j。
 
 关键点:
-- [TODO]
+- 通过排序和贪心算法确保每次选择最优解。
+- 通过双指针方法高效地遍历数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_distinct_elements(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行操作后 nums 中可能拥有的不同元素的最大数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化指针
+    i = 0
+    distinct_count = 0
+    
+    while i < len(nums):
+        # 找到下一个与 nums[i] 不同的元素
+        j = i + 1
+        while j < len(nums) and nums[j] == nums[i]:
+            j += 1
+        
+        # 如果 nums[j] - nums[i] > 2 * k，则无法通过操作使它们相同
+        if j < len(nums) and nums[j] - nums[i] > 2 * k:
+            distinct_count += 1
+        
+        # 更新指针
+        i = j
+    
+    # 最后一个区间内的元素也需要计入
+    distinct_count += 1
+    
+    return distinct_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_distinct_elements)

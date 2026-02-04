@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和计数器来找到所有满足条件的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `counter` 来记录当前窗口内每个数字的频率。
+2. 使用两个指针 `left` 和 `right` 来表示滑动窗口的左右边界。
+3. 移动右指针 `right` 扩展窗口，更新计数器 `counter`。
+4. 如果当前窗口内的所有数字频率相同且不为零，则将该子字符串加入集合 `seen`。
+5. 如果当前窗口内的数字频率不再相同或某个数字频率为零，则移动左指针 `left` 缩小窗口，更新计数器 `counter`。
+6. 最后返回集合 `seen` 的大小。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和计数器来高效地找到所有满足条件的子字符串。
+- 通过集合 `seen` 来去重，确保每个子字符串都是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 在最坏情况下，每个子字符串都需要检查其频率。
+空间复杂度: O(n) - 计数器和集合 `seen` 的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def unique_substrings_with_equal_digit_frequency(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回每个数字的频率都相同的独特子字符串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid(counter):
+        if not counter:
+            return False
+        freq = list(counter.values())
+        return min(freq) == max(freq)
+
+    n = len(s)
+    seen = set()
+
+    for left in range(n):
+        counter = {}
+        for right in range(left, n):
+            digit = s[right]
+            counter[digit] = counter.get(digit, 0) + 1
+            if is_valid(counter):
+                seen.add(s[left:right+1])
+
+    return len(seen)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(unique_substrings_with_equal_digit_frequency)

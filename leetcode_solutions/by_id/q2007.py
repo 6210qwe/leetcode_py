@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二维数组 dp 来记录从起点到每个节点的最大成本，其中 dp[mask][i] 表示访问了 mask 中的节点，并且当前在节点 i 的最大成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[1 << start][start] = 0，表示从起点开始。
+2. 使用状态压缩枚举所有可能的节点集合。
+3. 对于每个节点集合，枚举最后一个访问的节点，并更新 dp 值。
+4. 最后返回 dp[(1 << n) - 1][end]，即访问了所有节点并且在终点的最大成本。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示节点集合。
+- 动态规划的状态转移方程为 dp[mask][i] = max(dp[mask][i], dp[mask ^ (1 << i)][j] + cost[j][i])。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)，其中 n 是节点数。状态数为 2^n，每个状态需要 O(n^2) 时间来更新。
+空间复杂度: O(2^n * n)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, highways: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化 dp 数组
+    dp = [[-float('inf')] * n for _ in range(1 << n)]
+    dp[1][0] = 0  # 从起点开始
+    
+    # 构建邻接矩阵
+    cost = [[-float('inf')] * n for _ in range(n)]
+    for u, v, c in highways:
+        cost[u][v] = c
+        cost[v][u] = c
+    
+    # 状态压缩 DP
+    for mask in range(1, 1 << n):
+        for i in range(n):
+            if mask & (1 << i):
+                for j in range(n):
+                    if mask & (1 << j) and i != j:
+                        dp[mask][i] = max(dp[mask][i], dp[mask ^ (1 << i)][j] + cost[j][i])
+    
+    # 返回结果
+    return max(dp[(1 << n) - 1])
 
 Solution = create_solution(solution_function_name)

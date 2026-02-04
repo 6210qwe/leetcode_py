@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个指针，一个指向当前最小值，一个指向当前最大值。遍历字符串 s，根据字符是 'I' 还是 'D' 来决定使用哪个指针，并更新指针。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 low 和 high，分别指向 0 和 n。
+2. 遍历字符串 s：
+   - 如果字符是 'I'，将 low 指向的值加入结果数组，并将 low 加 1。
+   - 如果字符是 'D'，将 high 指向的值加入结果数组，并将 high 减 1。
+3. 最后将 low 指向的值加入结果数组（此时 low 应该等于 high）。
 
 关键点:
-- [TODO]
+- 使用贪心算法，通过两个指针来构建满足条件的排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串 s。
+空间复杂度: O(1)，除了结果数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def diStringMatch(s: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现增减字符串匹配
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    low, high = 0, n
+    result = []
+    
+    for char in s:
+        if char == 'I':
+            result.append(low)
+            low += 1
+        else:
+            result.append(high)
+            high -= 1
+    
+    result.append(low)  # 最后 low 应该等于 high
+    return result
 
+Solution = create_solution(diStringMatch)
 
-Solution = create_solution(solution_function_name)
+----------------------------------------

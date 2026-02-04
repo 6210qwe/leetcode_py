@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来查找得分最高的学生。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从表中选择所有学生的分数。
+2. 使用 `ORDER BY` 子句按分数降序排序。
+3. 使用 `LIMIT` 子句限制结果集的大小，返回前 N 名学生。
 
 关键点:
-- [TODO]
+- 确保查询的效率和正确性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是学生数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询不使用额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(scores: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回得分最高的前 k 名学生
+
+    :param scores: 学生的分数列表
+    :param k: 返回的前 k 名学生
+    :return: 得分最高的前 k 名学生的分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 按分数降序排序
+    sorted_scores = sorted(scores, reverse=True)
+    # 返回前 k 名学生的分数
+    return sorted_scores[:k]
 
 
 Solution = create_solution(solution_function_name)

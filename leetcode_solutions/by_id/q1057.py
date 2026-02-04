@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用容斥原理和动态规划来计算不包含重复数字的数的数量，然后用总数减去这个数量得到结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为字符串形式，方便逐位处理。
+2. 使用动态规划计算长度小于 n 的所有不包含重复数字的数的数量。
+3. 使用容斥原理计算长度等于 n 且不包含重复数字的数的数量。
+4. 用总数减去不包含重复数字的数的数量得到结果。
 
 关键点:
-- [TODO]
+- 动态规划状态定义：dp[i][j] 表示长度为 i 且最高位为 j 的不包含重复数字的数的数量。
+- 容斥原理用于处理前导零的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d^2 * 2^d)，其中 d 是 n 的位数。
+空间复杂度: O(d * 2^d)，用于存储动态规划的状态。
 """
 
 # ============================================================================
@@ -48,13 +51,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_numbers_with_unique_digits(n: int) -> int:
+    def dp(i, mask, is_limit):
+        if i == len(s):
+            return 1
+        if not is_limit and (i, mask) in memo:
+            return memo[(i, mask)]
+        
+        res = 0
+        for d in range(10):
+            if (mask >> d) & 1:
+                continue
+            if is_limit and d > int(s[i]):
+                break
+            new_mask = mask | (1 << d)
+            res += dp(i + 1, new_mask, is_limit and d == int(s[i]))
+        
+        if not is_limit:
+            memo[(i, mask)] = res
+        return res
+    
+    s = str(n)
+    memo = {}
+    total = dp(0, 0, True)
+    return n - total + 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_numbers_with_unique_digits)

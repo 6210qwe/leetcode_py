@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间遍历数组，当遇到不相等的元素时，选择较小的元素进行合并操作，直到数组变为回文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向数组的首尾。
+2. 比较两个指针所指向的元素：
+   - 如果相等，移动两个指针。
+   - 如果不相等，选择较小的元素进行合并操作，并移动对应的指针。
+3. 重复步骤2，直到两个指针相遇。
 
 关键点:
-- [TODO]
+- 使用双指针可以有效地减少不必要的比较和合并操作。
+- 选择较小的元素进行合并操作，确保最终数组能变为回文。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    left, right = 0, len(nums) - 1
+    operations = 0
+    
+    while left < right:
+        if nums[left] == nums[right]:
+            left += 1
+            right -= 1
+        elif nums[left] < nums[right]:
+            nums[left + 1] += nums[left]
+            left += 1
+            operations += 1
+        else:
+            nums[right - 1] += nums[right]
+            right -= 1
+            operations += 1
+    
+    return operations
 
 Solution = create_solution(solution_function_name)

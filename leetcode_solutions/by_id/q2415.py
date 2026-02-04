@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算理想数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字的因数，并构建一个因数图。
+2. 使用动态规划来计算每个数字作为结尾的理想数组数量。
+3. 使用组合数学来计算长度为 n 的理想数组数量。
 
 关键点:
-- [TODO]
+- 构建因数图来快速查找因数。
+- 动态规划状态转移方程：dp[i][j] 表示长度为 i 且以 j 结尾的理想数组数量。
+- 组合数学公式：C(n + k - 1, k - 1) 用于计算长度为 n 的理想数组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(maxValue * log(maxValue) + n * maxValue)
+空间复杂度: O(maxValue^2)
 """
 
 # ============================================================================
@@ -47,14 +50,39 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def combination(n, k):
+    if k > n:
+        return 0
+    return math.comb(n, k)
+
+def solution_function_name(n: int, maxValue: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建因数图
+    factors = [[] for _ in range(maxValue + 1)]
+    for i in range(1, maxValue + 1):
+        for j in range(i, maxValue + 1, i):
+            factors[j].append(i)
 
+    # 动态规划初始化
+    dp = [[0] * (maxValue + 1) for _ in range(n + 1)]
+    for i in range(1, maxValue + 1):
+        dp[1][i] = 1
+
+    # 动态规划状态转移
+    for length in range(2, n + 1):
+        for end in range(1, maxValue + 1):
+            for factor in factors[end]:
+                dp[length][end] += dp[length - 1][factor]
+                dp[length][end] %= MOD
+
+    # 计算结果
+    result = sum(dp[n]) % MOD
+    return result
 
 Solution = create_solution(solution_function_name)

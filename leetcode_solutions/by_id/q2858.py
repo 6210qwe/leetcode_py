@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储和合并对象，并按 id 排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典来存储所有对象，键为 id。
+2. 遍历 arr1 和 arr2，将对象添加到字典中，如果 id 已存在则合并对象。
+3. 按 id 对字典中的对象进行排序。
+4. 返回排序后的对象列表。
 
 关键点:
-- [TODO]
+- 使用字典来存储和合并对象，确保时间复杂度最优。
+- 最后按 id 排序以满足题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 arr1 和 arr2 的总长度。主要的时间开销在排序上。
+空间复杂度: O(n)，需要额外的空间来存储合并后的对象。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def join_two_arrays_by_id(arr1: List[dict], arr2: List[dict]) -> List[dict]:
     """
-    函数式接口 - [TODO] 实现
+    根据 ID 合并两个数组
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个字典来存储所有对象
+    id_to_obj = {}
+    
+    # 将 arr1 中的对象添加到字典中
+    for obj in arr1:
+        id_to_obj[obj["id"]] = obj
+    
+    # 将 arr2 中的对象添加到字典中，如果 id 已存在则合并对象
+    for obj in arr2:
+        if obj["id"] in id_to_obj:
+            id_to_obj[obj["id"]].update(obj)
+        else:
+            id_to_obj[obj["id"]] = obj
+    
+    # 按 id 对字典中的对象进行排序
+    sorted_objs = sorted(id_to_obj.values(), key=lambda x: x["id"])
+    
+    return sorted_objs
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(join_two_arrays_by_id)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个点的出现次数，然后遍历每个点，计算其与目标距离 k 的所有可能的点，并检查这些点是否在哈希表中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个点的出现次数。
+2. 遍历 `coordinates` 数组，对于每个点 `(x, y)`，计算其与目标距离 k 的所有可能的点 `(x1, y1)`，并检查这些点是否在哈希表中。
+3. 如果存在这样的点 `(x1, y1)`，则将其对应的计数值加到结果中。
+4. 更新哈希表 `count`，将当前点 `(x, y)` 的计数值加一。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个点的出现次数，从而可以在 O(1) 时间内检查某个点是否存在。
+- 通过遍历所有可能的 `(x1, y1)` 来计算距离，确保不会遗漏任何点对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是 coordinates 的长度，k 是给定的距离。因为我们需要遍历每个点，并对其最多 k 个可能的点进行检查。
+空间复杂度: O(n)，因为我们使用了一个哈希表来存储每个点的出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
-
-def solution_function_name(params):
+def count_pairs(coordinates: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计距离为 k 的点对数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = defaultdict(int)
+    result = 0
+    
+    for x, y in coordinates:
+        for dk in range(k + 1):
+            x1 = x ^ dk
+            y1 = y ^ (k - dk)
+            if (x1, y1) in count:
+                result += count[(x1, y1)]
+        count[(x, y)] += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs)

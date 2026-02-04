@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 遍历两棵树，并计算每个节点的哈希值。如果两棵树的根节点哈希值相同，则两棵树等价。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs` 来遍历树并计算每个节点的哈希值。
+2. 对于每个节点，计算其左子树和右子树的哈希值。
+3. 将当前节点的值与其左右子树的哈希值组合成一个新的哈希值。
+4. 比较两棵树的根节点哈希值，如果相同则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希值来表示子树的结构和值，确保唯一性。
+- 递归遍历树，计算每个节点的哈希值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def dfs(node: Optional[TreeNode]) -> int:
+    if not node:
+        return 0
+    left_hash = dfs(node.left)
+    right_hash = dfs(node.right)
+    # Combine the hash values of the current node and its children
+    return hash((node.val, left_hash, right_hash))
 
-def solution_function_name(params):
+def check_equivalence(root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查两棵二叉表达式树是否等价
     """
-    # TODO: 实现最优解法
-    pass
+    return dfs(root1) == dfs(root2)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_equivalence)

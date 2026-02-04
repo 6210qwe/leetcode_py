@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择价格最高的物品，直到装满背包。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将物品按价格从高到低排序。
+2. 依次选择价格最高的物品，直到背包容量达到上限。
 
 关键点:
-- [TODO]
+- 使用贪心算法，每次选择当前价格最高的物品。
+- 排序的时间复杂度为 O(n log n)，遍历选择的时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_price_to_fill_bag(prices: List[int], capacity: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算填满背包的最大价格
     """
-    # TODO: 实现最优解法
-    pass
+    # 按价格从高到低排序
+    prices.sort(reverse=True)
+    
+    total_price = 0
+    for price in prices:
+        if capacity >= 1:
+            total_price += price
+            capacity -= 1
+        else:
+            break
+    
+    return total_price
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_price_to_fill_bag)

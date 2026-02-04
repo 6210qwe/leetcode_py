@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个哈希表和一个有序集合来实现高效的食物评分系统。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用两个哈希表分别存储食物到其评分和烹饪方式的映射，以及每个烹饪方式对应的有序集合。
+2. 在修改评分时，更新食物的评分，并在对应的有序集合中更新该食物的评分。
+3. 查询最高评分时，从有序集合中直接获取最高评分的食物。
 
 关键点:
-- [TODO]
+- 使用有序集合来维护每个烹饪方式下的食物评分，确保查询最高评分时的时间复杂度为 O(1)。
+- 在修改评分时，需要同时更新哈希表和有序集合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: 
+- 初始化: O(n log n)，其中 n 是食物的数量，因为需要将每个食物插入有序集合。
+- 修改评分: O(log n)，因为需要在有序集合中更新评分。
+- 查询最高评分: O(1)，因为可以直接从有序集合中获取最高评分的食物。
+
+空间复杂度: O(n)，其中 n 是食物的数量，因为需要存储每个食物的信息和有序集合。
 """
 
 # ============================================================================
@@ -44,17 +50,39 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedSet
 
+class FoodRatings:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, foods: List[str], cuisines: List[str], ratings: List[int]):
+        self.food_to_rating = {}
+        self.food_to_cuisine = {}
+        self.cuisine_to_ratings = {}
+        
+        for food, cuisine, rating in zip(foods, cuisines, ratings):
+            self.food_to_rating[food] = rating
+            self.food_to_cuisine[food] = cuisine
+            if cuisine not in self.cuisine_to_ratings:
+                self.cuisine_to_ratings[cuisine] = SortedSet(key=lambda x: (-x[1], x[0]))
+            self.cuisine_to_ratings[cuisine].add((food, rating))
 
+    def changeRating(self, food: str, newRating: int) -> None:
+        cuisine = self.food_to_cuisine[food]
+        old_rating = self.food_to_rating[food]
+        self.food_to_rating[food] = newRating
+        self.cuisine_to_ratings[cuisine].discard((food, old_rating))
+        self.cuisine_to_ratings[cuisine].add((food, newRating))
 
-Solution = create_solution(solution_function_name)
+    def highestRated(self, cuisine: str) -> str:
+        return self.cuisine_to_ratings[cuisine][0][0]
+
+# 示例
+# foodRatings = FoodRatings(["kimchi", "miso", "sushi", "moussaka", "ramen", "bulgogi"], ["korean", "japanese", "japanese", "greek", "japanese", "korean"], [9, 12, 8, 15, 14, 7])
+# print(foodRatings.highestRated("korean"))  # 输出 "kimchi"
+# print(foodRatings.highestRated("japanese"))  # 输出 "ramen"
+# foodRatings.changeRating("sushi", 16)
+# print(foodRatings.highestRated("japanese"))  # 输出 "sushi"
+# foodRatings.changeRating("ramen", 16)
+# print(foodRatings.highestRated("japanese"))  # 输出 "ramen"
+
+Solution = create_solution(FoodRatings)

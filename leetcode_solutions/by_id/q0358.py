@@ -56,25 +56,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def rearrange_string_k_distance_apart(params):
+def rearrange_string_k_distance_apart(s: str, k: int) -> str:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> rearrange_string_k_distance_apart([待实现])
-        [待实现]
+    重新排列字符串，使得相同字符之间至少间隔 k；若无法做到返回空串。
+
+    使用最大堆贪心选择剩余次数最多的字符，并用等待队列维护「解禁」时间。
     """
-    # TODO: 实现最优解法
-    pass
+    if k <= 1:
+        return s
+
+    from collections import Counter, deque
+    import heapq
+
+    cnt = Counter(s)
+    heap: list[tuple[int, str]] = [(-c, ch) for ch, c in cnt.items()]
+    heapq.heapify(heap)
+    wait = deque()  # (ready_pos, -cnt, ch)
+
+    res: list[str] = []
+    pos = 0
+
+    while heap or wait:
+        # 将已解禁的字符放回堆
+        while wait and wait[0][0] <= pos:
+            _, neg_c, ch = wait.popleft()
+            heapq.heappush(heap, (neg_c, ch))
+
+        if not heap:
+            return ""
+
+        neg_c, ch = heapq.heappop(heap)
+        res.append(ch)
+        pos += 1
+        neg_c += 1  # 使用一次，剩余次数减一（因为是负数）
+        if neg_c < 0:
+            wait.append((pos + k - 1, neg_c, ch))
+
+    return "".join(res)
 
 
 # 自动生成Solution类（无需手动编写）

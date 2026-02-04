@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用分段更新和异或操作来高效处理区间乘法查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `xor_result` 用于存储最终的异或结果。
+2. 遍历每个查询，对于每个查询，根据 `li`, `ri`, `ki` 和 `vi` 更新 `nums` 数组。
+3. 在更新过程中，使用模运算确保数值在合理范围内。
+4. 最后，计算并返回 `nums` 数组中所有元素的异或结果。
 
 关键点:
-- [TODO]
+- 使用模运算避免数值溢出。
+- 通过直接更新数组来减少空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * (ri - li + 1) / ki)
+- n 是数组 `nums` 的长度。
+- q 是查询的数量。
+- 每个查询的时间复杂度取决于 `ri - li + 1` 和 `ki` 的比值。
+
+空间复杂度: O(1)
+- 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def xor_after_range_multiplication_queries(nums: List[int], queries: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    for query in queries:
+        li, ri, ki, vi = query
+        idx = li
+        while idx <= ri:
+            nums[idx] = (nums[idx] * vi) % MOD
+            idx += ki
+    
+    xor_result = 0
+    for num in nums:
+        xor_result ^= num
+    
+    return xor_result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(xor_after_range_multiplication_queries)

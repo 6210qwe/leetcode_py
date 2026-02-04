@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算字符串的前半部分和后半部分中元音的数量，并比较这两个数量是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个集合来存储所有元音字符。
+2. 将字符串分为两半。
+3. 分别计算前半部分和后半部分中元音的数量。
+4. 比较两个数量是否相等，如果相等则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用集合来快速检查字符是否为元音。
+- 通过遍历字符串的一半来计算元音数量，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串的一半来计算元音数量。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串的两半是否相似
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义元音集合
+    vowels = set('aeiouAEIOU')
+    
+    # 将字符串分为两半
+    mid = len(s) // 2
+    a, b = s[:mid], s[mid:]
+    
+    # 计算前半部分和后半部分中元音的数量
+    count_a = sum(1 for char in a if char in vowels)
+    count_b = sum(1 for char in b if char in vowels)
+    
+    # 比较两个数量是否相等
+    return count_a == count_b
 
 
 Solution = create_solution(solution_function_name)

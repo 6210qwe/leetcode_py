@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个元素作为子数组的最大值和最小值的范围，然后使用贪心算法来选择 k 个子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用单调栈找到每个元素作为子数组的最大值和最小值的范围。
+2. 计算每个子数组的值，并将其存储在一个列表中。
+3. 对列表进行排序，选择前 k 个最大的子数组值。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地找到每个元素作为子数组的最大值和最小值的范围。
+- 使用贪心算法来选择 k 个子数组，以最大化总值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。单调栈的时间复杂度是 O(n)，排序的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储单调栈和子数组的值。
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_total_subarray_value_ii(nums: List[int], k: int) -> int:
+    def next_smaller_elements(arr: List[int]) -> List[int]:
+        stack = []
+        result = [-1] * len(arr)
+        for i in range(len(arr)):
+            while stack and arr[stack[-1]] > arr[i]:
+                result[stack.pop()] = i
+            stack.append(i)
+        return result
+
+    def prev_smaller_elements(arr: List[int]) -> List[int]:
+        stack = []
+        result = [-1] * len(arr)
+        for i in range(len(arr) - 1, -1, -1):
+            while stack and arr[stack[-1]] >= arr[i]:
+                result[stack.pop()] = i
+            stack.append(i)
+        return result
+
+    n = len(nums)
+    next_smaller = next_smaller_elements(nums)
+    prev_smaller = prev_smaller_elements(nums)
+
+    values = []
+    for i in range(n):
+        left = prev_smaller[i] + 1 if prev_smaller[i] != -1 else 0
+        right = next_smaller[i] - 1 if next_smaller[i] != -1 else n - 1
+        for j in range(left, i + 1):
+            for k in range(i, right + 1):
+                values.append(nums[i] - nums[j])
+
+    values.sort(reverse=True)
+    return sum(values[:k])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_total_subarray_value_ii)

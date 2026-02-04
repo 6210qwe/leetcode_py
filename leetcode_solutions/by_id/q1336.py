@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用马拉车算法（Manacher's Algorithm）来找到所有奇数长度的回文子串，并记录每个位置的最长回文子串长度。然后使用动态规划来计算两个不重叠回文子串的最大乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用马拉车算法预处理字符串，得到每个位置的最长奇数长度回文子串半径。
+2. 通过预处理结果，构建前缀最大值数组和后缀最大值数组，分别记录每个位置之前和之后的最长奇数长度回文子串长度。
+3. 使用动态规划计算两个不重叠回文子串的最大乘积。
 
 关键点:
-- [TODO]
+- 马拉车算法可以在 O(n) 时间内找到所有奇数长度的回文子串。
+- 动态规划用于计算两个不重叠回文子串的最大乘积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def manacher(s: str) -> List[int]:
+    n = len(s)
+    s = '#' + '#'.join(s) + '#'
+    p = [0] * (2 * n + 1)
+    center, right = 0, 0
+    for i in range(2 * n + 1):
+        if i < right:
+            p[i] = min(right - i, p[2 * center - i])
+        while i - p[i] - 1 >= 0 and i + p[i] + 1 < 2 * n + 1 and s[i - p[i] - 1] == s[i + p[i] + 1]:
+            p[i] += 1
+        if i + p[i] > right:
+            center, right = i, i + p[i]
+    return p
 
 
-Solution = create_solution(solution_function_name)
+def max_product_of_palindromic_substrings(s: str) -> int:
+    n = len(s)
+    p = manacher(s)
+    max_len_left = [0] * n
+    max_len_right = [0] * n
+
+    # 构建前缀最大值数组
+    for i in range(n):
+        max_len_left[i] = max(max_len_left[i - 1], p[2 * i + 1]) if i > 0 else p[1]
+
+    # 构建后缀最大值数组
+    for i in range(n - 1, -1, -1):
+        max_len_right[i] = max(max_len_right[i + 1], p[2 * i + 1]) if i < n - 1 else p[2 * n - 1]
+
+    # 计算最大乘积
+    max_product = 0
+    for i in range(n - 1):
+        max_product = max(max_product, max_len_left[i] * max_len_right[i + 1])
+
+    return max_product
+
+
+Solution = create_solution(max_product_of_palindromic_substrings)

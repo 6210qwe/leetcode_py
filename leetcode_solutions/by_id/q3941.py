@@ -21,40 +21,84 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组（Fenwick Tree）来处理区间查询和单点更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个数的 popcount-depth。
+2. 初始化树状数组，存储每个 popcount-depth 的频率。
+3. 处理查询：
+   - 如果是区间查询 [1, l, r, k]，使用树状数组查询区间 [l, r] 内 popcount-depth 为 k 的数量。
+   - 如果是单点更新 [2, idx, val]，先更新树状数组中的旧值，再更新新值。
 
 关键点:
-- [TODO]
+- 使用树状数组高效处理区间查询和单点更新。
+- 预处理每个数的 popcount-depth 以减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + q log n)，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n)，用于存储树状数组和预处理结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_popcount_depth(x: int) -> int:
+    depth = 0
+    while x != 1:
+        x = bin(x).count('1')
+        depth += 1
+    return depth
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FenwickTree:
+    def __init__(self, n: int):
+        self.n = n
+        self.tree = [0] * (n + 1)
 
+    def update(self, index: int, delta: int):
+        while index <= self.n:
+            self.tree[index] += delta
+            index += index & -index
 
-Solution = create_solution(solution_function_name)
+    def query(self, index: int) -> int:
+        result = 0
+        while index > 0:
+            result += self.tree[index]
+            index -= index & -index
+        return result
+
+def handle_queries(nums: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums)
+    max_depth = 5
+    fenwick_trees = [FenwickTree(n) for _ in range(max_depth + 1)]
+    
+    # 预处理每个数的 popcount-depth
+    depths = [get_popcount_depth(num) for num in nums]
+    
+    # 初始化树状数组
+    for i, depth in enumerate(depths):
+        fenwick_trees[depth].update(i + 1, 1)
+    
+    answers = []
+    for query in queries:
+        if query[0] == 1:
+            _, l, r, k = query
+            count = fenwick_trees[k].query(r + 1) - fenwick_trees[k].query(l)
+            answers.append(count)
+        elif query[0] == 2:
+            _, idx, val = query
+            old_depth = depths[idx]
+            new_depth = get_popcount_depth(val)
+            depths[idx] = new_depth
+            fenwick_trees[old_depth].update(idx + 1, -1)
+            fenwick_trees[new_depth].update(idx + 1, 1)
+    
+    return answers
+
+Solution = create_solution(handle_queries)

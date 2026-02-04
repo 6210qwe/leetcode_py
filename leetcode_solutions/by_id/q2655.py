@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将数组按降序排序，然后计算前缀和，直到前缀和变为非正数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行降序排序。
+2. 计算前缀和，直到前缀和变为非正数，记录正前缀和的数量。
 
 关键点:
-- [TODO]
+- 通过降序排序，确保前缀和尽可能长时间保持为正数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 仅使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重排数组以得到最大前缀分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 降序排序
+    nums.sort(reverse=True)
+    
+    prefix_sum = 0
+    score = 0
+    
+    for num in nums:
+        prefix_sum += num
+        if prefix_sum > 0:
+            score += 1
+        else:
+            break
+    
+    return score
 
 
 Solution = create_solution(solution_function_name)

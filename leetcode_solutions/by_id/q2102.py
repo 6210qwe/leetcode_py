@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算左右两边的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的总和 total。
+2. 初始化左侧和 left_sum 为 0。
+3. 遍历数组，对于每个索引 i，检查 left_sum 是否等于 total - left_sum - nums[i]。
+4. 如果相等，则返回当前索引 i。
+5. 否则，更新 left_sum 并继续遍历。
+6. 如果遍历结束没有找到符合条件的索引，返回 -1。
 
 关键点:
-- [TODO]
+- 使用前缀和可以避免重复计算，从而提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_middle_index(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组的中间位置
     """
-    # TODO: 实现最优解法
-    pass
+    total = sum(nums)
+    left_sum = 0
+    for i, num in enumerate(nums):
+        if left_sum == (total - left_sum - num):
+            return i
+        left_sum += num
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_middle_index)

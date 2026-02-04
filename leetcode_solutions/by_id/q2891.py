@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到数组中可以转换为相同值的最长子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用滑动窗口来找到可以转换为相同值的最长子数组。
+3. 计算窗口内的最大长度。
 
 关键点:
-- [TODO]
+- 通过排序和滑动窗口来简化问题。
+- 滑动窗口的左右边界控制在差值不超过 2k 的范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_beauty_after_operations(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组可能取得的最大美丽值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化滑动窗口的左右边界
+    left, right = 0, 0
+    max_length = 0
+    
+    while right < len(nums):
+        # 如果当前窗口的差值超过 2k，则移动左边界
+        while nums[right] - nums[left] > 2 * k:
+            left += 1
+        
+        # 更新最大长度
+        max_length = max(max_length, right - left + 1)
+        
+        # 移动右边界
+        right += 1
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_beauty_after_operations)

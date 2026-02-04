@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到直线上的最近距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从表中选择所有点的坐标。
+2. 计算每对点之间的距离。
+3. 找到最小的距离。
 
 关键点:
-- [TODO]
+- 使用自连接来生成所有点对。
+- 使用 ABS 函数来计算两点之间的绝对距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是点的数量。因为我们需要计算每对点之间的距离。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(points: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现直线上的最近距离
     """
-    # TODO: 实现最优解法
-    pass
+    if len(points) < 2:
+        return 0
 
+    # 对点进行排序
+    points.sort()
+
+    # 初始化最小距离
+    min_distance = float('inf')
+
+    # 计算相邻点之间的最小距离
+    for i in range(1, len(points)):
+        min_distance = min(min_distance, points[i] - points[i - 1])
+
+    return min_distance
 
 Solution = create_solution(solution_function_name)

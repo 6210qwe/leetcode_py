@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和树状数组来找到每次最优的交换位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个树状数组，用于快速查询和更新。
+2. 遍历字符串，对于每个字符，尝试找到在当前范围内最小的字符，并计算将其移到当前位置所需的交换次数。
+3. 如果交换次数小于等于 k，则进行交换并更新 k 和树状数组。
+4. 重复上述步骤直到遍历完所有字符或 k 用完。
 
 关键点:
-- [TODO]
+- 使用树状数组来高效地查询和更新字符的位置。
+- 贪心地选择每次最优的交换位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。树状数组的操作是 O(log n)。
+空间复杂度: O(n)，需要存储树状数组和字符的位置。
 """
 
 # ============================================================================
@@ -48,13 +51,60 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_min_digit(num: str, start: int, end: int, bit: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使用树状数组找到从 start 到 end 范围内的最小数字。
     """
-    # TODO: 实现最优解法
-    pass
+    min_digit = '9'
+    for i in range(start, end + 1):
+        if num[i] < min_digit:
+            min_digit = num[i]
+    return min_digit
 
+def update_bit(bit: List[int], index: int, value: int) -> None:
+    """
+    更新树状数组。
+    """
+    while index < len(bit):
+        bit[index] += value
+        index += index & -index
+
+def query_bit(bit: List[int], index: int) -> int:
+    """
+    查询树状数组。
+    """
+    result = 0
+    while index > 0:
+        result += bit[index]
+        index -= index & -index
+    return result
+
+def solution_function_name(num: str, k: int) -> str:
+    """
+    函数式接口 - 实现最优解法
+    """
+    n = len(num)
+    bit = [0] * (n + 1)
+    pos = {d: [] for d in '0123456789'}
+    
+    for i, d in enumerate(num):
+        pos[d].append(i + 1)
+        update_bit(bit, i + 1, 1)
+    
+    result = []
+    for _ in range(n):
+        for d in '0123456789':
+            if not pos[d]:
+                continue
+            idx = pos[d][0]
+            swaps = query_bit(bit, idx - 1)
+            if k >= swaps:
+                k -= swaps
+                result.append(d)
+                pos[d].pop(0)
+                update_bit(bit, idx, -1)
+                break
+    
+    return ''.join(result)
 
 Solution = create_solution(solution_function_name)

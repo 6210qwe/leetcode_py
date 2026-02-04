@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为凑成金额 i 的组合数。对于每个硬币面额 coin，我们更新 dp 数组，使得 dp[i] += dp[i - coin]。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 amount + 1 的 dp 数组，dp[0] = 1，表示凑成金额 0 的唯一方法是使用 0 个硬币。
+2. 遍历每个硬币面额 coin，对于每个 coin，从 coin 到 amount 更新 dp 数组。
+3. 最终 dp[amount] 即为所求的组合数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为 dp[i] += dp[i - coin]。
+- 外层循环遍历硬币面额，内层循环遍历金额，这样可以确保每个组合只被计算一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是硬币的种类数，m 是总金额。
+空间复杂度: O(m)，需要一个长度为 amount + 1 的 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def change(amount: int, coins: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以凑成总金额的硬币组合数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [0] * (amount + 1)
+    dp[0] = 1  # 凑成金额 0 的唯一方法是使用 0 个硬币
+
+    # 遍历每个硬币面额
+    for coin in coins:
+        # 从 coin 到 amount 更新 dp 数组
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+
+    return dp[amount]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(change)

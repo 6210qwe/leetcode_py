@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划预处理所有可能的回文子串，然后通过双指针检查是否存在三个非空回文子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用动态规划预处理所有可能的回文子串。
+2. 使用双指针检查是否存在三个非空回文子串。
 
 关键点:
-- [TODO]
+- 动态规划预处理回文子串。
+- 双指针检查三个非空回文子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串是否可以分割成三个非空回文子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n < 3:
+        return False
+
+    # 动态规划预处理所有可能的回文子串
+    dp = [[False] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = True
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = (length == 2) or dp[i + 1][j - 1]
+
+    # 使用双指针检查是否存在三个非空回文子串
+    for i in range(1, n - 1):
+        for j in range(i, n - 1):
+            if dp[0][i - 1] and dp[i][j] and dp[j + 1][n - 1]:
+                return True
+    return False
 
 
 Solution = create_solution(solution_function_name)

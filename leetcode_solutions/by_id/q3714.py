@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过前缀和计算每个元素作为最小值和最大值的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素作为最小值的贡献。
+2. 计算每个元素作为最大值的贡献。
+3. 将两个贡献相加并取模。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算贡献。
+- 注意处理边界情况和取模操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度为 O(n log n)，后续遍历的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
@@ -48,13 +50,38 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有长度最多为 k 的子序列中最大值与最小值之和的总和。
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    if n == 1:
+        return 2 * nums[0] % MOD
+    
+    # 计算前缀和
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = (prefix_sum[i] + nums[i]) % MOD
+    
+    # 排序并计算贡献
+    sorted_nums = sorted((num, i) for i, num in enumerate(nums))
+    
+    def calculate_contribution(is_min: bool) -> int:
+        contribution = 0
+        count = 0
+        for i in range(n):
+            if is_min:
+                contribution += nums[sorted_nums[i][1]] * (prefix_sum[min(i + k, n)] - prefix_sum[i])
+            else:
+                contribution += nums[sorted_nums[i][1]] * (prefix_sum[i + 1] - prefix_sum[max(i - k + 1, 0)])
+            contribution %= MOD
+        return contribution
+    
+    min_contribution = calculate_contribution(True)
+    max_contribution = calculate_contribution(False)
+    
+    return (min_contribution + max_contribution) % MOD
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个数位上每个数字出现的次数，然后计算每对数位差的总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个数字转换为字符串形式，以便逐位处理。
+2. 使用一个哈希表记录每个数位上每个数字出现的次数。
+3. 遍历哈希表，计算每对数位差的总和。
 
 关键点:
-- [TODO]
+- 使用哈希表来统计每个数位上每个数字的出现次数。
+- 通过遍历哈希表来计算每对数位差的总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是 nums 的长度，d 是每个数字的数位长度。
+空间复杂度: O(d * 10)，因为每个数位上最多有 10 种不同的数字。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_digit_differences(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有整数对中数位差之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 将每个数字转换为字符串形式，以便逐位处理
+    str_nums = [str(num) for num in nums]
+    
+    # 获取数位长度
+    digit_length = len(str_nums[0])
+    
+    # 初始化哈希表，用于记录每个数位上每个数字出现的次数
+    digit_count = [[0] * 10 for _ in range(digit_length)]
+    
+    # 统计每个数位上每个数字出现的次数
+    for num in str_nums:
+        for i, digit in enumerate(num):
+            digit_count[i][int(digit)] += 1
+    
+    # 计算每对数位差的总和
+    total_diff = 0
+    for counts in digit_count:
+        for count in counts:
+            total_diff += count * (len(nums) - count)
+    
+    return total_diff // 2  # 每对数位差被计算了两次，所以需要除以 2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_digit_differences)

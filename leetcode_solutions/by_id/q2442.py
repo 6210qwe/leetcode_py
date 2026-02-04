@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来存储数组中的元素，然后遍历数组，检查是否存在满足等差条件的三元组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希集合，将数组中的所有元素加入集合。
+2. 遍历数组中的每个元素，检查是否存在满足等差条件的三元组。
+3. 如果存在，计数器加一。
 
 关键点:
-- [TODO]
+- 使用哈希集合可以在 O(1) 时间内检查元素是否存在。
+- 只需要遍历一次数组即可找到所有满足条件的三元组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，使用了一个哈希集合来存储数组中的元素。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_arithmetic_triplets(nums: List[int], diff: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算等差三元组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希集合来存储数组中的元素
+    num_set = set(nums)
+    
+    # 初始化计数器
+    count = 0
+    
+    # 遍历数组中的每个元素
+    for num in nums:
+        # 检查是否存在满足等差条件的三元组
+        if num + diff in num_set and num + 2 * diff in num_set:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_arithmetic_triplets)

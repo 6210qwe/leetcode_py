@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数字在 `nums` 中出现的次数。
+2. 将 `quantity` 排序，从大到小处理每个顾客的需求。
+3. 使用动态规划和状态压缩来检查是否可以满足所有顾客的需求。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示当前状态，即哪些顾客已经被满足。
+- 动态规划的状态转移方程是基于当前状态和剩余数量来更新的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^m * m * k)，其中 m 是 `quantity` 的长度，k 是 `nums` 中不同数字的数量。
+空间复杂度: O(2^m * k)，用于存储动态规划的状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def can_distribute(nums: List[int], quantity: List[int]) -> bool:
+    # 统计每个数字在 nums 中出现的次数
+    count = Counter(nums)
+    freqs = list(count.values())
+    
+    # 对 quantity 进行排序，从大到小处理
+    quantity.sort(reverse=True)
+    
+    # 状态压缩 DP
+    dp = [False] * (1 << len(quantity))
+    dp[0] = True
+    
+    for f in freqs:
+        new_dp = dp[:]
+        for state in range(1 << len(quantity)):
+            if not dp[state]:
+                continue
+            total = 0
+            for i in range(len(quantity)):
+                if state & (1 << i):
+                    total += quantity[i]
+            for i in range(len(quantity)):
+                if not (state & (1 << i)) and total + quantity[i] <= f:
+                    new_dp[state | (1 << i)] = True
+        dp = new_dp
+    
+    return dp[(1 << len(quantity)) - 1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_distribute)

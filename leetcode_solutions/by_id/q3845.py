@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法将最大的值分配给度数较小的节点，以最大化边值的总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个节点的度数。
+2. 将节点按度数从小到大排序。
+3. 将最大的值分配给度数最小的节点，依次类推。
+4. 计算所有边的值并返回总和。
 
 关键点:
-- [TODO]
+- 优先将较大的值分配给度数较小的节点，以最大化边值的总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_sum_of_edge_values(n: int, edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个节点的度数
+    degree = [0] * n
+    for u, v in edges:
+        degree[u] += 1
+        degree[v] += 1
+    
+    # 将节点按度数从小到大排序
+    nodes = sorted(range(n), key=lambda x: degree[x])
+    
+    # 将最大的值分配给度数最小的节点
+    values = list(range(1, n + 1))
+    node_values = [0] * n
+    for i, node in enumerate(nodes):
+        node_values[node] = values[i]
+    
+    # 计算所有边的值并返回总和
+    total_sum = 0
+    for u, v in edges:
+        total_sum += node_values[u] * node_values[v]
+    
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_sum_of_edge_values)

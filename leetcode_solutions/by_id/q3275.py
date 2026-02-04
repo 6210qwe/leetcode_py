@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，将字母均匀分配到按键上，使得每个按键的使用次数尽可能均衡。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总字母数 n。
+2. 计算每个按键最多能分配的字母数 k = (n + 7) // 8（向上取整）。
+3. 计算每个按键的使用次数，前 (n % 8) 个按键使用 k 次，其余按键使用 k - 1 次。
+4. 计算总的按键次数并返回。
 
 关键点:
-- [TODO]
+- 通过计算每个按键的使用次数，确保总按键次数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_pushes(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算输入单词所需的最少按键次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word)
+    k = (n + 7) // 8  # 每个按键最多能分配的字母数
+    full_keys = n % 8  # 前 full_keys 个按键使用 k 次
+    remaining_keys = 8 - full_keys  # 剩余按键使用 k - 1 次
+    total_pushes = full_keys * k + remaining_keys * (k - 1)
+    return total_pushes
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_pushes)

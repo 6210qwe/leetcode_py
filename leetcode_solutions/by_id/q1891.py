@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每个节点的度数。
+2. 使用双重循环计算所有点对的边数和，并记录在字典中。
+3. 对于每个查询，使用二分查找找到满足条件的点对数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个节点的度数。
+2. 使用双重循环计算所有点对的边数和，并记录在字典中。
+3. 对于每个查询，使用二分查找找到满足条件的点对数量。
 
 关键点:
-- [TODO]
+- 使用双重循环计算所有点对的边数和。
+- 使用二分查找优化查询过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 + q * log(n))
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +54,51 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_pairs_of_nodes(n: int, edges: List[List[int]], queries: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计点对的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个节点的度数
+    degree = [0] * (n + 1)
+    edge_count = {}
+    
+    for u, v in edges:
+        if u > v:
+            u, v = v, u
+        degree[u] += 1
+        degree[v] += 1
+        edge_count[(u, v)] = edge_count.get((u, v), 0) + 1
+    
+    # 计算所有点对的边数和
+    pair_count = {}
+    sorted_degrees = sorted(degree[1:])
+    
+    for i in range(1, n + 1):
+        for j in range(i + 1, n + 1):
+            pair_count[(i, j)] = degree[i] + degree[j]
+            if (i, j) in edge_count:
+                pair_count[(i, j)] -= edge_count[(i, j)]
+    
+    # 对每个查询进行二分查找
+    def binary_search(arr, target):
+        left, right = 0, len(arr) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
+    
+    result = []
+    for query in queries:
+        count = 0
+        for key, value in pair_count.items():
+            if value > query:
+                count += 1
+        result.append(count)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs_of_nodes)

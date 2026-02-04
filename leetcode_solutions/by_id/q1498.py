@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 在克隆树中找到与目标节点相同的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `find_target`，该函数接受当前节点和目标值作为参数。
+2. 如果当前节点为空，返回 None。
+3. 如果当前节点的值等于目标值，返回当前节点。
+4. 递归调用 `find_target` 检查左子树和右子树。
+5. 返回左子树或右子树中找到的目标节点。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 通过比较节点值来找到目标节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。最坏情况下需要遍历所有节点。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的空间复杂度取决于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_target(node: Optional[TreeNode], target_val: int) -> Optional[TreeNode]:
+    if not node:
+        return None
+    if node.val == target_val:
+        return node
+    left_result = find_target(node.left, target_val)
+    if left_result:
+        return left_result
+    return find_target(node.right, target_val)
 
-def solution_function_name(params):
+def solution_function_name(original: TreeNode, cloned: TreeNode, target: TreeNode) -> TreeNode:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 在克隆树中找到与目标节点相同的节点
     """
-    # TODO: 实现最优解法
-    pass
-
+    target_val = target.val
+    return find_target(cloned, target_val)
 
 Solution = create_solution(solution_function_name)

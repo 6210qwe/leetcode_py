@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小曼哈顿距离的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_place`，用于判断在给定的最小曼哈顿距离下，是否可以放置 k 个点。
+2. 使用二分查找来确定最小曼哈顿距离的最大值。
+3. 在每次二分查找的过程中，调用 `can_place` 函数来验证当前的距离是否可行。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 辅助函数 `can_place` 通过贪心算法来验证是否可以放置 k 个点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log d)，其中 n 是 points 的长度，d 是可能的最大曼哈顿距离。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_place(points: List[List[int]], k: int, dist: int) -> bool:
+    count = 0
+    prev_x, prev_y = -dist, -dist
+    for x, y in sorted(points):
+        if x - prev_x >= dist or y - prev_y >= dist:
+            count += 1
+            prev_x, prev_y = x, y
+            if count == k:
+                return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_distance(side: int, points: List[List[int]], k: int) -> int:
+    left, right = 1, 2 * side
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_place(points, k, mid):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_distance)

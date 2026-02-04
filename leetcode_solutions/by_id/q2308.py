@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的出现次数，然后检查每个元素的出现次数是否都是偶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的出现次数。
+2. 遍历哈希表，检查每个元素的出现次数是否都是偶数。
+3. 如果所有元素的出现次数都是偶数，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用哈希表统计元素出现次数，时间复杂度为 O(n)。
+- 检查每个元素的出现次数是否为偶数，时间复杂度为 O(k)，其中 k 是不同元素的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是数组的长度，k 是不同元素的数量。
+空间复杂度: O(k)，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_divide_into_equal_pairs(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查是否可以将数组划分成相等数对
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表统计每个元素的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 检查每个元素的出现次数是否都是偶数
+    for value in count.values():
+        if value % 2 != 0:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_divide_into_equal_pairs)

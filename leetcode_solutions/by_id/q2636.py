@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最小堆来解决这个问题。首先将 nums1 和 nums2 按照 nums2 降序排序，然后选择前 k 个元素计算初始分数，并使用最小堆维护当前选择的 nums1 元素。接着遍历剩余的元素，尝试替换堆中的最小元素以获得更大的分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums1 和 nums2 按照 nums2 降序排序。
+2. 选择前 k 个元素，计算初始分数，并将这些元素加入最小堆。
+3. 遍历剩余的元素，尝试替换堆中的最小元素以获得更大的分数。
+4. 更新最大分数。
 
 关键点:
-- [TODO]
+- 使用最小堆来维护当前选择的 nums1 元素，确保每次替换时都能找到最小的元素。
+- 通过按 nums2 降序排序，确保每次替换时 nums2 的最小值不会减小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n log k)
+- 排序操作的时间复杂度为 O(n log n)。
+- 堆操作的时间复杂度为 O(n log k)。
+
+空间复杂度: O(n + k)
+- 排序需要 O(n) 的空间。
+- 最小堆需要 O(k) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_subsequence_score(nums1: List[int], nums2: List[int], k: int) -> int:
+    # 将 nums1 和 nums2 按照 nums2 降序排序
+    pairs = sorted(zip(nums1, nums2), key=lambda x: -x[1])
+    
+    # 初始化最小堆和当前总和
+    min_heap = []
+    current_sum = 0
+    
+    # 选择前 k 个元素，计算初始分数，并将这些元素加入最小堆
+    for i in range(k):
+        current_sum += pairs[i][0]
+        heapq.heappush(min_heap, pairs[i][0])
+    
+    # 初始最大分数
+    max_score = current_sum * pairs[k-1][1]
+    
+    # 遍历剩余的元素，尝试替换堆中的最小元素以获得更大的分数
+    for i in range(k, len(pairs)):
+        if pairs[i][0] > min_heap[0]:
+            current_sum += pairs[i][0] - heapq.heappop(min_heap)
+            heapq.heappush(min_heap, pairs[i][0])
+            max_score = max(max_score, current_sum * pairs[i][1])
+    
+    return max_score
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_subsequence_score)

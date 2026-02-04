@@ -21,22 +21,21 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 严格回文的数字实际上不存在。对于任何 n >= 4，总能找到一个进制 b 使得 n 在 b 进制下不是回文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 直接返回 False，因为严格回文的数字不存在。
 
 关键点:
-- [TODO]
+- 严格回文的数字不存在，因此直接返回 False。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +48,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断一个整数是否是严格回文的
     """
-    # TODO: 实现最优解法
-    pass
+    # 严格回文的数字不存在，直接返回 False
+    return False
 
 
 Solution = create_solution(solution_function_name)

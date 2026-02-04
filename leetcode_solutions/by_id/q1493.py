@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并计算青蛙在 t 秒后位于目标顶点的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树。
+2. 使用 DFS 从顶点 1 开始遍历树，记录当前顶点、时间、概率和父节点。
+3. 在每个顶点，检查是否到达目标顶点且时间正好为 t 秒，或者时间超过 t 秒但没有更多可访问的顶点。
+4. 如果满足上述条件之一，返回当前概率；否则继续递归遍历未访问的子节点。
+5. 如果遍历完所有可能路径仍未找到目标顶点，返回 0。
 
 关键点:
-- [TODO]
+- 使用邻接表来高效存储和访问树结构。
+- 通过传递时间和概率参数来跟踪青蛙的移动和概率。
+- 确保在每个顶点只访问未访问过的子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是顶点数。每个顶点和边最多访问一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
@@ -49,12 +54,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def frog_position(n: int, edges: List[List[int]], t: int, target: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算青蛙在 t 秒后位于目标顶点的概率
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    graph = [[] for _ in range(n + 1)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    def dfs(node: int, time: int, prob: float, parent: int) -> float:
+        # 如果到达目标顶点且时间正好为 t 秒，或者时间超过 t 秒但没有更多可访问的顶点
+        if node == target and (time == t or (time < t and len(graph[node]) == 1)):
+            return prob
+        if time >= t:
+            return 0.0
+
+        # 计算下一个顶点的概率
+        next_prob = prob / (len(graph[node]) - (node != 1))
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                result = dfs(neighbor, time + 1, next_prob, node)
+                if result > 0:
+                    return result
+        return 0.0
+
+    return dfs(1, 0, 1.0, -1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(frog_position)

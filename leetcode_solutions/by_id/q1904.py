@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合存储出现的数字，并找到第二大的数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，提取所有数字并存储在集合中。
+2. 将集合转换为列表并排序。
+3. 如果列表长度小于2，返回-1；否则返回倒数第二个元素。
 
 关键点:
-- [TODO]
+- 使用集合去重，确保每个数字只存储一次。
+- 排序后直接访问倒数第二个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)，其中 n 是字符串的长度，k 是不同数字的数量。
+空间复杂度: O(k)，其中 k 是不同数字的数量。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def second_largest_digit(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串中第二大的数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取所有数字并存储在集合中
+    digits = set()
+    for char in s:
+        if char.isdigit():
+            digits.add(int(char))
+    
+    # 将集合转换为列表并排序
+    sorted_digits = sorted(digits)
+    
+    # 如果列表长度小于2，返回-1；否则返回倒数第二个元素
+    if len(sorted_digits) < 2:
+        return -1
+    else:
+        return sorted_digits[-2]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(second_largest_digit)

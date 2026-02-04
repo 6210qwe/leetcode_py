@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 构建树的欧拉序，并使用前缀和来快速计算路径上的边数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 构建树的欧拉序，并记录每个节点的进入和离开时间。
+3. 计算每个节点到根节点的路径上的边数。
+4. 对于每个查询，使用前缀和快速计算路径上的边数，并根据边数的奇偶性计算合法的权重分配方式。
 
 关键点:
-- [TODO]
+- 使用欧拉序和前缀和可以高效地计算任意两点之间的路径上的边数。
+- 根据路径上的边数的奇偶性，可以快速计算出合法的权重分配方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是节点数，q 是查询数。构建欧拉序和前缀和的时间复杂度是 O(n)，每个查询的时间复杂度是 O(1)。
+空间复杂度: O(n)，存储欧拉序和前缀和所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def dfs(node, parent, euler, enter, leave, time, adj):
+    enter[node] = time[0]
+    euler.append(node)
+    for neighbor in adj[node]:
+        if neighbor != parent:
+            time[0] += 1
+            dfs(neighbor, node, euler, enter, leave, time, adj)
+            euler.append(node)
+    leave[node] = time[0]
 
+def count_ways(edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+    n = len(edges) + 1
+    adj = defaultdict(list)
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+    
+    euler = []
+    enter = [0] * (n + 1)
+    leave = [0] * (n + 1)
+    time = [0]
+    dfs(1, 0, euler, enter, leave, time, adj)
+    
+    prefix_sum = [0] * (len(euler) + 1)
+    for i in range(len(euler)):
+        prefix_sum[i + 1] = prefix_sum[i] + 1
+    
+    def count_edges(u, v):
+        lca_time = max(enter[u], enter[v])
+        u_time = enter[u]
+        v_time = enter[v]
+        if u_time > v_time:
+            u_time, v_time = v_time, u_time
+        return prefix_sum[lca_time] - prefix_sum[u_time] + prefix_sum[v_time] - prefix_sum[lca_time]
+    
+    result = []
+    for u, v in queries:
+        edge_count = count_edges(u, v)
+        if edge_count % 2 == 0:
+            ways = pow(2, edge_count - 1, MOD)
+        else:
+            ways = pow(2, edge_count, MOD)
+        result.append(ways)
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_ways)

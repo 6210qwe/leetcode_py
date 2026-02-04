@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字典来维护索引和数字的关系。一个字典用于存储每个索引对应的数字，另一个字典用于存储每个数字对应的索引集合，并使用有序集合来维护这些索引的顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典：`index_to_number` 用于存储索引到数字的映射，`number_to_indices` 用于存储数字到索引集合的映射。
+2. 在 `change` 方法中，更新 `index_to_number` 字典，并相应地更新 `number_to_indices` 字典。
+3. 在 `find` 方法中，从 `number_to_indices` 字典中获取最小的索引。
 
 关键点:
-- [TODO]
+- 使用有序集合来维护每个数字的索引集合，以确保能够高效地获取最小索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 由于使用了有序集合，插入和查找操作的时间复杂度为 O(log n)。
+空间复杂度: O(n) - 需要额外的空间来存储索引和数字的映射关系。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Set
+from sortedcontainers import SortedSet
+
+class NumberContainers:
+
+    def __init__(self):
+        self.index_to_number: Dict[int, int] = {}
+        self.number_to_indices: Dict[int, SortedSet] = {}
+
+    def change(self, index: int, number: int) -> None:
+        if index in self.index_to_number:
+            old_number = self.index_to_number[index]
+            self.number_to_indices[old_number].discard(index)
+            if not self.number_to_indices[old_number]:
+                del self.number_to_indices[old_number]
+
+        self.index_to_number[index] = number
+        if number not in self.number_to_indices:
+            self.number_to_indices[number] = SortedSet()
+        self.number_to_indices[number].add(index)
+
+    def find(self, number: int) -> int:
+        if number in self.number_to_indices and self.number_to_indices[number]:
+            return self.number_to_indices[number][0]
+        return -1
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(NumberContainers)

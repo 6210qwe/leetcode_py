@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查棋盘状态是否符合井字游戏的规则。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 'X' 和 'O' 的数量。
+2. 检查 'X' 和 'O' 的数量是否符合规则（'X' 的数量必须等于 'O' 的数量或比 'O' 多一个）。
+3. 检查是否有三个连续的 'X' 或 'O' 在行、列或对角线上。
+4. 根据上述检查结果判断棋盘状态是否有效。
 
 关键点:
-- [TODO]
+- 'X' 的数量必须等于 'O' 的数量或比 'O' 多一个。
+- 如果 'X' 赢了，'X' 的数量必须比 'O' 多一个。
+- 如果 'O' 赢了，'X' 的数量必须等于 'O' 的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定大小的棋盘，检查次数固定。
+空间复杂度: O(1) - 使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def valid_tic_tac_toe(board: List[str]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查给定的井字游戏棋盘是否有效。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 'X' 和 'O' 的数量
+    count_x = sum(row.count('X') for row in board)
+    count_o = sum(row.count('O') for row in board)
+
+    # 检查 'X' 和 'O' 的数量是否符合规则
+    if count_x != count_o and count_x != count_o + 1:
+        return False
+
+    # 检查是否有三个连续的 'X' 或 'O' 在行、列或对角线上
+    def check_winner(player: str) -> bool:
+        for i in range(3):
+            if all(board[i][j] == player for j in range(3)):  # 检查行
+                return True
+            if all(board[j][i] == player for j in range(3)):  # 检查列
+                return True
+        if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):  # 检查对角线
+            return True
+        return False
+
+    # 根据上述检查结果判断棋盘状态是否有效
+    if check_winner('X') and count_x != count_o + 1:
+        return False
+    if check_winner('O') and count_x != count_o:
+        return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(valid_tic_tac_toe)

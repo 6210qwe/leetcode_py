@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，尽量在每个子数组的分数为0时进行分割。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `current_and` 为第一个元素，并初始化子数组计数器 `subarray_count` 为1。
+2. 遍历数组，从第二个元素开始：
+   - 更新 `current_and` 为当前元素与 `current_and` 的按位与结果。
+   - 如果 `current_and` 为0，说明当前子数组的分数为0，可以进行分割，增加子数组计数器，并重置 `current_and` 为当前元素。
+3. 返回子数组计数器 `subarray_count`。
 
 关键点:
-- [TODO]
+- 通过按位与操作来判断当前子数组的分数是否为0。
+- 在分数为0时进行分割，确保子数组数量最大化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最多可以得到多少个子数组
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
 
+    current_and = nums[0]
+    subarray_count = 1
 
-Solution = create_solution(solution_function_name)
+    for num in nums[1:]:
+        current_and &= num
+        if current_and == 0:
+            subarray_count += 1
+            current_and = num
+
+    return subarray_count
+
+Solution = create_solution(max_subarrays)

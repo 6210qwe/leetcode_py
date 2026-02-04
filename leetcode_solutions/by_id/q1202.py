@@ -14,47 +14,75 @@
 # 问题描述
 # ============================================================================
 """
-1246. 删除回文子数组 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个整数数组 arr，每次操作可以删除其中的一个回文子数组（连续的子数组），返回最少需要多少次操作才能将数组清空。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 dp[i][j] 表示从 i 到 j 的子数组最少需要多少次操作才能清空。
+2. 初始化 dp[i][i] = 1，因为单个元素本身就是回文。
+3. 对于每个子数组 arr[i:j+1]，如果它是回文，则 dp[i][j] = 1。
+4. 如果不是回文，则 dp[i][j] = min(dp[i][k] + dp[k+1][j]) for k in range(i, j)。
+5. 最终结果是 dp[0][n-1]。
 
 关键点:
-- [TODO]
+- 使用动态规划来解决这个问题，通过子问题的最优解来构建全局最优解。
+- 检查子数组是否为回文时，可以利用双指针方法。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是数组的长度。三重循环遍历所有子数组。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最少需要多少次操作才能将数组清空
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    if n == 0:
+        return 0
 
+    # 初始化 dp 数组
+    dp = [[float('inf')] * n for _ in range(n)]
+
+    # 单个元素本身就是回文
+    for i in range(n):
+        dp[i][i] = 1
+
+    # 填充 dp 数组
+    for length in range(2, n + 1):  # 子数组长度
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if is_palindrome(arr, i, j):
+                dp[i][j] = 1
+            else:
+                for k in range(i, j):
+                    dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j])
+
+    return dp[0][n - 1]
+
+def is_palindrome(arr: List[int], start: int, end: int) -> bool:
+    """检查子数组 arr[start:end+1] 是否为回文"""
+    while start < end:
+        if arr[start] != arr[end]:
+            return False
+        start += 1
+        end -= 1
+    return True
 
 Solution = create_solution(solution_function_name)

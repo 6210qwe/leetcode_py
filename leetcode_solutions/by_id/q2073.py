@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和广度优先搜索（BFS）来确定最小时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，左边界为0，右边界为网格的最大值。
+2. 在二分查找的过程中，使用BFS来检查在当前时间t内是否可以感染至少k个位置。
+3. 如果可以，则尝试更小的时间；否则，尝试更大的时间。
+4. 最终返回最小的时间。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小时间范围。
+- 使用BFS来模拟病毒的传播过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log(max_time))，其中n和m是网格的行数和列数，max_time是网格中的最大值。
+空间复杂度: O(n * m)，用于存储BFS的队列和访问标记。
 """
 
 # ============================================================================
@@ -49,12 +52,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minTimeToSpread(grid: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算感染K种病毒所需的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    def can_infect(t: int) -> bool:
+        infected = set()
+        queue = []
+        
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] <= t:
+                    infected.add((i, j))
+                    queue.append((i, j))
+        
+        while queue:
+            x, y = queue.pop(0)
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < n and 0 <= ny < m and (nx, ny) not in infected and grid[nx][ny] <= t + 1:
+                    infected.add((nx, ny))
+                    queue.append((nx, ny))
+        
+        return len(infected) >= k
+    
+    left, right = 0, max(max(row) for row in grid)
+    while left < right:
+        mid = (left + right) // 2
+        if can_infect(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minTimeToSpread)

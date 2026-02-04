@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次深度优先搜索（DFS）来计算每个节点在两棵树中的目标节点数量。首先，我们在每棵树中计算每个节点的目标节点数量。然后，对于每个节点，我们尝试将其与第二棵树中的每个节点连接，并计算目标节点数量的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建两棵树的邻接表表示。
+2. 使用DFS计算每个节点在第一棵树中的目标节点数量。
+3. 使用DFS计算每个节点在第二棵树中的目标节点数量。
+4. 对于每个节点，尝试将其与第二棵树中的每个节点连接，并计算目标节点数量的最大值。
 
 关键点:
-- [TODO]
+- 使用DFS来计算每个节点的目标节点数量。
+- 通过合并两棵树的DFS结果来计算最终的答案。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m + nm)，其中n和m分别是两棵树的节点数。构建邻接表的时间复杂度是O(n + m)，DFS的时间复杂度是O(n + m)，最后的合并操作是O(nm)。
+空间复杂度: O(n + m)，用于存储邻接表和DFS的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+def dfs(tree, node, parent, depth, k, target_counts):
+    if depth > k:
+        return
+    target_counts[node] += 1
+    for neighbor in tree[node]:
+        if neighbor != parent:
+            dfs(tree, neighbor, node, depth + 1, k, target_counts)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximize_target_nodes(edges1: List[List[int]], edges2: List[List[int]], k: int) -> List[int]:
+    n = len(edges1) + 1
+    m = len(edges2) + 1
+    
+    # 构建两棵树的邻接表
+    tree1 = defaultdict(list)
+    tree2 = defaultdict(list)
+    
+    for a, b in edges1:
+        tree1[a].append(b)
+        tree1[b].append(a)
+    
+    for u, v in edges2:
+        tree2[u].append(v)
+        tree2[v].append(u)
+    
+    # 计算每个节点在第一棵树中的目标节点数量
+    target_counts1 = [0] * n
+    for i in range(n):
+        dfs(tree1, i, -1, 0, k, target_counts1)
+    
+    # 计算每个节点在第二棵树中的目标节点数量
+    target_counts2 = [0] * m
+    for i in range(m):
+        dfs(tree2, i, -1, 0, k, target_counts2)
+    
+    # 计算每个节点在连接后的最大目标节点数量
+    result = [0] * n
+    for i in range(n):
+        max_targets = 0
+        for j in range(m):
+            max_targets = max(max_targets, target_counts1[i] + target_counts2[j])
+        result[i] = max_targets
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_target_nodes)

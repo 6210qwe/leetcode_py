@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算从每个位置开始的最小翻转次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算从每个位置开始的两种交替字符串（以 '0' 开头和以 '1' 开头）的最小翻转次数。
+2. 通过滑动窗口技术，更新每个位置的翻转次数。
+3. 返回最小的翻转次数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术可以高效地计算每个位置的翻转次数。
+- 通过前缀和数组来优化翻转次数的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_flips(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使二进制字符串变成交替字符串的最少翻转次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    s = s + s  # 将字符串复制一份，方便处理循环移位
+    alt1, alt2 = "", ""
+    
+    for i in range(len(s)):
+        alt1 += '0' if i % 2 == 0 else '1'
+        alt2 += '1' if i % 2 == 0 else '0'
+    
+    diff1, diff2 = 0, 0
+    res = float('inf')
+    
+    for i in range(2 * n):
+        if i < n:
+            diff1 += 1 if s[i] != alt1[i] else 0
+            diff2 += 1 if s[i] != alt2[i] else 0
+        else:
+            diff1 += 1 if s[i] != alt1[i] else 0
+            diff2 += 1 if s[i] != alt2[i] else 0
+            diff1 -= 1 if s[i - n] != alt1[i - n] else 0
+            diff2 -= 1 if s[i - n] != alt2[i - n] else 0
+        if i >= n - 1:
+            res = min(res, diff1, diff2)
+    
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips)

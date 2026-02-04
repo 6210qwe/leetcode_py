@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用窗口函数 `ROW_NUMBER()` 来获取每个用户的最近三笔订单。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `ROW_NUMBER()` 窗口函数为每个用户的订单按时间降序排序。
+2. 过滤出每个用户最近的三笔订单。
+3. 返回结果集。
 
 关键点:
-- [TODO]
+- 使用 `ROW_NUMBER()` 窗口函数可以方便地对每个用户的订单进行排序和筛选。
+- 通过 `PARTITION BY` 和 `ORDER BY` 子句来实现分组和排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是订单的数量。主要的时间开销在于排序操作。
+空间复杂度: O(n)，窗口函数的中间结果需要存储。
 """
 
 # ============================================================================
@@ -51,10 +53,30 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT 
+        user_id, 
+        order_id, 
+        order_date
+    FROM (
+        SELECT 
+            user_id, 
+            order_id, 
+            order_date,
+            ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY order_date DESC) AS rn
+        FROM 
+            Orders
+    ) AS subquery
+    WHERE 
+        rn <= 3
+    ORDER BY 
+        user_id, 
+        order_date DESC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

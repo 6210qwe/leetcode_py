@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas进行数据处理和过滤
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的DataFrame
+2. 过滤出活动日期在给定范围内的记录
+3. 去重并统计活跃用户数量
 
 关键点:
-- [TODO]
+- 使用Pandas的时间范围过滤功能
+- 使用groupby和nunique来统计活跃用户数量
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def count_active_users(logs: pd.DataFrame, start_date: str, end_date: str) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计指定日期范围内的活跃用户数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出活动日期在给定范围内的记录
+    filtered_logs = logs[(logs['activity_date'] >= start_date) & (logs['activity_date'] <= end_date)]
+    
+    # 去重并统计活跃用户数量
+    active_users = filtered_logs.groupby('user_id')['activity_date'].nunique().reset_index()
+    
+    # 返回结果
+    result = pd.DataFrame({'total': [len(active_users)]})
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_active_users)

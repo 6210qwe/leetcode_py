@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，筛选出所有能被 3 整除且为偶数的元素，计算它们的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `total` 和 `count` 分别用于存储符合条件的元素之和和数量。
+2. 遍历数组 `nums`，对于每个元素，检查它是否是偶数且能被 3 整除。
+3. 如果符合条件，将其加到 `total` 中，并将 `count` 增加 1。
+4. 遍历结束后，如果 `count` 为 0，返回 0；否则，返回 `total // count`。
 
 关键点:
-- [TODO]
+- 通过一次遍历数组来筛选符合条件的元素，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def average_value(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中可被 3 整除的偶数的平均值
     """
-    # TODO: 实现最优解法
-    pass
+    total = 0
+    count = 0
+    
+    for num in nums:
+        if num % 2 == 0 and num % 3 == 0:
+            total += num
+            count += 1
+    
+    return total // count if count > 0 else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(average_value)

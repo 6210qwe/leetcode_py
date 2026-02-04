@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断给定的三边是否能构成三角形，并根据边长关系确定三角形的类型。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查给定的三边是否满足三角形不等式。
+2. 根据边长关系判断三角形的类型：
+   - 如果三条边都相等，则是等边三角形。
+   - 如果两条边相等，则是等腰三角形。
+   - 如果三条边都不相等，则是不等边三角形。
 
 关键点:
-- [TODO]
+- 使用三角形不等式来判断是否能构成三角形。
+- 通过比较边长来确定三角形的类型。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定的三边是否能构成三角形，并返回三角形的类型。
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查三角形不等式
+    if (nums[0] + nums[1] <= nums[2]) or (nums[0] + nums[2] <= nums[1]) or (nums[1] + nums[2] <= nums[0]):
+        return "none"
+
+    # 判断三角形类型
+    if nums[0] == nums[1] == nums[2]:
+        return "equilateral"
+    elif nums[0] == nums[1] or nums[0] == nums[2] or nums[1] == nums[2]:
+        return "isosceles"
+    else:
+        return "scalene"
 
 
 Solution = create_solution(solution_function_name)

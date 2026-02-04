@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过滑动窗口找到最小和最大移动次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对石子位置进行排序。
+2. 使用滑动窗口找到最小移动次数。
+3. 计算最大移动次数。
 
 关键点:
-- [TODO]
+- 最小移动次数可以通过滑动窗口找到。
+- 最大移动次数可以通过计算最远距离得到。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 stones 的长度，主要由排序操作决定。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def num_moves_stones_II(stones: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移动石子直到连续 II
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(stones)
+    stones.sort()
+    
+    # 初始化最小和最大移动次数
+    min_moves = n
+    max_moves = max(stones[-1] - stones[1], stones[-2] - stones[0]) - (n - 2)
+    
+    # 滑动窗口找到最小移动次数
+    i = 0
+    for j in range(n):
+        while stones[j] - stones[i] >= n:
+            i += 1
+        if j - i + 1 == n - 1 and stones[j] - stones[i] == n - 2:
+            min_moves = min(min_moves, 2)
+        else:
+            min_moves = min(min_moves, n - (j - i + 1))
+    
+    return [min_moves, max_moves]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_moves_stones_II)

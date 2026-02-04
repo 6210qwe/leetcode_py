@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历 startTime 和 endTime 数组，检查每个学生在 queryTime 时是否在做作业。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 遍历 startTime 和 endTime 数组，对于每个学生，检查 queryTime 是否在 [startTime[i], endTime[i]] 区间内。
+3. 如果在区间内，增加计数器 count。
+4. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 使用一次遍历即可完成所有学生的检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 startTime 和 endTime 数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def busy_student(start_time: List[int], end_time: List[int], query_time: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在给定时间 queryTime 时正在做作业的学生人数。
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for start, end in zip(start_time, end_time):
+        if start <= query_time <= end:
+            count += 1
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(busy_student)

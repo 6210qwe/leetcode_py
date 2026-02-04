@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序列表来维护两个数组，并利用二分查找来高效计算大于某个值的元素数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个有序列表 arr1 和 arr2，分别存储第一个和第二个数组。
+2. 将 nums[0] 添加到 arr1，将 nums[1] 添加到 arr2。
+3. 对于每个后续的元素 nums[i]，计算 arr1 和 arr2 中大于 nums[i] 的元素数量。
+4. 根据 greaterCount 的结果，决定将 nums[i] 添加到哪个数组。
+5. 最后，将 arr1 和 arr2 合并并返回结果。
 
 关键点:
-- [TODO]
+- 使用有序列表和二分查找来高效计算大于某个值的元素数量。
+- 保持 arr1 和 arr2 的有序性，以便快速插入和查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。每次插入和查找操作的时间复杂度是 O(log n)。
+空间复杂度: O(n)，需要额外的空间来存储两个有序列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def distribute_elements_into_two_arrays(nums: List[int]) -> List[int]:
+    arr1 = [nums[0]]
+    arr2 = [nums[1]]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for num in nums[2:]:
+        count1 = len(arr1) - bisect.bisect_right(arr1, num)
+        count2 = len(arr2) - bisect.bisect_right(arr2, num)
 
+        if count1 > count2 or (count1 == count2 and len(arr1) <= len(arr2)):
+            bisect.insort_right(arr1, num)
+        else:
+            bisect.insort_right(arr2, num)
 
-Solution = create_solution(solution_function_name)
+    return arr1 + arr2
+
+Solution = create_solution(distribute_elements_into_two_arrays)

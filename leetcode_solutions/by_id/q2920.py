@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的位置，然后计算每个元素扩散到整个数组所需的最短时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个元素的所有出现位置。
+2. 对于每个元素，计算其相邻两个位置之间的最大间隔，并更新最小时间。
+3. 返回最小时间。
 
 关键点:
-- [TODO]
+- 计算每个元素相邻位置之间的最大间隔。
+- 处理循环数组的边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_seconds_to_equalize(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将数组 nums 中所有元素变成相等元素所需要的最少秒数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+
+    # 记录每个元素的所有出现位置
+    positions = defaultdict(list)
+    for i, num in enumerate(nums):
+        positions[num].append(i)
+
+    n = len(nums)
+    min_time = float('inf')
+
+    for pos in positions.values():
+        if len(pos) == 1:
+            continue
+        max_gap = max((pos[i] - pos[i - 1]) // 2 for i in range(1, len(pos)))
+        max_gap = max(max_gap, (n - (pos[-1] - pos[0])) // 2)
+        min_time = min(min_time, max_gap)
+
+    return min_time if min_time != float('inf') else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_seconds_to_equalize)

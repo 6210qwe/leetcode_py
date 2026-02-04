@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每个时间点的预订变化情况，并使用一个变量来记录当前的最大预订次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `diff` 来记录每个时间点的预订变化情况。
+2. 在每次调用 `book` 方法时，更新 `diff` 字典。
+3. 遍历 `diff` 字典，计算当前的最大预订次数。
 
 关键点:
-- [TODO]
+- 使用差分数组的思想来记录每个时间点的预订变化情况。
+- 通过遍历 `diff` 字典来计算当前的最大预订次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是调用 `book` 方法的次数。每次调用 `book` 方法的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储 `diff` 字典。
 """
 
 # ============================================================================
@@ -49,6 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
+class MyCalendarThree:
+
+    def __init__(self):
+        self.diff = {}
+        self.max_bookings = 0
+
+    def book(self, start: int, end: int) -> int:
+        self.diff[start] = self.diff.get(start, 0) + 1
+        self.diff[end] = self.diff.get(end, 0) - 1
+        current_bookings = 0
+        for time in sorted(self.diff.keys()):
+            current_bookings += self.diff[time]
+            self.max_bookings = max(self.max_bookings, current_bookings)
+        return self.max_bookings
+
+
 def solution_function_name(params):
     """
     函数式接口 - [TODO] 实现
@@ -57,4 +75,4 @@ def solution_function_name(params):
     pass
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(MyCalendarThree)

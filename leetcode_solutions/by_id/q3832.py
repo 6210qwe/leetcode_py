@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算到达每个位置的最小费用。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `answer`，其长度与 `cost` 相同，用于存储到达每个位置的最小费用。
+2. 从后向前遍历 `cost` 数组，计算到达每个位置的最小费用。
+3. 对于每个位置 `i`，找到从 `i+1` 到 `n-1` 中的最小费用，并将其加上 `cost[i]`，更新 `answer[i]`。
 
 关键点:
-- [TODO]
+- 从后向前遍历可以确保在计算当前位置的最小费用时，后续位置的最小费用已经计算完毕。
+- 使用一个变量 `min_cost` 来记录从当前位置到末尾的最小费用，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_cost_to_reach_every_position(cost: List[int]) -> List[int]:
+    n = len(cost)
+    answer = [0] * n
+    min_cost = cost[-1]
+    
+    for i in range(n - 2, -1, -1):
+        answer[i] = min_cost
+        min_cost = min(min_cost, cost[i])
+    
+    return answer
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_reach_every_position)

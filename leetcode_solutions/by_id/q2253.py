@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来构建方程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从表中选择所有需要的列。
+2. 使用字符串连接函数将这些列拼接成所需的方程格式。
 
 关键点:
-- [TODO]
+- 使用 SQL 的字符串连接函数（如 CONCAT）来构建方程。
+- 确保方程的格式正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来构建方程
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT 
+        CONCAT(num1, '+', num2, '=', num3) AS equation
+    FROM 
+        table_name
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

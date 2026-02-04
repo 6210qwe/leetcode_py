@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二进制表示来快速计算 big_nums 中的元素，并使用模乘法来处理大范围的乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个查询中的 from 和 to 转换为对应的二进制表示。
+2. 计算从 from 到 to 的所有元素的乘积，并在每一步中取模以防止溢出。
+3. 返回每个查询的结果。
 
 关键点:
-- [TODO]
+- 使用二进制表示来快速找到 big_nums 中的元素。
+- 使用模乘法来处理大范围的乘积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(q * log(to)), 其中 q 是查询的数量，to 是查询范围的上限。
+空间复杂度: O(1), 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def get_bit(num: int, bit: int) -> int:
+        """获取 num 的第 bit 位的值（从右到左，0 索引开始）"""
+        return (num >> bit) & 1
 
+    def product_of_range(from_val: int, to_val: int, mod: int) -> int:
+        """计算从 from_val 到 to_val 的乘积，并对 mod 取模"""
+        result = 1
+        for i in range(from_val, to_val + 1):
+            bit = 0
+            while (i >> bit) > 0:
+                if get_bit(i, bit):
+                    result = (result * (1 << bit)) % mod
+                bit += 1
+        return result
+
+    results = []
+    for query in queries:
+        from_val, to_val, mod = query
+        results.append(product_of_range(from_val, to_val, mod))
+    return results
 
 Solution = create_solution(solution_function_name)

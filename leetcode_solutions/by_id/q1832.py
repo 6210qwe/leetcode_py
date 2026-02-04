@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最长递增子序列 (LIS) 的思想来解决这个问题。首先，我们需要找到 `arr` 中与 `target` 相同的元素，并记录它们在 `target` 中的位置。然后，我们使用这些位置来构建一个最长递增子序列。最后，结果就是 `target` 的长度减去这个最长递增子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典 `index_map`，将 `target` 中的每个元素映射到它的索引。
+2. 遍历 `arr`，如果 `arr` 中的元素在 `target` 中存在，则将其索引加入一个新的列表 `indices`。
+3. 在 `indices` 上应用 LIS 算法，找到最长递增子序列的长度。
+4. 返回 `target` 的长度减去 LIS 的长度，即为最少操作次数。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化 LIS 算法的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `arr` 的长度。遍历 `arr` 的时间复杂度是 O(n)，而 LIS 算法的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储 `index_map` 和 `indices`。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_subsequence(target: List[int], arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 target 变成 arr 的子序列所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个字典，将 target 中的每个元素映射到它的索引
+    index_map = {num: i for i, num in enumerate(target)}
+    
+    # 遍历 arr，如果 arr 中的元素在 target 中存在，则将其索引加入一个新的列表 indices
+    indices = []
+    for num in arr:
+        if num in index_map:
+            indices.append(index_map[num])
+    
+    # 在 indices 上应用 LIS 算法，找到最长递增子序列的长度
+    def length_of_lis(nums: List[int]) -> int:
+        dp = []
+        for num in nums:
+            idx = bisect.bisect_left(dp, num)
+            if idx == len(dp):
+                dp.append(num)
+            else:
+                dp[idx] = num
+        return len(dp)
+    
+    lis_length = length_of_lis(indices)
+    
+    # 返回 target 的长度减去 LIS 的长度，即为最少操作次数
+    return len(target) - lis_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_subsequence)

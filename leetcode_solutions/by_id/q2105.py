@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个整数来表示当前选择的质数集合，并用动态规划来计算在当前状态下可以选择的子集数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个数字的质因数，并将其表示为一个整数。
+2. 使用动态规划数组 `dp` 来记录在当前状态下可以选择的子集数量。
+3. 遍历每个数字，更新动态规划数组。
+4. 最后，统计所有可能的子集数量，并考虑包含 1 的情况。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示当前选择的质数集合。
+- 动态规划数组 `dp` 的大小为 `2^10`，因为最多有 10 个不同的质数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^10)，其中 n 是 nums 的长度。
+空间复杂度: O(2^10)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -48,13 +51,44 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好子集的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 预处理每个数字的质因数
+    prime_factors = [0] * 31
+    for i in range(2, 31):
+        if prime_factors[i] == 0:  # i 是质数
+            for j in range(i, 31, i):
+                prime_factors[j] |= 1 << (i - 2)
+    
+    # 动态规划数组
+    dp = [0] * (1 << 10)
+    dp[0] = 1
+    
+    # 统计每个数字的出现次数
+    count = [0] * 31
+    for num in nums:
+        count[num] += 1
+    
+    # 更新动态规划数组
+    for num in range(2, 31):
+        if prime_factors[num] == 0 or count[num] == 0:
+            continue
+        for mask in range((1 << 10) - 1, -1, -1):
+            if mask & prime_factors[num] == 0:
+                dp[mask | prime_factors[num]] = (dp[mask | prime_factors[num]] + dp[mask] * count[num]) % MOD
+    
+    # 计算总的好子集数量
+    result = sum(dp) - 1  # 减去空集
+    result %= MOD
+    
+    # 考虑包含 1 的情况
+    for _ in range(count[1]):
+        result = (result * 2) % MOD
+    
+    return result
 
 Solution = create_solution(solution_function_name)

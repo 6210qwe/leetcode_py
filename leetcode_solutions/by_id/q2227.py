@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算每个元素作为子数组最大值和最小值的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个元素作为子数组最大值的贡献。
+2. 计算每个元素作为子数组最小值的贡献。
+3. 将两个贡献相减得到最终结果。
 
 关键点:
-- [TODO]
+- 使用单调递增栈和单调递减栈来分别计算最大值和最小值的贡献。
+- 每个元素的贡献可以通过其左右边界来确定。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有子数组范围的和
     """
-    # TODO: 实现最优解法
-    pass
+    def sum_subarray_extremes(nums: List[int], is_max: bool) -> int:
+        stack = []
+        result = 0
+        for i, num in enumerate(nums + [float('inf') if is_max else float('-inf')]):
+            while stack and (num > nums[stack[-1]] if is_max else num < nums[stack[-1]]):
+                mid = stack.pop()
+                left = stack[-1] if stack else -1
+                right = i
+                result += nums[mid] * (mid - left) * (right - mid)
+            stack.append(i)
+        return result
+
+    max_sum = sum_subarray_extremes(nums, True)
+    min_sum = sum_subarray_extremes(nums, False)
+    return max_sum - min_sum
 
 
 Solution = create_solution(solution_function_name)

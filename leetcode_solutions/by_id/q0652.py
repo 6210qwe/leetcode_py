@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，并将每个子树序列化为字符串。使用哈希表记录每个子树出现的次数，如果某个子树出现多次，则将其根节点加入结果列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `traverse` 来遍历树，并将每个子树序列化为字符串。
+2. 使用哈希表 `subtree_count` 记录每个子树出现的次数。
+3. 如果某个子树出现两次，则将其根节点加入结果列表 `res`。
+4. 返回结果列表 `res`。
 
 关键点:
-- [TODO]
+- 使用前序遍历（根-左-右）来序列化子树。
+- 使用哈希表记录子树的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(n)，存储子树序列化的哈希表和递归调用栈的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,34 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_duplicate_subtrees(root: Optional[TreeNode]) -> List[Optional[TreeNode]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找重复的子树
     """
-    # TODO: 实现最优解法
-    pass
+    def traverse(node: Optional[TreeNode]) -> str:
+        if not node:
+            return "#"
+        
+        # 序列化当前子树
+        subtree = f"{node.val},{traverse(node.left)},{traverse(node.right)}"
+        
+        # 记录子树出现的次数
+        subtree_count[subtree] += 1
+        
+        # 如果子树出现两次，将其根节点加入结果列表
+        if subtree_count[subtree] == 2:
+            res.append(node)
+        
+        return subtree
+    
+    subtree_count = {}
+    res = []
+    
+    traverse(root)
+    
+    return res
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_duplicate_subtrees)

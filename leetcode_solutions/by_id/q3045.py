@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过找到数组中唯一的一个下降点来确定最小右移次数。如果存在多个下降点，则无法通过右移使其递增。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，找到第一个下降点。
+2. 如果没有下降点，说明数组已经是递增的，返回 0。
+3. 如果有多个下降点，返回 -1。
+4. 计算从下降点开始到数组末尾的距离，即为所需的右移次数。
 
 关键点:
-- [TODO]
+- 找到唯一的下降点。
+- 通过计算从下降点到数组末尾的距离来确定右移次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_right_shifts(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使数组成为递增数组的最少右移次数，如果无法得到递增数组，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    shift_point = -1  # 用于记录下降点的位置
+
+    for i in range(n):
+        if nums[i] > nums[(i + 1) % n]:
+            if shift_point != -1:
+                # 如果已经找到了一个下降点，再找到另一个下降点，说明无法通过右移使其递增
+                return -1
+            shift_point = (i + 1) % n
+
+    if shift_point == -1:
+        # 如果没有找到下降点，说明数组已经是递增的
+        return 0
+    else:
+        # 计算从下降点到数组末尾的距离
+        return n - shift_point
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_right_shifts)

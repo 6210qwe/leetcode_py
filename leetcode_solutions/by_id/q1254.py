@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历树，并记录每个节点的深度。在遍历过程中，维护一个字典来存储每个深度的节点值之和。最后，返回最大深度的节点值之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于遍历树并记录每个节点的深度。
+2. 在 `dfs` 函数中，更新当前深度的节点值之和。
+3. 递归调用 `dfs` 函数遍历左子树和右子树。
+4. 在主函数中调用 `dfs` 函数，并返回最大深度的节点值之和。
 
 关键点:
-- [TODO]
+- 使用字典来存储每个深度的节点值之和。
+- 递归遍历树时，传递当前深度作为参数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def deepest_leaves_sum(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回层数最深叶子节点的和
     """
-    # TODO: 实现最优解法
-    pass
+    depth_sum = {}
 
+    def dfs(node: Optional[TreeNode], depth: int) -> None:
+        if not node:
+            return
+        if depth not in depth_sum:
+            depth_sum[depth] = 0
+        depth_sum[depth] += node.val
+        dfs(node.left, depth + 1)
+        dfs(node.right, depth + 1)
 
-Solution = create_solution(solution_function_name)
+    dfs(root, 0)
+    max_depth = max(depth_sum.keys())
+    return depth_sum[max_depth]
+
+Solution = create_solution(deepest_leaves_sum)

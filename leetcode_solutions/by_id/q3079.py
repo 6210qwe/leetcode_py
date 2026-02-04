@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用倍增法（LCA）和前缀和来高效处理每个查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用DFS计算每个节点的深度和父节点。
+3. 使用倍增法预处理每个节点的2^k级祖先及其路径上的边权统计。
+4. 对于每个查询，使用LCA找到路径上的边权统计，计算最小操作次数。
 
 关键点:
-- [TODO]
+- 使用倍增法快速找到LCA。
+- 使用前缀和统计路径上的边权。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)
+空间复杂度: O(n log n)
 """
 
 # ============================================================================
@@ -48,13 +51,64 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def min_operations_queries(n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 构建树的邻接表表示
+    tree = [[] for _ in range(n)]
+    for u, v, w in edges:
+        tree[u].append((v, w))
+        tree[v].append((u, w))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 倍增法预处理
+    MAX_LOG = 15
+    depth = [0] * n
+    parent = [[-1] * MAX_LOG for _ in range(n)]
+    edge_count = [[0] * 27 for _ in range(n)]
 
+    def dfs(node: int, prev: int, d: int):
+        depth[node] = d
+        for next_node, weight in tree[node]:
+            if next_node != prev:
+                parent[next_node][0] = node
+                edge_count[next_node][:] = edge_count[node][:]
+                edge_count[next_node][weight] += 1
+                dfs(next_node, node, d + 1)
 
-Solution = create_solution(solution_function_name)
+    dfs(0, -1, 0)
+
+    for k in range(1, MAX_LOG):
+        for i in range(n):
+            if parent[i][k - 1] != -1:
+                parent[i][k] = parent[parent[i][k - 1]][k - 1]
+
+    def lca(u: int, v: int) -> int:
+        if depth[u] > depth[v]:
+            u, v = v, u
+        for k in range(MAX_LOG - 1, -1, -1):
+            if depth[v] - (1 << k) >= depth[u]:
+                v = parent[v][k]
+        if u == v:
+            return u
+        for k in range(MAX_LOG - 1, -1, -1):
+            if parent[u][k] != parent[v][k]:
+                u = parent[u][k]
+                v = parent[v][k]
+        return parent[u][0]
+
+    def get_edge_count(u: int, v: int) -> List[int]:
+        lca_node = lca(u, v)
+        result = [edge_count[u][i] + edge_count[v][i] - 2 * edge_count[lca_node][i] for i in range(27)]
+        return result
+
+    def min_operations(edge_count: List[int]) -> int:
+        total_edges = sum(edge_count)
+        max_edges = max(edge_count)
+        return total_edges - max_edges
+
+    results = []
+    for u, v in queries:
+        edge_count_query = get_edge_count(u, v)
+        results.append(min_operations(edge_count_query))
+
+    return results
+
+Solution = create_solution(min_operations_queries)

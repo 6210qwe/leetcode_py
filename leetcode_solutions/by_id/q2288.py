@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用欧几里得算法（辗转相除法）来计算最大公约数，并利用最大公约数来减少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作计数器为 0。
+2. 使用辗转相除法计算 num1 和 num2 的最大公约数。
+3. 计算操作次数为 (num1 / gcd) + (num2 / gcd) - 2，其中 gcd 是最大公约数。
 
 关键点:
-- [TODO]
+- 使用辗转相除法可以高效地计算最大公约数。
+- 通过最大公约数可以减少不必要的减法操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(min(num1, num2))) - 辗转相除法的时间复杂度是对数级别的。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_operations(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 num1 或 num2 为 0 的操作数
     """
-    # TODO: 实现最优解法
-    pass
+    # 辗转相除法计算最大公约数
+    def gcd(a: int, b: int) -> int:
+        while b:
+            a, b = b, a % b
+        return a
+
+    # 计算操作次数
+    if num1 == 0 or num2 == 0:
+        return 0
+    gcd_value = gcd(num1, num2)
+    return (num1 // gcd_value) + (num2 // gcd_value) - 2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_operations)

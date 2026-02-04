@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口标记需要加粗的字符，然后遍历字符串进行拼接。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔数组 `bold`，长度与输入字符串 `s` 相同，用于标记每个字符是否需要加粗。
+2. 遍历每个字典中的单词 `word`，使用滑动窗口找到所有 `word` 在 `s` 中出现的位置，并将这些位置在 `bold` 数组中标记为 `True`。
+3. 遍历字符串 `s` 和 `bold` 数组，根据 `bold` 数组的值插入 `<b>` 和 `</b>` 标签。
 
 关键点:
-- [TODO]
+- 使用滑动窗口标记需要加粗的字符，避免重复计算。
+- 在遍历字符串时，根据 `bold` 数组的值插入标签。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m + n)，其中 n 是字符串 `s` 的长度，m 是字典中单词的最大长度。最坏情况下，每个字符都需要与字典中的每个单词进行比较。
+空间复杂度: O(n)，用于存储 `bold` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def add_bold_tag(s: str, words: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 给字符串添加加粗标签
     """
-    # TODO: 实现最优解法
-    pass
+    if not s or not words:
+        return s
+
+    # 初始化布尔数组，用于标记需要加粗的字符
+    bold = [False] * len(s)
+
+    # 使用滑动窗口标记需要加粗的字符
+    for word in words:
+        start = 0
+        while True:
+            start = s.find(word, start)
+            if start == -1:
+                break
+            for i in range(start, start + len(word)):
+                bold[i] = True
+            start += 1
+
+    # 拼接结果字符串
+    result = []
+    i = 0
+    while i < len(s):
+        if bold[i]:
+            result.append("<b>")
+            while i < len(s) and bold[i]:
+                result.append(s[i])
+                i += 1
+            result.append("</b>")
+        else:
+            result.append(s[i])
+            i += 1
+
+    return "".join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_bold_tag)

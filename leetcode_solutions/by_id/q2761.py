@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组并依次应用 reducer 函数来计算最终结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 `init`。
+2. 遍历数组 `nums`，对于每个元素 `num`，更新 `result` 为 `fn(result, num)`。
+3. 返回最终的 `result`。
 
 关键点:
-- [TODO]
+- 使用一个循环遍历数组，并在每次迭代中应用 reducer 函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Callable
 
-
-def solution_function_name(params):
+def array_reduce(nums: List[int], fn: Callable[[int, int], int], init: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    通过依次对数组的每个元素执行 fn 函数得到的最终结果。
+    
+    :param nums: 整数数组
+    :param fn: reducer 函数
+    :param init: 初始值
+    :return: 最终结果
     """
-    # TODO: 实现最优解法
-    pass
+    result = init
+    for num in nums:
+        result = fn(result, num)
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_reduce)

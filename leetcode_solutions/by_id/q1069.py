@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断一个数是否是易混淆数。易混淆数是指将数字旋转180度后变成另一个不同的数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，存储每个数字旋转180度后的对应值。
+2. 从右到左遍历数字的每一位，检查其旋转后的值是否存在，并且旋转后的数字不等于原数字。
 
 关键点:
-- [TODO]
+- 旋转180度后的数字必须存在且不能与原数字相同。
+- 旋转180度后的数字可以通过字典快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是数字 n 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +49,25 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def confusingNumber(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断一个数是否是易混淆数。
+    
+    :param n: 输入的整数
+    :return: 如果是易混淆数返回 True，否则返回 False
     """
-    # TODO: 实现最优解法
-    pass
+    # 旋转180度后的数字映射
+    rotation_map = {0: 0, 1: 1, 6: 9, 8: 8, 9: 6}
+    original = n
+    rotated = 0
+    
+    while n > 0:
+        digit = n % 10
+        if digit not in rotation_map:
+            return False
+        rotated = rotated * 10 + rotation_map[digit]
+        n //= 10
+    
+    return rotated != original
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(confusingNumber)

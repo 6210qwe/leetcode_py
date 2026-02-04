@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自连接和聚合函数来找出共同购买的产品对，并计算每个产品对的购买用户数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用自连接找到所有可能的产品对 (product1_id, product2_id)，确保 product1_id < product2_id。
+2. 计算每对产品被多少个不同的用户购买。
+3. 过滤出至少有 3 个不同用户购买的产品对。
+4. 将结果与 ProductInfo 表连接，获取每个产品的类别。
+5. 按照 customer_count 降序、product1_id 升序、product2_id 升序排序。
 
 关键点:
-- [TODO]
+- 使用自连接和聚合函数来处理数据。
+- 确保 product1_id < product2_id 以避免重复的产品对。
+- 使用 GROUP BY 和 HAVING 来过滤出符合条件的产品对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 ProductPurchases 表中的行数。自连接操作的时间复杂度是 O(n^2)。
+空间复杂度: O(n^2)，用于存储自连接后的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def solution_function_name(product_purchases: pd.DataFrame, product_info: pd.DataFrame) -> pd.DataFrame:
+    # 自连接找到所有可能的产品对 (product1_id, product2_id)，确保 product1_id < product2_id
+    pairs = product_purchases.merge(
+        product_purchases, on='user_id', suffixes=('_1', '_2')
+    ).query('product_id_1 < product_id_2')
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算每对产品被多少个不同的用户购买
+    pair_counts = pairs.groupby(['product_id_1', 'product_id_2'])['user_id'].nunique().reset_index()
+    pair_counts.columns = ['product1_id', 'product2_id', 'customer_count']
 
+    # 过滤出至少有 3 个不同用户购买的产品对
+    recommended_pairs = pair_counts.query('customer_count >= 3')
+
+    # 将结果与 ProductInfo 表连接，获取每个产品的类别
+    result = recommended_pairs.merge(
+        product_info, left_on='product1_id', right_on='product_id'
+    ).merge(
+        product_info, left_on='product2_id', right_on='product_id', suffixes=('_1', '_2')
+    )
+
+    # 选择需要的列并重命名
+    result = result[['product1_id', 'product2_id', 'category_1', 'category_2', 'customer_count']]
+    result.columns = ['product1_id', 'product2_id', 'product1_category', 'product2_category', 'customer_count']
+
+    # 按照 customer_count 降序、product1_id 升序、product2_id 升序排序
+    result = result.sort_values(by=['customer_count', 'product1_id', 'product2_id'], ascending=[False, True, True])
+
+    return result
 
 Solution = create_solution(solution_function_name)

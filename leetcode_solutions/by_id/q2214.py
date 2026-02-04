@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个大学的获胜次数，并返回获胜次数最多的大学。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询计算每个大学的获胜次数。
+2. 在外层查询中，选择获胜次数最多的大学。
+3. 如果有多个大学获胜次数相同，则返回所有这些大学。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 COUNT 函数来统计每个大学的获胜次数。
+- 使用 ORDER BY 和 LIMIT 来获取获胜次数最多的大学。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是记录的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询不使用额外的空间。
 """
 
 # ============================================================================
@@ -58,3 +60,43 @@ def solution_function_name(params):
 
 
 Solution = create_solution(solution_function_name)
+
+# SQL 查询实现
+def get_winner_university():
+    query = """
+    SELECT university
+    FROM (
+        SELECT university, COUNT(*) AS win_count
+        FROM results
+        WHERE result = 'W'
+        GROUP BY university
+    ) AS subquery
+    ORDER BY win_count DESC
+    LIMIT 1;
+    """
+    return query
+
+# 示例调用
+# print(get_winner_university())
+
+# 修改后的 SQL 查询实现
+def get_winner_universities():
+    query = """
+    WITH university_wins AS (
+        SELECT university, COUNT(*) AS win_count
+        FROM results
+        WHERE result = 'W'
+        GROUP BY university
+    ),
+    max_wins AS (
+        SELECT MAX(win_count) AS max_win_count
+        FROM university_wins
+    )
+    SELECT university
+    FROM university_wins, max_wins
+    WHERE university_wins.win_count = max_wins.max_win_count;
+    """
+    return query
+
+# 示例调用
+# print(get_winner_universities())

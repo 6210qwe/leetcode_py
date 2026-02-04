@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到数组中最大值，然后找到该最大值的最长连续子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最大值。
+2. 遍历数组，找到最大值的最长连续子数组。
 
 关键点:
-- [TODO]
+- 通过遍历数组找到最大值。
+- 通过滑动窗口技术找到最大值的最长连续子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到按位与最大的最长子数组
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    # 找到数组中的最大值
+    max_value = max(nums)
+
+    # 初始化变量
+    max_length = 0
+    current_length = 0
+
+    # 遍历数组，找到最大值的最长连续子数组
+    for num in nums:
+        if num == max_value:
+            current_length += 1
+            max_length = max(max_length, current_length)
+        else:
+            current_length = 0
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

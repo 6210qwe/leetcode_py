@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用位运算和前缀异或的性质来计算满足条件的三元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或数组。
+2. 使用哈希表记录每个前缀异或值出现的次数。
+3. 遍历前缀异或数组，对于每个前缀异或值，计算其与之前所有前缀异或值的异或结果为偶数的情况数。
 
 关键点:
-- [TODO]
+- 前缀异或数组可以帮助快速计算任意子数组的异或值。
+- 使用哈希表记录前缀异或值的频率，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
-
-def solution_function_name(params):
+def count_triplets(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的三元组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_xor = [0] * (n + 1)
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ nums[i]
+    
+    count = 0
+    freq = defaultdict(int)
+    
+    for i in range(1, n + 1):
+        for j in range(i):
+            if (prefix_xor[i] ^ prefix_xor[j]) % 2 == 0:
+                count += freq[prefix_xor[j]]
+        freq[prefix_xor[i]] += 1
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_triplets)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来计算满足条件的配对数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对年龄数组进行排序。
+2. 使用两个指针 left 和 right 来遍历数组，left 指针从左到右遍历，right 指针找到第一个不满足条件的年龄。
+3. 计算每个 age[left] 可以发送的好友请求数量，即 right - left - 1。
 
 关键点:
-- [TODO]
+- 排序后的数组可以使用双指针高效地找到满足条件的配对。
+- 通过移动 right 指针来减少不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 ages 的长度。排序操作的时间复杂度是 O(n log n)，双指针遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_friend_requests(ages: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在社交媒体网站上产生的好友请求总数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对年龄数组进行排序
+    ages.sort()
+    n = len(ages)
+    left, right = 0, 0
+    count = 0
+    
+    for left in range(n):
+        while right < n and (ages[right] <= 0.5 * ages[left] + 7 or ages[right] <= ages[left]):
+            right += 1
+        # 计算每个 age[left] 可以发送的好友请求数量
+        count += right - left - 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_friend_requests)

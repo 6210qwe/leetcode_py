@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个字符串，检查是否可以通过一次循环递增操作使 str2 成为 str1 的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 str1 和 str2 的起始位置。
+2. 遍历 str1，对于每个字符，检查它是否可以通过一次循环递增操作变为 str2[j]。
+3. 如果可以，则移动 j 指针到下一个字符。
+4. 如果 j 指针到达 str2 的末尾，说明 str2 是 str1 的子序列，返回 True。
+5. 如果遍历完 str1 后 j 指针仍未到达 str2 的末尾，返回 False。
 
 关键点:
-- [TODO]
+- 使用双指针高效地遍历两个字符串。
+- 通过计算字符差值来判断是否可以通过一次循环递增操作匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 str1 的长度，m 是 str2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_make_subsequence(str1: str, str2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以通过一次循环递增操作使 str2 成为 str1 的子序列。
     """
-    # TODO: 实现最优解法
-    pass
+    def is_next_char(c1: str, c2: str) -> bool:
+        """
+        判断 c1 是否可以通过一次循环递增操作变为 c2。
+        """
+        return (ord(c1) - ord('a') + 1) % 26 == (ord(c2) - ord('a')) % 26
+
+    i, j = 0, 0
+    while i < len(str1) and j < len(str2):
+        if str1[i] == str2[j] or is_next_char(str1[i], str2[j]):
+            j += 1
+        i += 1
+
+    return j == len(str2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_make_subsequence)

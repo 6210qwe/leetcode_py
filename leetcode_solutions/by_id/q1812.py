@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 删除所有非数字字符，然后按规则分块。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 删除所有空格和破折号，只保留数字。
+2. 根据剩余数字的数量进行分块：
+   - 如果剩余数字数量大于 4，则每 3 个数字为一块。
+   - 如果剩余数字数量为 4，则分成两个 2 个数字的块。
+   - 如果剩余数字数量为 3 或 2，则直接作为一个块。
+3. 将分好的块用破折号连接起来。
 
 关键点:
-- [TODO]
+- 使用正则表达式删除非数字字符。
+- 根据剩余数字数量的不同情况进行分块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。我们需要遍历整个字符串来删除非数字字符，并进行分块。
+空间复杂度: O(n)，需要存储处理后的数字字符串和结果字符串。
 """
 
 # ============================================================================
@@ -47,14 +52,28 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import re
 
 
-def solution_function_name(params):
+def solution_function_name(number: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新格式化电话号码
     """
-    # TODO: 实现最优解法
-    pass
+    # 删除所有空格和破折号
+    cleaned_number = re.sub(r'[\s-]', '', number)
+    
+    # 根据剩余数字数量进行分块
+    if len(cleaned_number) % 3 == 1:
+        # 如果剩余数字数量为 4 的倍数加 1，则分成 (n-4) 个 3 个数字的块，最后两个 2 个数字的块
+        parts = [cleaned_number[i:i+3] for i in range(0, len(cleaned_number)-4, 3)]
+        parts.append(cleaned_number[-4:-2])
+        parts.append(cleaned_number[-2:])
+    else:
+        # 否则，每 3 个数字为一块
+        parts = [cleaned_number[i:i+3] for i in range(0, len(cleaned_number), 3)]
+    
+    # 用破折号将这些块连接起来
+    return '-'.join(parts)
 
 
 Solution = create_solution(solution_function_name)

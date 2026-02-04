@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来模拟香槟流动的过程。我们用一个二维数组 dp 来表示每一层每个玻璃杯中的香槟量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，dp[i][j] 表示第 i 行第 j 个玻璃杯中的香槟量。
+2. 将倒入的香槟量全部加到 dp[0][0] 中。
+3. 从第一层开始，逐层计算每个玻璃杯中的香槟量。如果当前玻璃杯中的香槟量超过 1，则将其超出的部分平均分配给下一层的两个玻璃杯。
+4. 最后返回 dp[query_row][query_glass] 的值，如果该值大于 1，则返回 1，否则返回该值。
 
 关键点:
-- [TODO]
+- 使用动态规划来模拟香槟流动的过程。
+- 只需要计算到 query_row 这一行，不需要计算整个金字塔。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(query_row^2)
+空间复杂度: O(query_row^2)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def champagne_tower(poured: int, query_row: int, query_glass: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算第 query_row 行第 query_glass 个玻璃杯中的香槟量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0.0] * (r + 1) for r in range(query_row + 1)]
+    
+    # 将倒入的香槟量全部加到 dp[0][0] 中
+    dp[0][0] = poured
+    
+    # 逐层计算每个玻璃杯中的香槟量
+    for r in range(query_row):
+        for c in range(r + 1):
+            excess = (dp[r][c] - 1.0) / 2.0
+            if excess > 0:
+                dp[r + 1][c] += excess
+                dp[r + 1][c + 1] += excess
+    
+    # 返回 dp[query_row][query_glass] 的值
+    return min(1.0, dp[query_row][query_glass])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(champagne_tower)

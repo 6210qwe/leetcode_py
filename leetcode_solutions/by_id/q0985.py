@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和贪心算法来最大化分数。首先对令牌进行排序，然后使用两个指针分别指向令牌数组的两端。尽量使用能量最小的令牌来增加分数，当能量不足时，使用能量最大的令牌来增加能量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对令牌数组进行排序。
+2. 初始化两个指针 left 和 right，分别指向令牌数组的起始和末尾。
+3. 初始化分数 score 为 0。
+4. 当 left 指针小于等于 right 指针时，执行以下操作：
+   - 如果当前能量足够使用 left 指针指向的令牌，则使用该令牌，增加分数，移动 left 指针。
+   - 否则，如果分数大于 0 且 left 指针小于 right 指针，则使用 right 指针指向的令牌来增加能量，减少分数，移动 right 指针。
+   - 如果以上两种情况都不满足，则退出循环。
+5. 返回最大分数。
 
 关键点:
-- [TODO]
+- 排序后的令牌数组使得我们可以优先使用能量最小的令牌来增加分数。
+- 使用双指针来灵活地选择使用哪个令牌来增加分数或能量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 tokens 的长度。主要的时间开销在于排序操作。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def bag_of_tokens_score(tokens: List[int], power: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 对令牌数组进行排序
+    tokens.sort()
+    
+    # 初始化双指针
+    left, right = 0, len(tokens) - 1
+    score = 0
+    max_score = 0
+    
+    while left <= right:
+        if power >= tokens[left]:
+            # 使用能量最小的令牌增加分数
+            power -= tokens[left]
+            score += 1
+            left += 1
+            max_score = max(max_score, score)
+        elif score > 0 and left < right:
+            # 使用能量最大的令牌增加能量
+            power += tokens[right]
+            score -= 1
+            right -= 1
+        else:
+            # 无法继续操作，退出循环
+            break
+    
+    return max_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bag_of_tokens_score)

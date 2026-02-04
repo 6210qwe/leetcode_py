@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算两个坐标的行列和来判断它们的颜色是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个坐标的列字符转换为对应的数字。
+2. 计算每个坐标的行列和。
+3. 判断两个坐标的行列和的奇偶性是否相同，如果相同则颜色相同，否则不同。
 
 关键点:
-- [TODO]
+- 使用 ASCII 码将字母转换为数字。
+- 通过奇偶性判断颜色。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(coordinate1: str, coordinate2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查两个棋盘方格颜色是否相同
     """
-    # TODO: 实现最优解法
-    pass
+    # 将列字符转换为数字
+    col1 = ord(coordinate1[0]) - ord('a')
+    col2 = ord(coordinate2[0]) - ord('a')
+    
+    # 获取行数字
+    row1 = int(coordinate1[1])
+    row2 = int(coordinate2[1])
+    
+    # 计算行列和
+    sum1 = col1 + row1
+    sum2 = col2 + row2
+    
+    # 判断奇偶性是否相同
+    return sum1 % 2 == sum2 % 2
 
 
 Solution = create_solution(solution_function_name)

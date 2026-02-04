@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到需要移动的字符，并计算最少的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 `left` 和 `right`，分别指向字符串的开头和结尾。
+2. 找到 `left` 和 `right` 指向的字符相同的位置，如果找不到，则将 `right` 指向的字符移到合适的位置。
+3. 计算移动次数并更新指针位置。
+4. 重复上述步骤直到 `left` 和 `right` 相遇。
 
 关键点:
-- [TODO]
+- 通过双指针找到需要移动的字符，并计算最少的操作次数。
+- 使用贪心算法确保每次移动都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。最坏情况下，每次移动都需要遍历剩余的字符。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_moves_to_palindrome(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 s 变成回文串的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    def find_next_char(s: str, start: int, end: int, char: str) -> int:
+        for i in range(end, start - 1, -1):
+            if s[i] == char:
+                return i
+        return -1
+
+    n = len(s)
+    moves = 0
+    left, right = 0, n - 1
+
+    while left < right:
+        if s[left] == s[right]:
+            left += 1
+            right -= 1
+        else:
+            next_right = find_next_char(s, left, right, s[left])
+            if next_right == -1:
+                # 如果找不到相同的字符，说明已经处理完所有字符
+                break
+            else:
+                # 将 right 指向的字符移到合适的位置
+                for j in range(next_right, right):
+                    s = s[:j] + s[j + 1] + s[j] + s[j + 2:]
+                    moves += 1
+                right -= 1
+
+    return moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_palindrome)

@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每个位置的减少次数，然后通过前缀和计算每个位置的实际减少次数。最后判断是否可以将 nums 变为零数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化差分数组 diff。
+2. 遍历 queries，更新差分数组。
+3. 计算前缀和数组 prefix_sum，得到每个位置的实际减少次数。
+4. 检查每个位置的实际减少次数是否足够将 nums 变为零数组。
+5. 如果可以，则返回可以删除的最大查询数量；否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用差分数组和前缀和来高效地处理区间更新和查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，用于存储差分数组和前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_deletable_queries(nums: List[int], queries: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回最多可以删除的查询数量，使得剩下的查询仍然可以将 nums 变为零数组。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    diff = [0] * (n + 1)
 
+    # 更新差分数组
+    for l, r in queries:
+        diff[l] += 1
+        diff[r + 1] -= 1
 
-Solution = create_solution(solution_function_name)
+    # 计算前缀和数组
+    prefix_sum = [0] * n
+    current_sum = 0
+    for i in range(n):
+        current_sum += diff[i]
+        prefix_sum[i] = current_sum
+
+    # 检查是否可以将 nums 变为零数组
+    for i in range(n):
+        if prefix_sum[i] < nums[i]:
+            return -1
+
+    # 计算可以删除的最大查询数量
+    deletable_count = 0
+    for l, r in queries:
+        if all(prefix_sum[i] > nums[i] for i in range(l, r + 1)):
+            deletable_count += 1
+
+    return deletable_count
+
+Solution = create_solution(max_deletable_queries)

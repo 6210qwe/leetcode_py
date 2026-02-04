@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数数组记录每个字符的频率，然后枚举所有可能的目标频率，计算最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的频率。
+2. 枚举所有可能的目标频率，计算将所有字符频率调整为目标频率所需的最小操作次数。
+3. 返回最小的操作次数。
 
 关键点:
-- [TODO]
+- 使用计数数组记录字符频率。
+- 枚举所有可能的目标频率，计算最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k^2)，其中 n 是字符串长度，k 是字符种类数（最多 26）。
+空间复杂度: O(k)，其中 k 是字符种类数（最多 26）。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_equal_freq(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使字符频率相等的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个字符的频率
+    freq = [0] * 26
+    for char in s:
+        freq[ord(char) - ord('a')] += 1
+    
+    # 计算非零频率的字符数量
+    non_zero_freq = [f for f in freq if f > 0]
+    
+    # 枚举所有可能的目标频率
+    min_ops = float('inf')
+    for target in range(1, max(non_zero_freq) + 1):
+        ops = 0
+        for f in non_zero_freq:
+            if f < target:
+                ops += target - f
+            else:
+                ops += f - target
+        min_ops = min(min_ops, ops)
+    
+    return min_ops
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_equal_freq)

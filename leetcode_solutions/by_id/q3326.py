@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来计算每个节点到其子节点的距离，并统计满足条件的服务器对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 定义一个递归函数 dfs(node, parent, distance) 来计算从当前节点到其子节点的距离，并统计满足条件的服务器对。
+3. 对于每个节点，调用 dfs 函数，并更新结果数组。
 
 关键点:
-- [TODO]
+- 使用 DFS 来遍历树，并记录每个节点到其子节点的距离。
+- 通过信号速度来判断是否满足条件。
+- 通过计数器来统计满足条件的服务器对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_pairs_of_connectable_servers(edges: List[List[int]], signalSpeed: int) -> List[int]:
+    n = len(edges) + 1
+    graph = [[] for _ in range(n)]
+    
+    # 构建图的邻接表表示
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+    
+    def dfs(node: int, parent: int, distance: int) -> int:
+        count = 0
+        valid_count = 0
+        
+        for neighbor, weight in graph[node]:
+            if neighbor == parent:
+                continue
+            new_distance = distance + weight
+            if new_distance % signalSpeed == 0:
+                valid_count += 1
+            count += dfs(neighbor, node, new_distance)
+        
+        result[node] += valid_count * (valid_count - 1) // 2
+        return valid_count
+    
+    result = [0] * n
+    for i in range(n):
+        dfs(i, -1, 0)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs_of_connectable_servers)

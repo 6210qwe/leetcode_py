@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据，通过 pivot_table 方法将数据重新格式化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并转换为 Pandas DataFrame。
+2. 使用 pivot_table 方法将数据重新格式化，使得每个月都有一个收入列。
+3. 重命名列名，使其符合输出要求。
+4. 将结果转换回所需的格式。
 
 关键点:
-- [TODO]
+- 使用 Pandas 的 pivot_table 方法进行数据重塑。
+- 确保结果表的列名符合题目要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入数据的行数。Pandas 的 pivot_table 操作的时间复杂度是线性的。
+空间复杂度: O(n)，需要存储整个 DataFrame。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+import pandas as pd
+
+def reformat_department_table(department: List[List[str]]) -> pd.DataFrame:
+    """
+    重新格式化部门表，使得每个月都有一个收入列。
+    """
+    # 将输入数据转换为 DataFrame
+    df = pd.DataFrame(department, columns=['id', 'revenue', 'month'])
+    
+    # 使用 pivot_table 方法将数据重新格式化
+    df_pivot = df.pivot_table(index='id', columns='month', values='revenue', aggfunc='sum').reset_index()
+    
+    # 重命名列名
+    df_pivot.columns.name = None
+    df_pivot.columns = ['id'] + [f'{col}_Revenue' for col in df_pivot.columns[1:]]
+    
+    # 填充缺失值
+    df_pivot = df_pivot.fillna(None)
+    
+    return df_pivot
+
+# 示例数据
+department = [
+    [1, 8000, 'Jan'],
+    [2, 9000, 'Jan'],
+    [3, 10000, 'Feb'],
+    [1, 7000, 'Feb'],
+    [1, 6000, 'Mar']
+]
+
+# 调用函数
+result = reformat_department_table(department)
+print(result)
+
+# ============================================================================
+# 工厂函数
+# ============================================================================
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reformat_department_table)

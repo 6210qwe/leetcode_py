@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和位操作来生成符合条件的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有可能的二进制数，这些数的二进制表示中恰好有 k 个 1。
+2. 对这些数进行排序，找到第 n 小的数。
 
 关键点:
-- [TODO]
+- 使用组合生成所有可能的二进制数。
+- 使用位操作来生成具体的整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(C(m, k) * log C(m, k))，其中 m 是二进制数的最大长度（约为 32），C(m, k) 是从 m 个位置中选择 k 个位置的组合数。
+空间复杂度: O(C(m, k))，存储所有可能的二进制数。
 """
 
 # ============================================================================
@@ -47,14 +48,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from itertools import combinations
 
-
-def solution_function_name(params):
+def find_nth_smallest_integer(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到二进制表示中恰好包含 k 个 1 的第 n 小的正整数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成所有可能的二进制数，这些数的二进制表示中恰好有 k 个 1
+    candidates = []
+    for comb in combinations(range(32), k):
+        num = 0
+        for pos in comb:
+            num |= (1 << pos)
+        candidates.append(num)
+    
+    # 对这些数进行排序
+    candidates.sort()
+    
+    # 返回第 n 小的数
+    return candidates[n - 1]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_nth_smallest_integer)

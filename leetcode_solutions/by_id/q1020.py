@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的湍流子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `prev` 和 `curr` 来记录前一个和当前的比较结果。
+2. 使用一个变量 `max_len` 来记录最长的湍流子数组长度。
+3. 遍历数组，根据当前和前一个元素的比较结果更新 `prev` 和 `curr`。
+4. 如果当前比较结果与前一个比较结果相反或相等，则更新 `max_len`。
+5. 返回 `max_len`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前的湍流子数组。
+- 通过比较相邻元素来判断是否形成湍流。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_turbulent_subarray(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的湍流子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    if n < 2:
+        return n
+
+    max_len = 1
+    prev, curr = 0, 0
+
+    for i in range(1, n):
+        if arr[i] > arr[i - 1]:
+            curr = 1
+        elif arr[i] < arr[i - 1]:
+            curr = -1
+        else:
+            curr = 0
+
+        if curr != 0 and curr != prev:
+            max_len += 1
+        else:
+            max_len = 2 if curr != 0 else 1
+
+        prev = curr
+
+    return max_len
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_turbulent_subarray)

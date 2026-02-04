@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中位数作为目标值来最小化总开销。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 和 cost 组合成一个列表，并按 nums 的值进行排序。
+2. 计算总成本的一半，找到中位数的位置。
+3. 遍历组合后的列表，计算将所有元素变为中位数的总开销。
 
 关键点:
-- [TODO]
+- 使用中位数可以最小化绝对差的总和。
+- 通过排序和累加成本，可以在 O(n log n) 时间内找到中位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_cost(nums: List[int], cost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回使 nums 中所有元素相等的最少总开销。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums 和 cost 组合成一个列表，并按 nums 的值进行排序
+    pairs = sorted(zip(nums, cost))
+    
+    # 计算总成本的一半
+    total_cost = sum(cost)
+    half_cost = total_cost // 2
+    
+    # 找到中位数的位置
+    current_cost = 0
+    for num, c in pairs:
+        current_cost += c
+        if current_cost > half_cost:
+            target = num
+            break
+    
+    # 计算将所有元素变为中位数的总开销
+    return sum(c * abs(num - target) for num, c in pairs)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

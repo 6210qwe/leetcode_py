@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 内置的字符串方法 `lower()` 来转换所有大写字母为小写字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `str.lower()` 方法将输入字符串中的所有大写字母转换为小写字母。
+2. 返回转换后的字符串。
 
 关键点:
-- [TODO]
+- 利用 Python 内置的 `lower()` 方法，它在内部已经进行了优化，可以高效地完成字母转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。`lower()` 方法会遍历整个字符串进行转换。
+空间复杂度: O(1)，`lower()` 方法不会使用额外的空间（除了返回的新字符串）。
 """
 
 # ============================================================================
@@ -49,12 +49,11 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def to_lower_case(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将输入字符串中的大写字母转换为小写字母
     """
-    # TODO: 实现最优解法
-    pass
+    return s.lower()
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(to_lower_case)

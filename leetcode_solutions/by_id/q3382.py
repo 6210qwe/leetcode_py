@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个元素作为最大值的子数组范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用单调递增栈来记录每个元素左侧第一个大于它的元素的位置。
+2. 使用单调递减栈来记录每个元素右侧第一个大于它的元素的位置。
+3. 对于每个元素，计算它作为最大值的子数组数量。
 
 关键点:
-- [TODO]
+- 通过单调栈可以高效地找到每个元素作为最大值的子数组范围。
+- 计算子数组数量时，利用左右边界来确定子数组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_subarrays_with_max_boundary(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算边界元素是最大值的子数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    left_bound = [-1] * n
+    right_bound = [n] * n
+    stack = []
+    
+    # 单调递增栈，找到每个元素左侧第一个大于它的元素的位置
+    for i in range(n):
+        while stack and nums[stack[-1]] < nums[i]:
+            stack.pop()
+        if stack:
+            left_bound[i] = stack[-1]
+        stack.append(i)
+    
+    stack = []
+    # 单调递减栈，找到每个元素右侧第一个大于它的元素的位置
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] < nums[i]:
+            stack.pop()
+        if stack:
+            right_bound[i] = stack[-1]
+        stack.append(i)
+    
+    # 计算每个元素作为最大值的子数组数量
+    result = 0
+    for i in range(n):
+        left = i - left_bound[i]
+        right = right_bound[i] - i
+        result += left * right
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_subarrays_with_max_boundary)

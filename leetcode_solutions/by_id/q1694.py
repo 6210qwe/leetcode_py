@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来找到最短的子数组，使得剩余元素的和能被 p 整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和，并计算其对 p 的余数。
+2. 如果总和已经能被 p 整除，直接返回 0。
+3. 使用哈希表记录前缀和对 p 的余数及其对应的索引。
+4. 遍历数组，计算当前前缀和对 p 的余数。
+5. 检查是否存在一个前缀和，使得当前前缀和减去该前缀和的差值等于目标余数。
+6. 更新最短子数组的长度。
+7. 如果没有找到合适的子数组，返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表记录前缀和对 p 的余数及其对应的索引，以便快速查找。
+- 通过前缀和的差值来判断是否可以移除某个子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(p)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def solution_function_name(nums: List[int], p: int) -> int:
+    total_sum = sum(nums)
+    target_remainder = total_sum % p
+    if target_remainder == 0:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+    prefix_sum = 0
+    min_length = float('inf')
+    seen = {0: -1}
+    
+    for i, num in enumerate(nums):
+        prefix_sum += num
+        current_remainder = prefix_sum % p
+        needed_remainder = (current_remainder - target_remainder + p) % p
+        
+        if needed_remainder in seen:
+            min_length = min(min_length, i - seen[needed_remainder])
+        
+        seen[current_remainder] = i
+    
+    return min_length if min_length != float('inf') else -1
 
 Solution = create_solution(solution_function_name)

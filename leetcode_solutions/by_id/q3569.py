@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录当前窗口内的元音和辅音数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 `left` 和 `right`，以及两个哈希表 `vowel_count` 和 `consonant_count`。
+2. 移动右指针扩展窗口，更新哈希表中的元音和辅音计数。
+3. 当窗口内的元音满足条件且辅音数量等于 k 时，移动左指针收缩窗口，计算符合条件的子字符串数量。
+4. 重复上述步骤直到右指针遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来高效地找到符合条件的子字符串。
+- 通过哈希表记录元音和辅音的数量，以便快速判断是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 word 的长度。每个字符最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(1)，哈希表的大小是固定的，只包含 5 个元音字母和 21 个辅音字母。
 """
 
 # ============================================================================
@@ -48,13 +51,32 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_vowels_and_consonants(word: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算包含所有元音字母且恰好包含 k 个辅音字母的子字符串数量。
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiou')
+    vowel_count = {v: 0 for v in vowels}
+    consonant_count = 0
+    left = 0
+    result = 0
 
+    for right in range(len(word)):
+        if word[right] in vowels:
+            vowel_count[word[right]] += 1
+        else:
+            consonant_count += 1
 
-Solution = create_solution(solution_function_name)
+        while all(vowel_count[v] > 0 for v in vowels) and consonant_count > k:
+            if word[left] in vowels:
+                vowel_count[word[left]] -= 1
+            else:
+                consonant_count -= 1
+            left += 1
+
+        if all(vowel_count[v] > 0 for v in vowels) and consonant_count == k:
+            result += 1
+
+    return result
+
+Solution = create_solution(count_vowels_and_consonants)

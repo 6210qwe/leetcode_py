@@ -21,40 +21,95 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来计算从根节点到所有节点的初始最短路径，并使用并查集（Union-Find）来高效地处理边的更新操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 DFS 从根节点开始计算从根节点到所有节点的初始最短路径。
+3. 对于每个查询：
+   - 如果是更新边权重的操作，使用并查集更新边的权重。
+   - 如果是查询最短路径的操作，使用并查集找到从根节点到目标节点的路径，并计算路径的权重和。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算初始最短路径。
+- 使用并查集高效地处理边的更新和路径查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) * α(n))，其中 n 是节点数，q 是查询数，α 是反阿克曼函数。
+空间复杂度: O(n)，用于存储图的邻接表和并查集。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.weights = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, u):
+        if self.parent[u] != u:
+            root = self.find(self.parent[u])
+            self.weights[u] += self.weights[self.parent[u]]
+            self.parent[u] = root
+        return self.parent[u]
 
+    def union(self, u, v, weight):
+        root_u = self.find(u)
+        root_v = self.find(v)
+        if root_u != root_v:
+            if self.rank[root_u] > self.rank[root_v]:
+                self.parent[root_v] = root_u
+                self.weights[root_v] = weight - self.weights[u] + self.weights[v]
+            elif self.rank[root_u] < self.rank[root_v]:
+                self.parent[root_u] = root_v
+                self.weights[root_u] = -weight - self.weights[v] + self.weights[u]
+            else:
+                self.parent[root_v] = root_u
+                self.weights[root_v] = weight - self.weights[u] + self.weights[v]
+                self.rank[root_u] += 1
 
-Solution = create_solution(solution_function_name)
+def shortest_path_in_weighted_tree(n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 构建图的邻接表表示
+    graph = collections.defaultdict(list)
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+
+    # 使用 DFS 计算从根节点到所有节点的初始最短路径
+    def dfs(node, parent, distance):
+        distances[node] = distance
+        for neighbor, weight in graph[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, distance + weight)
+
+    distances = [0] * (n + 1)
+    dfs(1, -1, 0)
+
+    # 初始化并查集
+    uf = UnionFind(n + 1)
+    for u, v, w in edges:
+        uf.union(u, v, w)
+
+    # 处理查询
+    result = []
+    for query in queries:
+        if query[0] == 1:
+            u, v, w = query[1], query[2], query[3]
+            uf.union(u, v, w)
+        else:
+            x = query[1]
+            result.append(distances[x] + uf.weights[x])
+
+    return result
+
+Solution = create_solution(shortest_path_in_weighted_tree)

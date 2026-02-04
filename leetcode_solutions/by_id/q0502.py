@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法结合优先队列（最大堆）来选择当前可以启动的项目中利润最大的项目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有项目按照启动资本从小到大排序。
+2. 使用一个最大堆来存储当前可以启动的项目的利润。
+3. 每次从最大堆中取出利润最大的项目，并更新资本。
+4. 如果当前资本足够启动新的项目，则将这些项目的利润加入最大堆。
+5. 重复上述步骤直到完成 k 个项目或没有更多可以启动的项目。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地获取当前可以启动的项目中利润最大的项目。
+- 通过排序和堆操作来确保每次选择的都是最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是项目的数量。排序操作的时间复杂度是 O(n log n)，堆操作的时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储项目和最大堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def findMaximizedCapital(k: int, w: int, profits: List[int], capital: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 IPO 项目选择的最大化资本
     """
-    # TODO: 实现最优解法
-    pass
+    # 将项目按启动资本从小到大排序
+    projects = sorted(zip(capital, profits))
+    
+    max_heap = []
+    current_capital = w
+    index = 0
+    
+    for _ in range(k):
+        # 将当前资本可以启动的所有项目加入最大堆
+        while index < len(projects) and projects[index][0] <= current_capital:
+            heapq.heappush(max_heap, -projects[index][1])
+            index += 1
+        
+        # 如果最大堆为空，表示没有更多可以启动的项目
+        if not max_heap:
+            break
+        
+        # 从最大堆中取出利润最大的项目
+        current_capital += -heapq.heappop(max_heap)
+    
+    return current_capital
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findMaximizedCapital)

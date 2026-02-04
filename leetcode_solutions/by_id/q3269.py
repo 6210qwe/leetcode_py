@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个子数组是否匹配模式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `nums` 转换为表示相邻元素关系的数组 `diffs`，其中 `diffs[i]` 表示 `nums[i+1]` 和 `nums[i]` 的关系。
+2. 滑动窗口遍历 `diffs`，检查每个长度为 `m` 的子数组是否与 `pattern` 匹配。
+3. 计算并返回匹配的子数组数量。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地检查每个子数组。
+- 通过比较 `diffs` 和 `pattern` 来判断子数组是否匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `nums` 的长度，m 是 `pattern` 的长度。
+空间复杂度: O(n)，用于存储 `diffs` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_matching_subarrays(nums: List[int], pattern: List[int]) -> int:
+    n, m = len(nums), len(pattern)
+    diffs = []
+    
+    # 生成 diffs 数组
+    for i in range(1, n):
+        if nums[i] > nums[i - 1]:
+            diffs.append(1)
+        elif nums[i] < nums[i - 1]:
+            diffs.append(-1)
+        else:
+            diffs.append(0)
+    
+    count = 0
+    
+    # 滑动窗口检查每个子数组
+    for i in range(n - m):
+        if diffs[i:i + m] == pattern:
+            count += 1
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_matching_subarrays)

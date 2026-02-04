@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典记录每个团队在每个位置上的票数，然后根据这些票数进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `team_votes`，键为团队名称，值为一个列表，列表长度等于投票的长度，用于记录每个位置上的票数。
+2. 遍历每个投票，更新 `team_votes` 中对应团队的票数。
+3. 将 `team_votes` 转换为一个列表，并按以下规则排序：
+   - 首先按票数从高到低排序。
+   - 如果票数相同，则按团队名称的字母顺序排序。
+4. 返回排序后的团队名称拼接成的字符串。
 
 关键点:
-- [TODO]
+- 使用字典记录每个团队在每个位置上的票数。
+- 使用多级排序来处理并列情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m + k * log k)，其中 n 是投票数量，m 是每个投票的长度，k 是团队数量。遍历投票的时间复杂度是 O(n * m)，排序的时间复杂度是 O(k * log k)。
+空间复杂度: O(k * m)，其中 k 是团队数量，m 是每个投票的长度。存储每个团队在每个位置上的票数需要 O(k * m) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def rank_teams(votes: List[str]) -> str:
+    if not votes:
+        return ""
+    
+    # 获取团队数量
+    num_teams = len(votes[0])
+    
+    # 初始化字典，记录每个团队在每个位置上的票数
+    team_votes = {team: [0] * num_teams + [team] for team in votes[0]}
+    
+    # 更新每个团队在每个位置上的票数
+    for vote in votes:
+        for position, team in enumerate(vote):
+            team_votes[team][position] -= 1
+    
+    # 将字典转换为列表，并按票数从高到低排序，如果票数相同则按团队名称排序
+    sorted_teams = sorted(team_votes.values(), key=lambda x: (x[:-1], x[-1]))
+    
+    # 返回排序后的团队名称拼接成的字符串
+    return ''.join(team[-1] for team in sorted_teams)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = rank_teams

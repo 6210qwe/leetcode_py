@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针分别从起点向左右两个方向遍历，找到第一个匹配的 target 并计算最小距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向 startIndex。
+2. 向左和向右同时遍历数组，直到找到 target 或者遍历完整个数组。
+3. 计算并返回最小的距离。
 
 关键点:
-- [TODO]
+- 使用模运算处理环形数组的边界情况。
+- 通过双指针减少遍历次数，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 words 的长度。最坏情况下需要遍历整个数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_distance_to_target(words: List[str], target: str, start_index: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算到目标字符串的最短距离
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(words)
+    if n == 0:
+        return -1
+
+    # 初始化左右指针
+    left, right = start_index, start_index
+    min_distance = float('inf')
+
+    # 向左和向右同时遍历
+    for i in range(n):
+        if words[left] == target or words[right] == target:
+            min_distance = min(min_distance, i)
+            break
+        left = (left - 1 + n) % n
+        right = (right + 1) % n
+
+    return min_distance if min_distance != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_distance_to_target)

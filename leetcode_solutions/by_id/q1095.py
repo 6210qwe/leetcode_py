@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个人去两个城市的差价，选择差价最小的人去更便宜的城市，从而达到总费用最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个人去两个城市的差价，并按差价从小到大排序。
+2. 将前一半的人分配到 A 城市，后一半的人分配到 B 城市。
+3. 计算总费用。
 
 关键点:
-- [TODO]
+- 通过差价排序来决定每个人的最优选择。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 costs 的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def two_city_scheduling(costs: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 两地调度
     """
-    # TODO: 实现最优解法
-    pass
+    # 按照去 A 城市和 B 城市的差价从小到大排序
+    costs.sort(key=lambda x: x[0] - x[1])
+    
+    total_cost = 0
+    n = len(costs) // 2
+    
+    # 前一半的人去 A 城市
+    for i in range(n):
+        total_cost += costs[i][0]
+    
+    # 后一半的人去 B 城市
+    for i in range(n, 2 * n):
+        total_cost += costs[i][1]
+    
+    return total_cost
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(two_city_scheduling)

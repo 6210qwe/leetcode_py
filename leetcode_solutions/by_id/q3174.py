@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串并检查每对相邻字符是否相同，如果不同则需要进行一次修改。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `changes` 为 0。
+2. 遍历字符串，每次检查两个相邻字符。
+3. 如果两个相邻字符不同，则增加 `changes` 计数器。
+4. 返回 `changes` 作为结果。
 
 关键点:
-- [TODO]
+- 由于字符串长度为偶数，因此可以直接两两比较。
+- 每次修改可以使一对不同的字符变为相同的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_changes_to_make_beautiful(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使二进制字符串变美丽的最少修改次数
     """
-    # TODO: 实现最优解法
-    pass
+    changes = 0
+    for i in range(0, len(s), 2):
+        if s[i] != s[i + 1]:
+            changes += 1
+    return changes
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_changes_to_make_beautiful)

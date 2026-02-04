@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来最小化消除细菌菌株所需的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个细菌菌株的初始数量和增长速度存储在一个列表中。
+2. 使用一个最小堆来跟踪当前最小的细菌菌株数量。
+3. 每次从堆中取出当前最小的细菌菌株数量，并计算将其消除所需的时间。
+4. 更新剩余细菌菌株的数量，并将它们重新放入堆中。
+5. 重复上述步骤直到所有细菌菌株都被消除。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地找到当前最小的细菌菌株数量。
+- 动态更新细菌菌株的数量，并重新插入堆中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是细菌菌株的数量。每次插入和删除堆的操作都是 O(log n)。
+空间复杂度: O(n)，需要存储所有的细菌菌株及其数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def find_time_to_eliminate_bacteria(strains: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算消除所有细菌菌株所需的最短时间。
+    
+    :param strains: 每个元素是一个包含两个整数的列表 [initial_count, growth_rate]，表示初始数量和增长速度。
+    :return: 消除所有细菌菌株所需的最短时间。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化堆
+    heap = []
+    for initial_count, growth_rate in strains:
+        heapq.heappush(heap, (initial_count, growth_rate))
+    
+    time = 0
+    while heap:
+        current_count, growth_rate = heapq.heappop(heap)
+        # 计算消除当前细菌菌株所需的时间
+        time += current_count
+        # 更新剩余细菌菌株的数量
+        for i in range(len(heap)):
+            count, rate = heap[i]
+            count += growth_rate * time
+            heap[i] = (count, rate)
+        # 重新建堆
+        heapq.heapify(heap)
+    
+    return time
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_time_to_eliminate_bacteria)

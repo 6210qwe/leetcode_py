@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和合并区间来统计不相交的区间组数，然后计算分组方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对区间按起点进行排序。
+2. 遍历排序后的区间，合并有交集的区间。
+3. 计算不相交的区间组数。
+4. 根据不相交的区间组数计算分组方案数。
 
 关键点:
-- [TODO]
+- 排序后合并区间可以有效地找出所有不相交的区间组。
+- 每个不相交的区间组可以独立地分配到两个组中的任意一个。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 ranges 的长度，主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_ways_to_group_overlapping_ranges(ranges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回将 ranges 划分成两个组的总方案数，并对 10^9 + 7 取余。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    ranges.sort()  # 按起点排序
+    merged_count = 1  # 初始化不相交的区间组数为 1
+    current_end = ranges[0][1]  # 当前区间的结束位置
+
+    for start, end in ranges[1:]:
+        if start > current_end:
+            # 如果当前区间的起点大于上一个区间的结束位置，则它们不相交
+            merged_count += 1
+        current_end = max(current_end, end)  # 更新当前区间的结束位置
+
+    # 计算分组方案数
+    return pow(2, merged_count, MOD)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_ways_to_group_overlapping_ranges)

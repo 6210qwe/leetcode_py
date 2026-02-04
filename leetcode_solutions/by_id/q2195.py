@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟每个人买票的过程来计算第 k 个人完成买票所需的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总时间为 0。
+2. 遍历队列中的每个人，直到第 k 个人完成买票：
+   - 如果当前人的票数大于 0，则总时间加 1，并将当前人的票数减 1。
+   - 如果当前人的票数为 0，则跳过该人。
+   - 如果当前人是第 k 个人且票数为 0，则停止遍历。
+3. 返回总时间。
 
 关键点:
-- [TODO]
+- 通过遍历队列并模拟每个人买票的过程来计算时间。
+- 只需关注第 k 个人及其之前的票数，因为之后的人不会影响第 k 个人的买票时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * t)，其中 n 是队列中的人数，t 是第 k 个人需要买的票数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def time_needed_to_buy_tickets(tickets: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算第 k 个人完成买票所需的时间。
+    
+    :param tickets: 一个整数数组，表示每个人需要买的票数。
+    :param k: 第 k 个人的索引。
+    :return: 第 k 个人完成买票所需的时间（以秒为单位）。
     """
-    # TODO: 实现最优解法
-    pass
+    time = 0
+    while tickets[k] > 0:
+        for i in range(len(tickets)):
+            if tickets[i] > 0:
+                tickets[i] -= 1
+                time += 1
+            if i == k and tickets[k] == 0:
+                break
+    return time
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(time_needed_to_buy_tickets)

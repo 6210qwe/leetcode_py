@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个计数器分别记录每个人的信任度和被信任度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器：trusted_count 用于记录每个人的被信任次数，trusting_count 用于记录每个人的信任次数。
+2. 遍历 trust 数组，更新 trusted_count 和 trusting_count。
+3. 遍历 trusted_count 和 trusting_count，找到被信任次数为 n-1 且信任次数为 0 的人，即为小镇法官。
+4. 如果没有找到符合条件的人，返回 -1。
 
 关键点:
-- [TODO]
+- 使用两个计数器来记录每个人的信任关系。
+- 小镇法官的条件是被信任次数为 n-1 且信任次数为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是人数，m 是 trust 数组的长度。
+空间复杂度: O(n)，需要两个大小为 n+1 的数组来存储信任关系。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_judge(n: int, trust: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到小镇的法官
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return 1
+
+    trusted_count = [0] * (n + 1)
+    trusting_count = [0] * (n + 1)
+
+    for a, b in trust:
+        trusting_count[a] += 1
+        trusted_count[b] += 1
+
+    for i in range(1, n + 1):
+        if trusted_count[i] == n - 1 and trusting_count[i] == 0:
+            return i
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_judge)

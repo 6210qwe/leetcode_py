@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的半重复子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向窗口的左端和右端。
+2. 使用一个变量 count 来记录当前窗口中相邻相同字符对的数量。
+3. 移动右指针扩展窗口，同时更新 count。
+4. 如果 count 大于 1，则移动左指针缩小窗口，直到 count 不大于 1。
+5. 在每次移动右指针时，更新最长子字符串的长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来动态调整子字符串的范围。
+- 通过 count 变量来控制窗口内相邻相同字符对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_semi_repetitive_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的半重复子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n < 2:
+        return n
+
+    left, right = 0, 0
+    max_length = 0
+    count = 0
+
+    while right < n - 1:
+        if s[right] == s[right + 1]:
+            count += 1
+        while count > 1:
+            if s[left] == s[left + 1]:
+                count -= 1
+            left += 1
+        max_length = max(max_length, right - left + 2)
+        right += 1
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_semi_repetitive_substring)

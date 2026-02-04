@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历 num 的每一位，检查该位是否能整除 num。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 将 num 转换为字符串形式，以便逐位处理。
+3. 遍历 num 的每一位，将其转换为整数并检查是否能整除 num。
+4. 如果能整除，则增加计数器 count。
+5. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 使用字符串遍历来逐位处理 num。
+- 检查每一位是否能整除 num。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是 num 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_digits(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计能整除数字的位数
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for digit in str(num):
+        if num % int(digit) == 0:
+            count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_digits)

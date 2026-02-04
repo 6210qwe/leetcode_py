@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和计数来找到可以删除的最大数对数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个元素的出现次数。
+2. 找到出现次数最多的元素，并计算其出现次数的一半（因为每对元素需要两个相同的元素）。
+3. 计算可以删除的最大数对数量。
+4. 返回数组的最小长度。
 
 关键点:
-- [TODO]
+- 使用计数器来统计每个元素的出现次数。
+- 通过找到出现次数最多的元素来确定可以删除的最大数对数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def min_array_length(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行操作后数组的最小长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的出现次数
+    count = Counter(nums)
+    
+    # 找到出现次数最多的元素
+    max_count = max(count.values())
+    
+    # 计算可以删除的最大数对数量
+    pairs = min(max_count // 2, len(nums) // 2)
+    
+    # 返回数组的最小长度
+    return max(0, len(nums) - 2 * pairs)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_array_length)

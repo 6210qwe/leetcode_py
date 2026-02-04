@@ -21,40 +21,57 @@ LCR 061. 查找和最小的 K 对数字 - 给定两个以升序排列的整数�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前最小的 k 个数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，并将 (nums1[0] + nums2[0], 0, 0) 放入堆中。
+2. 从堆中弹出最小的数对，并将其加入结果列表。
+3. 如果 nums1 的索引小于其长度减一，则将 (nums1[i+1] + nums2[j], i+1, j) 放入堆中。
+4. 如果 nums2 的索引等于 0 且小于其长度减一，则将 (nums1[i] + nums2[j+1], i, j+1) 放入堆中。
+5. 重复步骤 2-4 直到找到 k 个数对或堆为空。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地找到当前最小的数对。
+- 通过索引来避免重复计算相同的数对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def solution_function_name(nums1: List[int], nums2: List[int], k: int) -> List[List[int]]:
+    """
+    函数式接口 - 找到和最小的 k 个数对
+    """
+    if not nums1 or not nums2:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    min_heap = []
+    result = []
+
+    # 初始化堆
+    for i in range(min(k, len(nums1))):
+        heapq.heappush(min_heap, (nums1[i] + nums2[0], i, 0))
+
+    while min_heap and len(result) < k:
+        _, i, j = heapq.heappop(min_heap)
+        result.append([nums1[i], nums2[j]])
+
+        if j + 1 < len(nums2):
+            heapq.heappush(min_heap, (nums1[i] + nums2[j + 1], i, j + 1))
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将日期转换为一年中的第几天，然后计算重叠的天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `date_to_day` 将日期字符串转换为一年中的第几天。
+2. 计算 Alice 和 Bob 的到达和离开日期在一年中的第几天。
+3. 计算重叠的天数。
 
 关键点:
-- [TODO]
+- 使用累加的方式来计算每个月的天数。
+- 通过比较日期来确定重叠部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 日期转换和计算都是常数时间操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def date_to_day(date: str) -> int:
+    """将日期字符串转换为一年中的第几天"""
+    days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    month, day = map(int, date.split('-'))
+    return sum(days_in_month[:month]) + day
 
-def solution_function_name(params):
+def count_days_spent_together(arrive_alice: str, leave_alice: str, arrive_bob: str, leave_bob: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算 Alice 和 Bob 同时在罗马的天数
     """
-    # TODO: 实现最优解法
-    pass
+    alice_start = date_to_day(arrive_alice)
+    alice_end = date_to_day(leave_alice)
+    bob_start = date_to_day(arrive_bob)
+    bob_end = date_to_day(leave_bob)
 
+    # 计算重叠的天数
+    overlap_start = max(alice_start, bob_start)
+    overlap_end = min(alice_end, bob_end)
+    return max(0, overlap_end - overlap_start + 1)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_days_spent_together)

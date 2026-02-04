@@ -21,40 +21,87 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用异步迭代和 Promise 来实现可取消的生成器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个 Promise 对象作为返回的 promise。
+2. 创建一个标志变量 `cancelled` 来标记是否已取消。
+3. 使用 `async` 函数来处理生成器的迭代。
+4. 在每次迭代时，检查 `cancelled` 标志，如果已取消则抛出 "Cancelled" 错误。
+5. 处理生成器生成的每个 Promise，将其解析的值传回生成器。
+6. 如果生成器抛出错误，则拒绝返回的 promise。
+7. 如果生成器完成，则解析返回的 promise。
 
 关键点:
-- [TODO]
+- 使用 `async` 和 `await` 来处理异步操作。
+- 使用标志变量来控制取消操作。
+- 正确处理生成器的异常和完成状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是生成器生成的 Promise 数量。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import asyncio
 
-
-def solution_function_name(params):
+def cancellable(generator):
     """
-    函数式接口 - [TODO] 实现
+    创建一个可取消的生成器函数。
+    
+    :param generator: 生成器对象
+    :return: (取消函数, promise)
     """
-    # TODO: 实现最优解法
-    pass
+    cancelled = False
+    promise = asyncio.Future()
 
+    async def run():
+        nonlocal cancelled
+        try:
+            while True:
+                if cancelled:
+                    raise Exception("Cancelled")
+                try:
+                    value = await generator.asend(None)
+                    await generator.asend(value)
+                except StopAsyncIteration as e:
+                    promise.set_result(e.value)
+                    break
+                except Exception as e:
+                    promise.set_exception(e)
+                    break
+        except Exception as e:
+            promise.set_exception(e)
 
-Solution = create_solution(solution_function_name)
+    def cancel():
+        nonlocal cancelled
+        cancelled = True
+
+    asyncio.create_task(run())
+    return cancel, promise
+
+# 示例测试
+async def main():
+    async def example_generator():
+        yield await asyncio.sleep(0.1)
+        yield await asyncio.sleep(0.1)
+        return 42
+
+    gen = example_generator()
+    cancel, promise = cancellable(gen)
+    asyncio.get_event_loop().call_later(0.05, cancel)
+    try:
+        result = await promise
+        print(f"Resolved: {result}")
+    except Exception as e:
+        print(f"Rejected: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())

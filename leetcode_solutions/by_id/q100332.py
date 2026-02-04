@@ -21,22 +21,26 @@ LCR 167. 招式拆解 I - 某套连招动作记作序列 arr，其中 arr[i] 为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录字符的最新位置，以找到最长的无重复字符子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 作为滑动窗口的左右边界，以及一个哈希表 char_index_map 来存储字符及其最新位置。
+2. 遍历字符串，用 right 指针扩展窗口。
+3. 如果当前字符已经在哈希表中存在且其位置在当前窗口内，则移动 left 指针到该字符的下一个位置。
+4. 更新哈希表中当前字符的位置。
+5. 记录当前窗口的最大长度。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符的最新位置，以便快速判断是否需要移动 left 指针。
+- 滑动窗口的动态调整确保了每个字符只被处理一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被处理两次（一次右移 right 指针，一次左移 left 指针）。
+空间复杂度: O(min(m, n))，其中 m 是字符集的大小，n 是字符串的长度。哈希表的大小最多为字符集的大小。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长无重复字符子串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not arr:
+        return 0
+
+    left, right = 0, 0
+    char_index_map = {}
+    max_length = 0
+
+    while right < len(arr):
+        if arr[right] in char_index_map and char_index_map[arr[right]] >= left:
+            left = char_index_map[arr[right]] + 1
+        char_index_map[arr[right]] = right
+        max_length = max(max_length, right - left + 1)
+        right += 1
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

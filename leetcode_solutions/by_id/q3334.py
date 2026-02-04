@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择容量最大的箱子来装苹果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有苹果的总数量。
+2. 将箱子按容量从大到小排序。
+3. 依次选择容量最大的箱子，直到总容量大于或等于苹果的总数量。
 
 关键点:
-- [TODO]
+- 优先选择容量大的箱子可以最小化所需的箱子数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m + n)，其中 m 是 capacity 的长度，n 是 apple 的长度。排序操作的时间复杂度是 O(m log m)，计算总苹果数和遍历箱子的时间复杂度是 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_boxes_to_redistribute_apples(apple: List[int], capacity: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回重新分装苹果所需的最小箱子数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算所有苹果的总数量
+    total_apples = sum(apple)
+    
+    # 将箱子按容量从大到小排序
+    capacity.sort(reverse=True)
+    
+    # 依次选择容量最大的箱子，直到总容量大于或等于苹果的总数量
+    boxes_needed = 0
+    current_capacity = 0
+    for box in capacity:
+        current_capacity += box
+        boxes_needed += 1
+        if current_capacity >= total_apples:
+            break
+    
+    return boxes_needed
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_boxes_to_redistribute_apples)

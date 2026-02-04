@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位掩码来生成所有可能的子集，并计算每个子集的按位或结果，统计最大按位或结果的子集数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有元素的按位或结果，得到最大值。
+2. 使用位掩码生成所有可能的子集。
+3. 对于每个子集，计算其按位或结果，如果等于最大值，则计数器加一。
 
 关键点:
-- [TODO]
+- 使用位掩码生成子集，时间复杂度为 O(2^n)。
+- 计算按位或结果时，使用位运算优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是数组的长度。因为我们需要生成所有可能的子集。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_max_or_subsets(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计按位或能得到最大值的子集数目
     """
-    # TODO: 实现最优解法
-    pass
+    max_or = 0
+    for num in nums:
+        max_or |= num  # 计算所有元素的按位或结果
 
+    n = len(nums)
+    count = 0
+    for mask in range(1, 1 << n):  # 生成所有可能的子集
+        current_or = 0
+        for i in range(n):
+            if mask & (1 << i):
+                current_or |= nums[i]
+        if current_or == max_or:
+            count += 1
 
-Solution = create_solution(solution_function_name)
+    return count
+
+Solution = create_solution(count_max_or_subsets)

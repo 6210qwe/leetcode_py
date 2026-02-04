@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举所有可能的矩形，检查每个矩形是否符合条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有点按 x 坐标和 y 坐标分别排序。
+2. 枚举所有可能的矩形，检查矩形内部或边界上是否有其他点。
+3. 计算符合条件的矩形的最大面积。
 
 关键点:
-- [TODO]
+- 使用集合来快速检查点的存在性。
+- 通过排序和枚举来减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是 points 的长度。排序操作的时间复杂度为 O(n log n)，枚举矩形的时间复杂度为 O(n^2)。
+空间复杂度: O(n)，用于存储点的集合。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出满足条件的最大面积矩形
     """
-    # TODO: 实现最优解法
-    pass
+    if len(points) < 4:
+        return -1
+
+    # 将点按 x 坐标和 y 坐标分别排序
+    points.sort(key=lambda p: (p[0], p[1]))
+    point_set = set(tuple(p) for p in points)
+
+    max_area = -1
+
+    # 枚举所有可能的矩形
+    for i in range(len(points)):
+        for j in range(i + 1, len(points)):
+            x1, y1 = points[i]
+            x2, y2 = points[j]
+
+            # 检查矩形的对角线是否存在
+            if (x1, y2) in point_set and (x2, y1) in point_set:
+                # 检查矩形内部或边界上是否有其他点
+                if all((x, y) not in point_set for x in range(x1 + 1, x2) for y in range(min(y1, y2), max(y1, y2) + 1)):
+                    area = abs(x2 - x1) * abs(y2 - y1)
+                    max_area = max(max_area, area)
+
+    return max_area
 
 
 Solution = create_solution(solution_function_name)

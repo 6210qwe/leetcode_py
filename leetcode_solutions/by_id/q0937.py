@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护一个递减的价格序列，同时记录每个价格的跨度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储元组 (price, span)，其中 price 是股票价格，span 是该价格的跨度。
+2. 在每次调用 next 方法时，将当前价格与栈顶元素比较：
+   - 如果当前价格大于栈顶价格，则弹出栈顶元素，并将其跨度累加到当前价格的跨度上。
+   - 重复上述步骤，直到栈为空或栈顶价格大于当前价格。
+3. 将当前价格及其跨度压入栈中。
+4. 返回当前价格的跨度。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地计算跨度。
+- 每次调用 next 方法时，通过弹出栈顶元素并累加跨度，可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是调用 next 方法的次数。每个价格最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能会存储所有的价格。
 """
 
 # ============================================================================
@@ -49,12 +54,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class StockSpanner:
+    def __init__(self):
+        self.stack = []  # 栈中存储 (price, span) 元组
+
+    def next(self, price: int) -> int:
+        span = 1
+        while self.stack and self.stack[-1][0] <= price:
+            span += self.stack.pop()[1]
+        self.stack.append((price, span))
+        return span
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(StockSpanner)

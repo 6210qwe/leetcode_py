@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到第 k 小的乘积。通过二分查找确定一个值 mid，并计算小于等于 mid 的乘积对的数量，从而逐步缩小范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 在每次迭代中，计算中间值 mid，并计算小于等于 mid 的乘积对的数量。
+3. 根据乘积对的数量调整 left 和 right 的值，直到找到第 k 小的乘积。
 
 关键点:
-- [TODO]
+- 使用二分查找来减少搜索范围。
+- 计算小于等于 mid 的乘积对的数量时，需要考虑正负数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((m + n) * log(max_val))，其中 m 和 n 分别是 nums1 和 nums2 的长度，max_val 是乘积的最大可能值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_less_equal(nums1: List[int], nums2: List[int], target: int) -> int:
+    """计算乘积小于等于 target 的数量"""
+    count = 0
+    j1, j2 = len(nums2) - 1, len(nums2) - 1
+    for num in nums1:
+        if num > 0:
+            while j1 >= 0 and num * nums2[j1] > target:
+                j1 -= 1
+            count += j1 + 1
+        elif num == 0:
+            if target >= 0:
+                count += len(nums2)
+        else:
+            while j2 >= 0 and num * nums2[j2] > target:
+                j2 -= 1
+            count += j2 + 1
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def kth_smallest_product(nums1: List[int], nums2: List[int], k: int) -> int:
+    """找到第 k 小的乘积"""
+    left, right = -10**10, 10**10
+    while left < right:
+        mid = (left + right) // 2
+        if count_less_equal(nums1, nums2, mid) < k:
+            left = mid + 1
+        else:
+            right = mid
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_smallest_product)

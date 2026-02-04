@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录已经出现的元素，并在遍历过程中计算前缀公共元素的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个集合，分别用于记录 A 和 B 中已经出现的元素。
+2. 初始化结果数组 C，长度与 A 和 B 相同。
+3. 遍历 A 和 B 的每个元素：
+   - 将当前元素添加到对应的集合中。
+   - 计算两个集合的交集大小，即为当前前缀的公共元素数量。
+   - 将该数量存储到结果数组 C 中。
 
 关键点:
-- [TODO]
+- 使用集合来高效地记录和查找已经出现的元素。
+- 在每次迭代中更新集合并计算交集大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 A 和 B 的长度。我们需要遍历每个元素一次。
+空间复杂度: O(n)，使用了两个集合来记录已经出现的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_prefix_common_array(A: List[int], B: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个数组的前缀公共数组
     """
-    # TODO: 实现最优解法
-    pass
+    set_a = set()
+    set_b = set()
+    result = []
+    
+    for i in range(len(A)):
+        set_a.add(A[i])
+        set_b.add(B[i])
+        common_count = len(set_a & set_b)
+        result.append(common_count)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_prefix_common_array)

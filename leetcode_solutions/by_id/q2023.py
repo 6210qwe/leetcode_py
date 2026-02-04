@@ -21,40 +21,95 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用字典和有序集合来高效地管理和查询电影和商店信息。
+- 使用两个有序集合分别存储未借出和已借出的电影信息。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，构建未借出电影的有序集合和已借出电影的有序集合。
+2. `search` 方法通过有序集合快速找到未借出的电影，并返回前 5 个最便宜的商店。
+3. `rent` 方法从未借出集合中移除并添加到已借出集合。
+4. `drop` 方法从已借出集合中移除并添加到未借出集合。
+5. `report` 方法通过已借出集合快速找到最便宜的 5 部已借出电影。
 
 关键点:
-- [TODO]
+- 使用有序集合（SortedSet）来保持电影和商店的有序性。
+- 通过字典来快速查找电影和商店的信息。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: 
+- 初始化: O(E log E)，其中 E 是 entries 的长度。
+- search: O(log S + min(5, S))，其中 S 是未借出该电影的商店数量。
+- rent: O(log S)
+- drop: O(log S)
+- report: O(log R + min(5, R))，其中 R 是已借出的电影数量。
+
+空间复杂度: 
+- O(E + R)，其中 E 是 entries 的长度，R 是已借出的电影数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import sortedcontainers
+
+class MovieRentingSystem:
+
+    def __init__(self, n: int, entries: List[List[int]]):
+        self.movies = {}  # {movie: SortedSet((price, shop))}
+        self.shops = {}  # {shop: {movie: price}}
+        self.rented = sortedcontainers.SortedSet()  # SortedSet((price, shop, movie))
+        
+        for shop, movie, price in entries:
+            if movie not in self.movies:
+                self.movies[movie] = sortedcontainers.SortedSet()
+            self.movies[movie].add((price, shop))
+            if shop not in self.shops:
+                self.shops[shop] = {}
+            self.shops[shop][movie] = price
+
+    def search(self, movie: int) -> List[int]:
+        if movie not in self.movies:
+            return []
+        result = []
+        for price, shop in self.movies[movie]:
+            if (price, shop, movie) not in self.rented:
+                result.append(shop)
+                if len(result) == 5:
+                    break
+        return result
+
+    def rent(self, shop: int, movie: int) -> None:
+        price = self.shops[shop][movie]
+        self.movies[movie].remove((price, shop))
+        self.rented.add((price, shop, movie))
+
+    def drop(self, shop: int, movie: int) -> None:
+        price = self.shops[shop][movie]
+        self.rented.remove((price, shop, movie))
+        self.movies[movie].add((price, shop))
+
+    def report(self) -> List[List[int]]:
+        result = []
+        for price, shop, movie in self.rented:
+            result.append([shop, movie])
+            if len(result) == 5:
+                break
+        return result
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    obj = MovieRentingSystem(3, [[0, 1, 5], [0, 2, 6], [0, 3, 7], [1, 1, 4], [1, 2, 7], [2, 1, 5]])
+    print(obj.search(1))  # [1, 0, 2]
+    obj.rent(0, 1)
+    obj.rent(1, 2)
+    print(obj.report())  # [[0, 1], [1, 2]]
+    obj.drop(1, 2)
+    print(obj.search(2))  # [0, 1]

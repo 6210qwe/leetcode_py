@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个队列来存储所有的请求时间，并在每次 ping 时移除不在 [t-3000, t] 范围内的请求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空队列。
+2. 在每次 ping 时，将新的请求时间 t 加入队列。
+3. 移除队列中所有不在 [t-3000, t] 范围内的请求。
+4. 返回队列的长度，即为过去 3000 毫秒内的请求数。
 
 关键点:
-- [TODO]
+- 使用队列来存储请求时间，确保队列中的时间都是最近 3000 毫秒内的。
+- 每次 ping 时，移除队列头部不在 [t-3000, t] 范围内的请求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是队列的长度。最坏情况下，每次 ping 都需要遍历整个队列。
+空间复杂度: O(w)，其中 w 是窗口大小（3000 毫秒），队列中最多存储 3000 毫秒内的请求。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class RecentCounter:
+
+    def __init__(self):
+        self.requests = []
+
+    def ping(self, t: int) -> int:
+        self.requests.append(t)
+        # 移除不在 [t-3000, t] 范围内的请求
+        while self.requests and self.requests[0] < t - 3000:
+            self.requests.pop(0)
+        return len(self.requests)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(RecentCounter)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举所有可能的分割点，并对每个部分生成所有合法的小数表示，组合成最终的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 去掉输入字符串的括号，得到纯数字字符串。
+2. 枚举所有可能的分割点，将字符串分成两部分。
+3. 对每部分生成所有合法的小数表示。
+4. 将两部分的所有合法小数表示组合成最终结果。
 
 关键点:
-- [TODO]
+- 生成合法的小数表示时，需要处理前导零和小数点位置。
+- 组合结果时，确保格式正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是字符串 S 的长度。最坏情况下，每个分割点都需要生成所有可能的小数表示。
+空间复杂度: O(n^2)，存储所有可能的分割点和小数表示。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def generate_valid_numbers(s: str) -> List[str]:
+    """生成 s 的所有合法小数表示。"""
+    if s == "0" or s[0] != "0":
+        yield s
+    for i in range(1, len(s)):
+        whole, fractional = s[:i], s[i:]
+        if (whole == "0" or not whole.startswith("0")) and fractional[-1] != "0":
+            yield f"{whole}.{fractional}"
 
-def solution_function_name(params):
+def ambiguousCoordinates(S: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    返回所有可能的原始字符串到一个列表中。
     """
-    # TODO: 实现最优解法
-    pass
+    S = S[1:-1]  # 去掉括号
+    result = []
+    
+    for i in range(1, len(S)):
+        left, right = S[:i], S[i:]
+        for l in generate_valid_numbers(left):
+            for r in generate_valid_numbers(right):
+                result.append(f"({l}, {r})")
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ambiguousCoordinates)

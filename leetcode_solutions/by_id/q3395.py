@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计字符频率，并通过最大公约数来确定最小的 t 的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串 s 中每个字符的出现次数。
+2. 找到所有字符出现次数的最大公约数。
+3. 返回该最大公约数作为 t 的最小可能长度。
 
 关键点:
-- [TODO]
+- 使用 `math.gcd` 函数来计算最大公约数。
+- 通过遍历字符频率数组来找到所有频率的最大公约数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是字符串 s 的长度，k 是字符集的大小（最多 26 个字母）。
+空间复杂度: O(1)，因为字符集的大小是固定的。
 """
 
 # ============================================================================
@@ -47,14 +49,23 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计字符串 s 中每个字符的出现次数
+    char_count = Counter(s)
+    
+    # 初始化最大公约数为第一个字符的频率
+    gcd_val = list(char_count.values())[0]
+    
+    # 计算所有字符频率的最大公约数
+    for count in char_count.values():
+        gcd_val = math.gcd(gcd_val, count)
+    
+    return gcd_val
 
 Solution = create_solution(solution_function_name)

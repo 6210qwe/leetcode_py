@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调队列来优化每次运输的决策。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化动态规划数组 dp，dp[i] 表示将前 i 个箱子运输完所需的最少行程次数。
+2. 使用单调队列来维护当前可以考虑的起始位置，确保每次选择的起始位置满足 maxBoxes 和 maxWeight 的限制。
+3. 遍历每个箱子，更新 dp 数组，并使用单调队列来优化每次的选择。
+4. 返回 dp[n]，即运输完所有箱子所需的最少行程次数。
 
 关键点:
-- [TODO]
+- 动态规划用于记录每个状态的最优解。
+- 单调队列用于快速找到满足条件的起始位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_trips(boxes: List[List[int]], ports_count: int, max_boxes: int, max_weight: int) -> int:
+    n = len(boxes)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+    queue = []
+    
+    for i in range(1, n + 1):
+        current_port = boxes[i - 1][0]
+        current_weight = boxes[i - 1][1]
+        
+        while queue and (i - queue[0] > max_boxes or current_weight + sum(boxes[j - 1][1] for j in queue) > max_weight):
+            queue.pop(0)
+        
+        if not queue:
+            dp[i] = dp[i - 1] + 2
+        else:
+            last_port = boxes[queue[-1] - 1][0]
+            dp[i] = dp[queue[-1]] + (1 if current_port == last_port else 2)
+        
+        while queue and dp[queue[0]] - (1 if boxes[queue[0] - 1][0] != current_port else 0) >= dp[i]:
+            queue.pop(0)
+        
+        queue.append(i)
+    
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_trips)

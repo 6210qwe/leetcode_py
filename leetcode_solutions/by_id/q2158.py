@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计符合条件的职员数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询来计算每个部门的高级职员和初级职员的数量。
+2. 根据给定的条件过滤出符合要求的部门。
+3. 计算总人数并返回结果。
 
 关键点:
-- [TODO]
+- 使用子查询和聚合函数进行统计。
+- 确保查询条件正确且高效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -51,10 +53,19 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    SELECT 
+        SUM(CASE WHEN experience = 'Senior' THEN 1 ELSE 0 END) AS senior_count,
+        SUM(CASE WHEN experience = 'Junior' THEN 1 ELSE 0 END) AS junior_count
+    FROM Candidates
+    WHERE (experience = 'Senior' AND salary <= :max_salary_senior) OR 
+          (experience = 'Junior' AND salary <= :max_salary_junior)
+    """
+    # 执行查询并返回结果
+    result = execute_query(query, params)
+    return result
 
 Solution = create_solution(solution_function_name)

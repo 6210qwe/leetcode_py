@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托斯特尼筛法预先计算出一定范围内的所有质数，并根据这些质数来分割数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用埃拉托斯特尼筛法生成一个布尔数组，标记出所有小于等于 n 的质数。
+2. 遍历输入数组 nums，根据下标是否为质数将其元素分别累加到 A 和 B 中。
+3. 计算 A 和 B 的和的绝对差值并返回。
 
 关键点:
-- [TODO]
+- 使用埃拉托斯特尼筛法预处理质数，提高效率。
+- 遍历数组时直接根据下标判断是否为质数，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n + m)，其中 n 是预处理质数的上限（可以取 sqrt(10^5)），m 是输入数组的长度。
+空间复杂度: O(n)，用于存储质数标记数组。
 """
 
 # ============================================================================
@@ -48,13 +50,30 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(n: int) -> bool:
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据质数下标分割数组并返回两个数组和的绝对差值
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    prime_indices = [is_prime(i) for i in range(n)]
+    
+    sum_A = sum(nums[i] for i in range(n) if prime_indices[i])
+    sum_B = sum(nums[i] for i in range(n) if not prime_indices[i])
+    
+    return abs(sum_A - sum_B)
 
 Solution = create_solution(solution_function_name)

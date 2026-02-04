@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最优的子数组，使得在该子数组中拾起 k 个 1 的操作次数最少。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 `prefix_sum`，其中 `prefix_sum[i]` 表示 `nums` 前 i 个元素的 1 的个数。
+2. 初始化滑动窗口的左右边界 `left` 和 `right`，以及当前窗口内 1 的个数 `current_ones`。
+3. 移动右边界 `right`，更新 `current_ones` 和 `prefix_sum`。
+4. 如果 `current_ones` 大于等于 k，则移动左边界 `left`，更新 `current_ones` 和 `prefix_sum`。
+5. 计算当前窗口内的操作次数，并更新最小操作次数。
+6. 返回最小操作次数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算窗口内的 1 的个数。
+- 使用滑动窗口来找到最优的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。滑动窗口遍历数组一次。
+空间复杂度: O(n)，存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_moves_to_pick_k_ones(nums: List[int], k: int, max_changes: int) -> int:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    left = 0
+    right = 0
+    current_ones = 0
+    min_operations = float('inf')
+    
+    while right < n:
+        if nums[right] == 1:
+            current_ones += 1
+        
+        while current_ones >= k:
+            window_size = right - left + 1
+            ones_in_window = prefix_sum[right + 1] - prefix_sum[left]
+            zeros_in_window = window_size - ones_in_window
+            operations = zeros_in_window - max_changes
+            
+            if operations < 0:
+                operations = 0
+            
+            min_operations = min(min_operations, operations)
+            
+            if nums[left] == 1:
+                current_ones -= 1
+            left += 1
+        
+        right += 1
+    
+    return min_operations
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_pick_k_ones)

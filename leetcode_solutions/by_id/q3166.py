@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来找到最小的盒子数量，使得每个盒子中的球数最多相差1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个编号的球的数量。
+2. 找到最小的球的数量 `min_count`。
+3. 尝试从 `min_count` 开始递减，直到找到一个合适的 `k`，使得所有球可以被分成大小为 `k` 或 `k+1` 的盒子。
+4. 计算所需的盒子总数。
 
 关键点:
-- [TODO]
+- 通过贪心算法找到最小的 `k`，使得所有球可以被分成大小为 `k` 或 `k+1` 的盒子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m^2)，其中 n 是 balls 的长度，m 是不同编号的数量。
+空间复杂度: O(m)，其中 m 是不同编号的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def min_groups_to_create_valid_assignment(balls: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算合法分组的最少组数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个编号的球的数量
+    count = Counter(balls)
+    # 获取所有编号的球的数量列表
+    counts = list(count.values())
+    # 找到最小的球的数量
+    min_count = min(counts)
+    
+    # 尝试从 min_count 开始递减，直到找到一个合适的 k
+    for k in range(min_count, 0, -1):
+        total_groups = 0
+        valid = True
+        for c in counts:
+            if (c - 1) // k > c // (k + 1):
+                valid = False
+                break
+            total_groups += (c + k) // (k + 1)
+        if valid:
+            return total_groups
 
-
-Solution = create_solution(solution_function_name)
+Solution = min_groups_to_create_valid_assignment

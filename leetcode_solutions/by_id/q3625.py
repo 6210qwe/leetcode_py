@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学分析，我们可以发现当初始石头数量 n 小于等于 10 时，Alice 无法移除 10 个石头，因此她会输。当 n 大于 10 时，Alice 可以移除 10 个石头，剩下的石头数量为 n - 10。接下来 Bob 会移除 9 个石头，然后 Alice 会移除 8 个石头，依此类推。最终，如果剩下的石头数量不足以让 Bob 进行操作，那么 Alice 会赢。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 判断 n 是否小于等于 10，如果是，返回 False。
+2. 如果 n 大于 10，计算剩下的石头数量 n - 10。
+3. 判断剩下的石头数量是否小于 9，如果是，返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 通过简单的数学分析和条件判断，可以快速确定 Alice 是否能赢。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 Alice 是否能赢
     """
-    # TODO: 实现最优解法
-    pass
+    if n <= 10:
+        return False
+    remaining_stones = n - 10
+    if remaining_stones < 9:
+        return True
+    return False
 
 
 Solution = create_solution(solution_function_name)

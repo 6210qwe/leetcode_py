@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合（SortedList）来维护一个滑动窗口，窗口大小为 x，以确保下标距离至少为 x。对于每个元素，我们在有序集合中查找与其最接近的元素，计算差值绝对值，并更新最小差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `sl` 和一个变量 `min_diff` 用于存储最小差值。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`：
+   - 如果 `i >= x`，将 `nums[i-x]` 添加到有序集合 `sl` 中。
+   - 在有序集合 `sl` 中查找与 `nums[i]` 最接近的元素，计算差值绝对值，并更新 `min_diff`。
+3. 返回 `min_diff`。
 
 关键点:
-- [TODO]
+- 使用 `SortedList` 来维护滑动窗口，确保下标距离至少为 x。
+- 使用二分查找在有序集合中查找最接近的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组 `nums` 的长度。每次插入和查找操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，有序集合 `sl` 的最大大小为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def min_absolute_difference(nums: List[int], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回下标距离至少为 x 的两个元素之间的差值绝对值的最小值。
     """
-    # TODO: 实现最优解法
-    pass
+    sl = SortedList()
+    min_diff = float('inf')
+    
+    for i in range(len(nums)):
+        if i >= x:
+            sl.add(nums[i - x])
+        
+        if sl:
+            idx = sl.bisect_left(nums[i])
+            if idx < len(sl):
+                min_diff = min(min_diff, abs(nums[i] - sl[idx]))
+            if idx > 0:
+                min_diff = min(min_diff, abs(nums[i] - sl[idx - 1]))
+    
+    return min_diff
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_absolute_difference)

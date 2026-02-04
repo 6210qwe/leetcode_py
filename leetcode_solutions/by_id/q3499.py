@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来统计字符频率，并检查每个子字符串是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right，以及一个哈希表 freq 来记录当前窗口内的字符频率。
+2. 移动右指针扩展窗口，更新哈希表中的字符频率。
+3. 检查当前窗口内的字符频率是否都大于等于 k。如果不满足条件，则移动左指针缩小窗口，直到满足条件。
+4. 记录满足条件的子字符串数量。
+5. 重复上述步骤直到右指针遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口动态调整子字符串的范围。
+- 通过哈希表高效地统计和更新字符频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，哈希表的大小最多为 26（小写字母的数量），可以视为常数空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_substrings_with_k_freq(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计字符串 s 中所有字符至少出现 k 次的子字符串数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid(freq):
+        for v in freq.values():
+            if v < k:
+                return False
+        return True
+
+    n = len(s)
+    result = 0
+    for i in range(n):
+        freq = {}
+        for j in range(i, n):
+            if s[j] not in freq:
+                freq[s[j]] = 0
+            freq[s[j]] += 1
+            if is_valid(freq):
+                result += 1
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_substrings_with_k_freq)

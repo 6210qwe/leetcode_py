@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来找到连通分量，并标记边界的网格块。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `visited` 来记录访问过的节点。
+2. 定义一个递归函数 `dfs`，用于遍历连通分量并标记边界。
+3. 在 `dfs` 函数中，检查当前节点是否在边界上或相邻节点颜色不同，如果是则标记为边界。
+4. 从给定的起始点开始调用 `dfs` 函数。
+5. 最后，将所有标记为边界的节点着色为指定颜色。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历连通分量。
+- 标记边界节点。
+- 重新着色边界节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个节点最多访问一次。
+空间复杂度: O(m * n)，递归调用栈的深度最多为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def colorBorder(grid: List[List[int]], row: int, col: int, color: int) -> List[List[int]]:
+    if not grid or not grid[0]:
+        return grid
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    original_color = grid[row][col]
+    visited = set()
+    borders = []
 
+    def dfs(x, y):
+        if (x, y) in visited:
+            return
+        visited.add((x, y))
+        is_border = False
 
-Solution = create_solution(solution_function_name)
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n:
+                if grid[nx][ny] != original_color:
+                    is_border = True
+                else:
+                    dfs(nx, ny)
+            else:
+                is_border = True
+
+        if is_border:
+            borders.append((x, y))
+
+    dfs(row, col)
+
+    for x, y in borders:
+        grid[x][y] = color
+
+    return grid
+
+Solution = create_solution(colorBorder)

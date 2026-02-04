@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素作为结尾时的最长等差子序列长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp`，键为数组中的元素，值为以该元素结尾的最长等差子序列的长度。
+2. 遍历数组中的每个元素 `num`，检查 `num - difference` 是否在 `dp` 中。
+3. 如果 `num - difference` 在 `dp` 中，则更新 `dp[num]` 为 `dp[num - difference] + 1`。
+4. 如果 `num - difference` 不在 `dp` 中，则将 `dp[num]` 设为 1。
+5. 记录遍历过程中 `dp` 中的最大值，即为最长等差子序列的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储每个元素作为结尾时的最长等差子序列长度，从而实现 O(1) 时间复杂度的查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，最坏情况下，哈希表需要存储数组中的所有元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def longest_subsequence(arr: List[int], difference: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出并返回 arr 中最长等差子序列的长度，该子序列中相邻元素之间的差等于 difference。
     """
-    # TODO: 实现最优解法
-    pass
+    dp = {}
+    max_length = 0
+    
+    for num in arr:
+        if num - difference in dp:
+            dp[num] = dp[num - difference] + 1
+        else:
+            dp[num] = 1
+        max_length = max(max_length, dp[num])
+    
+    return max_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subsequence)

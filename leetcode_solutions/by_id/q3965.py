@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来找到最早完成两个游乐设施的时间。首先对陆地和水上游乐设施按开始时间进行排序，然后使用双指针法来遍历所有可能的组合，找到最小的结束时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将陆地游乐设施和水上游乐设施分别按照开始时间进行排序。
+2. 使用双指针法遍历所有可能的组合，计算每个组合的结束时间，并记录最小的结束时间。
 
 关键点:
-- [TODO]
+- 对游乐设施按开始时间排序，确保我们总是先处理较早开始的游乐设施。
+- 使用双指针法遍历所有可能的组合，避免嵌套循环带来的高复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def earliest_finish_time(land_start_time: List[int], land_duration: List[int], water_start_time: List[int], water_duration: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最早完成陆地和水上游乐设施的时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 将陆地游乐设施和水上游乐设施按开始时间排序
+    land_rides = sorted(zip(land_start_time, land_duration))
+    water_rides = sorted(zip(water_start_time, water_duration))
+
+    # 初始化双指针
+    i, j = 0, 0
+    min_finish_time = float('inf')
+
+    while i < len(land_rides) and j < len(water_rides):
+        land_start, land_dur = land_rides[i]
+        water_start, water_dur = water_rides[j]
+
+        # 计算两种顺序下的结束时间
+        finish_time_1 = max(land_start, water_start + water_dur) + land_dur
+        finish_time_2 = max(water_start, land_start + land_dur) + water_dur
+
+        # 更新最小结束时间
+        min_finish_time = min(min_finish_time, finish_time_1, finish_time_2)
+
+        # 移动指针
+        if land_start + land_dur < water_start + water_dur:
+            i += 1
+        else:
+            j += 1
+
+    return min_finish_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliest_finish_time)

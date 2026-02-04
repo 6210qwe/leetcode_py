@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个玩家获得的每种颜色球的数量，然后检查每个玩家是否满足胜利条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `ball_count`，用于记录每个玩家获得的每种颜色球的数量。
+2. 遍历 `pick` 数组，更新 `ball_count` 字典。
+3. 遍历 `ball_count` 字典，检查每个玩家是否满足胜利条件，并统计胜利玩家的数量。
 
 关键点:
-- [TODO]
+- 使用嵌套字典来记录每个玩家获得的每种颜色球的数量。
+- 检查每个玩家是否满足胜利条件时，只需要遍历一次 `ball_count` 字典。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(p)，其中 p 是 `pick` 数组的长度。我们需要遍历 `pick` 数组来更新 `ball_count` 字典，然后遍历 `ball_count` 字典来检查每个玩家是否满足胜利条件。
+空间复杂度: O(n * m)，其中 n 是玩家数量，m 是颜色数量。最坏情况下，每个玩家都获得了所有颜色的球，因此需要 O(n * m) 的空间来存储 `ball_count` 字典。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_number_of_winning_players(n: int, pick: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算胜利玩家的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个字典来记录每个玩家获得的每种颜色球的数量
+    ball_count = {}
+
+    # 遍历 pick 数组，更新 ball_count 字典
+    for player, color in pick:
+        if player not in ball_count:
+            ball_count[player] = {}
+        if color not in ball_count[player]:
+            ball_count[player][color] = 0
+        ball_count[player][color] += 1
+
+    # 统计胜利玩家的数量
+    winning_players = 0
+    for player, colors in ball_count.items():
+        for color, count in colors.items():
+            if count > player:
+                winning_players += 1
+                break
+
+    return winning_players
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_number_of_winning_players)

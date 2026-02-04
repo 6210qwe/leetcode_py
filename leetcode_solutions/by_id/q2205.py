@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划预处理出每个位置的前缀非递增天数和后缀非递减天数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `non_increasing` 和 `non_decreasing`，分别记录每个位置的前缀非递增天数和后缀非递减天数。
+2. 从左到右遍历数组，计算每个位置的前缀非递增天数。
+3. 从右到左遍历数组，计算每个位置的后缀非递减天数。
+4. 遍历数组，找到满足条件的位置，即 `non_increasing[i] >= time` 且 `non_decreasing[i] >= time` 的位置。
 
 关键点:
-- [TODO]
+- 使用动态规划预处理前缀和后缀数组，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 security 的长度。需要遍历数组三次。
+空间复杂度: O(n)，需要额外的两个数组来存储前缀和后缀信息。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_good_days_to_rob_bank(security: List[int], time: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有适合野炊的日子
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(security)
+    if n < 2 * time + 1:
+        return []
+
+    non_increasing = [0] * n
+    non_decreasing = [0] * n
+
+    # 计算前缀非递增天数
+    for i in range(1, n):
+        if security[i] <= security[i - 1]:
+            non_increasing[i] = non_increasing[i - 1] + 1
+
+    # 计算后缀非递减天数
+    for i in range(n - 2, -1, -1):
+        if security[i] <= security[i + 1]:
+            non_decreasing[i] = non_decreasing[i + 1] + 1
+
+    # 找到满足条件的位置
+    good_days = []
+    for i in range(time, n - time):
+        if non_increasing[i] >= time and non_decreasing[i] >= time:
+            good_days.append(i)
+
+    return good_days
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_good_days_to_rob_bank)

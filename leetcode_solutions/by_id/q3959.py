@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先激活限制较大的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将元素按 limit 从小到大排序。
+2. 使用一个最大堆来存储当前可以激活的元素。
+3. 遍历排序后的元素，将满足条件的元素加入堆中，并从堆中取出最大值激活。
+4. 更新当前活跃元素数量，并移除不再满足条件的元素。
 
 关键点:
-- [TODO]
+- 使用最大堆来动态维护当前可以激活的元素。
+- 优先激活限制较大的元素，以最大化总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 value 和 limit 的长度。排序的时间复杂度为 O(n log n)，堆操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储排序后的元素和堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_total_from_optimal_activation_order(value: List[int], limit: List[int]) -> int:
+    n = len(value)
+    elements = sorted(zip(limit, value), key=lambda x: x[0])
+    active_count = 0
+    max_heap = []
+    total_sum = 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        while max_heap and elements[i][0] <= active_count + 1:
+            _, val = heapq.heappop(max_heap)
+            total_sum += val
+            active_count += 1
 
+        if elements[i][0] > active_count + 1:
+            heapq.heappush(max_heap, (-elements[i][1], elements[i][1]))
 
-Solution = create_solution(solution_function_name)
+    while max_heap:
+        _, val = heapq.heappop(max_heap)
+        total_sum += val
+
+    return total_sum
+
+Solution = create_solution(max_total_from_optimal_activation_order)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合来维护当前所有方块的高度，并通过二分查找来快速找到重叠部分的最大高度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `events` 来存储所有方块的左右边界及其对应的高度。
+2. 遍历每个方块，计算其左边界和右边界。
+3. 使用二分查找找到当前方块范围内的最大高度。
+4. 更新当前方块的高度，并将其左右边界及对应高度加入有序集合。
+5. 记录当前所有方块的最大高度。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地管理和查询区间。
+- 通过二分查找快速找到重叠部分的最大高度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是方块的数量。每次插入和查询操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，需要存储每个方块的左右边界及其对应的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedDict
 
+def fallingSquares(positions: List[List[int]]) -> List[int]:
+    events = SortedDict()
+    max_heights = []
+    current_max_height = 0
+    
+    for left, size in positions:
+        right = left + size
+        start = events.bisect_left(left)
+        end = events.bisect_right(right)
+        
+        max_height = 0
+        if start < len(events):
+            max_height = max(max_height, events.peekitem(start)[1])
+        if end > 0:
+            max_height = max(max_height, events.peekitem(end - 1)[1])
+        
+        new_height = max_height + size
+        current_max_height = max(current_max_height, new_height)
+        
+        events[left] = new_height
+        events[right] = max_height
+        
+        max_heights.append(current_max_height)
+    
+    return max_heights
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(fallingSquares)

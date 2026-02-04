@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 统计每个方向的移动次数，如果上下移动次数相等且左右移动次数相等，则机器人返回原点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 x 和 y，分别表示水平和垂直方向的位置。
+2. 遍历 moves 字符串，根据字符更新 x 和 y 的值。
+3. 最后检查 x 和 y 是否都为 0，如果是则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用两个变量来记录位置变化。
+- 通过遍历字符串来更新位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 moves 的长度，因为我们需要遍历整个字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def judgeCircle(moves: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断机器人是否能返回原点
     """
-    # TODO: 实现最优解法
-    pass
+    x, y = 0, 0
+    for move in moves:
+        if move == 'U':
+            y += 1
+        elif move == 'D':
+            y -= 1
+        elif move == 'L':
+            x -= 1
+        elif move == 'R':
+            x += 1
+    return x == 0 and y == 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(judgeCircle)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示使用 i 次操作最多可以得到多少个 'A'。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 1，表示没有操作时只有一个 'A'。
+2. 对于每一个 i，从 1 到 n，尝试所有可能的操作序列，更新 dp[i]。
+3. 最后返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用一个嵌套循环来尝试所有可能的操作序列。
+- 通过复制和粘贴操作来最大化 'A' 的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maxA(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    动态规划解法
     """
-    # TODO: 实现最优解法
-    pass
+    if n <= 6:
+        return n
+    
+    dp = [0] * (n + 1)
+    for i in range(1, 7):
+        dp[i] = i
+    
+    for i in range(7, n + 1):
+        for j in range(1, i - 2):
+            dp[i] = max(dp[i], dp[j] * (i - j - 2))
+    
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxA)

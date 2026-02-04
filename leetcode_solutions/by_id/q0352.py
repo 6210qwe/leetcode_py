@@ -55,25 +55,53 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def data_stream_as_disjoint_intervals(params):
+class SummaryRanges:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> data_stream_as_disjoint_intervals([待实现])
-        [待实现]
+    维护数据流中出现过的整数集合，并以不相交区间的形式返回。
+
+    使用按起点有序的区间列表，每次插入时只需检查前后两个区间并做合并。
     """
-    # TODO: 实现最优解法
-    pass
+
+    def __init__(self):
+        self.intervals: list[list[int]] = []
+
+    def addNum(self, value: int) -> None:
+        intervals = self.intervals
+        if not intervals:
+            intervals.append([value, value])
+            return
+
+        # 找到第一个 start > value 的区间位置
+        i = 0
+        n = len(intervals)
+        while i < n and intervals[i][0] <= value:
+            if intervals[i][0] <= value <= intervals[i][1]:
+                return  # 已在某个区间中
+            i += 1
+
+        left_merge = i > 0 and intervals[i - 1][1] + 1 == value
+        right_merge = i < n and intervals[i][0] - 1 == value
+
+        if left_merge and right_merge:
+            # 连接前后两个区间
+            intervals[i - 1][1] = intervals[i][1]
+            intervals.pop(i)
+        elif left_merge:
+            intervals[i - 1][1] += 1
+        elif right_merge:
+            intervals[i][0] -= 1
+        else:
+            intervals.insert(i, [value, value])
+
+    def getIntervals(self) -> list[list[int]]:
+        return self.intervals
+
+
+def data_stream_as_disjoint_intervals() -> SummaryRanges:
+    """
+    函数式接口 - 返回 SummaryRanges 实例，便于测试中进行方法调用。
+    """
+    return SummaryRanges()
 
 
 # 自动生成Solution类（无需手动编写）

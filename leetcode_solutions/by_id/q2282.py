@@ -14,47 +14,60 @@
 # 问题描述
 # ============================================================================
 """
-2143. 在两个数组的区间中选取数字 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定两个整数数组 arr1 和 arr2，以及一个整数 d。返回满足以下条件的整数对 (arr1[i], arr2[j]) 的数量：
+- |arr1[i] - arr2[j]| <= d
+- i < j
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和滑动窗口
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 arr1 和 arr2 进行排序。
+2. 使用双指针遍历 arr1 和 arr2，同时维护一个滑动窗口。
+3. 对于每个 arr1[i]，在 arr2 中找到满足条件的区间 [left, right]。
+4. 计算满足条件的 (arr1[i], arr2[j]) 的数量。
 
 关键点:
-- [TODO]
+- 使用二分查找快速找到满足条件的区间。
+- 滑动窗口用于高效地更新区间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 和 m 分别是 arr1 和 arr2 的长度，因为排序的时间复杂度是 O(n log n) 和 O(m log m)，而后续的遍历和二分查找是 O(n + m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
-
-def solution_function_name(params):
+def count_pairs(arr1: List[int], arr2: List[int], d: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回满足条件的整数对 (arr1[i], arr2[j]) 的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    arr1.sort()
+    arr2.sort()
+    count = 0
+    left, right = 0, 0
 
+    for i in range(len(arr1)):
+        # 找到 arr2 中第一个大于等于 arr1[i] - d 的位置
+        left = bisect.bisect_left(arr2, arr1[i] - d)
+        # 找到 arr2 中第一个大于 arr1[i] + d 的位置
+        right = bisect.bisect_right(arr2, arr1[i] + d)
+        # 计算满足条件的 (arr1[i], arr2[j]) 的数量
+        count += right - left
 
-Solution = create_solution(solution_function_name)
+    return count
+
+Solution = create_solution(count_pairs)

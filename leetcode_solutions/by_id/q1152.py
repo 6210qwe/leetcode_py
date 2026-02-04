@@ -14,47 +14,55 @@
 # 问题描述
 # ============================================================================
 """
-1183. 矩阵中 1 的最大数量 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+1152. 矩阵中 1 的最大数量 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，将矩阵中的每一行和每一列按其包含的 1 的数量进行排序，然后尽可能多地放置 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每行和每列可以放置的 1 的数量。
+2. 按照每行和每列可以放置的 1 的数量进行降序排序。
+3. 从排序后的行和列中依次放置 1，直到达到 m * n 个位置。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，确保每次放置 1 的位置是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n + log(m) + log(n))，其中 m 和 n 分别是矩阵的行数和列数。排序的时间复杂度为 O(log(m) + log(n))。
+空间复杂度: O(m + n)，用于存储每行和每列可以放置的 1 的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_ones(rows: int, cols: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每行和每列可以放置的 1 的数量
+    row_counts = [min(k, cols) for _ in range(rows)]
+    col_counts = [min(k, rows) for _ in range(cols)]
+    
+    # 按照每行和每列可以放置的 1 的数量进行降序排序
+    row_counts.sort(reverse=True)
+    col_counts.sort(reverse=True)
+    
+    # 从排序后的行和列中依次放置 1
+    ones_count = 0
+    for i in range(min(rows, cols)):
+        ones_count += min(row_counts[i], col_counts[i])
+    
+    return ones_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_ones)

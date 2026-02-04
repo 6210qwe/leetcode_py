@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 根据输入字符串的类型（邮箱或电话号码），分别处理并隐藏个人信息。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入字符串是否包含 '@'，以确定其类型。
+2. 如果是邮箱地址：
+   - 将名字和域名部分转换为小写。
+   - 保留名字的第一个和最后一个字母，中间用 5 个 '*' 替换。
+3. 如果是电话号码：
+   - 移除所有非数字字符。
+   - 根据剩余数字的长度，生成相应的隐藏格式。
 
 关键点:
-- [TODO]
+- 使用正则表达式来移除非数字字符。
+- 根据国家代码的长度，选择合适的隐藏格式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。需要遍历字符串进行处理。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
 
+def maskPII(s: str) -> str:
+    if '@' in s:
+        # 处理邮箱地址
+        name, domain = s.lower().split('@')
+        return f"{name[0]}*****{name[-1]}@{domain}"
+    else:
+        # 处理电话号码
+        digits = re.sub(r'\D', '', s)
+        local_number = digits[-10:]
+        country_code_length = len(digits) - 10
+        masked_local = f"***-***-{local_number[-4:]}"
+        if country_code_length > 0:
+            masked_country = '*' * country_code_length
+            return f"+{masked_country}-{masked_local}"
+        else:
+            return masked_local
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maskPII)

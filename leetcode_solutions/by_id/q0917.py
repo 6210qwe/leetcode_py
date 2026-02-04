@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法，将体重最轻和最重的人配对，尽量减少船的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组 people 进行排序。
+2. 初始化两个指针，left 指向数组的起始位置，right 指向数组的末尾。
+3. 使用一个循环，直到 left 超过 right：
+   - 如果 people[left] + people[right] <= limit，说明这两个人可以一起上船，left 向右移动一位，right 向左移动一位。
+   - 否则，只有 right 指向的人单独上船，right 向左移动一位。
+   - 每次循环结束时，船的数量加一。
+4. 返回船的数量。
 
 关键点:
-- [TODO]
+- 通过排序和双指针法，确保每次尽可能多地利用船的载重能力。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 people 的长度。排序操作的时间复杂度为 O(n log n)，而后续的遍历操作为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_rescue_boats(people: List[int], limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最少需要多少艘船来救所有的人
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    people.sort()
+    
+    # 初始化双指针
+    left, right = 0, len(people) - 1
+    boats = 0
+    
+    # 使用双指针法
+    while left <= right:
+        if people[left] + people[right] <= limit:
+            left += 1
+        right -= 1
+        boats += 1
+    
+    return boats
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_rescue_boats)

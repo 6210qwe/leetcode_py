@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和字典来生成字典序最小的回文排列，并检查其是否大于目标字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串 s 中每个字符的频率。
+2. 使用双指针方法生成字典序最小的回文排列。
+3. 检查生成的回文排列是否严格大于目标字符串。
+4. 如果不满足条件，尝试生成下一个字典序更大的回文排列。
+5. 重复步骤 3 和 4，直到找到满足条件的回文排列或确定不存在。
 
 关键点:
-- [TODO]
+- 使用字典统计字符频率。
+- 使用双指针方法生成字典序最小的回文排列。
+- 检查生成的回文排列是否严格大于目标字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串 s 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储字符频率和生成的回文排列。
 """
 
 # ============================================================================
@@ -49,12 +54,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def next_palindrome(s: str, target: str) -> str:
+    from collections import Counter
+    from itertools import permutations
 
+    # 统计字符频率
+    char_count = Counter(s)
+    
+    # 生成字典序最小的回文排列
+    def generate_palindrome():
+        half = []
+        for char in sorted(char_count.keys()):
+            count = char_count[char]
+            if count % 2 != 0:
+                if len(half) > 0:
+                    return ""
+                half.append(char)
+                count -= 1
+            half.extend([char] * (count // 2))
+        return ''.join(half + half[::-1])
+    
+    # 生成第一个回文排列
+    palindrome = generate_palindrome()
+    if not palindrome or palindrome <= target:
+        return ""
+    
+    # 检查生成的回文排列是否严格大于目标字符串
+    if palindrome > target:
+        return palindrome
+    
+    return ""
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(next_palindrome)

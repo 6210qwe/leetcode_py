@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和记忆化搜索来解决这个问题。我们可以通过预处理记录每个字符在 ring 中出现的位置，然后使用递归加记忆化搜索来计算从当前字符到下一个字符的最小步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理 ring，记录每个字符在 ring 中出现的位置。
+2. 定义一个递归函数 `dp(i, j)` 表示从 key 的第 i 个字符开始，ring 的第 j 个字符对齐时的最小步数。
+3. 在递归函数中，遍历 key 的下一个字符在 ring 中的所有位置，计算从当前字符到下一个字符的最小步数。
+4. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 预处理 ring 中每个字符的位置。
+- 使用递归加记忆化搜索来计算最小步数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * k)，其中 n 是 key 的长度，m 是 ring 的长度，k 是 ring 中每个字符出现的最大次数。
+空间复杂度: O(n * m)，记忆化搜索的缓存空间。
 """
 
 # ============================================================================
@@ -47,14 +50,31 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def find_rotate_steps(ring: str, key: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算拼写关键词所需的最少步数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 预处理 ring，记录每个字符在 ring 中出现的位置
+    char_positions = {}
+    for i, char in enumerate(ring):
+        if char not in char_positions:
+            char_positions[char] = []
+        char_positions[char].append(i)
 
+    @lru_cache(None)
+    def dp(i: int, j: int) -> int:
+        if i == len(key):
+            return 0
+        min_steps = float('inf')
+        for next_pos in char_positions[key[i]]:
+            # 计算从 j 到 next_pos 的最小步数
+            steps = min(abs(next_pos - j), len(ring) - abs(next_pos - j))
+            # 递归计算从下一个字符开始的最小步数
+            min_steps = min(min_steps, steps + 1 + dp(i + 1, next_pos))
+        return min_steps
 
-Solution = create_solution(solution_function_name)
+    return dp(0, 0)
+
+Solution = create_solution(find_rotate_steps)

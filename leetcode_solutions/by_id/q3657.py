@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 通过扫描矩形的边界来确定可能的切割线。
+- 检查是否存在两条切割线将矩形分成三部分，每部分至少包含一个矩形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 收集所有矩形的水平和垂直边界。
+2. 对这些边界进行排序。
+3. 检查是否存在两条水平或两条垂直切割线，使得每部分至少包含一个矩形。
 
 关键点:
-- [TODO]
+- 使用集合来存储边界，以确保唯一性。
+- 通过遍历边界来检查切割线的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m)，其中 m 是矩形的数量。排序操作的时间复杂度为 O(m log m)。
+空间复杂度: O(m)，用于存储边界的集合。
 """
 
 # ============================================================================
@@ -49,12 +53,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_cut_grid(n: int, rectangles: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断网格图能否被切割成块
     """
-    # TODO: 实现最优解法
-    pass
+    # 收集所有矩形的水平和垂直边界
+    horizontal_lines = set()
+    vertical_lines = set()
+    
+    for rect in rectangles:
+        horizontal_lines.add(rect[1])
+        horizontal_lines.add(rect[3])
+        vertical_lines.add(rect[0])
+        vertical_lines.add(rect[2])
+    
+    # 对边界进行排序
+    horizontal_lines = sorted(horizontal_lines)
+    vertical_lines = sorted(vertical_lines)
+    
+    def check_lines(lines: List[int]) -> bool:
+        for i in range(1, len(lines) - 1):
+            left_count = 0
+            right_count = 0
+            for rect in rectangles:
+                if lines[i] > rect[3]:
+                    left_count += 1
+                elif lines[i] < rect[1]:
+                    right_count += 1
+                else:
+                    continue
+            if left_count > 0 and right_count > 0 and (len(rectangles) - left_count - right_count) > 0:
+                return True
+        return False
+    
+    # 检查是否存在两条水平或两条垂直切割线
+    return check_lines(horizontal_lines) or check_lines(vertical_lines)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_cut_grid)

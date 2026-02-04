@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个优先队列（堆）来分别管理可用的椅子和正在使用的椅子。通过排序事件（到达和离开）来模拟整个过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有事件（到达和离开）按时间顺序排序。
+2. 初始化两个优先队列：一个用于存储可用的椅子，一个用于存储正在使用的椅子及其离开时间。
+3. 遍历排序后的事件：
+   - 如果是到达事件，从可用椅子队列中取出最小编号的椅子，并将其加入正在使用的椅子队列。
+   - 如果是离开事件，将椅子从正在使用的椅子队列中移除，并将其加入可用椅子队列。
+4. 在遍历过程中，记录目标朋友占据的椅子编号。
 
 关键点:
-- [TODO]
+- 使用优先队列高效管理椅子的状态。
+- 通过排序事件来模拟时间线上的变化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 times 的长度。排序操作的时间复杂度为 O(n log n)，而后续的遍历操作为 O(n)。
+空间复杂度: O(n)，需要额外的空间来存储事件和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def smallest_chair(times: List[List[int]], target_friend: int) -> int:
+    events = []
+    for i, (arrival, leaving) in enumerate(times):
+        events.append((arrival, 'arrive', i))
+        events.append((leaving, 'leave', i))
+    
+    events.sort()
+    
+    available_chairs = []
+    used_chairs = []
+    chair_assignment = {}
+    
+    for time, event_type, friend in events:
+        if event_type == 'arrive':
+            if available_chairs:
+                chair = heapq.heappop(available_chairs)
+            else:
+                chair = len(used_chairs)
+                heapq.heappush(used_chairs, (time, chair))
+            
+            chair_assignment[friend] = chair
+            if friend == target_friend:
+                return chair
+        else:
+            _, chair = heapq.heappop(used_chairs)
+            heapq.heappush(available_chairs, chair)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_chair)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最大堆来构建最长的快乐字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用最大堆存储字符及其剩余数量。
+2. 每次从堆中取出剩余数量最多的字符，如果可以添加到结果字符串中，则添加。
+3. 如果不能添加（因为会形成三个连续相同的字符），则尝试取出下一个最多的字符。
+4. 更新堆中的字符数量，并继续上述过程，直到堆为空或无法再添加字符。
 
 关键点:
-- [TODO]
+- 使用最大堆来确保每次选择剩余数量最多的字符。
+- 确保不会形成三个连续相同的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是 a + b + c 的总和，k 是字符种类数（固定为 3）。
+空间复杂度: O(k)，堆的空间复杂度是 O(k)。
 """
 
 # ============================================================================
@@ -47,14 +50,36 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def longest_happy_string(a: int, b: int, c: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个尽可能长的快乐字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 最大堆存储字符及其剩余数量
+    max_heap = []
+    for count, char in [(-a, 'a'), (-b, 'b'), (-c, 'c')]:
+        if count != 0:
+            heapq.heappush(max_heap, (count, char))
+    
+    result = []
+    
+    while max_heap:
+        count, char = heapq.heappop(max_heap)
+        if len(result) >= 2 and result[-1] == char and result[-2] == char:
+            if not max_heap:
+                break
+            count_next, char_next = heapq.heappop(max_heap)
+            result.append(char_next)
+            count_next += 1
+            if count_next < 0:
+                heapq.heappush(max_heap, (count_next, char_next))
+        else:
+            result.append(char)
+            count += 1
+            if count < 0:
+                heapq.heappush(max_heap, (count, char))
+    
+    return ''.join(result)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_happy_string)

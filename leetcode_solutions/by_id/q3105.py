@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点的最小反转次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示，并记录每条边是否需要反转。
+2. 从根节点（假设为节点 0）开始进行 DFS，计算从根节点出发到达所有节点的最小反转次数。
+3. 使用动态规划的思想，计算从每个节点出发到达所有节点的最小反转次数。
 
 关键点:
-- [TODO]
+- 使用邻接表存储图结构，并记录每条边的方向。
+- 在 DFS 过程中，递归地计算子节点的最小反转次数，并更新父节点的结果。
+- 使用记忆化搜索来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_edge_reversals(n: int, edges: List[List[int]]) -> List[int]:
+    # 构建邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append((v, 0))  # 正向边
+        graph[v].append((u, 1))  # 反向边
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 记忆化搜索
+    memo = {}
 
+    def dfs(node: int, parent: int) -> int:
+        if (node, parent) in memo:
+            return memo[(node, parent)]
+        
+        result = 0
+        for neighbor, cost in graph[node]:
+            if neighbor == parent:
+                continue
+            result += cost + dfs(neighbor, node)
+        
+        memo[(node, parent)] = result
+        return result
 
-Solution = create_solution(solution_function_name)
+    # 从根节点开始计算
+    root_cost = dfs(0, -1)
+
+    # 计算从每个节点出发的最小反转次数
+    answer = [0] * n
+    answer[0] = root_cost
+
+    def dfs2(node: int, parent: int):
+        for neighbor, cost in graph[node]:
+            if neighbor == parent:
+                continue
+            answer[neighbor] = answer[node] + (1 if cost == 0 else -1)
+            dfs2(neighbor, node)
+
+    dfs2(0, -1)
+    return answer
+
+Solution = create_solution(min_edge_reversals)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从终点 (tx, ty) 反向推导到起点 (sx, sy)。每次将较大的坐标减去较小的坐标，直到其中一个坐标小于等于起点坐标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 tx < sx 或 ty < sy，直接返回 False。
+2. 如果 tx == sx 且 ty == sy，返回 True。
+3. 如果 tx > ty，将 tx 减去若干个 ty，使得 tx 小于等于 sx。
+4. 如果 ty > tx，将 ty 减去若干个 tx，使得 ty 小于等于 sy。
+5. 重复上述步骤，直到找到解或无法继续。
 
 关键点:
-- [TODO]
+- 通过反向推导，可以有效减少不必要的计算。
+- 使用模运算来快速减小坐标值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(tx, ty))) - 每次操作都会显著减少较大的坐标值。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reaching_points(sx: int, sy: int, tx: int, ty: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从终点 (tx, ty) 反向推导到起点 (sx, sy)，判断是否可以到达。
     """
-    # TODO: 实现最优解法
-    pass
+    while tx >= sx and ty >= sy:
+        if tx == sx and ty == sy:
+            return True
+        if tx > ty:
+            if ty > sy:
+                tx %= ty
+            else:
+                return (tx - sx) % ty == 0
+        else:
+            if tx > sx:
+                ty %= tx
+            else:
+                return (ty - sy) % tx == 0
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reaching_points)

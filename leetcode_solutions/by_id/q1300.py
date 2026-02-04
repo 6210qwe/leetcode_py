@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Tarjan 算法找到图中的桥（即关键连接）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用深度优先搜索 (DFS) 遍历图，记录每个节点的发现时间和最低可达时间。
+3. 在 DFS 过程中，如果一条边连接的两个节点的最低可达时间满足特定条件，则这条边是桥。
 
 关键点:
-- [TODO]
+- 使用一个全局计时器来记录每个节点的发现时间和最低可达时间。
+- 通过回溯更新节点的最低可达时间。
+- 如果当前节点的子节点的最低可达时间大于或等于当前节点的发现时间，则这条边是桥。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。因为我们需要遍历所有节点和边。
+空间复杂度: O(V + E)，用于存储图的邻接表和辅助数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def criticalConnections(n: int, connections: List[List[int]]) -> List[List[int]]:
+    def dfs(node: int, parent: int):
+        nonlocal time
+        disc[node] = low[node] = time
+        time += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        for neighbor in graph[node]:
+            if disc[neighbor] == -1:  # 未访问过的节点
+                dfs(neighbor, node)
+                low[node] = min(low[node], low[neighbor])
+                if low[neighbor] > disc[node]:
+                    bridges.append([node, neighbor])
+            elif neighbor != parent:  # 回溯更新最低可达时间
+                low[node] = min(low[node], disc[neighbor])
 
+    graph = [[] for _ in range(n)]
+    for u, v in connections:
+        graph[u].append(v)
+        graph[v].append(u)
 
-Solution = create_solution(solution_function_name)
+    disc = [-1] * n
+    low = [-1] * n
+    bridges = []
+    time = 0
+
+    for i in range(n):
+        if disc[i] == -1:
+            dfs(i, -1)
+
+    return bridges
+
+Solution = create_solution(criticalConnections)

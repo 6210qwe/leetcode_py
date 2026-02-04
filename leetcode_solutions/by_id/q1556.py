@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较两个数组的元素频率来判断是否可以通过翻转子数组使两个数组相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 target 和 arr 中每个元素的频率。
+2. 比较两个频率字典，如果它们相等，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 Counter 来计算元素频率。
+- 比较两个频率字典。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。因为我们需要遍历数组来计算频率。
+空间复杂度: O(n)，用于存储频率字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+from collections import Counter
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_equal(target: List[int], arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过翻转子数组使两个数组相等
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 target 和 arr 中每个元素的频率
+    target_count = Counter(target)
+    arr_count = Counter(arr)
+
+    # 比较两个频率字典
+    return target_count == arr_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_equal)

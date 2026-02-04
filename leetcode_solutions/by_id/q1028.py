@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个区间列表，找到交集区间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 firstList 和 secondList 的起始位置。
+2. 比较当前指针所指向的两个区间的起点和终点，找到交集区间。
+3. 如果存在交集区间，将其加入结果列表。
+4. 移动指针，继续比较下一个区间，直到遍历完其中一个列表。
 
 关键点:
-- [TODO]
+- 通过比较区间的起点和终点来确定交集区间。
+- 使用双指针可以高效地遍历两个列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 firstList 和 secondList 的长度。
+空间复杂度: O(1)，除了输出结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def intervalIntersection(firstList: List[List[int]], secondList: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个区间列表的交集
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    result = []
+    
+    while i < len(firstList) and j < len(secondList):
+        # 找到两个区间的交集
+        start_max = max(firstList[i][0], secondList[j][0])
+        end_min = min(firstList[i][1], secondList[j][1])
+        
+        if start_max <= end_min:
+            result.append([start_max, end_min])
+        
+        # 移动指针
+        if firstList[i][1] < secondList[j][1]:
+            i += 1
+        else:
+            j += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(intervalIntersection)

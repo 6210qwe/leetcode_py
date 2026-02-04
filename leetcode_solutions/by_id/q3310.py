@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个距离 k 的房屋对数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算环的大小，并初始化结果数组。
+2. 遍历每个房屋对，计算它们之间的最短路径。
+3. 更新结果数组中的计数。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算每个距离 k 的房屋对数量。
+- 处理特殊情况，如 x 和 y 相等时。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_houses_at_distance(n: int, x: int, y: int) -> List[int]:
+    if x > y:
+        x, y = y, x
+    
+    # 环的大小
+    cycle_len = y - x + 1
+    # 结果数组
+    result = [0] * n
+    
+    for i in range(1, n + 1):
+        for j in range(i + 1, n + 1):
+            # 计算直接路径
+            direct_dist = abs(j - i)
+            # 计算通过环的路径
+            if i <= x and j >= y or i >= y and j <= x:
+                cycle_dist = min(abs(i - x) + 1 + abs(j - y), abs(i - y) + 1 + abs(j - x))
+            else:
+                cycle_dist = float('inf')
+            
+            # 选择最短路径
+            min_dist = min(direct_dist, cycle_dist)
+            if min_dist <= n:
+                result[min_dist - 1] += 2  # 两个方向的房屋对
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_houses_at_distance)

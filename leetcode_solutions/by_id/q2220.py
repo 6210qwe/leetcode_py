@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来解决这个问题。我们将每个菜视为一个节点，如果一个菜需要另一个菜作为原料，则在这两个节点之间建立一条边。然后我们使用拓扑排序来确定哪些菜可以制作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图和入度表。
+2. 初始化队列，将所有初始原材料加入队列。
+3. 使用广度优先搜索进行拓扑排序，更新入度表并处理可以制作的菜。
+4. 返回可以制作的所有菜。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来处理依赖关系。
+- 使用队列进行广度优先搜索。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 recipes 的长度，m 是 ingredients 的总长度。
+空间复杂度: O(n + m)，用于存储图和入度表。
 """
 
 # ============================================================================
@@ -49,12 +52,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_all_recipes(recipes: List[str], ingredients: List[List[str]], supplies: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出所有可以制作的菜
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict, deque
+    
+    # 构建图和入度表
+    graph = defaultdict(list)
+    in_degree = {recipe: 0 for recipe in recipes}
+    
+    # 构建图和入度表
+    for i, ingredient_list in enumerate(ingredients):
+        for ingredient in ingredient_list:
+            if ingredient in in_degree:
+                graph[ingredient].append(recipes[i])
+                in_degree[recipes[i]] += 1
+    
+    # 初始化队列
+    queue = deque(supplies)
+    can_make = []
+    
+    # 拓扑排序
+    while queue:
+        supply = queue.popleft()
+        if supply in in_degree:
+            can_make.append(supply)
+        
+        for neighbor in graph[supply]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return [recipe for recipe in recipes if in_degree[recipe] == 0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_all_recipes)

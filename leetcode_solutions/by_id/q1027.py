@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过预先计算初始的偶数和，并在每次查询后更新偶数和，避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始数组 A 中所有偶数的和。
+2. 对于每个查询，根据查询值和目标索引更新数组 A，并更新偶数和。
+3. 如果原来的值是偶数，则从偶数和中减去；如果新的值是偶数，则加到偶数和中。
+4. 将每次查询后的偶数和记录到结果数组中。
 
 关键点:
-- [TODO]
+- 预先计算初始偶数和，减少重复计算。
+- 动态更新偶数和，避免每次都重新计算整个数组的偶数和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是数组 A 的长度，m 是查询数组 queries 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_even_after_queries(nums: List[int], queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据查询数组 queries 更新数组 nums，并返回每次查询后的偶数和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算初始偶数和
+    even_sum = sum(num for num in nums if num % 2 == 0)
+    
+    # 结果数组
+    result = []
+    
+    # 处理每个查询
+    for val, index in queries:
+        old_val = nums[index]
+        new_val = old_val + val
+        
+        # 更新数组
+        nums[index] = new_val
+        
+        # 更新偶数和
+        if old_val % 2 == 0:
+            even_sum -= old_val
+        if new_val % 2 == 0:
+            even_sum += new_val
+        
+        # 记录当前查询后的偶数和
+        result.append(even_sum)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_even_after_queries)

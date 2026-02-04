@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典存储每个字母在字符串 s 中出现的位置，然后遍历 words 数组，检查每个 word 是否是 s 的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典，键为 s 中的每个字符，值为该字符在 s 中出现的所有位置。
+2. 对于每个 word，使用双指针方法检查其是否是 s 的子序列：
+   - 初始化两个指针，一个指向 word 的当前字符，另一个指向 s 的当前字符位置。
+   - 遍历 word 的每个字符，如果在 s 中找到该字符，则移动 s 的指针；否则，word 不是 s 的子序列。
+3. 统计所有是 s 的子序列的 word 的数量。
 
 关键点:
-- [TODO]
+- 使用字典存储字符位置，减少查找时间。
+- 使用双指针方法高效检查子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * k)，其中 n 是 s 的长度，m 是 words 的长度，k 是每个 word 的平均长度。
+空间复杂度: O(n)，用于存储 s 中每个字符的位置。
 """
 
 # ============================================================================
@@ -49,12 +53,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_matching_subseq(s: str, words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 words 中是 s 的子序列的单词个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建字符位置字典
+    char_indices = {}
+    for i, char in enumerate(s):
+        if char not in char_indices:
+            char_indices[char] = []
+        char_indices[char].append(i)
+
+    def is_subsequence(word: str) -> bool:
+        current_index = -1
+        for char in word:
+            if char not in char_indices:
+                return False
+            indices = char_indices[char]
+            pos = bisect.bisect_right(indices, current_index)
+            if pos == len(indices):
+                return False
+            current_index = indices[pos]
+        return True
+
+    # 统计子序列的数量
+    count = 0
+    for word in words:
+        if is_subsequence(word):
+            count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_matching_subseq)

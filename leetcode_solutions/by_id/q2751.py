@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和计数器来维护当前窗口内的元素，并使用有序列表来快速找到第 x 小的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器来记录当前窗口内元素的频率。
+2. 使用一个有序列表来存储当前窗口内的元素。
+3. 遍历数组，将新元素加入窗口，并更新计数器和有序列表。
+4. 当窗口大小达到 k 时，计算当前窗口的美丽值，并将窗口左端元素移出窗口，更新计数器和有序列表。
+5. 重复步骤 3 和 4 直到遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用有序列表来快速找到第 x 小的元素。
+- 使用计数器来高效地更新窗口内的元素频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
-
-def solution_function_name(params):
+def sliding_subarray_beauty(nums: List[int], k: int, x: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算每个长度为 k 的子数组的美丽值。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = []
+    window = SortedList()
+    count = [0] * 101  # 用于记录窗口内元素的频率
 
+    for i in range(n):
+        if nums[i] < 0:
+            window.add(nums[i])
+            count[nums[i] + 50] += 1
 
-Solution = create_solution(solution_function_name)
+        if i >= k - 1:
+            if len(window) < x:
+                result.append(0)
+            else:
+                result.append(window[x - 1])
+
+            if nums[i - k + 1] < 0:
+                count[nums[i - k + 1] + 50] -= 1
+                if count[nums[i - k + 1] + 50] == 0:
+                    window.remove(nums[i - k + 1])
+
+    return result
+
+Solution = create_solution(sliding_subarray_beauty)

@@ -21,24 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用前序遍历（根-左-右）来序列化二叉搜索树，然后使用递归的方法来反序列化。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 序列化：
+   - 使用前序遍历将二叉搜索树转换为字符串。
+   - 在每个节点值之间添加分隔符（如逗号），并在空节点处添加特殊字符（如'#'）。
+2. 反序列化：
+   - 将字符串分割成列表。
+   - 使用递归方法构建二叉搜索树，根据前序遍历的特点，第一个元素是根节点，后续元素依次是左子树和右子树的节点。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用前序遍历可以唯一确定二叉搜索树。
+- 优化时间和空间复杂度，尽量减少不必要的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 其中 n 是节点数，因为我们需要遍历每个节点进行序列化和反序列化。
+空间复杂度: O(n) - 需要存储每个节点的值和递归调用栈的空间。
 """
 
 # ============================================================================
@@ -46,31 +49,32 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def serialize_and_deserialize_bst(params):
-    """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> serialize_and_deserialize_bst([待实现])
-        [待实现]
-    """
-    # TODO: 实现最优解法
-    pass
+class Codec:
+
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string."""
+        if not root:
+            return '#'
+        return f"{root.val},{self.serialize(root.left)},{self.serialize(root.right)}"
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree."""
+        def build_tree(values):
+            value = next(values)
+            if value == '#':
+                return None
+            node = TreeNode(int(value))
+            node.left = build_tree(values)
+            node.right = build_tree(values)
+            return node
+
+        values = iter(data.split(','))
+        return build_tree(values)
 
 
 # 自动生成Solution类（无需手动编写）
-Solution = create_solution(serialize_and_deserialize_bst)
+Solution = create_solution(Codec)

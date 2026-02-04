@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个前缀和的余数出现的位置，从而快速找到满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum` 和哈希表 `remainder_map`。
+2. 遍历数组 `nums`，计算前缀和并取模 `k`，得到当前前缀和的余数 `remainder`。
+3. 如果 `remainder` 在 `remainder_map` 中已经存在，则说明存在一个子数组的和可以被 `k` 整除，更新结果。
+4. 更新 `remainder_map`，将当前余数及其位置存入哈希表。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 使用前缀和与哈希表来记录每个前缀和的余数出现的位置，从而快速找到满足条件的子数组。
+- 通过哈希表记录每个余数第一次出现的位置，避免重复计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_subarrays(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计有序数组中可被 K 整除的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = 0
+    remainder_map = {0: [-1]}  # 初始化哈希表，存储余数及其出现的位置
+    result = 0
+    
+    for i in range(n):
+        prefix_sum += nums[i]
+        remainder = prefix_sum % k
+        
+        if remainder not in remainder_map:
+            remainder_map[remainder] = []
+        
+        for j in remainder_map[remainder]:
+            subarray = nums[j + 1:i + 1]
+            if subarray not in result_set:
+                result_set.add(tuple(subarray))
+                result += 1
+        
+        remainder_map[remainder].append(i)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_subarrays)

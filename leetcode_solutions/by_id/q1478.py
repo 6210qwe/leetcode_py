@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最小堆来选择最早结束且当前可参加的会议。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有会议按开始时间排序。
+2. 使用一个最小堆来存储当前可参加的会议，并按结束时间排序。
+3. 遍历每一天，将当天开始的所有会议加入堆中。
+4. 从堆中取出最早结束的会议并参加，然后移除已经结束的会议。
+5. 重复上述步骤直到所有天数遍历完毕。
 
 关键点:
-- [TODO]
+- 按开始时间排序确保我们总是处理最早开始的会议。
+- 使用最小堆确保我们总是选择最早结束的会议。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 events 的长度。排序操作的时间复杂度为 O(n log n)，而每次插入和删除堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，最坏情况下堆中可能包含所有会议。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def maxEvents(events: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以参加的最大会议数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 按开始时间排序
+    events.sort()
+    
+    # 初始化堆和结果计数器
+    min_heap = []
+    event_index = 0
+    attended_events = 0
+    current_day = 0
+    
+    while min_heap or event_index < len(events):
+        # 如果当前堆为空，直接跳到下一个会议的开始时间
+        if not min_heap:
+            current_day = events[event_index][0]
+        
+        # 将所有开始时间为 current_day 的会议加入堆中
+        while event_index < len(events) and events[event_index][0] == current_day:
+            heapq.heappush(min_heap, events[event_index][1])
+            event_index += 1
+        
+        # 从堆中取出最早结束的会议
+        heapq.heappop(min_heap)
+        attended_events += 1
+        current_day += 1
+        
+        # 移除已经结束的会议
+        while min_heap and min_heap[0] < current_day:
+            heapq.heappop(min_heap)
+    
+    return attended_events
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxEvents)

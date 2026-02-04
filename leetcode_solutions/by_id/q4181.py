@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用深度优先搜索 (DFS) 来遍历树，并记录需要翻转的边。
+- 对于每个节点，如果其颜色与目标颜色不同，则需要翻转与其相连的边。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 遍历树，记录需要翻转的边。
+3. 检查是否可以将 start 转换为目标 target，如果可以则返回翻转的边的下标，否则返回 [-1]。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历时，通过传递当前节点的颜色状态来判断是否需要翻转边。
+- 使用集合来记录已经访问过的节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。因为我们需要遍历每个节点一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_edge_toggles(n: int, edges: List[List[int]], start: str, target: str) -> List[int]:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n)]
+    for i, (u, v) in enumerate(edges):
+        adj_list[u].append((v, i))
+        adj_list[v].append((u, i))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 记录需要翻转的边
+    flip_edges = []
+    visited = set()
 
+    def dfs(node: int, current_color: str):
+        if node in visited:
+            return
+        visited.add(node)
+        
+        if start[node] != current_color:
+            for neighbor, edge_index in adj_list[node]:
+                if neighbor not in visited:
+                    flip_edges.append(edge_index)
+                    break
+        
+        for neighbor, edge_index in adj_list[node]:
+            if neighbor not in visited:
+                next_color = '1' if current_color == '0' else '0'
+                dfs(neighbor, next_color)
 
-Solution = create_solution(solution_function_name)
+    # 从根节点开始 DFS
+    dfs(0, start[0])
+
+    # 检查是否可以将 start 转换为目标 target
+    if all(start[i] == target[i] for i in range(n)):
+        return sorted(flip_edges)
+    else:
+        return [-1]
+
+Solution = create_solution(min_edge_toggles)

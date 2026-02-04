@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的时间，使得在这个时间内所有公交车能完成至少 totalTrips 趟旅途。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，左边界为 1，右边界为 min(time) * totalTrips。
+2. 在每次迭代中，计算中间值 mid，并检查在 mid 时间内所有公交车能完成的旅途数是否大于等于 totalTrips。
+3. 如果满足条件，则更新右边界为 mid；否则，更新左边界为 mid + 1。
+4. 当左右边界相遇时，返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来减少搜索空间，从而提高效率。
+- 计算在给定时间内的总旅途数时，使用整除操作来避免浮点数误差。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_time))，其中 n 是 time 数组的长度，max_time 是时间的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimumTime(time: List[int], totalTrips: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回完成至少 totalTrips 趟旅途所需的最少时间。
     """
-    # TODO: 实现最优解法
-    pass
+    def can_complete_trips(t: int) -> bool:
+        return sum(t // bus_time for bus_time in time) >= totalTrips
 
+    left, right = 1, min(time) * totalTrips
+    while left < right:
+        mid = (left + right) // 2
+        if can_complete_trips(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimumTime)

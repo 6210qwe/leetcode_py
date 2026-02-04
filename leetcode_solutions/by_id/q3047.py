@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过分解每个下标的质因数并分组，找到所有符合条件的下标集合，然后计算这些集合中元素的最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 分解每个下标的质因数。
+2. 将具有相同质因数的下标分组。
+3. 计算每个组中元素的和，并返回最大值。
 
 关键点:
-- [TODO]
+- 使用质因数分解来确定哪些下标可以组成完全平方数。
+- 通过哈希表来存储和查找具有相同质因数的下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(n))，其中 n 是数组的长度。分解每个下标的质因数需要 O(sqrt(n)) 的时间。
+空间复杂度: O(n)，用于存储质因数分组和结果。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    def get_prime_factors(index: int) -> int:
+        """获取下标的质因数乘积（去重）"""
+        factors = set()
+        while index % 2 == 0:
+            factors.add(2)
+            index //= 2
+        for i in range(3, int(index**0.5) + 1, 2):
+            while index % i == 0:
+                factors.add(i)
+                index //= i
+        if index > 2:
+            factors.add(index)
+        return tuple(sorted(factors))
+
+    n = len(nums)
+    factor_to_sum = {}
+    for i in range(1, n + 1):
+        factors = get_prime_factors(i)
+        if factors not in factor_to_sum:
+            factor_to_sum[factors] = 0
+        factor_to_sum[factors] += nums[i - 1]
+
+    return max(factor_to_sum.values())
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Trie 树来存储前缀异或值，从而快速找到最大异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 Trie 树。
+2. 计算前缀异或值，并将其插入到 Trie 树中。
+3. 对于每个前缀异或值，使用 Trie 树查找与其异或值最大的值。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来存储前缀异或值，可以在 O(1) 时间内找到最大异或值。
+- 通过遍历数组并更新前缀异或值，可以在 O(n) 时间内完成整个过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +50,47 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, num: int):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+
+    def find_max_xor(self, num: int) -> int:
+        node = self.root
+        max_xor = 0
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            toggled_bit = 1 - bit
+            if toggled_bit in node.children:
+                max_xor |= (1 << i)
+                node = node.children[toggled_bit]
+            else:
+                node = node.children[bit]
+        return max_xor
+
+def solution_function_name(nums: List[int]) -> int:
+    """
+    函数式接口 - 计算子序列的最大 XOR 值
+    """
+    trie = Trie()
+    prefix_xor = 0
+    max_xor = 0
+    trie.insert(0)  # 插入初始前缀异或值 0
+    for num in nums:
+        prefix_xor ^= num
+        trie.insert(prefix_xor)
+        max_xor = max(max_xor, trie.find_max_xor(prefix_xor))
+    return max_xor
 
 Solution = create_solution(solution_function_name)

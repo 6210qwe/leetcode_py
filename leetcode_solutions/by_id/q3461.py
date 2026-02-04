@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到所有 1 的最小边界框
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化行和列的最小值和最大值为无穷大和负无穷大
+2. 遍历整个网格，更新行和列的最小值和最大值
+3. 计算边界框的宽度和高度，返回面积
 
 关键点:
-- [TODO]
+- 通过遍历一次网格找到所有 1 的边界
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数
+空间复杂度: O(1)，只使用了常数级的额外空间
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_min_area_to_cover_ones(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到包含所有 1 的最小矩形面积
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    min_row, max_row = float('inf'), float('-inf')
+    min_col, max_col = float('inf'), float('-inf')
+
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                min_row = min(min_row, i)
+                max_row = max(max_row, i)
+                min_col = min(min_col, j)
+                max_col = max(max_col, j)
+
+    if min_row == float('inf'):
+        return 0  # 没有 1 存在
+
+    height = max_row - min_row + 1
+    width = max_col - min_col + 1
+    return height * width
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_area_to_cover_ones)

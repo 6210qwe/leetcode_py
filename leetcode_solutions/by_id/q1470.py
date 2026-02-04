@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序字典存储推文时间，根据频率划分时间段并统计每个时间段内的推文数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 TweetCounts 对象，使用有序字典存储每个推文名称及其发布时间。
+2. 记录推文时间，将其添加到对应的推文名称的有序列表中。
+3. 根据频率划分时间段，并使用二分查找统计每个时间段内的推文数量。
 
 关键点:
-- [TODO]
+- 使用有序字典和二分查找来高效地记录和查询推文时间。
+- 根据频率动态计算时间段的大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n + m)，其中 n 是推文的数量，m 是时间段的数量。
+空间复杂度: O(n)，用于存储推文时间。
 """
 
 # ============================================================================
@@ -44,17 +46,41 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import defaultdict
+import bisect
 
+class TweetCounts:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self):
+        self.tweets = defaultdict(list)
 
+    def recordTweet(self, tweetName: str, time: int) -> None:
+        # 使用二分插入保持列表有序
+        bisect.insort(self.tweets[tweetName], time)
 
-Solution = create_solution(solution_function_name)
+    def getTweetCountsPerFrequency(self, freq: str, tweetName: str, startTime: int, endTime: int) -> List[int]:
+        if freq == "minute":
+            interval = 60
+        elif freq == "hour":
+            interval = 3600
+        else:
+            interval = 86400
+
+        result = []
+        times = self.tweets[tweetName]
+        for start in range(startTime, endTime + 1, interval):
+            end = min(start + interval, endTime + 1)
+            count = bisect.bisect_left(times, end) - bisect.bisect_left(times, start)
+            result.append(count)
+        return result
+
+# 测试用例
+if __name__ == "__main__":
+    tweetCounts = TweetCounts()
+    tweetCounts.recordTweet("tweet3", 0)
+    tweetCounts.recordTweet("tweet3", 60)
+    tweetCounts.recordTweet("tweet3", 10)
+    print(tweetCounts.getTweetCountsPerFrequency("minute", "tweet3", 0, 59))  # 输出: [2]
+    print(tweetCounts.getTweetCountsPerFrequency("minute", "tweet3", 0, 60))  # 输出: [2, 1]
+    tweetCounts.recordTweet("tweet3", 120)
+    print(tweetCounts.getTweetCountsPerFrequency("hour", "tweet3", 0, 210))  # 输出: [4]

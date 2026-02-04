@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储电话号码，并在查询时快速找到前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树：将所有电话号码插入字典树中。
+2. 查询前缀：对于每个查询，从根节点开始遍历字典树，直到找到最长的前缀。
 
 关键点:
-- [TODO]
+- 使用字典树可以高效地存储和查询前缀。
+- 每个节点存储一个字符，并且有一个标志位表示是否是一个完整的电话号码。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是电话号码的数量，m 是电话号码的最大长度。
+空间复杂度: O(n * m)，字典树的空间复杂度取决于所有电话号码的总长度。
 """
 
 # ============================================================================
@@ -48,13 +49,47 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search_prefix(self, prefix: str) -> bool:
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+
+def solution_function_name(phones: List[str], queries: List[str]) -> List[str]:
+    """
+    函数式接口 - 实现
+    """
+    trie = Trie()
+    for phone in phones:
+        trie.insert(phone)
+    
+    results = []
+    for query in queries:
+        for i in range(len(query), 0, -1):
+            if trie.search_prefix(query[:i]):
+                results.append(query[:i])
+                break
+        else:
+            results.append("")
+    return results
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和贪心算法来找到最小的最大工作时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 确定二分查找的范围：左边界为 `max(jobs)`，右边界为 `sum(jobs)`。
+2. 对于每个中间值 `mid`，使用贪心算法检查是否可以将工作分配给 `k` 个工人，使得每个工人的工作时间不超过 `mid`。
+3. 如果可以，则缩小右边界；否则，增加左边界。
+4. 最终返回左边界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 使用贪心算法来检查当前的 `mid` 是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log S)，其中 n 是 jobs 的长度，S 是 jobs 的总和。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_finish(jobs: List[int], mid: int, k: int) -> bool:
+    count = 1
+    current_time = 0
+    for job in sorted(jobs, reverse=True):
+        if current_time + job > mid:
+            count += 1
+            current_time = 0
+        if count > k:
+            return False
+        current_time += job
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_time_to_finish_jobs(jobs: List[int], k: int) -> int:
+    left, right = max(jobs), sum(jobs)
+    while left < right:
+        mid = (left + right) // 2
+        if can_finish(jobs, mid, k):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_finish_jobs)

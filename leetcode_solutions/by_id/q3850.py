@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算子矩阵的和，并检查是否存在有效的分割线。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算行和列的前缀和。
+2. 检查每条可能的水平分割线，判断是否可以将矩阵分成两个部分，使得两个部分的和相等或最多移除一个单元格后相等。
+3. 检查每条可能的垂直分割线，判断是否可以将矩阵分成两个部分，使得两个部分的和相等或最多移除一个单元格后相等。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算子矩阵的和。
+- 检查连通性时，确保分割后的部分仍然连通。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_partition(grid: List[List[int]]) -> bool:
+    def check_horizontal_partition():
+        for i in range(1, m):
+            top_sum = row_prefix_sum[i - 1]
+            bottom_sum = total_sum - top_sum
+            if top_sum == bottom_sum or abs(top_sum - bottom_sum) == min(grid[i - 1]) or abs(top_sum - bottom_sum) == min(grid[i]):
+                return True
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def check_vertical_partition():
+        for j in range(1, n):
+            left_sum = col_prefix_sum[j - 1]
+            right_sum = total_sum - left_sum
+            if left_sum == right_sum or abs(left_sum - right_sum) == min(grid[i][j - 1] for i in range(m)) or abs(left_sum - right_sum) == min(grid[i][j] for i in range(m)):
+                return True
+        return False
 
+    m, n = len(grid), len(grid[0])
+    total_sum = sum(sum(row) for row in grid)
+    
+    # 计算行前缀和
+    row_prefix_sum = [sum(grid[i]) for i in range(m)]
+    for i in range(1, m):
+        row_prefix_sum[i] += row_prefix_sum[i - 1]
 
-Solution = create_solution(solution_function_name)
+    # 计算列前缀和
+    col_prefix_sum = [sum(grid[i][j] for i in range(m)) for j in range(n)]
+    for j in range(1, n):
+        col_prefix_sum[j] += col_prefix_sum[j - 1]
+
+    return check_horizontal_partition() or check_vertical_partition()
+
+Solution = create_solution(can_partition)

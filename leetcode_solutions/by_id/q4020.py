@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法找到第一个比 target 大的字典序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器来记录 s 中每个字符的出现次数。
+2. 从左到右遍历 target，尝试找到第一个可以替换的字符位置。
+3. 在找到可以替换的位置后，选择字典序最小的大于当前字符的字符进行替换。
+4. 将剩余的字符按字典序从小到大排列，拼接到结果字符串中。
 
 关键点:
-- [TODO]
+- 使用计数器高效地记录和更新字符出现次数。
+- 通过贪心算法找到第一个可以替换的字符位置，并选择最优的替换字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储字符计数和结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +52,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_next_permutation(s: str, target: str) -> str:
+    from collections import Counter
+    
+    # 计数器记录 s 中每个字符的出现次数
+    count = Counter(s)
+    
+    result = []
+    for i, char in enumerate(target):
+        if count[char] > 0:
+            result.append(char)
+            count[char] -= 1
+        else:
+            break
+    else:
+        return ""
+    
+    # 找到第一个可以替换的字符位置
+    for next_char in sorted(count.keys()):
+        if next_char > char and count[next_char] > 0:
+            result[-1] = next_char
+            count[next_char] -= 1
+            break
+    else:
+        return ""
+    
+    # 将剩余的字符按字典序从小到大排列
+    for next_char in sorted(count.elements()):
+        result.append(next_char)
+    
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_next_permutation)

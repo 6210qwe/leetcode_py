@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的最大值。通过二分查找确定一个目标值，然后检查是否可以通过操作使得数组中的最大值不超过这个目标值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right。
+2. 在每次迭代中，计算中间值 mid。
+3. 检查是否可以通过操作使得数组中的最大值不超过 mid。
+4. 如果可以，则更新右边界 right；否则，更新左边界 left。
+5. 最终返回 left 作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小可能的最大值范围。
+- 检查是否可以通过操作使得数组中的最大值不超过当前中间值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组的长度，max(nums) 是数组中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_array_value(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找来找到最小的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    def can_make_max_less_equal(mid: int) -> bool:
+        carry = 0
+        for num in reversed(nums):
+            if num + carry > mid:
+                carry = (num + carry) - mid
+            else:
+                carry = 0
+        return carry == 0
+
+    left, right = 0, max(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if can_make_max_less_equal(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_array_value)

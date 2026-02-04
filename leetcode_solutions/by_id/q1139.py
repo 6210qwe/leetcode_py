@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从右向左找到第一个降序对 (i, i+1)，然后在 i+1 到末尾中找到比 arr[i] 小的最大值进行交换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右向左遍历数组，找到第一个降序对 (i, i+1)。
+2. 在 i+1 到末尾中找到比 arr[i] 小的最大值的位置 j。
+3. 交换 arr[i] 和 arr[j]。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 找到第一个降序对 (i, i+1)。
+- 在 i+1 到末尾中找到比 arr[i] 小的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    if n < 2:
+        return arr
+
+    # 从右向左找到第一个降序对 (i, i+1)
+    i = n - 2
+    while i >= 0 and arr[i] <= arr[i + 1]:
+        i -= 1
+
+    if i == -1:
+        return arr
+
+    # 在 i+1 到末尾中找到比 arr[i] 小的最大值的位置 j
+    j = n - 1
+    while j > i and arr[j] >= arr[i]:
+        j -= 1
+
+    # 交换 arr[i] 和 arr[j]
+    arr[i], arr[j] = arr[j], arr[i]
+
+    return arr
 
 
 Solution = create_solution(solution_function_name)

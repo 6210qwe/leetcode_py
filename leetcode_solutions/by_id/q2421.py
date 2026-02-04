@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个数字的出现次数，然后计算可以形成的数对数量和剩余的单个数字数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个数字的出现次数。
+2. 遍历哈希表，计算每个数字可以形成的数对数量，并累加到总数对数量中。
+3. 计算剩余的单个数字数量。
 
 关键点:
-- [TODO]
+- 使用哈希表统计每个数字的出现次数，时间复杂度为 O(n)。
+- 通过遍历哈希表计算数对数量和剩余单个数字数量，时间复杂度为 O(k)，其中 k 是不同数字的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)
+- n 是数组的长度，用于统计每个数字的出现次数。
+- k 是不同数字的数量，用于计算数对数量和剩余单个数字数量。
+
+空间复杂度: O(k)
+- k 是不同数字的数量，用于存储哈希表。
 """
 
 # ============================================================================
@@ -49,12 +55,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_number_of_pairs(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中可以形成的数对数量和剩余的单个数字数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表统计每个数字的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 初始化结果数组
+    result = [0, 0]
+    
+    # 遍历哈希表，计算数对数量和剩余单个数字数量
+    for num, freq in count.items():
+        pairs = freq // 2
+        singles = freq % 2
+        result[0] += pairs
+        result[1] += singles
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_number_of_pairs)

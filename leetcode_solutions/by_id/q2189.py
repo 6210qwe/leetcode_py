@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历所有可能的路径，并记录路径的最大价值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用DFS从节点0开始遍历，记录当前路径的时间和价值。
+3. 在DFS过程中，如果回到节点0且时间不超过maxTime，更新最大路径价值。
+4. 使用一个集合来记录已经访问过的节点，避免重复计算节点的价值。
 
 关键点:
-- [TODO]
+- 使用DFS遍历所有可能的路径。
+- 使用集合记录已经访问过的节点，确保每个节点的价值只计算一次。
+- 递归过程中，更新最大路径价值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中n是节点数。最坏情况下，每个节点都可以选择访问或不访问。
+空间复杂度: O(n)，递归调用栈的深度最多为n。
 """
 
 # ============================================================================
@@ -48,13 +52,38 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(values: List[int], edges: List[List[int]], maxTime: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化一张图中的路径价值
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(values)
+    graph = [[] for _ in range(n)]
+    
+    # 构建图的邻接表
+    for u, v, time in edges:
+        graph[u].append((v, time))
+        graph[v].append((u, time))
+    
+    max_value = 0
+    
+    def dfs(node: int, visited: set, current_time: int, current_value: int):
+        nonlocal max_value
+        
+        if node == 0 and current_time <= maxTime:
+            max_value = max(max_value, current_value)
+        
+        for neighbor, time in graph[node]:
+            if current_time + time <= maxTime:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    dfs(neighbor, visited, current_time + time, current_value + values[neighbor])
+                    visited.remove(neighbor)
+                else:
+                    dfs(neighbor, visited, current_time + time, current_value)
+    
+    # 从节点0开始DFS
+    dfs(0, {0}, 0, values[0])
+    
+    return max_value
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来记录每个字符的出现位置，然后通过这些位置来找到符合条件的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 记录每个字符在字符串中的所有出现位置。
+2. 遍历每个字符的位置列表，找到符合条件的子字符串。
+3. 使用贪心算法来选择尽可能多的互不重叠的特殊子字符串。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个字符的位置。
+- 通过贪心算法选择尽可能多的互不重叠的子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以选择 k 个互不重叠的特殊子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 0:
+        return True
+    
+    # 记录每个字符的所有出现位置
+    char_positions = {}
+    for i, char in enumerate(s):
+        if char not in char_positions:
+            char_positions[char] = []
+        char_positions[char].append(i)
+    
+    # 找到所有可能的特殊子字符串
+    special_substrings = []
+    for char, positions in char_positions.items():
+        if len(positions) == 1:
+            special_substrings.append((positions[0], positions[0]))
+        else:
+            for i in range(len(positions) - 1):
+                start, end = positions[i], positions[i + 1]
+                if end - start > 1:
+                    special_substrings.append((start + 1, end - 1))
+    
+    # 按子字符串的结束位置排序
+    special_substrings.sort(key=lambda x: x[1])
+    
+    # 使用贪心算法选择尽可能多的互不重叠的子字符串
+    count = 0
+    last_end = -1
+    for start, end in special_substrings:
+        if start > last_end:
+            count += 1
+            last_end = end
+            if count >= k:
+                return True
+    
+    return False
 
 
 Solution = create_solution(solution_function_name)

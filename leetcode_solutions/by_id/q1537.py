@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个可能的分割点的得分，并找到最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个字符串中 '1' 的总数。
+2. 遍历字符串，从第一个字符到倒数第二个字符，计算每个分割点的得分。
+3. 更新最大得分。
 
 关键点:
-- [TODO]
+- 使用前缀和来高效计算每个分割点的得分。
+- 通过一次遍历即可完成计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_score_after_split(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算并返回将字符串分割成两个非空子字符串所能获得的最大得分。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算整个字符串中 '1' 的总数
+    total_ones = s.count('1')
+    
+    # 初始化变量
+    max_score = 0
+    left_zeros = 0
+    
+    # 遍历字符串，从第一个字符到倒数第二个字符
+    for i in range(len(s) - 1):
+        if s[i] == '0':
+            left_zeros += 1
+        else:
+            total_ones -= 1
+        
+        # 计算当前分割点的得分
+        current_score = left_zeros + total_ones
+        # 更新最大得分
+        max_score = max(max_score, current_score)
+    
+    return max_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score_after_split)

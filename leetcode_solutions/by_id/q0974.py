@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自定义排序函数对日志进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将日志分为字母日志和数字日志。
+2. 对字母日志进行排序：首先按内容排序，如果内容相同则按标识符排序。
+3. 将排序后的字母日志和原始顺序的数字日志合并。
 
 关键点:
-- [TODO]
+- 使用 Python 的 `sorted` 函数和自定义排序键。
+- 保持数字日志的原始顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是日志的数量。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，存储字母日志和数字日志需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reorder_log_files(logs: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    重新排列日志文件 - 按照题目要求对日志进行排序。
     """
-    # TODO: 实现最优解法
-    pass
+    def sort_key(log: str) -> tuple:
+        # 分割日志为标识符和内容
+        identifier, content = log.split(" ", 1)
+        # 如果内容是数字日志，返回 (1, None, None) 以确保数字日志在字母日志之后
+        if content[0].isdigit():
+            return (1, None, None)
+        # 否则返回 (0, 内容, 标识符) 以确保字母日志在前，并按内容和标识符排序
+        return (0, content, identifier)
+
+    # 使用自定义排序键对日志进行排序
+    return sorted(logs, key=sort_key)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reorder_log_files)

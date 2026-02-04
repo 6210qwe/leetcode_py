@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的 asyncio 库来实现异步睡眠。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 asyncio 库。
+2. 定义一个异步函数 sleep，使用 asyncio.sleep 来实现指定毫秒数的睡眠。
+3. 返回一个完成的 Future 对象。
 
 关键点:
-- [TODO]
+- 使用 asyncio.sleep 来实现异步睡眠。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import asyncio
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+async def sleep(millis: int) -> None:
     """
-    函数式接口 - [TODO] 实现
+    异步睡眠函数 - 接收一个正整数参数 millis，并休眠 millis 毫秒。
     """
-    # TODO: 实现最优解法
-    pass
+    await asyncio.sleep(millis / 1000)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sleep)

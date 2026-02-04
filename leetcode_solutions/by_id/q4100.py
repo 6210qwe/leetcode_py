@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查给定数字的所有前缀和后缀是否都是质数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数字转换为字符串，以便于生成前缀和后缀。
+2. 检查每个前缀和后缀是否是质数。
+3. 如果所有前缀和后缀都是质数，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用高效的质数检查方法。
+- 生成前缀和后缀时，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * sqrt(n))，其中 d 是数字的位数，n 是数字本身。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_prime(n: int) -> bool:
+    """检查一个数是否是质数"""
+    if n <= 1:
+        return False
+    if n == 2 or n == 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查给定数字是否是完全质数
     """
-    # TODO: 实现最优解法
-    pass
-
+    num_str = str(num)
+    for i in range(1, len(num_str) + 1):
+        prefix = int(num_str[:i])
+        suffix = int(num_str[-i:])
+        if not is_prime(prefix) or not is_prime(suffix):
+            return False
+    return True
 
 Solution = create_solution(solution_function_name)

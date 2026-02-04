@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来遍历二叉树，并记录每一层的节点值之和。然后对这些层和进行排序，找到第 k 大的层和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 BFS 遍历二叉树，记录每一层的节点值之和。
+2. 将所有层和存储在一个列表中。
+3. 对层和列表进行降序排序。
+4. 如果树的层数小于 k，返回 -1；否则返回第 k 大的层和。
 
 关键点:
-- [TODO]
+- 使用队列进行 BFS 遍历。
+- 记录每一层的节点值之和。
+- 对层和列表进行排序以找到第 k 大的层和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是树中的节点数。BFS 的时间复杂度是 O(n)，排序的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储每一层的节点值之和。
 """
 
 # ============================================================================
@@ -44,17 +48,34 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def kth_largest_level_sum(root: Optional[TreeNode], k: int) -> int:
+    if not root:
+        return -1
+
+    from collections import deque
+    queue = deque([root])
+    level_sums = []
+
+    while queue:
+        level_sum = 0
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            level_sum += node.val
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        level_sums.append(level_sum)
+
+    if len(level_sums) < k:
+        return -1
+
+    level_sums.sort(reverse=True)
+    return level_sums[k - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_largest_level_sum)

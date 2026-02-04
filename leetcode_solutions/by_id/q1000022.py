@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和动态规划来检查每个单词是否可以由其他单词组合而成。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有单词按长度降序排序，如果长度相同则按字典序升序排序。
+2. 使用一个集合来存储所有单词，以便快速查找。
+3. 定义一个递归函数 `can_form` 来检查一个单词是否可以由其他单词组合而成。
+4. 对于每个单词，使用 `can_form` 函数检查它是否可以由其他单词组合而成。
+5. 返回第一个满足条件的单词，如果没有找到则返回空字符串。
 
 关键点:
-- [TODO]
+- 使用递归和记忆化搜索来避免重复计算。
+- 通过排序确保优先返回最长且字典序最小的单词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * l^2)，其中 n 是单词的数量，l 是单词的最大长度。
+空间复杂度: O(n * l)，用于存储单词集合和递归调用栈。
 """
 
 # ============================================================================
@@ -49,12 +53,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_word(words: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出由其他单词组合而成的最长单词
     """
-    # TODO: 实现最优解法
-    pass
+    # 按长度降序排序，如果长度相同则按字典序升序排序
+    words.sort(key=lambda x: (-len(x), x))
+    
+    # 使用集合存储所有单词，以便快速查找
+    word_set = set(words)
+    
+    def can_form(word: str, memo: dict) -> bool:
+        if word in memo:
+            return memo[word]
+        
+        for i in range(1, len(word)):
+            prefix, suffix = word[:i], word[i:]
+            if prefix in word_set and (suffix in word_set or can_form(suffix, memo)):
+                memo[word] = True
+                return True
+        
+        memo[word] = False
+        return False
+    
+    for word in words:
+        word_set.remove(word)  # 从集合中移除当前单词
+        if can_form(word, {}):
+            return word
+        word_set.add(word)  # 将当前单词重新加入集合
+    
+    return ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_word)

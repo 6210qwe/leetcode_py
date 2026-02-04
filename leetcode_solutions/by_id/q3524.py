@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逐行和逐列检查，计算最少翻转次数，使得每行和每列都成为回文，并且确保矩阵中 1 的数量可以被 4 整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化翻转次数为 0。
+2. 逐行检查，计算每一行变成回文所需的最小翻转次数。
+3. 逐列检查，计算每一列变成回文所需的最小翻转次数。
+4. 计算矩阵中 1 的总数，并调整翻转次数，使得 1 的数量可以被 4 整除。
 
 关键点:
-- [TODO]
+- 逐行和逐列检查时，只需要比较前半部分和后半部分的对应位置。
+- 调整 1 的数量时，可以通过翻转某些位置来实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_flips_to_palindromic_grid(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最少翻转次数，使得矩阵中所有行和列都是回文的，且矩阵中 1 的数目可以被 4 整除。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    flips = 0
+    ones_count = 0
 
+    # 逐行检查
+    for row in grid:
+        for i in range(n // 2):
+            if row[i] != row[n - 1 - i]:
+                flips += 1
+        ones_count += sum(row)
 
-Solution = create_solution(solution_function_name)
+    # 逐列检查
+    for j in range(n):
+        for i in range(m // 2):
+            if grid[i][j] != grid[m - 1 - i][j]:
+                flips += 1
+
+    # 调整 1 的数量
+    ones_count %= 4
+    if ones_count == 1 or ones_count == 3:
+        flips += 1
+    elif ones_count == 2:
+        flips += 2
+
+    return flips
+
+Solution = create_solution(min_flips_to_palindromic_grid)

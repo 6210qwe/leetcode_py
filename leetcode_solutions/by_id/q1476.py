@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用矩阵的排序特性，从右上角开始遍历，遇到负数则移动到下一行，否则向左移动。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向矩阵的右上角。
+2. 如果当前元素是负数，则该行的所有剩余元素都是负数，将计数器增加该行剩余元素的数量，并移动到下一行。
+3. 如果当前元素是非负数，则向左移动一列。
+4. 重复上述步骤直到遍历完整个矩阵。
 
 关键点:
-- [TODO]
+- 从右上角开始遍历可以利用矩阵的排序特性，减少不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_negatives(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计有序矩阵中的负数
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    m, n = len(grid), len(grid[0])
+    row, col = 0, n - 1
+    count = 0
+
+    while row < m and col >= 0:
+        if grid[row][col] < 0:
+            count += (m - row)
+            col -= 1
+        else:
+            row += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_negatives)

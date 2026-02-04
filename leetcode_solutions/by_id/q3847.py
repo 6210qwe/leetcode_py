@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和并查集来计算最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字的数位和，并将其与原数字一起存储在一个列表中。
+2. 将该列表按数位和升序排序，如果数位和相同则按数字本身升序排序。
+3. 使用并查集来跟踪每个数字的原始位置和目标位置，计算最小交换次数。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地计算最小交换次数。
+- 按数位和和数字本身排序以确保正确排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储并查集和排序后的列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find(parent, i):
+    if parent[i] != i:
+        parent[i] = find(parent, parent[i])
+    return parent[i]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def union(parent, rank, x, y):
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        if rank[root_x] < rank[root_y]:
+            parent[root_x] = root_y
+        elif rank[root_x] > rank[root_y]:
+            parent[root_y] = root_x
+        else:
+            parent[root_y] = root_x
+            rank[root_x] += 1
 
+def min_swaps_to_sort_by_digit_sum(nums: List[int]) -> int:
+    n = len(nums)
+    digit_sums = [(sum(int(digit) for digit in str(num)), num, i) for i, num in enumerate(nums)]
+    digit_sums.sort()
+    
+    parent = list(range(n))
+    rank = [0] * n
+    
+    original_positions = {num: i for i, num in enumerate(nums)}
+    target_positions = [original_positions[digit_sum[1]] for digit_sum in digit_sums]
+    
+    swaps = 0
+    for i in range(n):
+        if i != target_positions[i]:
+            swaps += 1
+            union(parent, rank, i, target_positions[i])
+    
+    return swaps
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swaps_to_sort_by_digit_sum)

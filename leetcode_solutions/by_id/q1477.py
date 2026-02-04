@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,40 +22,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀积来存储每个位置的累积乘积，这样可以在 O(1) 时间内计算任意子数组的乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个列表 `prefix_products` 来存储前缀积。
+2. 在 `add` 方法中，如果添加的数字是 0，则重置 `prefix_products` 列表，否则将当前数字乘以前一个前缀积并添加到 `prefix_products` 中。
+3. 在 `getProduct` 方法中，通过前缀积计算最后 k 个数字的乘积。
 
 关键点:
-- [TODO]
+- 使用前缀积可以快速计算任意子数组的乘积。
+- 当遇到 0 时，需要重置前缀积列表，因为之后的所有乘积都会是 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - `add` 和 `getProduct` 方法都是 O(1) 时间复杂度。
+空间复杂度: O(n) - 其中 n 是添加的数字数量，因为我们需要存储前缀积。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class ProductOfNumbers:
+
+    def __init__(self):
+        self.prefix_products = [1]  # 初始化前缀积列表，初始值为 1
+
+    def add(self, num: int) -> None:
+        if num == 0:
+            self.prefix_products = [1]  # 重置前缀积列表
+        else:
+            self.prefix_products.append(self.prefix_products[-1] * num)
+
+    def getProduct(self, k: int) -> int:
+        if k >= len(self.prefix_products):
+            return 0  # 如果 k 大于等于前缀积列表的长度，说明有 0 存在
+        return self.prefix_products[-1] // self.prefix_products[-k - 1]
 
 
-Solution = create_solution(solution_function_name)
+# 测试
+if __name__ == "__main__":
+    obj = ProductOfNumbers()
+    obj.add(3)
+    obj.add(0)
+    obj.add(2)
+    obj.add(5)
+    obj.add(4)
+    print(obj.getProduct(2))  # 输出: 20
+    print(obj.getProduct(3))  # 输出: 40
+    print(obj.getProduct(4))  # 输出: 0
+    obj.add(8)
+    print(obj.getProduct(2))  # 输出: 32
+```
+
+这个实现使用了前缀积来存储每个位置的累积乘积，从而可以在 O(1) 时间内计算任意子数组的乘积。`add` 和 `getProduct` 方法的时间复杂度都是 O(1)，空间复杂度是 O(n)，其中 n 是添加的数字数量。

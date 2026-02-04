@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最大的廉价数字。对于每个中间值，计算其累加价值，并根据累加价值调整二分查找的范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界。
+2. 在二分查找的过程中，计算中间值的累加价值。
+3. 根据累加价值调整二分查找的范围，直到找到最大的廉价数字。
 
 关键点:
-- [TODO]
+- 使用位运算来高效计算每个数字的价值。
+- 通过二分查找来减少搜索空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n) * log(n))，其中 n 是可能的最大值（即 10^15），每次二分查找需要 O(log(n)) 次迭代，每次迭代需要 O(log(n)) 时间来计算累加价值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(k: int, x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最大的廉价数字
     """
-    # TODO: 实现最优解法
-    pass
+    def calculate_price(num: int) -> int:
+        price = 0
+        for i in range(x, 64, x):
+            if (num & (1 << i)) != 0:
+                price += 1
+        return price
+
+    def accumulate_price(num: int) -> int:
+        total_price = 0
+        for i in range(1, num + 1):
+            total_price += calculate_price(i)
+        return total_price
+
+    left, right = 0, 10**15
+    while left < right:
+        mid = (left + right + 1) // 2
+        if accumulate_price(mid) <= k:
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典存储所有可能的前缀和后缀组合及其对应的单词下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，遍历每个单词，生成所有可能的前缀和后缀组合，并将其存储在字典中。
+2. 查询时，直接从字典中查找前缀和后缀组合，返回对应的单词下标。
 
 关键点:
-- [TODO]
+- 通过将前缀和后缀组合成一个键，可以快速查找。
+- 使用字典存储前缀和后缀组合及其对应的单词下标，确保查询时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m^2)，其中 n 是单词的数量，m 是单词的最大长度。初始化时需要生成所有可能的前缀和后缀组合。
+空间复杂度: O(n * m^2)，存储所有可能的前缀和后缀组合及其对应的单词下标。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class WordFilter:
+
+    def __init__(self, words: List[str]):
+        self.prefix_suffix_map = {}
+        for index, word in enumerate(words):
+            length = len(word)
+            for i in range(length + 1):
+                for j in range(length + 1):
+                    prefix = word[:i]
+                    suffix = word[j:]
+                    self.prefix_suffix_map[(prefix, suffix)] = index
+
+    def f(self, prefix: str, suffix: str) -> int:
+        if (prefix, suffix) in self.prefix_suffix_map:
+            return self.prefix_suffix_map[(prefix, suffix)]
+        return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(WordFilter)

@@ -21,24 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 从链表尾部往前找到第一个不为 9 的节点加一，其后的所有节点清零；若不存在，则在头部新建 1。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 使用哑节点 dummy 指向 head，遍历链表，用指针 `last_not_nine` 记录「最后一个值不为 9 的节点」，初始指向 dummy。
+2. 完成遍历后：
+   - 将 `last_not_nine.val += 1`。
+   - 将 `last_not_nine` 之后的所有节点值设为 0。
+3. 若 dummy.val 仍为 0，则说明没有进位到新头，返回 dummy.next；否则返回 dummy 作为新表头。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 不需要反转链表或用栈，单次遍历即可完成。
+- 通过哑节点自然处理「所有位都为 9」的情况，例如 9->9 变为 1->0->0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n)，n 为链表长度，两次线性扫描：一次确定 `last_not_nine`，一次把其后节点清零。
+空间复杂度: O(1) 额外空间。
 """
 
 # ============================================================================
@@ -51,25 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def plus_one_linked_list(params):
+def plus_one_linked_list(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> plus_one_linked_list([待实现])
-        [待实现]
+    单链表表示非负整数，在其基础上加一并返回新表头。
+
+    先找到从尾部起第一个不是 9 的节点，加一并将之后所有节点置为 0，如不存在则在头部插入 1。
     """
-    # TODO: 实现最优解法
-    pass
+    dummy = ListNode(0, head)
+    last_not_nine = dummy
+    cur = head
+    while cur:
+        if cur.val != 9:
+            last_not_nine = cur
+        cur = cur.next
+
+    # last_not_nine 之后全部变为 0
+    last_not_nine.val += 1
+    cur = last_not_nine.next
+    while cur:
+        cur.val = 0
+        cur = cur.next
+
+    return dummy if dummy.val else dummy.next
 
 
 # 自动生成Solution类（无需手动编写）

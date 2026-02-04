@@ -21,40 +21,72 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来跟踪每个人的朋友关系，并在每次合并时检查是否所有人都已经彼此熟识。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将每个人的父节点设为自己。
+2. 对所有事件按时间排序。
+3. 遍历每个事件，合并两个朋友的关系，并更新集合大小。
+4. 如果在某个时刻，所有人的父节点都指向同一个根节点，则返回该时刻。
+5. 如果遍历完所有事件后仍未找到这样的时刻，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用路径压缩和按秩合并优化并查集操作。
+- 在每次合并时检查是否所有人都已经彼此熟识。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 logs 的长度。主要由排序操作决定。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
 
-def solution_function_name(params):
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+            self.count -= 1
+
+def earliest_acq(logs: List[List[int]], n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所有人成为朋友的最早时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 按时间排序
+    logs.sort(key=lambda x: x[0])
+    
+    uf = UnionFind(n)
+    
+    for timestamp, x, y in logs:
+        uf.union(x, y)
+        if uf.count == 1:
+            return timestamp
+    
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliest_acq)

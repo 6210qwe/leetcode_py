@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和滑动窗口来计算可以在 k 次操作内变为非递减的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别表示当前子数组的起始和结束位置。
+2. 使用一个变量 `total` 来记录总的子数组数量。
+3. 使用一个变量 `invalid` 来记录不能在 k 次操作内变为非递减的子数组数量。
+4. 使用一个变量 `prefix_sum` 来记录前缀和，用于快速计算子数组的操作次数。
+5. 遍历数组，对于每个起始位置 i，移动 j 使得子数组 [i, j] 可以在 k 次操作内变为非递减。
+6. 更新 `invalid` 和 `total`。
+7. 返回 `total - invalid` 作为结果。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算子数组的操作次数。
+- 使用双指针和滑动窗口来高效地找到满足条件的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_non_decreasing_subarrays(nums: List[int], k: int) -> int:
+    n = len(nums)
+    total = 0
+    invalid = 0
+    prefix_sum = 0
+    i = 0
+    
+    for j in range(n):
+        while i < j and nums[j] - nums[i] > k:
+            prefix_sum -= (j - i) * (nums[i] - (i > 0 and nums[i - 1] or 0))
+            i += 1
+        prefix_sum += (j - i + 1) * (nums[j] - (j > 0 and nums[j - 1] or 0))
+        invalid += j - i + 1
+        total += (j + 1) * (n - j)
+    
+    return total - invalid
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_non_decreasing_subarrays)

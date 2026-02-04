@@ -21,55 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用前缀和和哈希表来记录从根节点到当前节点的所有路径和，并检查是否存在某个路径和等于当前路径和减去目标值。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 定义一个递归函数 `dfs`，用于深度优先遍历二叉树。
+2. 使用一个哈希表 `prefix_sum` 来记录从根节点到当前节点的所有路径和及其出现次数。
+3. 在递归过程中，更新当前路径和，并检查是否存在某个路径和等于当前路径和减去目标值。
+4. 递归结束后，回溯时更新哈希表。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用前缀和和哈希表来优化时间和空间复杂度。
+- 注意边界条件，如空树的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 每个节点访问一次
+空间复杂度: O(n) - 哈希表存储路径和
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def path_sum_iii(params):
+def path_sum_iii(root: Optional[TreeNode], target_sum: int) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算二叉树中路径和等于 targetSum 的路径数目
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用前缀和和哈希表来记录从根节点到当前节点的所有路径和，并检查是否存在某个路径和等于当前路径和减去目标值。
     
     Args:
-        params: [待实现] 参数说明
+        root (Optional[TreeNode]): 二叉树的根节点
+        target_sum (int): 目标路径和
         
     Returns:
-        [待实现] 返回值说明
+        int: 路径和等于 targetSum 的路径数目
         
     Example:
-        >>> path_sum_iii([待实现])
-        [待实现]
+        >>> path_sum_iii(TreeNode.from_list([10,5,-3,3,2,None,11,3,-2,None,1]), 8)
+        3
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], current_sum: int, prefix_sum: dict, target: int) -> int:
+        if not node:
+            return 0
+        
+        current_sum += node.val
+        count = prefix_sum.get(current_sum - target, 0)
+        prefix_sum[current_sum] = prefix_sum.get(current_sum, 0) + 1
+        
+        left_count = dfs(node.left, current_sum, prefix_sum, target)
+        right_count = dfs(node.right, current_sum, prefix_sum, target)
+        
+        prefix_sum[current_sum] -= 1
+        if prefix_sum[current_sum] == 0:
+            del prefix_sum[current_sum]
+        
+        return count + left_count + right_count
+    
+    prefix_sum = {0: 1}
+    return dfs(root, 0, prefix_sum, target_sum)
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用异或运算来交换两个数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. a = a ^ b
+2. b = a ^ b (此时 a = a ^ b)
+3. a = a ^ b (此时 b = a ^ b, a = a ^ b ^ (a ^ b) = b)
 
 关键点:
-- [TODO]
+- 异或运算可以用来交换两个数而不需要额外的临时变量
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(numbers: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用异或运算交换两个数
     """
-    # TODO: 实现最优解法
-    pass
+    if len(numbers) != 2:
+        raise ValueError("Input list must contain exactly two integers.")
+    
+    a, b = numbers[0], numbers[1]
+    
+    # 使用异或运算交换 a 和 b
+    a = a ^ b
+    b = a ^ b
+    a = a ^ b
+    
+    return [a, b]
 
 
 Solution = create_solution(solution_function_name)

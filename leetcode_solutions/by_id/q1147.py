@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每行的模式及其出现次数。对于每一行，我们可以通过将每个元素与第一个元素异或来生成一个模式字符串。这样，相同的行在翻转后会有相同的模式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每种模式的出现次数。
+2. 遍历每一行，生成该行的模式字符串。
+3. 更新哈希表中该模式的出现次数。
+4. 找出哈希表中最大值，即为最大行数。
 
 关键点:
-- [TODO]
+- 通过异或操作生成模式字符串，确保相同行在翻转后具有相同的模式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。我们需要遍历整个矩阵。
+空间复杂度: O(m * n)，在最坏情况下，哈希表中可能存储所有不同的模式。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_equal_rows_after_flips(matrix: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算经过一些翻转后，行内所有值都相等的最大行数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+
+    pattern_count = defaultdict(int)
+
+    for row in matrix:
+        # 生成模式字符串
+        pattern = tuple(row[0] ^ val for val in row)
+        pattern_count[pattern] += 1
+
+    # 找出最大行数
+    return max(pattern_count.values())
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_equal_rows_after_flips)

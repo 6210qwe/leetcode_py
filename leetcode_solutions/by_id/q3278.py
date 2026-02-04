@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和双指针方法来找到所有符合条件的点对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将点按 x 坐标升序排序，如果 x 相同，则按 y 坐标降序排序。
+2. 使用双指针遍历排序后的点，找到所有满足条件的点对。
+3. 对于每个点，使用另一个指针从当前点向后查找，确保没有其他点在它们形成的长方形内。
 
 关键点:
-- [TODO]
+- 排序保证了 x 坐标的顺序，同时 y 坐标的降序排列可以方便地处理 y 坐标相同的情况。
+- 双指针方法有效地减少了不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_valid_pairs(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算满足条件的点对数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 x 坐标升序排序，如果 x 相同，则按 y 坐标降序排序
+    points.sort(key=lambda p: (p[0], -p[1]))
+    
+    count = 0
+    n = len(points)
+    
+    for i in range(n):
+        max_y = -1
+        for j in range(i + 1, n):
+            if points[j][1] > max_y and points[j][1] < points[i][1]:
+                count += 1
+                max_y = points[j][1]
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_valid_pairs)

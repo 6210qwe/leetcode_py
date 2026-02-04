@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 棋盘的每一行和每一列都必须是交替的0和1。我们可以通过检查每一行和每一列的模式来确定是否可以将矩阵转换为棋盘。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查每一行和每一列的模式是否符合棋盘的要求。
+2. 计算需要交换的行数和列数。
+3. 确保行和列的模式一致，并且满足棋盘的要求。
 
 关键点:
-- [TODO]
+- 每一行和每一列的模式必须是交替的0和1。
+- 通过计算行和列的差异来确定最小交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def moves_to_chessboard(board: List[List[int]]) -> int:
+    n = len(board)
+    
+    # 检查每一行和每一列的模式是否符合棋盘的要求
+    def is_valid_pattern(pattern):
+        count_0 = pattern.count(0)
+        count_1 = pattern.count(1)
+        return abs(count_0 - count_1) <= 1 and (count_0 == count_1 or n % 2 == 1)
+    
+    # 获取每一行和每一列的模式
+    row_patterns = [''.join(map(str, row)) for row in board]
+    col_patterns = [''.join(map(str, col)) for col in zip(*board)]
+    
+    # 检查行和列的模式是否有效
+    if not all(is_valid_pattern(row) for row in row_patterns) or not all(is_valid_pattern(col) for col in col_patterns):
+        return -1
+    
+    # 计算需要交换的行数和列数
+    def count_swaps(pattern):
+        count = 0
+        for i in range(n):
+            if (pattern[i] != '0' and i % 2 == 0) or (pattern[i] != '1' and i % 2 == 1):
+                count += 1
+        return min(count, n - count) // 2
+    
+    row_swaps = count_swaps(row_patterns[0])
+    col_swaps = count_swaps(col_patterns[0])
+    
+    return row_swaps + col_swaps
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(moves_to_chessboard)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针模拟 Alice 和 Bob 浇水的过程，同时记录重新灌满水罐的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 Alice 和 Bob 的水罐容量，以及重新灌满水罐的次数。
+2. 使用双指针分别从左到右和从右到左遍历植物数组。
+3. 对于每一株植物，检查 Alice 和 Bob 是否有足够的水来浇水。
+4. 如果没有足够的水，则重新灌满水罐并增加重新灌满水罐的次数。
+5. 如果 Alice 和 Bob 到达同一株植物，比较两人的水罐剩余水量，决定谁来浇水。
+6. 返回重新灌满水罐的总次数。
 
 关键点:
-- [TODO]
+- 使用双指针模拟 Alice 和 Bob 的浇水过程。
+- 在每次浇水前检查水罐剩余水量，必要时重新灌满水罐。
+- 处理 Alice 和 Bob 到达同一株植物的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是植物的数量。每个植物最多被访问一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(plants: List[int], capacityA: int, capacityB: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 Alice 和 Bob 浇灌所有植物过程中重新灌满水罐的次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(plants)
+    waterA, waterB = capacityA, capacityB
+    refill_count = 0
+    left, right = 0, n - 1
+
+    while left <= right:
+        if left == right:
+            if waterA >= plants[left] or waterB >= plants[right]:
+                break
+            else:
+                refill_count += 1
+                break
+
+        if waterA < plants[left]:
+            waterA = capacityA
+            refill_count += 1
+        waterA -= plants[left]
+        left += 1
+
+        if waterB < plants[right]:
+            waterB = capacityB
+            refill_count += 1
+        waterB -= plants[right]
+        right -= 1
+
+    return refill_count
 
 
 Solution = create_solution(solution_function_name)

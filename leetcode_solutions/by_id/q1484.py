@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来检查二叉树中是否存在一条路径，该路径上的节点值与链表中的节点值一一对应。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_sub_path`，用于检查从当前节点开始是否能找到链表的路径。
+2. 在主函数 `is_sub_path_in_tree` 中，对二叉树进行遍历，对于每个节点调用 `is_sub_path` 函数。
+3. 如果找到匹配的路径，返回 `True`；否则，继续遍历其他节点。
+4. 如果遍历完整棵树都没有找到匹配的路径，返回 `False`。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 在每次递归调用中，同时检查当前节点及其左右子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是二叉树的节点数，m 是链表的节点数。最坏情况下，我们需要对每个二叉树节点进行一次链表的匹配。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_sub_path(head: ListNode, root: TreeNode) -> bool:
+    if not head:
+        return True
+    if not root:
+        return False
+    if head.val == root.val:
+        if is_sub_path(head.next, root.left) or is_sub_path(head.next, root.right):
+            return True
+    return is_sub_path(head, root.left) or is_sub_path(head, root.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_sub_path_in_tree(head: Optional[ListNode], root: Optional[TreeNode]) -> bool:
+    if not head:
+        return True
+    if not root:
+        return False
+    if is_sub_path(head, root):
+        return True
+    return is_sub_path_in_tree(head, root.left) or is_sub_path_in_tree(head, root.right)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_sub_path_in_tree)

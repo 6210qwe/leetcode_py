@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算子数组中的唯一元素，并找到这些元素之间的最小差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建前缀和数组，记录每个位置之前出现过的元素。
+2. 对于每个查询，使用前缀和数组快速找到子数组中的唯一元素。
+3. 计算这些唯一元素之间的最小差值。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速查找子数组中的唯一元素。
+- 通过排序和遍历唯一元素来找到最小差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log(max(nums)))，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n * max(nums))，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_absolute_difference(nums: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums)
+    max_num = max(nums)
+    prefix_sum = [[0] * (max_num + 1) for _ in range(n + 1)]
+    
+    # 构建前缀和数组
+    for i in range(1, n + 1):
+        for j in range(1, max_num + 1):
+            prefix_sum[i][j] = prefix_sum[i - 1][j]
+        prefix_sum[i][nums[i - 1]] += 1
+    
+    def get_unique_elements(l: int, r: int) -> List[int]:
+        unique_elements = []
+        for num in range(1, max_num + 1):
+            if prefix_sum[r + 1][num] > prefix_sum[l][num]:
+                unique_elements.append(num)
+        return unique_elements
+    
+    result = []
+    for l, r in queries:
+        unique_elements = get_unique_elements(l, r)
+        if len(unique_elements) < 2:
+            result.append(-1)
+        else:
+            unique_elements.sort()
+            min_diff = float('inf')
+            for i in range(1, len(unique_elements)):
+                min_diff = min(min_diff, unique_elements[i] - unique_elements[i - 1])
+            result.append(min_diff)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_absolute_difference)

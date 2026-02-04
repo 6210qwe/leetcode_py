@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为字符串 s 前 i 个字符的最小额外字符数。通过遍历字符串 s 的每一个位置，并检查从该位置开始的所有可能的子字符串是否在字典中，我们可以更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0，表示空字符串的额外字符数为 0。
+2. 对于每一个位置 i，初始化 dp[i] 为 dp[i-1] + 1，表示当前字符是一个额外字符。
+3. 检查从位置 i 开始的所有可能的子字符串，如果某个子字符串在字典中，则更新 dp[i+len(substring)] 为 min(dp[i+len(substring)], dp[i-1])。
+4. 返回 dp[len(s)]，即整个字符串的最小额外字符数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = min(dp[i], dp[j-1])，其中 j 是从 i 开始的子字符串的结束位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是字符串 s 的长度，m 是字典中单词的最大长度。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_extra_chars(s: str, dictionary: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串 s 中的最小额外字符数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+
+    for i in range(1, n + 1):
+        dp[i] = dp[i - 1] + 1
+        for word in dictionary:
+            if i >= len(word) and s[i - len(word):i] == word:
+                dp[i] = min(dp[i], dp[i - len(word)])
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_extra_chars)

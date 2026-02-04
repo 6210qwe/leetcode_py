@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来找到所有可能的配对方案，并计算每种方案的兼容性评分和，选择最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个学生和每个导师之间的兼容性评分。
+2. 使用回溯法尝试所有可能的学生和导师的配对方案。
+3. 在每一步中，选择一个未分配的学生和一个未分配的导师进行配对，并递归地继续配对其他学生和导师。
+4. 递归终止条件是所有学生都已分配完毕，此时计算当前方案的兼容性评分和。
+5. 选择最大兼容性评分和作为最终结果。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示哪些学生和导师已被分配。
+- 回溯法确保所有可能的配对方案都被考虑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m!)
+空间复杂度: O(m)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_compatibility_score_sum(students: List[List[int]], mentors: List[List[int]]) -> int:
+    m = len(students)
+    n = len(students[0])
+    
+    # 计算每个学生和每个导师之间的兼容性评分
+    compatibility = [[0] * m for _ in range(m)]
+    for i in range(m):
+        for j in range(m):
+            score = sum(a == b for a, b in zip(students[i], mentors[j]))
+            compatibility[i][j] = score
+    
+    # 使用回溯法尝试所有可能的配对方案
+    def backtrack(student_idx, used_mask):
+        if student_idx == m:
+            return 0
+        
+        max_score = 0
+        for mentor_idx in range(m):
+            if not (used_mask & (1 << mentor_idx)):
+                current_score = compatibility[student_idx][mentor_idx] + backtrack(student_idx + 1, used_mask | (1 << mentor_idx))
+                max_score = max(max_score, current_score)
+        
+        return max_score
+    
+    return backtrack(0, 0)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_compatibility_score_sum)

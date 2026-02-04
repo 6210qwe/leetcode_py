@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 和因数分解来优化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数与 k 的最大公约数，并统计每个 GCD 的出现次数。
+2. 遍历所有可能的 GCD 组合，检查它们的乘积是否能被 k 整除。
+3. 根据组合数公式计算满足条件的下标对数目。
 
 关键点:
-- [TODO]
+- 利用 GCD 来减少不必要的计算。
+- 通过因数分解和组合数公式来高效计算满足条件的下标对数目。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(k))
+空间复杂度: O(k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
+from collections import Counter
 
-
-def solution_function_name(params):
+def count_pairs_divisible_by_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算可以被 k 整除的下标对数目
     """
-    # TODO: 实现最优解法
-    pass
+    gcd_count = Counter(math.gcd(num, k) for num in nums)
+    result = 0
+    
+    for gcd_i, count_i in gcd_count.items():
+        for gcd_j, count_j in gcd_count.items():
+            if gcd_i * gcd_j % k == 0:
+                if gcd_i == gcd_j:
+                    result += count_i * (count_i - 1) // 2
+                elif gcd_i < gcd_j:
+                    result += count_i * count_j
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs_divisible_by_k)

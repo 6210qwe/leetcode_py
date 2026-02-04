@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表构建替换表，并根据替换表解码消息。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建替换表：遍历 key 字符串，记录每个字母第一次出现的位置，并将其映射到对应的普通英文字母。
+2. 解码消息：遍历 message 字符串，根据替换表将每个字母替换为对应的普通英文字母，空格保持不变。
 
 关键点:
-- [TODO]
+- 使用字典来存储替换表，确保快速查找。
+- 只记录每个字母第一次出现的位置，避免重复。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 key 的长度，m 是 message 的长度。构建替换表的时间复杂度为 O(n)，解码消息的时间复杂度为 O(m)。
+空间复杂度: O(1)，替换表的大小固定为 26 个字母。
 """
 
 # ============================================================================
@@ -49,12 +50,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decode_message(key: str, message: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    解密消息
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建替换表
+    replacement_table = {}
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    idx = 0
+    
+    for char in key:
+        if char not in replacement_table and char != ' ':
+            replacement_table[char] = alphabet[idx]
+            idx += 1
+            if idx == 26:
+                break
+    
+    # 解码消息
+    decoded_message = ''
+    for char in message:
+        if char == ' ':
+            decoded_message += ' '
+        else:
+            decoded_message += replacement_table[char]
+    
+    return decoded_message
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decode_message)

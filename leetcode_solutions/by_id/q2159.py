@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录每个数组中出现的元素，并通过集合的交集操作找到至少在两个数组中出现的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个数组转换为集合，以去除重复元素。
+2. 计算这三个集合的交集，得到至少在两个数组中出现的元素。
+3. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用集合操作来高效地找到至少在两个数组中出现的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n1 + n2 + n3)，其中 n1, n2, n3 分别是三个数组的长度。
+空间复杂度: O(n1 + n2 + n3)，用于存储三个集合。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def two_out_of_three(nums1: List[int], nums2: List[int], nums3: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到至少在两个数组中出现的元素
     """
-    # TODO: 实现最优解法
-    pass
+    set1 = set(nums1)
+    set2 = set(nums2)
+    set3 = set(nums3)
+    
+    # 计算三个集合的并集，然后过滤出至少在两个集合中出现的元素
+    result_set = (set1 & set2) | (set1 & set3) | (set2 & set3)
+    
+    return list(result_set)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(two_out_of_three)

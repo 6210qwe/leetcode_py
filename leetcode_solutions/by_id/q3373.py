@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用埃拉托斯特尼筛法预处理所有可能的质数，并在遍历数组时记录质数的位置，最后计算最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用埃拉托斯特尼筛法生成 1 到 100 之间的所有质数。
+2. 遍历数组，记录每个质数的下标。
+3. 计算质数下标之间的最大距离。
 
 关键点:
-- [TODO]
+- 使用埃拉托斯特尼筛法高效生成质数。
+- 在遍历数组时记录质数下标，并计算最大距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + log(log(max_num)))，其中 n 是数组长度，max_num 是数组中的最大值（这里是 100）。
+空间复杂度: O(max_num)，用于存储质数。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回两个（不一定不同的）质数在 nums 中下标的最大距离。
     """
-    # TODO: 实现最优解法
-    pass
+    # 生成 1 到 100 之间的所有质数
+    max_num = 100
+    is_prime = [True] * (max_num + 1)
+    is_prime[0] = is_prime[1] = False
+    for i in range(2, int(max_num**0.5) + 1):
+        if is_prime[i]:
+            for j in range(i * i, max_num + 1, i):
+                is_prime[j] = False
+
+    # 记录质数的下标
+    prime_indices = []
+    for i, num in enumerate(nums):
+        if is_prime[num]:
+            prime_indices.append(i)
+
+    # 计算质数下标之间的最大距离
+    if len(prime_indices) == 1:
+        return 0
+    else:
+        return max(prime_indices[-1] - prime_indices[0], 0)
 
 
 Solution = create_solution(solution_function_name)

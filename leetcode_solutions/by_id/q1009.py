@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次找到当前未排序部分的最大值，将其通过两次翻转移动到未排序部分的末尾。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到当前未排序部分的最大值及其索引。
+2. 将最大值翻转到数组开头。
+3. 将最大值翻转到未排序部分的末尾。
+4. 重复上述步骤，直到整个数组排序完成。
 
 关键点:
-- [TODO]
+- 通过两次翻转将最大值移动到未排序部分的末尾。
+- 记录每次翻转的 k 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组长度。每次找到最大值需要 O(n) 时间，总共需要进行 O(n) 次翻转。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def flip(arr: List[int], k: int) -> None:
     """
-    函数式接口 - [TODO] 实现
+    反转数组 arr 的前 k 个元素。
     """
-    # TODO: 实现最优解法
-    pass
+    arr[:k] = arr[:k][::-1]
 
+def pancake_sort(arr: List[int]) -> List[int]:
+    """
+    使用煎饼排序对数组进行排序，并返回翻转操作的 k 值序列。
+    """
+    def find_max_index(sub_arr: List[int]) -> int:
+        return sub_arr.index(max(sub_arr))
 
-Solution = create_solution(solution_function_name)
+    flips = []
+    for size in range(len(arr), 1, -1):
+        max_index = find_max_index(arr[:size])
+        if max_index + 1 != size:
+            # 将最大值翻转到数组开头
+            if max_index != 0:
+                flip(arr, max_index + 1)
+                flips.append(max_index + 1)
+            # 将最大值翻转到未排序部分的末尾
+            flip(arr, size)
+            flips.append(size)
+    return flips
+
+Solution = create_solution(pancake_sort)

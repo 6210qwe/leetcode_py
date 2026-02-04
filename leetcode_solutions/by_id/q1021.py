@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点需要或多余的硬币数，并累加移动次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 dfs(node)，返回当前节点及其子树所需或多余的硬币数。
+2. 对于每个节点，计算其左子树和右子树的硬币差值。
+3. 当前节点的硬币差值为 node.val + left_diff + right_diff - 1。
+4. 累加左右子树的绝对差值作为移动次数。
+5. 返回当前节点的硬币差值。
 
 关键点:
-- [TODO]
+- 通过递归计算每个节点的硬币差值，并累加移动次数。
+- 每个节点的硬币差值为 node.val + 左右子树的硬币差值 - 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_coins(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使每个节点上只有 1 枚硬币所需的最少移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    moves = 0
+
+    def dfs(node: Optional[TreeNode]) -> int:
+        nonlocal moves
+        if not node:
+            return 0
+        # 计算左子树和右子树的硬币差值
+        left_diff = dfs(node.left)
+        right_diff = dfs(node.right)
+        # 当前节点的硬币差值
+        diff = node.val + left_diff + right_diff - 1
+        # 累加移动次数
+        moves += abs(left_diff) + abs(right_diff)
+        return diff
+
+    dfs(root)
+    return moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_coins)

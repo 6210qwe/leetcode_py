@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的最长子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别表示当前窗口的左边界和右边界。
+2. 遍历数组，使用 `right` 指针扩展窗口。
+3. 检查当前窗口是否满足条件：
+   - 窗口的第一个元素是偶数。
+   - 窗口内的元素交替出现奇数和偶数。
+   - 窗口内的所有元素都小于等于 `threshold`。
+4. 如果不满足条件，移动 `left` 指针缩小窗口，直到满足条件。
+5. 更新最长子数组的长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地找到满足条件的最长子数组。
+- 通过调整 `left` 和 `right` 指针来维护窗口的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次由 `right` 指针，一次由 `left` 指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +56,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_even_odd_subarray_with_threshold(nums: List[int], threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到满足条件的最长子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    max_length = 0
+    left = 0
+
+    for right in range(n):
+        # 检查当前窗口是否满足条件
+        if (nums[left] % 2 == 0 and
+                all(nums[i] % 2 != nums[i + 1] % 2 for i in range(left, right)) and
+                all(nums[i] <= threshold for i in range(left, right + 1))):
+            max_length = max(max_length, right - left + 1)
+        else:
+            left = right
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_even_odd_subarray_with_threshold)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个集合来存储元音字符，然后遍历字符串，过滤掉所有元音字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个包含所有元音字符的集合。
+2. 遍历输入字符串，将非元音字符加入结果字符串。
+3. 返回结果字符串。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找元音字符。
+- 通过列表推导式来过滤掉元音字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，除了输出结果外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_vowels(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除字符串中的所有元音字符
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set("aeiouAEIOU")
+    return ''.join([char for char in s if char not in vowels])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_vowels)

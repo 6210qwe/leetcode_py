@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀积和后缀积来计算每个元素的乘积矩阵。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀积数组 prefix 和后缀积数组 suffix。
+2. 对于每个元素 grid[i][j]，其乘积为 prefix[i][j] * suffix[i][j]。
+3. 将结果对 12345 取余数。
 
 关键点:
-- [TODO]
+- 使用前缀积和后缀积可以避免重复计算，提高效率。
+- 通过取模操作确保结果在合理范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)
+空间复杂度: O(n * m)
 """
 
 # ============================================================================
@@ -49,12 +51,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def construct_product_matrix(grid: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构造乘积矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(grid), len(grid[0])
+    MOD = 12345
+    
+    # 计算前缀积
+    prefix = [[1] * m for _ in range(n)]
+    for i in range(n):
+        for j in range(m):
+            if i > 0:
+                prefix[i][j] = (prefix[i-1][m-1] * grid[i-1][m-1]) % MOD
+            if j > 0:
+                prefix[i][j] = (prefix[i][j-1] * grid[i][j-1]) % MOD
+    
+    # 计算后缀积
+    suffix = [[1] * m for _ in range(n)]
+    for i in range(n-1, -1, -1):
+        for j in range(m-1, -1, -1):
+            if i < n-1:
+                suffix[i][j] = (suffix[i+1][0] * grid[i+1][0]) % MOD
+            if j < m-1:
+                suffix[i][j] = (suffix[i][j+1] * grid[i][j+1]) % MOD
+    
+    # 计算乘积矩阵
+    result = [[0] * m for _ in range(n)]
+    for i in range(n):
+        for j in range(m):
+            result[i][j] = (prefix[i][j] * suffix[i][j]) % MOD
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(construct_product_matrix)

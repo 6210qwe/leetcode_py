@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历检查数组是否可以最多改变一个元素使其成为非递减数列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `modified` 用于记录需要修改的次数。
+2. 遍历数组，如果发现 nums[i] > nums[i + 1]，则需要修改：
+   - 如果 `modified` 已经大于 0，直接返回 False。
+   - 否则，根据情况修改 nums[i] 或 nums[i + 1]，并增加 `modified` 计数。
+3. 如果遍历结束且 `modified` 不超过 1，则返回 True。
 
 关键点:
-- [TODO]
+- 通过一次遍历和一个计数器来控制最多修改一个元素。
+- 根据具体情况选择修改 nums[i] 还是 nums[i + 1]。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 仅需一次遍历数组。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_possibility(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查数组是否可以通过最多改变一个元素使其成为非递减数列。
     """
-    # TODO: 实现最优解法
-    pass
+    modified = 0
+    for i in range(len(nums) - 1):
+        if nums[i] > nums[i + 1]:
+            if modified == 1:
+                return False
+            if i == 0 or nums[i - 1] <= nums[i + 1]:
+                nums[i] = nums[i + 1]
+            else:
+                nums[i + 1] = nums[i]
+            modified += 1
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_possibility)

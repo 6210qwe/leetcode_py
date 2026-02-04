@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法结合优先队列来找到最短路径，并且在每次扩展节点时记录当前跳数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将起点加入队列，初始距离为 0，跳数为 0。
+2. 使用一个字典 `dist` 来记录从起点到每个节点的最小距离和跳数。
+3. 从优先队列中取出当前距离最小的节点，如果该节点的跳数已经达到 K，则更新答案。
+4. 对于当前节点的每个邻居节点，计算新的距离和跳数，如果新的距离更小或跳数更少，则更新 `dist` 并将邻居节点加入优先队列。
+5. 重复上述过程直到优先队列为空。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次扩展的是当前距离最小的节点。
+- 在扩展节点时记录跳数，确保跳数不超过 K。
+- 使用字典 `dist` 来记录每个节点的最小距离和跳数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是顶点的数量。因为每次从优先队列中取出元素的时间复杂度是 O(log V)，而每个节点最多会被处理一次。
+空间复杂度: O(V)，用于存储优先队列和距离字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+import heapq
 
-
-def solution_function_name(params):
+def find_shortest_path_with_k_hops(n: int, edges: List[List[int]], src: int, dst: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    找到 K 次跨越的最短路径
+    :param n: 节点数量
+    :param edges: 边列表
+    :param src: 起点
+    :param dst: 终点
+    :param k: 最多跳数
+    :return: 最短路径长度，如果不存在则返回 -1
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建图
+    graph = [[] for _ in range(n)]
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
 
+    # 优先队列，存储 (距离, 跳数, 节点)
+    pq = [(0, 0, src)]
+    # 记录从起点到每个节点的最小距离和跳数
+    dist = {src: (0, 0)}
 
-Solution = create_solution(solution_function_name)
+    while pq:
+        d, hops, node = heapq.heappop(pq)
+
+        if node == dst and hops <= k:
+            return d
+
+        if hops > k:
+            continue
+
+        for neighbor, weight in graph[node]:
+            new_d = d + weight
+            new_hops = hops + 1
+
+            if neighbor not in dist or (new_d < dist[neighbor][0] or (new_d == dist[neighbor][0] and new_hops < dist[neighbor][1])):
+                dist[neighbor] = (new_d, new_hops)
+                heapq.heappush(pq, (new_d, new_hops, neighbor))
+
+    return -1
+
+Solution = create_solution(find_shortest_path_with_k_hops)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学公式计算正方形内的苹果总数，并通过二分查找找到满足条件的最小边长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算边长为 k 的正方形内的苹果总数。
+2. 使用二分查找找到最小的 k，使得正方形内的苹果总数大于等于 neededApples。
 
 关键点:
-- [TODO]
+- 苹果总数的计算公式为 2 * k * (k + 1) * (2 * k + 1)。
+- 二分查找的范围是从 1 到 100000。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(neededApples))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_perimeter(needed_apples: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算收集足够苹果的最小花园周长
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算边长为 k 的正方形内的苹果总数
+    def total_apples(k: int) -> int:
+        return 2 * k * (k + 1) * (2 * k + 1)
+
+    # 二分查找
+    left, right = 1, 100000
+    while left < right:
+        mid = (left + right) // 2
+        if total_apples(mid) < needed_apples:
+            left = mid + 1
+        else:
+            right = mid
+    return 8 * left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_perimeter)

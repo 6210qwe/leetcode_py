@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的子字符串，使得转换成本不超过 maxCost。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 以及当前的成本 current_cost。
+2. 使用 right 指针扩展窗口，计算当前字符的转换成本并累加到 current_cost。
+3. 如果 current_cost 超过 maxCost，移动 left 指针缩小窗口，直到 current_cost 不超过 maxCost。
+4. 在每次调整窗口后，更新最大长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，确保时间复杂度为 O(n)。
+- 通过维护当前窗口的成本，动态调整窗口大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def equal_substring(s: str, t: str, maxCost: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以转化的最大长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    left, right, current_cost, max_length = 0, 0, 0, 0
+    
+    while right < n:
+        current_cost += abs(ord(s[right]) - ord(t[right]))
+        
+        while current_cost > maxCost:
+            current_cost -= abs(ord(s[left]) - ord(t[left]))
+            left += 1
+        
+        max_length = max(max_length, right - left + 1)
+        right += 1
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(equal_substring)

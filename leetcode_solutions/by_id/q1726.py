@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的坐标点，并计算每个坐标点的信号强度，找到信号强度最大的坐标点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大信号强度 `max_quality` 为 0，最优坐标 `best_coord` 为 (0, 0)。
+2. 枚举所有可能的坐标点 `(x, y)`，范围是从 0 到 50。
+3. 对于每个坐标点 `(x, y)`，计算其信号强度 `quality`。
+4. 如果 `quality` 大于 `max_quality`，更新 `max_quality` 和 `best_coord`。
+5. 如果 `quality` 等于 `max_quality` 且 `(x, y)` 的字典序小于 `best_coord`，更新 `best_coord`。
+6. 返回 `best_coord`。
 
 关键点:
-- [TODO]
+- 使用欧几里得距离计算每个塔到坐标点的距离。
+- 只考虑距离在 `radius` 以内的塔对信号强度的贡献。
+- 信号强度计算公式为 `⌊qi / (1 + d)⌋`，其中 `d` 是塔到坐标的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m^2)，其中 n 是 towers 的长度，m 是坐标范围（本题中为 51）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def bestCoordinate(towers: List[List[int]], radius: int) -> List[int]:
+    max_quality = 0
+    best_coord = [0, 0]
+
+    for x in range(51):
+        for y in range(51):
+            quality = 0
+            for tower in towers:
+                tx, ty, q = tower
+                d = math.sqrt((tx - x) ** 2 + (ty - y) ** 2)
+                if d <= radius:
+                    quality += q // (1 + d)
+            
+            if quality > max_quality:
+                max_quality = quality
+                best_coord = [x, y]
+            elif quality == max_quality and (x, y) < (best_coord[0], best_coord[1]):
+                best_coord = [x, y]
+
+    return best_coord
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bestCoordinate)

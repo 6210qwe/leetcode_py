@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，逐步增加硬币面值，确保当前能覆盖的金额范围逐渐扩大，直到覆盖 [1, target]。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `current` 为 0，表示当前能覆盖的最大金额。
+2. 初始化 `added_coins` 为 0，表示需要添加的硬币数量。
+3. 对硬币面值进行排序。
+4. 遍历硬币面值：
+   - 如果当前硬币面值大于 `current + 1`，则需要添加一个面值为 `current + 1` 的硬币，并更新 `current`。
+   - 否则，更新 `current` 为 `current + 当前硬币面值`。
+5. 如果遍历完所有硬币后仍未覆盖到 `target`，继续添加硬币直到覆盖 `target`。
 
 关键点:
-- [TODO]
+- 使用贪心策略，每次添加的硬币面值是当前能覆盖的最大金额加一。
+- 通过排序确保每次添加的硬币面值是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 coins 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_coins_to_add(coins: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算需要添加的硬币的最小数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 对硬币面值进行排序
+    coins.sort()
+    
+    current = 0  # 当前能覆盖的最大金额
+    added_coins = 0  # 需要添加的硬币数量
+    
+    for coin in coins:
+        # 如果当前硬币面值大于 current + 1，则需要添加一个面值为 current + 1 的硬币
+        while coin > current + 1 and current < target:
+            added_coins += 1
+            current += current + 1
+        # 更新 current
+        current += coin
+        if current >= target:
+            break
+    
+    # 如果遍历完所有硬币后仍未覆盖到 target，继续添加硬币直到覆盖 target
+    while current < target:
+        added_coins += 1
+        current += current + 1
+    
+    return added_coins
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_coins_to_add)

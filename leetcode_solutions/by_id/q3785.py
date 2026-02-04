@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个元素的有效范围来确定可能的数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算原始数组的差分数组。
+2. 对于每个元素，计算其在bounds中的有效范围。
+3. 通过累积有效范围的交集来计算可能的数组数量。
 
 关键点:
-- [TODO]
+- 差分数组可以帮助我们快速计算每个元素的有效范围。
+- 通过累积有效范围的交集，可以确保所有条件都满足。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_number_of_copy_arrays(original: List[int], bounds: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(original)
+    if n == 0:
+        return 0
+    
+    # 计算原始数组的差分数组
+    diff = [original[i] - original[i - 1] for i in range(1, n)]
+    
+    # 初始化第一个元素的有效范围
+    min_val, max_val = bounds[0]
+    count = max(0, max_val - min_val + 1)
+    
+    for i in range(1, n):
+        # 更新当前元素的有效范围
+        min_val = max(min_val, bounds[i][0] - sum(diff[:i]))
+        max_val = min(max_val, bounds[i][1] - sum(diff[:i]))
+        
+        # 如果有效范围为空，返回0
+        if min_val > max_val:
+            return 0
+        
+        # 更新可能的数组数量
+        count = max(0, max_val - min_val + 1)
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_number_of_copy_arrays)

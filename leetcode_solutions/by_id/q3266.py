@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和滑动窗口来找到最长的特殊子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找来确定最长的特殊子字符串的长度。
+2. 对于每个长度，使用滑动窗口来检查是否存在至少三个这样的子字符串。
+3. 如果存在，更新结果；否则，减少长度继续查找。
 
 关键点:
-- [TODO]
+- 二分查找用于快速确定可能的最长长度。
+- 滑动窗口用于高效地检查子字符串的存在性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串 s 的长度。二分查找的时间复杂度是 O(log n)，每次检查的时间复杂度是 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_longest_special_substring(s: str) -> int:
+    def is_valid(length: int) -> bool:
+        count = defaultdict(int)
+        left = 0
+        for right in range(len(s)):
+            if right - left + 1 == length:
+                if s[left:right + 1] == s[left] * length:
+                    count[s[left]] += 1
+                left += 1
+        return any(c >= 3 for c in count.values())
+
+    left, right = 1, len(s) // 3
+    result = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+        if is_valid(mid):
+            result = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_longest_special_substring)

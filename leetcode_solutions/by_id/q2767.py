@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 为了最大化得分，每次选择当前数组中的最大值，并将其加一后放回数组。由于每次选择的都是最大值，因此可以直接计算出总得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最大值。
+2. 计算初始得分。
+3. 通过公式计算后续的得分增量。
+4. 返回总得分。
 
 关键点:
-- [TODO]
+- 选择最大值并更新数组。
+- 使用数学公式简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历数组找到最大值。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_sum_with_k_elements(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算执行 k 次操作后的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到数组中的最大值
+    max_val = max(nums)
+    
+    # 初始得分
+    initial_score = max_val
+    
+    # 计算后续的得分增量
+    for i in range(1, k):
+        max_val += 1
+        initial_score += max_val
+    
+    return initial_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_with_k_elements)

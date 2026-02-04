@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用指数搜索找到目标值的范围，然后在该范围内使用二分查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用指数搜索确定目标值所在的范围。
+2. 在确定的范围内使用二分查找找到目标值。
 
 关键点:
-- [TODO]
+- 指数搜索：通过逐步扩大步长来找到目标值的可能范围。
+- 二分查找：在确定的范围内进行二分查找以找到目标值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Solution:
+    def search(self, reader, target):
+        """
+        :type reader: ArrayReader
+        :type target: int
+        :rtype: int
+        """
+        # Step 1: Exponential search to find the range
+        left, right = 0, 1
+        while reader.get(right) < target:
+            left = right
+            right <<= 1  # Double the right boundary
+
+        # Step 2: Binary search within the found range
+        while left <= right:
+            mid = (left + right) // 2
+            mid_value = reader.get(mid)
+            
+            if mid_value == target:
+                return mid
+            elif mid_value < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        return -1  # Target not found
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

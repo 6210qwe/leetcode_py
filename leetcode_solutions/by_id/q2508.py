@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历矩阵中的每个可能的沙漏形状，计算其总和并记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大沙漏和为负无穷。
+2. 遍历矩阵中的每个可能的沙漏中心点 (i, j)，其中 i 和 j 的范围分别为 [1, m-2] 和 [1, n-2]。
+3. 对于每个中心点，计算沙漏的总和。
+4. 更新最大沙漏和。
+5. 返回最大沙漏和。
 
 关键点:
-- [TODO]
+- 确保沙漏的边界条件正确，即中心点 (i, j) 的范围是 [1, m-2] 和 [1, n-2]。
+- 计算沙漏总和时，确保只计算沙漏形状内的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_hourglass_sum(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中沙漏的最大总和
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+    
+    m, n = len(grid), len(grid[0])
+    max_sum = float('-inf')
+    
+    for i in range(1, m - 1):
+        for j in range(1, n - 1):
+            # 计算当前沙漏的总和
+            hourglass_sum = (
+                grid[i-1][j-1] + grid[i-1][j] + grid[i-1][j+1] +
+                grid[i][j] +
+                grid[i+1][j-1] + grid[i+1][j] + grid[i+1][j+1]
+            )
+            # 更新最大沙漏和
+            max_sum = max(max_sum, hourglass_sum)
+    
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_hourglass_sum)

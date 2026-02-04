@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来判断数组是否单调递增或单调递减。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个标志变量 `increasing` 和 `decreasing` 为 True。
+2. 遍历数组，比较相邻元素：
+   - 如果当前元素大于下一个元素，则将 `increasing` 置为 False。
+   - 如果当前元素小于下一个元素，则将 `decreasing` 置为 False。
+3. 如果遍历结束后，`increasing` 或 `decreasing` 仍为 True，则数组是单调的。
 
 关键点:
-- [TODO]
+- 通过一次遍历同时检查单调递增和单调递减。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为只需要一次遍历。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def isMonotonic(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断数组是否是单调数组。
     """
-    # TODO: 实现最优解法
-    pass
+    increasing = decreasing = True
+    
+    for i in range(len(nums) - 1):
+        if nums[i] > nums[i + 1]:
+            increasing = False
+        if nums[i] < nums[i + 1]:
+            decreasing = False
+    
+    return increasing or decreasing
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(isMonotonic)

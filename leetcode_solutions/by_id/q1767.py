@@ -21,40 +21,97 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个双端队列来实现前中后队列的操作。一个队列存储前半部分，另一个队列存储后半部分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 维护两个双端队列 front 和 back，确保 front 的长度始终不小于 back 的长度，并且两者长度差不超过 1。
+2. 在 push 和 pop 操作时，根据需要调整 front 和 back 的长度，以保持平衡。
 
 关键点:
-- [TODO]
+- 使用双端队列可以高效地在两端进行插入和删除操作。
+- 通过维护两个队列的长度平衡，可以保证所有操作的时间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(n)，其中 n 是队列中的元素数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FrontMiddleBackQueue:
+
+    def __init__(self):
+        self.front = deque()
+        self.back = deque()
+
+    def pushFront(self, val: int) -> None:
+        self.front.appendleft(val)
+        self._balance()
+
+    def pushMiddle(self, val: int) -> None:
+        if len(self.front) > len(self.back):
+            self.back.appendleft(self.front.pop())
+        self.front.append(val)
+
+    def pushBack(self, val: int) -> None:
+        self.back.append(val)
+        self._balance()
+
+    def popFront(self) -> int:
+        if not self.front and not self.back:
+            return -1
+        if self.front:
+            val = self.front.popleft()
+        else:
+            val = self.back.popleft()
+        self._balance()
+        return val
+
+    def popMiddle(self) -> int:
+        if not self.front and not self.back:
+            return -1
+        if len(self.front) == len(self.back):
+            val = self.front.pop()
+        else:
+            val = self.back.popleft()
+        self._balance()
+        return val
+
+    def popBack(self) -> int:
+        if not self.front and not self.back:
+            return -1
+        if self.back:
+            val = self.back.pop()
+        else:
+            val = self.front.pop()
+        self._balance()
+        return val
+
+    def _balance(self) -> None:
+        while len(self.front) < len(self.back):
+            self.front.append(self.back.popleft())
+        while len(self.front) > len(self.back) + 1:
+            self.back.appendleft(self.front.pop())
 
 
-Solution = create_solution(solution_function_name)
+# 测试代码
+if __name__ == "__main__":
+    q = FrontMiddleBackQueue()
+    q.pushFront(1)  # [1]
+    q.pushBack(2)   # [1, 2]
+    q.pushMiddle(3) # [1, 3, 2]
+    q.pushMiddle(4) # [1, 4, 3, 2]
+    print(q.popFront())  # 1, [4, 3, 2]
+    print(q.popMiddle()) # 3, [4, 2]
+    print(q.popMiddle()) # 4, [2]
+    print(q.popBack())   # 2, []
+    print(q.popFront())  # -1, []

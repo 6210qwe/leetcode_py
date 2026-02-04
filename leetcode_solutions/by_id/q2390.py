@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表和计数来统计每个首字母后的尾部字符串，并通过双重循环计算有效组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个包含26个集合的列表，每个集合存储以某个字母开头的字符串的尾部。
+2. 遍历ideas数组，将每个idea的尾部加入对应首字母的集合中。
+3. 双重循环遍历所有可能的首字母对 (i, j)，计算它们之间的有效组合数量。
+4. 累加所有有效组合的数量并返回结果。
 
 关键点:
-- [TODO]
+- 使用集合来存储每个首字母后的尾部字符串，以便快速查找。
+- 通过双重循环计算每对首字母的有效组合数量，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26^2) = O(n)，其中n是ideas的长度。
+空间复杂度: O(n)，用于存储尾部字符串的集合。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distinct_names(ideas: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同且有效的公司名字的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个包含26个集合的列表
+    suffixes = [set() for _ in range(26)]
+    
+    # 将每个idea的尾部加入对应首字母的集合中
+    for idea in ideas:
+        suffixes[ord(idea[0]) - ord('a')].add(idea[1:])
+    
+    # 计算有效组合数量
+    result = 0
+    for i in range(26):
+        for j in range(i + 1, 26):
+            common = len(suffixes[i] & suffixes[j])
+            result += 2 * (len(suffixes[i]) - common) * (len(suffixes[j]) - common)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_names)

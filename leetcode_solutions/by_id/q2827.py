@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并具有公共质因数的元素，并检查最终是否只有一个连通分量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 对于每个数，找到其所有质因数，并将这些质因数映射到当前数的索引。
+3. 如果某个质因数已经在并查集中存在，则将当前数的索引与该质因数对应的索引进行合并。
+4. 最后检查并查集中连通分量的数量，如果只有一个连通分量，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用埃拉托斯特尼筛法预处理质因数。
+- 使用并查集高效地合并和查找连通分量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。预处理质因数的时间复杂度是 O(n log n)，并查集操作的时间复杂度接近 O(1)。
+空间复杂度: O(n)，用于存储并查集和质因数映射。
 """
 
 # ============================================================================
@@ -48,13 +51,62 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.parent[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.parent[rootX] = rootY
+            else:
+                self.parent[rootY] = rootX
+                self.rank[rootX] += 1
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 nums 数组中任意两个满足 i < j 的下标 i 和 j 是否可以通过 gcd > 1 的路径遍历。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return True
 
+    # 埃拉托斯特尼筛法预处理质因数
+    max_num = max(nums)
+    primes = []
+    is_prime = [True] * (max_num + 1)
+    for i in range(2, max_num + 1):
+        if is_prime[i]:
+            primes.append(i)
+            for j in range(i * i, max_num + 1, i):
+                is_prime[j] = False
+
+    # 并查集初始化
+    uf = UnionFind(n)
+
+    # 质因数映射
+    prime_to_index = {}
+    for i, num in enumerate(nums):
+        for prime in primes:
+            if prime > num:
+                break
+            if num % prime == 0:
+                if prime in prime_to_index:
+                    uf.union(i, prime_to_index[prime])
+                else:
+                    prime_to_index[prime] = i
+
+    # 检查连通分量数量
+    return len(set(uf.find(i) for i in range(n))) == 1
 
 Solution = create_solution(solution_function_name)

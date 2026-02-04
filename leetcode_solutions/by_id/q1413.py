@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二维前缀和来快速计算任意子矩阵的和，并结合二分查找来找到满足条件的最大边长。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算二维前缀和数组。
+2. 使用二分查找来确定最大边长。
+3. 对于每个可能的边长，检查是否存在一个正方形区域的和小于等于阈值。
 
 关键点:
-- [TODO]
+- 二维前缀和可以快速计算任意子矩阵的和。
+- 二分查找用于高效地确定最大边长。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(min(m, n)))，其中 m 和 n 分别是矩阵的行数和列数。
+空间复杂度: O(m * n)，用于存储前缀和数组。
 """
 
 # ============================================================================
@@ -49,12 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_side_length(mat: List[List[int]], threshold: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回元素总和小于或等于阈值的正方形区域的最大边长。
     """
-    # TODO: 实现最优解法
-    pass
+    if not mat or not mat[0]:
+        return 0
+
+    m, n = len(mat), len(mat[0])
+    prefix_sum = [[0] * (n + 1) for _ in range(m + 1)]
+
+    # 计算二维前缀和
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix_sum[i][j] = mat[i - 1][j - 1] + prefix_sum[i - 1][j] + prefix_sum[i][j - 1] - prefix_sum[i - 1][j - 1]
+
+    # 检查是否存在一个边长为 side 的正方形区域，其和小于等于阈值
+    def is_valid(side: int) -> bool:
+        for i in range(side, m + 1):
+            for j in range(side, n + 1):
+                if (prefix_sum[i][j] - prefix_sum[i - side][j] - prefix_sum[i][j - side] + prefix_sum[i - side][j - side]) <= threshold:
+                    return True
+        return False
+
+    # 二分查找最大边长
+    left, right = 0, min(m, n)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_valid(mid):
+            left = mid
+        else:
+            right = mid - 1
+
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_side_length)

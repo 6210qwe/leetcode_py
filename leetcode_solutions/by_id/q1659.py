@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个数组，并在遇到相同元素时进行路径切换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 nums1 和 nums2 的起始位置。
+2. 初始化两个变量 sum1 和 sum2 分别记录从 nums1 和 nums2 当前位置到下一个相同元素的和。
+3. 遍历两个数组，直到其中一个数组遍历完：
+   - 如果 nums1[i] < nums2[j]，则将 nums1[i] 加入 sum1 并移动 i。
+   - 如果 nums1[i] > nums2[j]，则将 nums2[j] 加入 sum2 并移动 j。
+   - 如果 nums1[i] == nums2[j]，则选择 sum1 和 sum2 中较大的一个加上 nums1[i]，并重置 sum1 和 sum2。
+4. 处理剩余未遍历完的数组部分。
+5. 返回最终结果并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用双指针遍历两个数组，确保路径切换时的正确性。
+- 在遇到相同元素时，选择较大的路径和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +55,38 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def get_maximum_score(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 获取最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    sum1, sum2 = 0, 0
+    result = 0
+    
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i] < nums2[j]:
+            sum1 += nums1[i]
+            i += 1
+        elif nums1[i] > nums2[j]:
+            sum2 += nums2[j]
+            j += 1
+        else:
+            result += max(sum1, sum2) + nums1[i]
+            sum1, sum2 = 0, 0
+            i += 1
+            j += 1
+    
+    # 处理剩余的数组部分
+    while i < len(nums1):
+        sum1 += nums1[i]
+        i += 1
+    while j < len(nums2):
+        sum2 += nums2[j]
+        j += 1
+    
+    result += max(sum1, sum2)
+    return result % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_maximum_score)

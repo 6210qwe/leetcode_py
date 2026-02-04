@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 递归合并两个四叉树，根据四叉树的性质进行逻辑或运算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 quadTree1 是叶子节点：
+   - 如果 quadTree1 的值为 1，返回 quadTree1。
+   - 否则返回 quadTree2。
+2. 如果 quadTree2 是叶子节点：
+   - 如果 quadTree2 的值为 1，返回 quadTree2。
+   - 否则返回 quadTree1。
+3. 递归合并四个子节点。
+4. 如果合并后的四个子节点都是叶子节点且值相同，合并成一个叶子节点。
 
 关键点:
-- [TODO]
+- 递归合并时要注意优化，避免不必要的递归。
+- 合并后的子节点如果都是叶子节点且值相同，可以合并成一个叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的边长。最坏情况下需要遍历所有节点。
+空间复杂度: O(n^2)，递归调用栈的深度最多为 n^2。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Optional
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Node:
+    def __init__(self, val, isLeaf, topLeft=None, topRight=None, bottomLeft=None, bottomRight=None):
+        self.val = val
+        self.isLeaf = isLeaf
+        self.topLeft = topLeft
+        self.topRight = topRight
+        self.bottomLeft = bottomLeft
+        self.bottomRight = bottomRight
 
 
-Solution = create_solution(solution_function_name)
+def intersect(quadTree1: 'Node', quadTree2: 'Node') -> 'Node':
+    if quadTree1.isLeaf:
+        return quadTree1 if quadTree1.val else quadTree2
+    if quadTree2.isLeaf:
+        return quadTree2 if quadTree2.val else quadTree1
+    
+    # 递归合并四个子节点
+    quadTree1.topLeft = intersect(quadTree1.topLeft, quadTree2.topLeft)
+    quadTree1.topRight = intersect(quadTree1.topRight, quadTree2.topRight)
+    quadTree1.bottomLeft = intersect(quadTree1.bottomLeft, quadTree2.bottomLeft)
+    quadTree1.bottomRight = intersect(quadTree1.bottomRight, quadTree2.bottomRight)
+    
+    # 如果四个子节点都是叶子节点且值相同，合并成一个叶子节点
+    if (quadTree1.topLeft.isLeaf and quadTree1.topRight.isLeaf and 
+        quadTree1.bottomLeft.isLeaf and quadTree1.bottomRight.isLeaf and 
+        quadTree1.topLeft.val == quadTree1.topRight.val == 
+        quadTree1.bottomLeft.val == quadTree1.bottomRight.val):
+        quadTree1.isLeaf = True
+        quadTree1.val = quadTree1.topLeft.val
+        quadTree1.topLeft = quadTree1.topRight = quadTree1.bottomLeft = quadTree1.bottomRight = None
+    
+    return quadTree1
+
+
+Solution = create_solution(intersect)

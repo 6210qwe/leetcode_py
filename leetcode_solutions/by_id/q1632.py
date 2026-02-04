@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个计数器分别记录左边和右边的不同字符数量，并在遍历过程中更新计数器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `left_count` 和 `right_count`，分别用于记录左边和右边的不同字符数量。
+2. 将整个字符串的字符计数存储在 `right_count` 中。
+3. 遍历字符串，逐步将字符从 `right_count` 移动到 `left_count`，并检查两个计数器中的不同字符数量是否相等。
+4. 如果相等，则增加好分割的计数。
 
 关键点:
-- [TODO]
+- 使用计数器来高效地统计不同字符的数量。
+- 在遍历过程中动态更新计数器，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，因为字母表的大小是固定的（26个小写字母），所以计数器的空间复杂度是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串 s 中好分割的数目
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+
+    left_count = Counter()
+    right_count = Counter(s)
+    good_splits = 0
+
+    for i in range(len(s) - 1):
+        char = s[i]
+        left_count[char] += 1
+        right_count[char] -= 1
+
+        if right_count[char] == 0:
+            del right_count[char]
+
+        if len(left_count) == len(right_count):
+            good_splits += 1
+
+    return good_splits
 
 
 Solution = create_solution(solution_function_name)

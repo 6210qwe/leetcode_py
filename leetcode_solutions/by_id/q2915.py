@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来统计满足条件的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum` 和哈希表 `count_map`。
+2. 遍历数组 `nums`，更新前缀和数组 `prefix_sum`。
+3. 对于每个前缀和 `prefix_sum[i]`，计算 `(prefix_sum[i] - k) % modulo`，并在哈希表中查找该值出现的次数。
+4. 更新哈希表 `count_map` 中 `prefix_sum[i] % modulo` 的出现次数。
+5. 最终结果为哈希表中所有值的总和。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表来高效地统计满足条件的子数组数量。
+- 通过 `(prefix_sum[i] - k) % modulo` 来找到满足条件的前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(min(n, modulo))，哈希表的大小最多为 `modulo`。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_interesting_subarrays(nums: List[int], modulo: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计趣味子数组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = 0
+    count_map = {0: 1}
+    result = 0
+
+    for num in nums:
+        if num % modulo == k:
+            prefix_sum += 1
+        target = (prefix_sum - k) % modulo
+        result += count_map.get(target, 0)
+        count_map[prefix_sum % modulo] = count_map.get(prefix_sum % modulo, 0) + 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_interesting_subarrays)

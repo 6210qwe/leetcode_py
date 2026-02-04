@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储损坏的字母，并遍历每个单词检查是否包含损坏的字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 brokenLetters 转换为集合，以便快速查找。
+2. 将 text 按空格分割成单词列表。
+3. 遍历每个单词，检查是否包含任何损坏的字母。
+4. 统计可以完全输入的单词数量。
 
 关键点:
-- [TODO]
+- 使用集合来存储损坏的字母，以便 O(1) 时间复杂度进行查找。
+- 遍历每个单词并检查是否包含损坏的字母。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 text 的长度，m 是 brokenLetters 的长度。
+空间复杂度: O(m)，用于存储损坏的字母集合。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_type_words(text: str, broken_letters: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以使用此键盘完全输入的 text 中单词的数目。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 brokenLetters 转换为集合
+    broken_set = set(broken_letters)
+    
+    # 将 text 按空格分割成单词列表
+    words = text.split()
+    
+    # 统计可以完全输入的单词数量
+    count = sum(1 for word in words if not any(char in broken_set for char in word))
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_type_words)

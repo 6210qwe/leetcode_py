@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个 2x2 块中的黑色格子数量，并统计每个数量的块的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `block_count` 来记录每个 2x2 块中的黑色格子数量。
+2. 遍历 `coordinates`，对于每个黑色格子，更新其所在的 2x2 块的计数。
+3. 统计每个数量的块的数量，并返回结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和更新每个 2x2 块中的黑色格子数量。
+- 遍历 `coordinates` 时，更新每个 2x2 块的计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)，其中 k 是 `coordinates` 的长度。每个黑色格子最多影响 4 个 2x2 块。
+空间复杂度: O(m * n)，最坏情况下每个 2x2 块都需要存储。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_black_blocks(m: int, n: int, coordinates: List[List[int]]) -> List[int]:
+    block_count = {}
+    
+    for x, y in coordinates:
+        for dx in range(2):
+            for dy in range(2):
+                if 0 <= x + dx < m - 1 and 0 <= y + dy < n - 1:
+                    block = (x + dx, y + dy)
+                    if block not in block_count:
+                        block_count[block] = 0
+                    block_count[block] += 1
+    
+    result = [0] * 5
+    for count in block_count.values():
+        result[count] += 1
+    
+    # 计算没有黑色格子的块的数量
+    total_blocks = (m - 1) * (n - 1)
+    result[0] = total_blocks - sum(result[1:])
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_black_blocks)

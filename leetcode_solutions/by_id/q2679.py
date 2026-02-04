@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过观察可以发现，对于任意一个数字 n，如果 n > 1，那么最终桌面上会出现从 2 到 n 的所有数字。这是因为 n % (n-1) == 1，(n-1) % (n-2) == 1，依此类推。因此，我们只需要返回 n-1 即可。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 为 1，直接返回 1。
+2. 否则，返回 n-1。
 
 关键点:
-- [TODO]
+- 通过数学观察简化问题，避免复杂的模拟过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_distinct_numbers(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计桌面上的不同数字
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return 1
+    return n - 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_distinct_numbers)

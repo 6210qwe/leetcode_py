@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字出现的次数，并通过检查每个数字是否可以形成所需的模式来找到最大子集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数字出现的次数。
+2. 对于每个数字，检查其是否可以形成所需的模式。
+3. 计算并更新最大子集的大小。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计每个数字的出现次数。
+- 通过检查每个数字及其平方数来确定是否可以形成所需的模式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。最坏情况下，我们需要对每个数字进行对数级别的检查。
+空间复杂度: O(n)，用于存储每个数字的出现次数。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_subset_length(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到满足条件的子集中元素的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+
+    # 统计每个数字出现的次数
+    count = Counter(nums)
+    
+    max_length = 0
+    
+    for num in count:
+        if num == 1:
+            # 特殊处理 1，因为 1 的任意次幂都是 1
+            max_length = max(max_length, count[num])
+        else:
+            length = 0
+            current = num
+            while current in count and count[current] >= 2:
+                length += 2
+                current *= current
+            if current in count:
+                length += 1
+            max_length = max(max_length, length)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_subset_length)

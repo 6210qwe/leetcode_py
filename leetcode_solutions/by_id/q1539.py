@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储每个对角线上的元素，键为对角线的索引 (行 + 列)，值为该对角线上的元素列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `diagonals` 来存储每个对角线上的元素。
+2. 遍历输入的二维数组 `nums`，将每个元素添加到对应的对角线列表中。
+3. 按照对角线索引从小到大遍历字典 `diagonals`，并将每个对角线列表中的元素按从后往前的顺序添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用字典来存储对角线上的元素，可以方便地按照对角线索引进行排序和访问。
+- 每个对角线上的元素需要按从后往前的顺序添加到结果列表中，以满足题目要求的遍历顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 中所有元素的总数。我们需要遍历每个元素一次，并将其添加到字典中。
+空间复杂度: O(n)，字典 `diagonals` 存储了所有的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_diagonal_order(nums: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回对角线遍历的结果
     """
-    # TODO: 实现最优解法
-    pass
+    diagonals = {}
+    
+    # 将每个元素添加到对应的对角线列表中
+    for i in range(len(nums)):
+        for j in range(len(nums[i])):
+            if i + j not in diagonals:
+                diagonals[i + j] = []
+            diagonals[i + j].append(nums[i][j])
+    
+    result = []
+    # 按照对角线索引从小到大遍历字典
+    for key in sorted(diagonals.keys()):
+        # 每个对角线上的元素按从后往前的顺序添加到结果列表中
+        result.extend(reversed(diagonals[key]))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_diagonal_order)

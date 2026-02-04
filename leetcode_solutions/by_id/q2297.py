@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法和有序集合来维护当前的区间，并计算每天新绘制的面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `events` 来存储所有事件（开始和结束），并初始化一个 `active` 集合来存储当前活跃的区间。
+2. 遍历每一天的绘制任务，将每个任务的开始和结束时间加入 `events`。
+3. 对 `events` 进行排序，按时间顺序处理每个事件。
+4. 使用一个变量 `last` 来记录上一个事件的时间点，用于计算新绘制的面积。
+5. 遍历 `events`，对于每个事件：
+   - 如果是开始事件，将其加入 `active` 集合。
+   - 如果是结束事件，从 `active` 集合中移除。
+   - 计算当前活跃区间的总长度，并更新 `last`。
+6. 返回每天新绘制的面积。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地管理和查询当前活跃的区间。
+- 通过扫描线算法来处理区间的开始和结束事件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是绘制任务的数量。排序操作的时间复杂度为 O(n log n)，遍历和插入/删除操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，存储所有事件和活跃区间的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedSet
 
-
-def solution_function_name(params):
+def amount_painted(paint: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每天新绘制的面积
     """
-    # TODO: 实现最优解法
-    pass
+    events = []
+    for i, (start, end) in enumerate(paint):
+        events.append((start, 'start', i))
+        events.append((end, 'end', i))
+    
+    events.sort()
+    active = SortedSet()
+    last = 0
+    result = [0] * len(paint)
+    
+    for time, event_type, index in events:
+        if active:
+            result[index] += (time - last) * len(active)
+        
+        if event_type == 'start':
+            active.add(index)
+        else:
+            active.remove(index)
+        
+        last = time
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(amount_painted)

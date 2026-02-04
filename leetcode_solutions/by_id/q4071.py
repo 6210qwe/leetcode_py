@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来生成所有可能的单词方块，并检查每个方块是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表 `result` 用于存储所有满足条件的单词方块。
+2. 使用回溯法生成所有可能的单词方块组合。
+3. 在每一步中，检查当前选择的单词是否满足方块的条件。
+4. 如果满足条件，将当前方块加入结果列表。
+5. 最后返回结果列表，并按字典序排序。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的组合。
+- 每次选择一个单词时，检查其是否满足方块的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^4)，其中 n 是 words 的长度。最坏情况下需要检查所有可能的四元组。
+空间复杂度: O(n^4)，递归调用栈的深度和存储结果的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid_square(top, left, right, bottom):
+        return (top[0] == left[0] and top[3] == right[0] and
+                bottom[0] == left[3] and bottom[3] == right[3])
+
+    def backtrack(start, path):
+        if len(path) == 4:
+            if is_valid_square(*path):
+                result.append(path[:])
+            return
+
+        for i in range(start, len(words)):
+            path.append(words[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    result = []
+    backtrack(0, [])
+    result.sort()
+    return result
 
 
 Solution = create_solution(solution_function_name)

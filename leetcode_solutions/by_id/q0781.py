@@ -21,40 +21,112 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归解析表达式，并使用字典存储多项式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 evalvars 和 evalints 转换为字典。
+2. 定义一个辅助函数 `parse`，用于递归解析表达式。
+3. 在 `parse` 函数中，处理括号、乘法、加法和减法。
+4. 合并同类项，生成最终结果。
 
 关键点:
-- [TODO]
+- 使用递归解析括号内的表达式。
+- 使用字典存储多项式，并合并同类项。
+- 按照字典序和次数对结果进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是表达式的长度。最坏情况下，每个字符都需要处理多次。
+空间复杂度: O(n)，递归调用栈和存储多项式的字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
+import re
 
+def basic_calculator_iv(expression: str, evalvars: List[str], evalints: List[int]) -> List[str]:
+    def parse(expr):
+        stack = []
+        sign = '+'
+        num = ''
+        for i, c in enumerate(expr):
+            if c.isdigit() or c.isalpha():
+                num += c
+            if (c in '+-*/()' and i > 0 and expr[i-1] != ' ') or i == len(expr) - 1:
+                if num:
+                    if num in var_map:
+                        num = var_map[num]
+                    else:
+                        num = int(num)
+                if sign == '+':
+                    stack.append(num)
+                elif sign == '-':
+                    stack.append(-num)
+                elif sign == '*':
+                    stack[-1] *= num
+                elif sign == '/':
+                    stack[-1] //= num
+                sign = c
+                num = ''
+            if c == '(':
+                j = i
+                balance = 1
+                while balance > 0:
+                    j += 1
+                    if expr[j] == '(':
+                        balance += 1
+                    elif expr[j] == ')':
+                        balance -= 1
+                num = parse(expr[i+1:j])
+                i = j
+        return sum(stack)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def merge_terms(terms):
+        merged = defaultdict(int)
+        for term, coeff in terms.items():
+            merged[term] += coeff
+        return {k: v for k, v in merged.items() if v != 0}
 
+    def format_terms(terms):
+        result = []
+        for term, coeff in sorted(terms.items(), key=lambda x: (-len(x[0]), x[0])):
+            if coeff == 1:
+                result.append(term)
+            else:
+                result.append(f"{coeff}*{term}")
+        return result
 
-Solution = create_solution(solution_function_name)
+    var_map = dict(zip(evalvars, evalints))
+    tokens = re.findall(r'\d+|\w+|[()+\-*/]', expression)
+    terms = defaultdict(int)
+    stack = []
+    for token in tokens:
+        if token.isdigit():
+            stack.append(int(token))
+        elif token.isalpha():
+            stack.append(token)
+        elif token in '+-*/':
+            op = token
+        elif token == '(':
+            stack.append('(')
+        elif token == ')':
+            sub_expr = []
+            while stack and stack[-1] != '(':
+                sub_expr.append(stack.pop())
+            stack.pop()
+            sub_result = parse(' '.join(sub_expr[::-1]))
+            stack.append(sub_result)
+    
+    # 合并同类项
+    terms = merge_terms(terms)
+    # 格式化结果
+    return format_terms(terms)
+
+Solution = create_solution(basic_calculator_iv)

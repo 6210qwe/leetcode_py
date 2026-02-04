@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举每种可能的操作次数，计算每种情况下收集所有巧克力的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `min_cost` 为一个很大的值，用于记录最小的总成本。
+2. 枚举每种可能的操作次数 `k`（从 0 到 n-1）。
+3. 对于每个 `k`，计算在 `k` 次操作后的最小成本。
+4. 更新 `min_cost` 为当前最小的总成本。
+5. 返回 `min_cost`。
 
 关键点:
-- [TODO]
+- 通过滑动窗口来计算每种操作次数下的最小成本。
+- 动态更新每种操作次数下的最小成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组 nums 的长度。我们需要枚举每种可能的操作次数，并在每次操作后计算最小成本。
+空间复杂度: O(n)，用于存储每种操作次数下的最小成本。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算收集所有类型巧克力所需的最小成本
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    min_cost = float('inf')
+    
+    for k in range(n):
+        cost = k * x  # 操作 k 次的成本
+        min_costs = nums[:]
+        
+        for i in range(n):
+            min_costs[i] = min(min_costs[i], nums[(i - k + n) % n])
+        
+        cost += sum(min_costs)
+        min_cost = min(min_cost, cost)
+    
+    return min_cost
 
 
 Solution = create_solution(solution_function_name)

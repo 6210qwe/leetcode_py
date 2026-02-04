@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们尝试找到一个子集，使得它的和是总和的一个特定比例。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和 `total_sum` 和长度 `n`。
+2. 如果 `n` 小于等于 1，直接返回 `False`。
+3. 使用状态压缩 DP 来记录可能的子集和及其对应的元素数量。
+4. 遍历所有可能的子集大小 `k`（从 1 到 `n // 2`），检查是否存在一个子集使得其和为 `total_sum * k / n`。
+5. 如果找到这样的子集，返回 `True`；否则，返回 `False`。
 
 关键点:
-- [TODO]
+- 使用状态压缩 DP 来记录可能的子集和及其对应的元素数量。
+- 通过遍历所有可能的子集大小来优化搜索空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^n)
+空间复杂度: O(2^n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_split_array(nums: List[int]) -> bool:
+    n = len(nums)
+    if n <= 1:
+        return False
+    
+    total_sum = sum(nums)
+    dp = [set() for _ in range(n + 1)]
+    dp[0].add(0)
+    
+    for num in nums:
+        for i in range(n, 0, -1):
+            for x in dp[i - 1]:
+                dp[i].add(x + num)
+    
+    for i in range(1, n // 2 + 1):
+        if (i * total_sum) % n == 0 and (i * total_sum) // n in dp[i]:
+            return True
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_split_array)

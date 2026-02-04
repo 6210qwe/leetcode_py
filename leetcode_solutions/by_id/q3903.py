@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来验证每个可能的硬币面值，并通过递归检查是否能生成给定的 numWays 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 `result`。
+2. 遍历每个可能的硬币面值 `i`，从 1 到 `numWays.length`。
+3. 对于每个面值 `i`，检查 `numWays[i]` 是否为 1，如果是，则将 `i` 加入结果列表。
+4. 使用递归函数 `check_ways` 来验证当前面值集合是否能生成 `numWays` 数组。
+5. 如果验证成功，返回结果列表；否则，继续检查下一个面值。
 
 关键点:
-- [TODO]
+- 动态规划用于验证每个可能的硬币面值。
+- 递归函数 `check_ways` 用于验证当前面值集合是否能生成 `numWays` 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 numWays 的长度。最坏情况下需要遍历所有可能的面值并进行递归验证。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -48,13 +52,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(numWays: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现硬币面值还原
     """
-    # TODO: 实现最优解法
-    pass
+    def check_ways(coins: List[int], target: int) -> bool:
+        dp = [0] * (target + 1)
+        dp[0] = 1
+        for coin in coins:
+            for i in range(coin, target + 1):
+                dp[i] += dp[i - coin]
+        return dp == numWays[:target + 1]
 
+    result = []
+    for i in range(1, len(numWays)):
+        if numWays[i] == 1:
+            result.append(i)
+            if not check_ways(result, i):
+                return []
+    return result
 
 Solution = create_solution(solution_function_name)

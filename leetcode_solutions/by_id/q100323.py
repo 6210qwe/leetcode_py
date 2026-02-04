@@ -21,40 +21,49 @@ LCR 164. 破解闯关密码 - 闯关游戏需要破解一组密码，闯关组�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自定义排序规则来对数组进行排序，使得拼接后的数字最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组中的每个整数转换为字符串。
+2. 使用自定义排序规则对字符串数组进行排序：对于两个字符串 a 和 b，如果 a+b < b+a，则 a 应该排在 b 前面。
+3. 将排序后的字符串数组拼接成一个字符串并返回。
 
 关键点:
-- [TODO]
+- 自定义排序规则：通过比较 a+b 和 b+a 来决定 a 和 b 的相对顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储字符串数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(password: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将数组中的每个整数转换为字符串
+    str_password = list(map(str, password))
+    
+    # 自定义排序规则
+    def compare(a, b):
+        return int(a + b) - int(b + a)
+    
+    # 使用自定义排序规则对字符串数组进行排序
+    str_password.sort(key=lambda x: x*10, cmp=compare)
+    
+    # 将排序后的字符串数组拼接成一个字符串
+    result = ''.join(str_password)
+    
+    # 返回结果
+    return result
 
 Solution = create_solution(solution_function_name)

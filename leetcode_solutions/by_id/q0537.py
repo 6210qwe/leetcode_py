@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将复数字符串解析为实部和虚部，然后进行复数乘法运算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 解析输入字符串，提取实部和虚部。
+2. 计算乘积的实部和虚部。
+3. 将结果格式化为字符串。
 
 关键点:
-- [TODO]
+- 使用正则表达式解析字符串。
+- 复数乘法公式：(a + bi) * (c + di) = (ac - bd) + (ad + bc)i
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 解析字符串和计算乘积的时间复杂度都是常数级。
+空间复杂度: O(1) - 仅使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import re
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def complex_number_multiply(num1: str, num2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现复数乘法
     """
-    # TODO: 实现最优解法
-    pass
+    # 解析输入字符串，提取实部和虚部
+    def parse_complex_number(num: str) -> (int, int):
+        match = re.match(r"(-?\d+)\+(-?\d+)i", num)
+        if not match:
+            raise ValueError("Invalid complex number format")
+        real, imag = map(int, match.groups())
+        return real, imag
+
+    real1, imag1 = parse_complex_number(num1)
+    real2, imag2 = parse_complex_number(num2)
+
+    # 计算乘积的实部和虚部
+    real_part = real1 * real2 - imag1 * imag2
+    imag_part = real1 * imag2 + imag1 * real2
+
+    # 将结果格式化为字符串
+    return f"{real_part}+{imag_part}i"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(complex_number_multiply)

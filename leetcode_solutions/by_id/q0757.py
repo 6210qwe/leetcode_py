@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来构建金字塔，通过递归尝试每一种可能的上层组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典，将 allowed 中的每一个三元组映射到一个字典中，方便快速查找。
+2. 定义一个递归函数，用于构建金字塔的每一层。
+3. 从底部开始，逐层向上构建，直到构建到顶层。
+4. 在每一步中，检查当前层的所有可能的上一层组合，如果可以构建成功，则继续递归构建上一层。
+5. 如果构建到顶层，则返回 True；否则，返回 False。
 
 关键点:
-- [TODO]
+- 使用字典来存储 allowed 三元组，以实现快速查找。
+- 使用递归和回溯来尝试所有可能的上层组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是 bottom 的长度。因为每一步都有最多 2 种选择。
+空间复杂度: O(n^2)，递归调用栈的深度为 n，每一层的组合数最多为 n。
 """
 
 # ============================================================================
@@ -44,17 +48,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def pyramid_transition(bottom: str, allowed: List[str]) -> bool:
+    # 构建字典，将 allowed 中的每一个三元组映射到一个字典中
+    mapping = {}
+    for a, b, c in allowed:
+        if (a, b) not in mapping:
+            mapping[(a, b)] = []
+        mapping[(a, b)].append(c)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def can_build(current: str, next_layer: List[str], index: int) -> bool:
+        # 如果当前层构建完成，检查是否可以继续构建
+        if len(current) == 1:
+            return True
+        # 如果当前层还没有构建完成
+        if index == len(current) - 1:
+            return can_build(''.join(next_layer), [], 0)
+        # 获取当前两个块可以放置的上层块
+        key = (current[index], current[index + 1])
+        if key not in mapping:
+            return False
+        for block in mapping[key]:
+            next_layer.append(block)
+            if can_build(current, next_layer, index + 1):
+                return True
+            next_layer.pop()
+        return False
 
+    return can_build(bottom, [], 0)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pyramid_transition)

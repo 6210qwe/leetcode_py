@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最小堆来维护当前最小的元素，并在每次操作中将其增加1，直到完成k次操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有元素加入最小堆。
+2. 进行k次操作，每次从堆中取出最小元素，增加1后再放回堆中。
+3. 最后计算所有元素的乘积，并对10^9 + 7取余。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地找到并更新最小元素。
+- 对结果取模以防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + k log n)，其中n是数组长度，k是操作次数。建堆的时间复杂度是O(n log n)，每次操作的时间复杂度是O(log n)。
+空间复杂度: O(n)，用于存储堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将所有元素加入最小堆
+    min_heap = nums[:]
+    heapq.heapify(min_heap)
+    
+    # 进行k次操作
+    for _ in range(k):
+        # 取出最小元素并增加1
+        smallest = heapq.heappop(min_heap)
+        heapq.heappush(min_heap, smallest + 1)
+    
+    # 计算所有元素的乘积并对10^9 + 7取余
+    mod = 10**9 + 7
+    result = 1
+    for num in min_heap:
+        result = (result * num) % mod
+    
+    return result
 
 Solution = create_solution(solution_function_name)

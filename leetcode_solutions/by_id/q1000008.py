@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个指针分别构建小于 x 和大于等于 x 的两个链表，最后将两个链表连接起来。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个虚拟头节点 dummy1 和 dummy2，分别用于构建小于 x 和大于等于 x 的链表。
+2. 遍历原链表，将小于 x 的节点添加到 dummy1 链表，将大于等于 x 的节点添加到 dummy2 链表。
+3. 将 dummy1 链表的尾部与 dummy2 链表的头部连接。
+4. 返回 dummy1 链表的头节点。
 
 关键点:
-- [TODO]
+- 使用虚拟头节点简化边界条件处理。
+- 遍历原链表时，注意断开原节点的 next 指针，防止形成环。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需遍历链表一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def partition(head: Optional[ListNode], x: int) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分割链表
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化两个虚拟头节点
+    dummy1 = ListNode(0)
+    dummy2 = ListNode(0)
+    
+    # 两个指针分别指向两个链表的当前节点
+    p1, p2 = dummy1, dummy2
+    
+    # 遍历原链表
+    while head:
+        if head.val < x:
+            p1.next = head
+            p1 = p1.next
+        else:
+            p2.next = head
+            p2 = p2.next
+        head = head.next
+    
+    # 断开原链表的 next 指针
+    p2.next = None
+    
+    # 连接两个链表
+    p1.next = dummy2.next
+    
+    return dummy1.next
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从左上角到右下角的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查起点和终点是否可达，如果不可达直接返回 -1。
+2. 初始化队列，将起点 (0, 0) 加入队列，并标记为已访问。
+3. 使用 BFS 进行层次遍历，每次从队列中取出一个节点，检查其八个方向的邻居节点。
+4. 如果邻居节点是终点，返回当前路径长度。
+5. 如果邻居节点未被访问且值为 0，则将其加入队列并标记为已访问。
+6. 如果队列为空且未找到终点，返回 -1。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 使用集合记录已访问的节点，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的边长。每个节点最多只会被访问一次。
+空间复杂度: O(n^2)，队列和访问集合的最大空间消耗。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_path_binary_matrix(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用广度优先搜索 (BFS) 找到从左上角到右下角的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    if grid[0][0] == 1 or grid[n-1][n-1] == 1:
+        return -1
+    
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    queue = [(0, 0, 1)]  # (row, col, path_length)
+    visited = set([(0, 0)])
+    
+    while queue:
+        row, col, path_length = queue.pop(0)
+        if row == n - 1 and col == n - 1:
+            return path_length
+        
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+            if 0 <= new_row < n and 0 <= new_col < n and grid[new_row][new_col] == 0 and (new_row, new_col) not in visited:
+                queue.append((new_row, new_col, path_length + 1))
+                visited.add((new_row, new_col))
+    
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_path_binary_matrix)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法尝试所有可能的分割方式，并检查是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `backtrack`，用于从当前索引开始尝试所有可能的分割。
+2. 在每次递归调用中，尝试从当前索引开始的不同长度的子字符串。
+3. 如果找到一个满足条件的分割方式，返回 `True`。
+4. 如果遍历完所有可能的分割方式仍未找到满足条件的分割，返回 `False`。
 
 关键点:
-- [TODO]
+- 使用回溯法尝试所有可能的分割方式。
+- 在每次递归调用中，检查当前子字符串的数值是否比前一个子字符串的数值小 1。
+- 通过剪枝减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是字符串的长度。最坏情况下需要尝试所有可能的分割方式。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def split_string(s: str) -> bool:
+    def backtrack(index: int, prev: int) -> bool:
+        if index == len(s):
+            return True
+
+        for i in range(index + 1, len(s) + 1):
+            num = int(s[index:i])
+            if prev == -1 or (prev - num == 1 and (i == len(s) or s[i] != '0')):
+                if backtrack(i, num):
+                    return True
+        return False
+
+    return backtrack(0, -1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_string)

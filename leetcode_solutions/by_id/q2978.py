@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 我们可以通过分别统计两个字符串中偶数位置和奇数位置的字符频率来判断它们是否可以通过交换操作变得相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 分别统计 s1 和 s2 中偶数位置和奇数位置的字符频率。
+2. 比较这两个频率字典，如果它们完全相同，则说明可以通过交换操作使两个字符串相等，否则不能。
 
 关键点:
-- [TODO]
+- 通过字符频率统计来简化问题。
+- 交换操作只影响偶数位置和奇数位置的字符，因此可以分别处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串一次来统计字符频率。
+空间复杂度: O(1)，因为字符集是固定的（26个小写字母），所以频率字典的空间是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_be_equal(s1: str, s2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断通过操作能否让字符串相等 II
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计 s1 和 s2 中偶数位置和奇数位置的字符频率
+    count1_even, count1_odd = [0] * 26, [0] * 26
+    count2_even, count2_odd = [0] * 26, [0] * 26
+    
+    for i in range(len(s1)):
+        if i % 2 == 0:
+            count1_even[ord(s1[i]) - ord('a')] += 1
+            count2_even[ord(s2[i]) - ord('a')] += 1
+        else:
+            count1_odd[ord(s1[i]) - ord('a')] += 1
+            count2_odd[ord(s2[i]) - ord('a')] += 1
+    
+    # 比较两个频率字典
+    return count1_even == count2_even and count1_odd == count2_odd
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_equal)

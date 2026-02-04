@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合操作来判断一个列表是否是另一个列表的子集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个用户的收藏清单转换为集合。
+2. 遍历每个用户的收藏清单，检查它是否是其他任何用户的收藏清单的子集。
+3. 如果某个用户的收藏清单不是其他任何用户的收藏清单的子集，则将其索引添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用集合操作来高效地判断子集关系。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是用户的数量，m 是每个用户收藏清单的平均长度。
+空间复杂度: O(n * m)，用于存储每个用户的收藏清单集合。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(favoriteCompanies: List[List[str]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回不是其他任何人收藏的公司清单的子集的收藏清单的索引
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(favoriteCompanies)
+    sets = [set(companies) for companies in favoriteCompanies]
+    
+    result = []
+    
+    for i in range(n):
+        is_subset = False
+        for j in range(n):
+            if i != j and sets[i].issubset(sets[j]):
+                is_subset = True
+                break
+        if not is_subset:
+            result.append(i)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

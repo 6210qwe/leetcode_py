@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个员工的打卡时间，并检查每个员工的打卡时间是否有三个或更多在同一个小时内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `keyName` 和 `keyTime` 组合成一个字典，键是员工名字，值是该员工的所有打卡时间列表。
+2. 将每个员工的打卡时间列表转换为分钟数，并按时间排序。
+3. 对于每个员工，遍历其打卡时间列表，检查是否有三个或更多打卡时间在同一个小时内。
+4. 如果有，则将该员工的名字加入结果列表。
+5. 返回结果列表并按字典序排序。
 
 关键点:
-- [TODO]
+- 将时间转换为分钟数以便于比较。
+- 使用滑动窗口技术检查一个小时内是否有三个或更多打卡时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 keyName 的长度。主要的时间消耗在于对每个员工的打卡时间进行排序。
+空间复杂度: O(n)，用于存储每个员工的打卡时间列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def alert_names(key_name: List[str], key_time: List[str]) -> List[str]:
+    from collections import defaultdict
+    import bisect
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def to_minutes(time_str: str) -> int:
+        hours, minutes = map(int, time_str.split(":"))
+        return hours * 60 + minutes
 
+    # 构建员工打卡时间字典
+    name_to_times = defaultdict(list)
+    for name, time in zip(key_name, key_time):
+        name_to_times[name].append(to_minutes(time))
 
-Solution = create_solution(solution_function_name)
+    result = []
+    for name, times in name_to_times.items():
+        times.sort()
+        for i in range(len(times) - 2):
+            if times[i + 2] - times[i] <= 60:
+                result.append(name)
+                break
+
+    return sorted(result)
+
+Solution = create_solution(alert_names)

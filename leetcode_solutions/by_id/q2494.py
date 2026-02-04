@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储所有单词，并在插入过程中记录每个节点的前缀出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树并插入所有单词，在插入过程中记录每个节点的前缀出现次数。
+2. 遍历每个单词，计算其所有前缀的分数总和。
 
 关键点:
-- [TODO]
+- 使用字典树来高效地存储和查询前缀。
+- 在插入过程中记录每个节点的前缀出现次数，以便后续计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是单词的数量，m 是单词的最大长度。
+空间复杂度: O(n * m)，字典树的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +50,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.prefix_count = 0
 
 
-Solution = create_solution(solution_function_name)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+            node.prefix_count += 1
+
+    def get_prefix_score(self, word: str) -> int:
+        score = 0
+        node = self.root
+        for char in word:
+            node = node.children[char]
+            score += node.prefix_count
+        return score
+
+
+def sum_of_prefix_scores(words: List[str]) -> List[int]:
+    trie = Trie()
+    for word in words:
+        trie.insert(word)
+
+    result = []
+    for word in words:
+        result.append(trie.get_prefix_score(word))
+    return result
+
+
+Solution = create_solution(sum_of_prefix_scores)

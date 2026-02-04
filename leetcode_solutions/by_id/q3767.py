@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库进行数据处理和分析。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入的DataFrame按 `student_id` 和 `subject` 分组，并按 `exam_date` 升序排序。
+2. 计算每个学生的每门科目的第一次和最近一次考试的成绩。
+3. 筛选出满足条件的学生：在同一科目至少参加过两次考试，并且最近一次考试的成绩高于第一次考试的成绩。
+4. 返回结果表并按 `student_id` 和 `subject` 升序排序。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和sort_values方法进行数据分组和排序。
+- 使用first和last方法获取每个学生的每门科目的第一次和最近一次考试的成绩。
+- 使用布尔索引筛选出符合条件的学生。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是输入DataFrame的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，用于存储中间结果和最终结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def find_students_who_improved(scores: pd.DataFrame) -> pd.DataFrame:
+    # 按 student_id 和 subject 分组，并按 exam_date 升序排序
+    scores = scores.sort_values(by=['student_id', 'subject', 'exam_date'])
+    
+    # 获取每个学生的每门科目的第一次和最近一次考试的成绩
+    first_scores = scores.groupby(['student_id', 'subject']).first().reset_index()
+    latest_scores = scores.groupby(['student_id', 'subject']).last().reset_index()
+    
+    # 合并第一次和最近一次考试的成绩
+    merged_scores = pd.merge(first_scores, latest_scores, on=['student_id', 'subject'], suffixes=('_first', '_latest'))
+    
+    # 筛选出满足条件的学生
+    improved_students = merged_scores[merged_scores['score_latest'] > merged_scores['score_first']]
+    
+    # 选择需要的列并重命名
+    result = improved_students[['student_id', 'subject', 'score_first', 'score_latest']].rename(columns={'score_first': 'first_score', 'score_latest': 'latest_score'})
+    
+    # 按 student_id 和 subject 升序排序
+    result = result.sort_values(by=['student_id', 'subject'])
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_students_who_improved)

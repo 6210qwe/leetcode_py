@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个子数组的和，并使用哈希表来记录每个元素的位置，以便快速删除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用哈希表记录每个元素的位置。
+3. 对于每个元素，计算删除该元素后的最大子数组和。
+4. 返回最大子数组和。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算子数组和。
+- 使用哈希表来快速找到每个元素的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算删除所有值为某个元素后的最大子数组和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return 0
+
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+
+    # 使用哈希表记录每个元素的位置
+    element_positions = {}
+    for i, num in enumerate(nums):
+        if num not in element_positions:
+            element_positions[num] = []
+        element_positions[num].append(i)
+
+    max_sum = float('-inf')
+
+    # 对于每个元素，计算删除该元素后的最大子数组和
+    for num, positions in element_positions.items():
+        if len(positions) == n:
+            continue  # 如果所有元素都是 num，则删除后数组为空
+
+        # 计算删除 num 后的最大子数组和
+        current_sum = 0
+        left = 0
+        for pos in positions:
+            current_sum = max(current_sum, prefix_sum[pos] - prefix_sum[left])
+            left = pos + 1
+        current_sum = max(current_sum, prefix_sum[n] - prefix_sum[left])
+
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

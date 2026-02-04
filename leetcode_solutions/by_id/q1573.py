@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录和为 target 的子数组的起始位置，并通过动态规划来找到最短的非重叠子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 prefix_sum。
+2. 使用哈希表记录每个前缀和第一次出现的位置。
+3. 从右向左遍历数组，使用动态规划记录从当前索引到末尾的最小子数组长度。
+4. 再次从左向右遍历数组，尝试找到一个和为 target 的子数组，并更新最小长度和。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表快速找到和为 target 的子数组。
+- 动态规划记录最小子数组长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_two_non_overlapping_sub_arrays(arr: List[int], target: int) -> int:
+    n = len(arr)
+    if n < 2:
+        return -1
+
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + arr[i - 1]
+
+    # 哈希表记录前缀和第一次出现的位置
+    prefix_sum_map = {}
+    min_length = float('inf')
+    dp = [float('inf')] * n
+
+    # 从右向左遍历数组，记录从当前索引到末尾的最小子数组长度
+    for i in range(n - 1, -1, -1):
+        if prefix_sum[i + 1] - target in prefix_sum_map:
+            dp[i] = min(dp[i], prefix_sum_map[prefix_sum[i + 1] - target] - i)
+        if i < n - 1:
+            dp[i] = min(dp[i], dp[i + 1])
+
+    # 从左向右遍历数组，尝试找到一个和为 target 的子数组，并更新最小长度和
+    for i in range(n):
+        if prefix_sum[i + 1] - target in prefix_sum_map:
+            j = prefix_sum_map[prefix_sum[i + 1] - target]
+            if i + 1 < j:
+                min_length = min(min_length, (i + 1 - j) + dp[j])
+        if prefix_sum[i + 1] not in prefix_sum_map:
+            prefix_sum_map[prefix_sum[i + 1]] = i + 1
+
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_two_non_overlapping_sub_arrays)

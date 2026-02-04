@@ -21,40 +21,101 @@ LCP 81. 与非的谜题 - 在永恒之森中，封存着有关万灵之树线索
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用线段树来维护区间内的与非操作，以便快速更新和查询。
+- 对于每个修改操作，更新线段树。
+- 对于每个运算操作，利用线段树快速计算结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，用于维护区间内的与非操作。
+2. 遍历操作列表：
+   - 如果是修改操作，更新线段树。
+   - 如果是运算操作，利用线段树快速计算结果，并将其加入到结果列表中。
+3. 将所有运算操作的结果进行异或运算，得到最终结果。
 
 关键点:
-- [TODO]
+- 线段树的构建和更新。
+- 快速计算与非操作的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + m) * log n)，其中 n 是数组长度，m 是操作次数。
+空间复杂度: O(n)，线段树的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self.build(arr, 0, 0, self.n - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def build(self, arr, node, start, end):
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self.build(arr, 2 * node + 1, start, mid)
+            self.build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.nand(self.tree[2 * node + 1], self.tree[2 * node + 2])
 
+    def update(self, index, value, node=0, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+        if start == end:
+            self.tree[node] = value
+        else:
+            mid = (start + end) // 2
+            if start <= index <= mid:
+                self.update(index, value, 2 * node + 1, start, mid)
+            else:
+                self.update(index, value, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.nand(self.tree[2 * node + 1], self.tree[2 * node + 2])
 
-Solution = create_solution(solution_function_name)
+    def query(self, left, right, node=0, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+        if left > end or right < start:
+            return -1
+        if left <= start and end <= right:
+            return self.tree[node]
+        mid = (start + end) // 2
+        left_result = self.query(left, right, 2 * node + 1, start, mid)
+        right_result = self.query(left, right, 2 * node + 2, mid + 1, end)
+        if left_result == -1:
+            return right_result
+        if right_result == -1:
+            return left_result
+        return self.nand(left_result, right_result)
+
+    @staticmethod
+    def nand(a, b):
+        return ~ (a & b) & ((1 << 30) - 1)
+
+def solution(k: int, arr: List[int], operations: List[List[int]]) -> int:
+    n = len(arr)
+    segment_tree = SegmentTree(arr)
+    result = 0
+
+    for op in operations:
+        if op[0] == 0:
+            # 修改操作
+            segment_tree.update(op[1], op[2])
+        else:
+            # 运算操作
+            total_nand = op[2]
+            for _ in range(op[1]):
+                total_nand = segment_tree.nand(total_nand, segment_tree.query(0, n - 1))
+            result ^= total_nand
+
+    return result
+
+Solution = create_solution(solution)

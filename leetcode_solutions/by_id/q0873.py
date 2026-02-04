@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Minimax 策略来选择最优的猜测单词，以最小化最坏情况下的剩余可能单词数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `match_count` 来计算两个单词之间的匹配字符数。
+2. 定义一个函数 `minimax_score` 来计算每个单词的 Minimax 分数。
+3. 在每次猜测时，选择具有最小 Minimax 分数的单词进行猜测。
+4. 根据 Master.guess 的返回值更新剩余可能的单词列表。
+5. 重复上述步骤直到找到秘密单词或达到最大猜测次数。
 
 关键点:
-- [TODO]
+- 使用 Minimax 策略来选择最优的猜测单词。
+- 通过匹配字符数来更新剩余可能的单词列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是 words 的长度，m 是单词的长度（固定为 6）。
+空间复杂度: O(n)，用于存储剩余可能的单词列表。
 """
 
 # ============================================================================
@@ -48,13 +52,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Solution:
+    def findSecretWord(self, wordlist: List[str], master: 'Master') -> None:
+        def match_count(word1: str, word2: str) -> int:
+            """计算两个单词之间的匹配字符数。"""
+            return sum(c1 == c2 for c1, c2 in zip(word1, word2))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+        def minimax_score(word: str, possible_words: List[str]) -> int:
+            """计算单词的 Minimax 分数。"""
+            score_distribution = [0] * 7
+            for p_word in possible_words:
+                if p_word != word:
+                    score_distribution[match_count(word, p_word)] += 1
+            return max(score_distribution)
 
+        possible_words = wordlist[:]
+        while possible_words:
+            # 选择具有最小 Minimax 分数的单词进行猜测
+            best_guess = min(possible_words, key=lambda word: minimax_score(word, possible_words))
+            match_num = master.guess(best_guess)
+            if match_num == 6:
+                return
+            # 更新剩余可能的单词列表
+            possible_words = [word for word in possible_words if match_count(word, best_guess) == match_num]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法构建二叉搜索树。通过前序遍历的特点，可以确定根节点和左右子树的范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 preorder 数组中取出第一个元素作为根节点。
+2. 找到第一个大于根节点值的位置，将数组分成左子树和右子树。
+3. 递归地构建左子树和右子树。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质，通过比较当前节点值与根节点值来划分左右子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每个元素只处理一次。
+空间复杂度: O(h) - 递归调用栈的深度为树的高度 h。
 """
 
 # ============================================================================
@@ -44,17 +45,37 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def bst_from_preorder(preorder: List[int]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    通过前序遍历构造二叉搜索树
     """
-    # TODO: 实现最优解法
-    pass
+    if not preorder:
+        return None
+
+    def build_tree(start, end):
+        if start > end:
+            return None
+
+        # 当前子树的根节点
+        root_val = preorder[start]
+        root = TreeNode(root_val)
+
+        # 找到第一个大于根节点值的位置
+        i = start + 1
+        while i <= end and preorder[i] < root_val:
+            i += 1
+
+        # 递归构建左子树和右子树
+        root.left = build_tree(start + 1, i - 1)
+        root.right = build_tree(i, end)
+
+        return root
+
+    return build_tree(0, len(preorder) - 1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bst_from_preorder)

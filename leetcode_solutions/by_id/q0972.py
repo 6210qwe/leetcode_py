@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的路径数，并通过递推公式更新。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个二维数组 dp，其中 dp[i][j] 表示从位置 i 出发，经过 j 步后可以到达的路径数。
+2. 初始化 dp 数组，dp[i][0] = 1，表示从任意位置出发，经过 0 步的路径数为 1。
+3. 通过递推公式更新 dp 数组，dp[i][j] = sum(dp[next][j-1])，其中 next 是从位置 i 可以一步到达的位置。
+4. 最终结果是所有位置在 n-1 步后的路径数之和。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录路径数，避免重复计算。
+- 通过递推公式更新 dp 数组，确保每次更新都是基于前一步的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +51,31 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def knight_dialer(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    动态规划实现骑士拨号器
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return 10
+    
+    # 电话键盘上的每个数字可以跳到的其他数字
+    moves = [
+        [4, 6], [6, 8], [7, 9], [4, 8], [3, 9, 0],
+        [], [1, 7, 0], [2, 6], [1, 3], [2, 4]
+    ]
+    
+    # dp[i] 表示从位置 i 出发，经过当前步数后的路径数
+    dp = [1] * 10
+    
+    for _ in range(n - 1):
+        new_dp = [0] * 10
+        for i in range(10):
+            for next_pos in moves[i]:
+                new_dp[i] = (new_dp[i] + dp[next_pos]) % MOD
+        dp = new_dp
+    
+    return sum(dp) % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(knight_dialer)

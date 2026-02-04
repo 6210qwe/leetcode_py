@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来选择最优的工程师组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将工程师按照效率从高到低排序。
+2. 使用一个最小堆来维护当前选择的工程师的速度和。
+3. 遍历排序后的工程师列表，对于每个工程师：
+   - 将其速度加入堆中。
+   - 如果堆的大小超过 k，则移除堆中最小的速度。
+   - 计算当前团队的表现值，并更新最大表现值。
+4. 返回最大表现值对 10^9 + 7 取余的结果。
 
 关键点:
-- [TODO]
+- 按效率从高到低排序，确保每次选择的都是当前效率最高的工程师。
+- 使用最小堆来维护当前选择的工程师的速度和，确保堆的大小不超过 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是工程师的数量。排序操作的时间复杂度是 O(n log n)，遍历和堆操作的时间复杂度是 O(n log k)。
+空间复杂度: O(k)，用于存储最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_performance(n: int, speed: List[int], efficiency: List[int], k: int) -> int:
+    MOD = 10**9 + 7
+    engineers = sorted(zip(efficiency, speed), reverse=True)
+    
+    speed_heap = []
+    speed_sum = 0
+    max_performance = 0
+    
+    for e, s in engineers:
+        if len(speed_heap) == k:
+            speed_sum -= heapq.heappop(speed_heap)
+        heapq.heappush(speed_heap, s)
+        speed_sum += s
+        max_performance = max(max_performance, speed_sum * e)
+    
+    return max_performance % MOD
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_performance)

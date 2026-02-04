@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询分别对两列进行排序，然后将结果合并。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对第一列进行排序。
+2. 对第二列进行排序。
+3. 将两个排序后的结果合并。
 
 关键点:
-- [TODO]
+- 使用 `ROW_NUMBER()` 函数为每一列生成一个行号，以便在合并时保持顺序。
+- 使用 `UNION ALL` 合并两个排序后的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表的行数。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，需要存储排序后的结果。
 """
 
 # ============================================================================
@@ -51,10 +53,26 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH ranked AS (
+        SELECT score, @rank1 := @rank1 + 1 AS rank1
+        FROM Scores, (SELECT @rank1 := 0) r
+        ORDER BY score DESC
+    ),
+    ranked2 AS (
+        SELECT score, @rank2 := @rank2 + 1 AS rank2
+        FROM Scores, (SELECT @rank2 := 0) r
+        ORDER BY score
+    )
+    SELECT s1.score, s1.rank1, s2.rank2
+    FROM ranked s1
+    JOIN ranked2 s2 ON s1.score = s2.score
+    ORDER BY s1.rank1;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

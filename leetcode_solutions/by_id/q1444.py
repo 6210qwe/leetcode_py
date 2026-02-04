@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来减少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化步数计数器为 0。
+2. 当 num 不为 0 时，进行以下操作：
+   - 如果 num 是偶数（即 num & 1 == 0），则将其右移一位（相当于除以 2），步数加 1。
+   - 如果 num 是奇数（即 num & 1 == 1），则将其减 1，步数加 1。
+3. 返回步数计数器的值。
 
 关键点:
-- [TODO]
+- 使用位运算可以高效地判断奇偶性和进行除以 2 的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)，其中 n 是输入数字 num。因为每次操作都会将 num 减少至少一半。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_steps(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 num 变成 0 所需的操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    steps = 0
+    while num > 0:
+        if num & 1 == 0:
+            num >>= 1  # 相当于 num //= 2
+        else:
+            num -= 1
+        steps += 1
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_steps)

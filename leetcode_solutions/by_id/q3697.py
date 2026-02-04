@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个目标值，找到 nums 中最接近其倍数的元素，并计算将其增加到该倍数所需的最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums 进行排序。
+2. 对 target 中的每个元素，找到其在 nums 中的最接近倍数。
+3. 计算将该元素增加到最接近倍数所需的操作次数，并累加这些操作次数。
 
 关键点:
-- [TODO]
+- 使用二分查找来快速找到 nums 中最接近目标值倍数的元素。
+- 通过模运算和取余来确定最接近的倍数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 nums 的长度，m 是 target 的长度。排序的时间复杂度为 O(n log n)，每次二分查找的时间复杂度为 O(log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_increments_for_target_multiples(nums: List[int], target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 target 中的每个元素在 nums 中至少存在一个倍数所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()  # 对 nums 进行排序
+    total_operations = 0  # 初始化总操作次数
+
+    for t in target:
+        # 找到 nums 中最接近 t 的倍数
+        idx = binary_search(nums, t)
+        if idx == len(nums):
+            closest_multiple = (nums[-1] // t + 1) * t
+        else:
+            closest_multiple = (nums[idx] // t + 1) * t if nums[idx] % t != 0 else nums[idx]
+
+        # 计算将 nums 中的元素增加到最接近倍数所需的操作次数
+        operations = closest_multiple - nums[idx - 1] if idx > 0 else closest_multiple
+        total_operations += operations
+
+    return total_operations
 
 
-Solution = create_solution(solution_function_name)
+def binary_search(arr: List[int], target: int) -> int:
+    """二分查找，返回第一个大于等于 target 的索引"""
+    left, right = 0, len(arr)
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+
+Solution = create_solution(min_increments_for_target_multiples)

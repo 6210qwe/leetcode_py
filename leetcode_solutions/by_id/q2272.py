@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位掩码和回溯法来枚举所有可能的好人组合，并验证每个组合是否满足所有好人的陈述。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用位掩码来表示每个人是否是好人。
+2. 枚举所有可能的好人组合（从 0 到 2^n - 1）。
+3. 对于每个组合，检查其是否满足所有好人的陈述。
+4. 如果满足，则更新最大好人数。
 
 关键点:
-- [TODO]
+- 使用位掩码来高效地表示和操作好人组合。
+- 回溯法用于枚举所有可能的组合。
+- 验证每个组合是否满足所有好人的陈述。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)
+- 枚举所有可能的好人组合需要 O(2^n) 的时间。
+- 对于每个组合，验证其是否满足所有好人的陈述需要 O(n^2) 的时间。
+
+空间复杂度: O(1)
+- 除了输入和输出外，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +57,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(statements: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以认为是好人的最大数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(statements)
+    max_good_people = 0
+
+    def is_valid(mask: int) -> bool:
+        for i in range(n):
+            if mask & (1 << i):
+                for j in range(n):
+                    if statements[i][j] == 0 and mask & (1 << j):
+                        return False
+                    if statements[i][j] == 1 and not (mask & (1 << j)):
+                        return False
+        return True
+
+    for mask in range(1 << n):
+        if is_valid(mask):
+            max_good_people = max(max_good_people, bin(mask).count('1'))
+
+    return max_good_people
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算前缀和的最小值，然后根据这个最小值来确定 startValue。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `prefix_sum` 为 0，用于记录当前的前缀和。
+2. 初始化一个变量 `min_prefix_sum` 为 0，用于记录前缀和的最小值。
+3. 遍历数组 `nums`，更新 `prefix_sum` 和 `min_prefix_sum`。
+4. 根据 `min_prefix_sum` 计算 `startValue`，如果 `min_prefix_sum` 小于 0，则 `startValue` 为 `1 - min_prefix_sum`，否则 `startValue` 为 1。
 
 关键点:
-- [TODO]
+- 通过计算前缀和的最小值来确定所需的最小 `startValue`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算逐步求和得到正数的最小值
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = 0
+    min_prefix_sum = 0
+    
+    for num in nums:
+        prefix_sum += num
+        min_prefix_sum = min(min_prefix_sum, prefix_sum)
+    
+    # 如果 min_prefix_sum 小于 0，则 startValue 为 1 - min_prefix_sum，否则 startValue 为 1
+    return 1 - min_prefix_sum if min_prefix_sum < 0 else 1
 
 
 Solution = create_solution(solution_function_name)

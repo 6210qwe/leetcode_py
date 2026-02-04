@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组来快速计算每个字符的出现次数，并利用哈希表记录每个字符的前缀和索引。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个前缀和数组 `prefix_sum` 和一个哈希表 `char_index`。
+2. 遍历字符串，更新前缀和数组和哈希表。
+3. 对于每个字符，计算其在当前索引之前的出现次数，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算某个字符在任意子串中的出现次数。
+- 哈希表用于记录每个字符的前缀和索引，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，因为前缀和数组和哈希表的大小都与字符集大小相关，而字符集大小是固定的（例如 ASCII 字符集）。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算同端子串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 前缀和数组，大小为 26（假设字符集为小写字母）
+    prefix_sum = [0] * 26
+    # 哈希表，记录每个字符的前缀和索引
+    char_index = {chr(i + ord('a')): i for i in range(26)}
+    
+    result = 0
+    for i, char in enumerate(s):
+        # 当前字符的索引
+        idx = char_index[char]
+        # 更新前缀和数组
+        prefix_sum[idx] += 1
+        # 累加当前字符在当前索引之前的出现次数
+        result += prefix_sum[idx]
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

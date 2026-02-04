@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算在给定范围内满足条件的美丽整数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp` 来计算从当前位到最高位的美丽整数数量。
+2. 使用记忆化搜索来避免重复计算。
+3. 在递归过程中，维护当前数字的奇数位和偶数位的数量，并检查是否满足美丽整数的条件。
+4. 使用前缀和来快速计算当前数字对 k 的余数。
+5. 最终返回在 [low, high] 范围内的美丽整数数量。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归过程。
+- 通过前缀和来快速计算当前数字对 k 的余数。
+- 递归过程中维护奇数位和偶数位的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(10^d * d)，其中 d 是数字的最大位数（最多 10 位）。
+空间复杂度: O(10^d * d)，用于记忆化搜索的缓存。
 """
 
 # ============================================================================
@@ -48,13 +53,53 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_beautiful_integers(low: int, high: int, k: int) -> int:
+    def is_beautiful(num: int) -> bool:
+        odd_count = even_count = 0
+        while num > 0:
+            digit = num % 10
+            if digit % 2 == 0:
+                even_count += 1
+            else:
+                odd_count += 1
+            num //= 10
+        return odd_count == even_count and (num % k == 0)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dp(pos: int, has_odd: bool, has_even: bool, is_limit: bool, is_num: bool, mod: int) -> int:
+        if pos == len(high_digits):
+            return int(is_num and has_odd == has_even and mod == 0)
+        if not is_limit and is_num and (has_odd, has_even, mod) in memo[pos]:
+            return memo[pos][(has_odd, has_even, mod)]
+        
+        res = 0
+        if not is_num:
+            res = dp(pos + 1, False, False, False, False, 0)
+        
+        start = 0 if is_num else 1
+        end = high_digits[pos] if is_limit else 9
+        
+        for digit in range(start, end + 1):
+            next_is_limit = is_limit and digit == high_digits[pos]
+            next_has_odd = has_odd or digit % 2 == 1
+            next_has_even = has_even or digit % 2 == 0
+            next_mod = (mod * 10 + digit) % k
+            res += dp(pos + 1, next_has_odd, next_has_even, next_is_limit, True, next_mod)
+        
+        if is_num:
+            memo[pos][(has_odd, has_even, mod)] = res
+        
+        return res
 
+    def solve(num: int) -> int:
+        nonlocal high_digits, memo
+        high_digits = []
+        while num > 0:
+            high_digits.append(num % 10)
+            num //= 10
+        high_digits.reverse()
+        memo = [{} for _ in range(len(high_digits) + 1)]
+        return dp(0, False, False, True, False, 0)
 
-Solution = create_solution(solution_function_name)
+    return solve(high) - solve(low - 1)
+
+Solution = create_solution(count_beautiful_integers)

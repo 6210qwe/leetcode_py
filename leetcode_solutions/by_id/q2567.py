@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为有序数组，然后对每个查询使用二分查找找到最接近的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 中序遍历二叉搜索树，生成一个有序数组。
+2. 对于每个查询，使用二分查找找到小于等于查询值的最大值和大于等于查询值的最小值。
+3. 将结果存储在答案数组中并返回。
 
 关键点:
-- [TODO]
+- 二叉搜索树的中序遍历结果是一个有序数组。
+- 二分查找可以在 O(log n) 时间内找到最接近的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q log n)，其中 n 是树中节点的数量，q 是查询的数量。中序遍历的时间复杂度是 O(n)，每次查询的时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储中序遍历的结果。
 """
 
 # ============================================================================
@@ -44,17 +46,39 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def closest_nodes_queries(root: Optional[TreeNode], queries: List[int]) -> List[List[int]]:
+    def inorder_traversal(node: Optional[TreeNode]):
+        if not node:
+            return
+        inorder_traversal(node.left)
+        values.append(node.val)
+        inorder_traversal(node.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def binary_search(target: int):
+        left, right = 0, len(values) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if values[mid] == target:
+                return mid, mid
+            elif values[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return right, left
 
+    values = []
+    inorder_traversal(root)
+    result = []
 
-Solution = create_solution(solution_function_name)
+    for query in queries:
+        min_index, max_index = binary_search(query)
+        min_val = values[min_index] if min_index >= 0 and min_index < len(values) else -1
+        max_val = values[max_index] if max_index >= 0 and max_index < len(values) else -1
+        result.append([min_val, max_val])
+
+    return result
+
+Solution = create_solution(closest_nodes_queries)

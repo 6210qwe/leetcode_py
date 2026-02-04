@@ -21,40 +21,39 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查根结点的值是否等于其左子结点和右子结点的值之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 获取根结点的值。
+2. 获取左子结点和右子结点的值。
+3. 比较根结点的值是否等于左子结点和右子结点的值之和。
 
 关键点:
-- [TODO]
+- 由于树只有三个结点，可以直接访问左右子结点的值进行比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只需要常数时间进行计算。
+空间复杂度: O(1) - 只需要常数空间存储变量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def check_root_sum(root: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查根结点的值是否等于其左子结点和右子结点的值之和。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root or not root.left or not root.right:
+        return False
+    return root.val == (root.left.val + root.right.val)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_root_sum)

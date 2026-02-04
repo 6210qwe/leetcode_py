@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将给定的整数 n 的平方和立方分别转换为十六进制和三十六进制表示，并将结果拼接成一个字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n 的平方。
+2. 将 n 的平方转换为十六进制字符串。
+3. 计算 n 的立方。
+4. 将 n 的立方转换为三十六进制字符串。
+5. 将十六进制和三十六进制字符串拼接并返回。
 
 关键点:
-- [TODO]
+- 使用内置函数 `hex` 和自定义函数 `to_base_36` 来进行进制转换。
+- 确保十六进制字符串去掉前缀 '0x'。
+- 三十六进制转换时，使用字符 '0'-'9' 和 'A'-'Z' 来表示 0-35。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log N)，其中 N 是 n 的平方或立方，因为每次除以基数的操作都会减少一位。
+空间复杂度: O(log N)，存储转换后的字符串。
 """
 
 # ============================================================================
@@ -48,13 +53,30 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def to_base_36(num: int) -> str:
+    """将整数 num 转换为三十六进制字符串。"""
+    if num == 0:
+        return "0"
+    digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    result = []
+    while num > 0:
+        result.append(digits[num % 36])
+        num //= 36
+    return ''.join(reversed(result))
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将整数 n 的平方转换为十六进制，立方转换为三十六进制，并拼接成一个字符串。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算 n 的平方
+    n_squared = n * n
+    # 将 n 的平方转换为十六进制字符串
+    hex_str = hex(n_squared)[2:].upper()
+    # 计算 n 的立方
+    n_cubed = n * n * n
+    # 将 n 的立方转换为三十六进制字符串
+    base_36_str = to_base_36(n_cubed)
+    # 拼接两个结果
+    return hex_str + base_36_str
 
 Solution = create_solution(solution_function_name)

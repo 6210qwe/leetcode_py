@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录链表中每个节点值的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表用于记录节点值及其出现次数。
+2. 遍历链表，对于每个节点值，更新其在哈希表中的计数。
+3. 返回哈希表。
 
 关键点:
-- [TODO]
+- 使用哈希表可以在 O(1) 时间内更新和查询节点值的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们需要遍历整个链表一次。
+空间复杂度: O(n)，在最坏情况下，链表中的所有节点值都不同，哈希表需要存储 n 个不同的键。
 """
 
 # ============================================================================
@@ -49,12 +50,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(head: Optional[ListNode]) -> dict:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算链表中每个节点值的出现次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表
+    frequency = {}
+    
+    # 遍历链表
+    current = head
+    while current:
+        if current.val in frequency:
+            frequency[current.val] += 1
+        else:
+            frequency[current.val] = 1
+        current = current.next
+    
+    return frequency
 
 
 Solution = create_solution(solution_function_name)

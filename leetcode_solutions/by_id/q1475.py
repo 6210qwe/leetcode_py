@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历树，同时维护每个子树的状态（是否为BST，最小值，最大值，和）。通过递归的方式，从叶子节点向上计算每个节点的子树是否为BST，并更新最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `dfs`，用于递归地处理每个节点。
+2. 对于每个节点，递归处理其左子树和右子树，获取它们的状态。
+3. 如果当前节点的左子树和右子树都是BST，并且当前节点的值大于左子树的最大值且小于右子树的最小值，则当前节点也是BST的一部分。
+4. 更新当前节点的子树状态，并计算当前子树的和。
+5. 递归结束后，返回最大和。
 
 关键点:
-- [TODO]
+- 使用四元组 (is_bst, min_val, max_val, sum) 来表示每个子树的状态。
+- 递归过程中，自底向上地更新状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Solution:
+    def maxSumBST(self, root: Optional[TreeNode]) -> int:
+        self.max_sum = 0
+
+        def dfs(node: Optional[TreeNode]) -> (bool, int, int, int):
+            if not node:
+                return True, float('inf'), float('-inf'), 0
+
+            left_is_bst, left_min, left_max, left_sum = dfs(node.left)
+            right_is_bst, right_min, right_max, right_sum = dfs(node.right)
+
+            if left_is_bst and right_is_bst and left_max < node.val < right_min:
+                current_sum = left_sum + right_sum + node.val
+                self.max_sum = max(self.max_sum, current_sum)
+                return True, min(left_min, node.val), max(right_max, node.val), current_sum
+            else:
+                return False, float('inf'), float('-inf'), 0
+
+        dfs(root)
+        return self.max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(Solution)

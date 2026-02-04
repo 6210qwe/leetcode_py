@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算 N 叉树的最大深度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果根节点为空，返回 0。
+2. 初始化最大深度为 0。
+3. 对每个子节点递归调用 DFS，并更新最大深度。
+4. 返回最大深度加 1（当前节点）。
 
 关键点:
-- [TODO]
+- 递归地计算每个子节点的最大深度，并取其中的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -48,13 +50,22 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children if children is not None else []
 
-def solution_function_name(params):
+def max_depth(root: 'Node') -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算 N 叉树的最大深度
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return 0
+    
+    max_depth = 0
+    for child in root.children:
+        max_depth = max(max_depth, max_depth(child))
+    
+    return max_depth + 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_depth)

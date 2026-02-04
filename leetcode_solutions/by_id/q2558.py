@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历每一层，并使用贪心算法计算每层排序所需的最少交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 BFS 遍历二叉树，记录每一层的节点值。
+2. 对于每一层，计算将其排序所需的最少交换次数。
+3. 累加所有层的交换次数，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用贪心算法计算每层排序所需的最少交换次数。
+- 通过 BFS 记录每一层的节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是树中节点的数目。BFS 的时间复杂度是 O(n)，而每层排序的时间复杂度是 O(m log m)，其中 m 是该层的节点数。
+空间复杂度: O(n)，用于存储每一层的节点值。
 """
 
 # ============================================================================
@@ -44,17 +46,57 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def min_swaps_to_sort(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算将数组排序所需的最少交换次数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    arr_pos = [*enumerate(arr)]
+    arr_pos.sort(key=lambda it: it[1])
+    visited = {i: False for i in range(n)}
+    ans = 0
 
+    for i in range(n):
+        if visited[i] or arr_pos[i][0] == i:
+            continue
+        cycle_size = 0
+        j = i
+        while not visited[j]:
+            visited[j] = True
+            j = arr_pos[j][0]
+            cycle_size += 1
+        if cycle_size > 0:
+            ans += (cycle_size - 1)
+    return ans
+
+def solution_function_name(root: Optional[TreeNode]) -> int:
+    """
+    函数式接口 - 计算逐层排序二叉树所需的最少操作数目
+    """
+    if not root:
+        return 0
+
+    from collections import deque
+    queue = deque([root])
+    total_swaps = 0
+
+    while queue:
+        level_size = len(queue)
+        level_values = []
+
+        for _ in range(level_size):
+            node = queue.popleft()
+            level_values.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        total_swaps += min_swaps_to_sort(level_values)
+
+    return total_swaps
 
 Solution = create_solution(solution_function_name)

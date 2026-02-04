@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归深度优先搜索 (DFS) 来遍历树，并在回溯时检查当前节点是否为叶子节点且值为目标值，如果是则删除该节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于遍历树。
+2. 在 `dfs` 函数中，首先递归处理左子树和右子树。
+3. 回溯时，检查当前节点是否为叶子节点且值为目标值，如果是则返回 `None` 表示删除该节点。
+4. 否则返回当前节点。
 
 关键点:
-- [TODO]
+- 递归处理子树时，需要更新当前节点的左右子节点。
+- 在回溯时检查并删除目标叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_leaf_nodes(root: Optional[TreeNode], target: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    删除给定值的叶子节点
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+
+    # 递归处理左子树和右子树
+    root.left = remove_leaf_nodes(root.left, target)
+    root.right = remove_leaf_nodes(root.right, target)
+
+    # 检查当前节点是否为叶子节点且值为目标值
+    if root.left is None and root.right is None and root.val == target:
+        return None
+
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_leaf_nodes)

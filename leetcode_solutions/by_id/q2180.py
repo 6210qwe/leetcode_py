@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来最大化任务分配。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对任务和工人进行排序。
+2. 使用一个优先队列来存储当前可以使用的工人。
+3. 遍历任务，对于每个任务：
+   - 尝试使用当前优先队列中的工人完成任务。
+   - 如果无法完成，则尝试使用药丸增加工人的力量来完成任务。
+   - 如果仍然无法完成，则将任务加入待处理的任务列表。
+4. 返回可以完成的最大任务数。
 
 关键点:
-- [TODO]
+- 优先队列用于高效地选择合适的工人。
+- 贪心策略确保每次选择最优的工人或药丸使用方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是任务的数量，m 是工人的数量。排序操作的时间复杂度是 O(n log n) 和 O(m log m)，优先队列操作的时间复杂度是 O(log m)。
+空间复杂度: O(m)，优先队列的空间复杂度是 O(m)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def max_tasks(tasks: List[int], workers: List[int], pills: int, strength: int) -> int:
+    # 对任务和工人进行排序
+    tasks.sort()
+    workers.sort()
+    
+    # 优先队列存储当前可以使用的工人
+    worker_queue = []
+    task_index = 0
+    pill_count = pills
+    completed_tasks = 0
+    
+    for worker in workers:
+        heapq.heappush(worker_queue, -worker)
+        
+        while worker_queue and task_index < len(tasks):
+            # 尝试使用当前优先队列中的工人完成任务
+            if -worker_queue[0] >= tasks[task_index]:
+                heapq.heappop(worker_queue)
+                completed_tasks += 1
+                task_index += 1
+            # 如果无法完成，则尝试使用药丸增加工人的力量来完成任务
+            elif pill_count > 0 and -worker_queue[0] + strength >= tasks[task_index]:
+                heapq.heappop(worker_queue)
+                completed_tasks += 1
+                pill_count -= 1
+                task_index += 1
+            else:
+                break
+    
+    return completed_tasks
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_tasks)

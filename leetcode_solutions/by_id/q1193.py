@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到每个玩家的首次活动日期，并计算每个玩家在首次活动后的第二天仍然活跃的玩家数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到每个玩家的首次活动日期。
+2. 过滤出那些在首次活动后的第二天仍然有活动记录的玩家。
+3. 计算这些玩家的数量。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `MIN` 来找到每个玩家的首次活动日期。
+- 使用 `DATEDIFF` 函数来计算日期差。
+- 使用 `GROUP BY` 和 `COUNT` 来统计满足条件的玩家数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `Activity` 表的行数。主要的时间开销在于排序和分组操作。
+空间复杂度: O(n)，用于存储中间结果。
 """
 
 # ============================================================================
@@ -51,10 +54,20 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT COUNT(DISTINCT player_id) AS active_players
+    FROM (
+        SELECT player_id, MIN(event_date) AS first_login
+        FROM Activity
+        GROUP BY player_id
+    ) AS FirstLogin
+    JOIN Activity AS A
+    ON FirstLogin.player_id = A.player_id AND DATEDIFF(A.event_date, FirstLogin.first_login) = 1
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

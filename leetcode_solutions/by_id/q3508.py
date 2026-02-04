@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算 n 和 k 的异或结果来确定需要更改的位数。如果 n 和 k 在某个位上不同，则该位在 n 中必须是 1 才能通过修改 n 使其等于 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n 和 k 的异或结果。
+2. 检查 n 和 k 的异或结果中所有位是否都在 n 中为 1。如果不是，返回 -1。
+3. 计算异或结果中 1 的个数，即为需要更改的位数。
 
 关键点:
-- [TODO]
+- 使用异或操作来找出不同的位。
+- 检查 n 中是否有足够的 1 来进行更改。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使两个整数相等的位更改次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 n 和 k 的异或结果
+    xor_result = n ^ k
+    
+    # 检查 n 中是否有足够的 1 来进行更改
+    if xor_result & ~n != 0:
+        return -1
+    
+    # 计算异或结果中 1 的个数
+    count = 0
+    while xor_result:
+        xor_result &= xor_result - 1
+        count += 1
+    
+    return count
 
 
 Solution = create_solution(solution_function_name)

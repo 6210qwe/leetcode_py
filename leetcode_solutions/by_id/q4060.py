@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历借阅记录数组，计算每本书的逾期天数，并根据逾期天数计算罚款金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总罚款金额为0。
+2. 遍历借阅记录数组，对于每条记录：
+   - 计算当前日期与应还日期之间的差值，即逾期天数。
+   - 根据逾期天数计算罚款金额，并累加到总罚款金额中。
+3. 返回总罚款金额。
 
 关键点:
-- [TODO]
+- 罚款金额的计算规则：逾期天数 * 每天罚款金额。
+- 注意处理逾期天数为负数的情况（即未逾期）。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是借阅记录数组的长度。需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(borrow_records: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算图书馆逾期罚款总金额
+    :param borrow_records: 借阅记录数组，每个记录包含 [借阅日期, 应还日期, 每天罚款金额]
+    :return: 总罚款金额
     """
-    # TODO: 实现最优解法
-    pass
+    total_fine = 0
+    for record in borrow_records:
+        borrow_date, due_date, daily_fine = record
+        overdue_days = due_date - borrow_date
+        if overdue_days > 0:
+            fine = overdue_days * daily_fine
+            total_fine += fine
+    return total_fine
 
 
 Solution = create_solution(solution_function_name)

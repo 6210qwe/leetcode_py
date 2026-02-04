@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来预处理每个位置右侧第一个更高的建筑，并使用二分查找来快速找到 Alice 和 Bob 可以相遇的最左建筑。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用单调栈预处理每个位置右侧第一个更高的建筑。
+2. 对于每个查询，使用二分查找找到 Alice 和 Bob 可以相遇的最左建筑。
 
 关键点:
-- [TODO]
+- 单调栈用于预处理每个位置右侧第一个更高的建筑。
+- 二分查找用于快速找到 Alice 和 Bob 可以相遇的最左建筑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q log n)，其中 n 是 heights 的长度，q 是 queries 的长度。
+空间复杂度: O(n)，用于存储每个位置右侧第一个更高的建筑。
 """
 
 # ============================================================================
@@ -48,13 +49,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_next_higher(heights: List[int]) -> List[int]:
+    stack = []
+    next_higher = [-1] * len(heights)
+    for i in range(len(heights)):
+        while stack and heights[stack[-1]] < heights[i]:
+            next_higher[stack.pop()] = i
+        stack.append(i)
+    return next_higher
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def binary_search(next_higher: List[int], start: int, end: int) -> int:
+    left, right = start, end
+    while left < right:
+        mid = (left + right) // 2
+        if next_higher[mid] > end:
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
+def solution_function_name(heights: List[int], queries: List[List[int]]) -> List[int]:
+    next_higher = find_next_higher(heights)
+    result = []
+    for a, b in queries:
+        if a == b:
+            result.append(a)
+            continue
+        if a > b:
+            a, b = b, a
+        if next_higher[a] == -1 or next_higher[a] <= b:
+            result.append(-1)
+        else:
+            meeting_point = binary_search(next_higher, a, b)
+            if meeting_point == -1 or heights[meeting_point] <= heights[b]:
+                result.append(-1)
+            else:
+                result.append(meeting_point)
+    return result
 
 Solution = create_solution(solution_function_name)

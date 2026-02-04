@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个用户的余额，并筛选出余额大于 10000 的用户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 和 SUM 函数计算每个用户的总交易金额。
+2. 将 Users 表与计算后的交易金额表进行 JOIN，以获取用户名。
+3. 筛选出余额大于 10000 的用户。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 SUM 函数来计算每个用户的总交易金额。
+- 使用 JOIN 来连接 Users 表和交易金额表。
+- 使用 WHERE 子句来筛选出余额大于 10000 的用户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Transactions 表的行数，m 是 Users 表的行数。
+空间复杂度: O(m)，因为我们需要存储 Users 表的数据以及计算后的交易金额。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(users, transactions):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算每个用户的总交易金额
+    balances = transactions.groupby('account')['amount'].sum().reset_index()
+    
+    # 将 Users 表与计算后的交易金额表进行 JOIN
+    result = users.merge(balances, on='account')
+    
+    # 筛选出余额大于 10000 的用户
+    result = result[result['amount'] > 10000]
+    
+    # 选择需要的列并重命名
+    result = result[['name', 'amount']].rename(columns={'amount': 'balance'})
+    
+    return result
 
 Solution = create_solution(solution_function_name)

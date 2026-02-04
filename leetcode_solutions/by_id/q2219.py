@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历每个句子，计算每个句子中的单词数，并记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_words` 为 0，用于记录最大单词数。
+2. 遍历每个句子，使用 `split` 方法将句子分割成单词列表，并计算单词数。
+3. 更新 `max_words` 为当前句子的单词数和 `max_words` 中的较大值。
+4. 返回 `max_words`。
 
 关键点:
-- [TODO]
+- 使用 `split` 方法可以方便地将句子分割成单词列表。
+- 通过遍历一次句子数组，可以在 O(n) 时间复杂度内解决问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是句子的数量，m 是每个句子的平均长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_number_of_words(sentences: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算句子中最多单词数
     """
-    # TODO: 实现最优解法
-    pass
+    max_words = 0
+    for sentence in sentences:
+        word_count = len(sentence.split())
+        max_words = max(max_words, word_count)
+    return max_words
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_number_of_words)

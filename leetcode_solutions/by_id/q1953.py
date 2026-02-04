@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序列表 (SortedList) 来维护数据流中的最后 m 个元素，并在需要时快速删除最小和最大的 k 个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个有序列表来存储数据流中的元素。
+2. 在 addElement 方法中，将新元素添加到有序列表中，并在超过 m 个元素时移除最旧的元素。
+3. 在 calculateMKAverage 方法中，如果数据流中的元素少于 m 个，返回 -1；否则，使用有序列表快速删除最小和最大的 k 个元素，然后计算剩余元素的平均值。
 
 关键点:
-- [TODO]
+- 使用 SortedList 来高效地维护有序数据。
+- 在计算平均值时，直接从有序列表中获取中间部分的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log m) - 添加和删除元素的时间复杂度。
+空间复杂度: O(m) - 存储最后 m 个元素的空间复杂度。
 """
 
 # ============================================================================
@@ -44,17 +46,39 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedList
+
+class MKAverage:
+
+    def __init__(self, m: int, k: int):
+        self.m = m
+        self.k = k
+        self.data_stream = []
+        self.sorted_data = SortedList()
+
+    def addElement(self, num: int) -> None:
+        self.data_stream.append(num)
+        self.sorted_data.add(num)
+        if len(self.data_stream) > self.m:
+            removed_num = self.data_stream.pop(0)
+            self.sorted_data.remove(removed_num)
+
+    def calculateMKAverage(self) -> int:
+        if len(self.data_stream) < self.m:
+            return -1
+        middle_part = self.sorted_data[self.k:-self.k]
+        return sum(middle_part) // len(middle_part)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    obj = MKAverage(3, 1)
+    obj.addElement(3)
+    obj.addElement(1)
+    print(obj.calculateMKAverage())  # -1
+    obj.addElement(10)
+    print(obj.calculateMKAverage())  # 3
+    obj.addElement(5)
+    obj.addElement(5)
+    obj.addElement(5)
+    print(obj.calculateMKAverage())  # 5

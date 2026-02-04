@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][d] 表示以第 i 个元素结尾且相邻绝对差为 d 的最长子序列长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][d] 表示以第 i 个元素结尾且相邻绝对差为 d 的最长子序列长度。
+2. 遍历数组，对于每个元素 nums[i]，遍历它之前的所有元素 nums[j]，计算它们的绝对差 d = abs(nums[i] - nums[j])。
+3. 更新 dp[i][d] 的值为 max(dp[i][d], dp[j][k] + 1)，其中 k 是所有满足 k >= d 的值。
+4. 最后，返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用二维数组 dp 来记录状态，避免重复计算。
+- 动态更新 dp 数组，确保每次更新时都考虑了所有可能的前驱状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * D)，其中 n 是数组的长度，D 是可能的绝对差的最大值（在本题中为 300）。
+空间复杂度: O(n * D)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_subsequence_with_decreasing_adjacent_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    # 定义 dp 数组
+    dp = [[1] * 301 for _ in range(n)]
+    max_length = 1
+
+    for i in range(1, n):
+        for j in range(i):
+            diff = abs(nums[i] - nums[j])
+            for d in range(diff, 301):
+                dp[i][diff] = max(dp[i][diff], dp[j][d] + 1)
+                max_length = max(max_length, dp[i][diff])
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subsequence_with_decreasing_adjacent_difference)

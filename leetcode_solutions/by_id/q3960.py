@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个计数器来记录每个学生的位置变化次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器数组，长度为 n，用于记录每个学生的位置变化次数。
+2. 遍历初始位置数组和目标位置数组，计算每个学生的位置变化次数。
+3. 返回计数器数组中最大值，即为需要替换的学生人数。
 
 关键点:
-- [TODO]
+- 计数器数组的使用可以有效地记录每个学生的位置变化次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(initial: List[int], target: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算学生替换人数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(initial)
+    if n != len(target):
+        raise ValueError("初始位置数组和目标位置数组长度不一致")
+
+    # 初始化计数器数组
+    counter = [0] * n
+
+    # 计算每个学生的位置变化次数
+    for i in range(n):
+        counter[initial[i]] += 1
+        counter[target[i]] -= 1
+
+    # 返回计数器数组中的最大值
+    return max(counter)
 
 
 Solution = create_solution(solution_function_name)

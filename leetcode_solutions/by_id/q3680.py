@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来合并满足条件的节点，并统计最终的连通块数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 对于每个节点，计算其所有可能的因子对，并检查这些因子对是否满足 lcm 条件。
+3. 如果满足条件，则将这些节点在并查集中进行合并。
+4. 最后，统计并查集中不同的根节点数目，即为连通块数目。
 
 关键点:
-- [TODO]
+- 使用并查集高效地合并和查找连通块。
+- 通过因子分解来减少不必要的 lcm 计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(max(nums)))，其中 n 是 nums 的长度，max(nums) 是 nums 中的最大值。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.parent[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.parent[rootX] = rootY
+            else:
+                self.parent[rootY] = rootX
+                self.rank[rootX] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[int], threshold: int) -> int:
+    n = len(nums)
+    uf = UnionFind(n)
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            lcm = (nums[i] * nums[j]) // math.gcd(nums[i], nums[j])
+            if lcm <= threshold:
+                uf.union(i, j)
+    
+    return len(set(uf.find(i) for i in range(n)))
 
 Solution = create_solution(solution_function_name)

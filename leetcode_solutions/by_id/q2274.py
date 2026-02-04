@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储数组中的元素，以便快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组转换为集合，以便 O(1) 时间复杂度的查找。
+2. 在集合中查找 original，如果找到则将其乘以 2，继续查找新的 original。
+3. 如果找不到 original，则返回当前的 original。
 
 关键点:
-- [TODO]
+- 使用集合来优化查找操作，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。最坏情况下，我们需要遍历整个数组。
+空间复杂度: O(n)，使用集合存储数组中的元素。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], original: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数组转换为集合
+    num_set = set(nums)
+    
+    # 循环查找并更新 original
+    while original in num_set:
+        original *= 2
+    
+    return original
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算满足条件的数对 (a, b) 的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_no_zero` 来检查一个数是否是无零数。
+2. 使用动态规划数组 `dp` 来存储每个数位上的无零数对数量。
+3. 递归地计算每个数位上的无零数对数量，并累加结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 递归地处理每个数位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(log n)
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_no_zero(num: int) -> bool:
+    """检查一个数是否是无零数。"""
+    return '0' not in str(num)
 
 
-Solution = create_solution(solution_function_name)
+def count_no_zero_pairs(n: int) -> int:
+    """
+    计算满足条件的数对 (a, b) 的数量。
+    """
+    if n < 2:
+        return 0
+
+    def dp(i: int, sum_so_far: int, tight: bool) -> int:
+        """动态规划递归函数。"""
+        if i == len(str(n)):
+            return 1 if sum_so_far == n else 0
+
+        if not tight and dp[i][sum_so_far] != -1:
+            return dp[i][sum_so_far]
+
+        limit = int(str(n)[i]) if tight else 9
+        res = 0
+        for d in range(limit + 1):
+            if is_no_zero(d):
+                new_sum = sum_so_far * 10 + d
+                if new_sum <= n and is_no_zero(n - new_sum):
+                    res += dp(i + 1, new_sum, tight and d == limit)
+
+        if not tight:
+            dp[i][sum_so_far] = res
+        return res
+
+    dp = [[-1 for _ in range(n + 1)] for _ in range(len(str(n)) + 1)]
+    return dp(0, 0, True)
+
+
+Solution = create_solution(count_no_zero_pairs)

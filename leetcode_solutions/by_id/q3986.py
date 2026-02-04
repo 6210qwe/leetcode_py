@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个三维数组 dp[i][j][c] 表示从 (0, 0) 到 (i, j) 的最大分数，其中 c 是当前的花费。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][0] = 0。
+2. 遍历整个网格，对于每个单元格 (i, j)，更新 dp[i][j][c] 的值。
+3. 更新 dp[i][j][c] 时，考虑从 (i-1, j) 和 (i, j-1) 两个方向过来的情况。
+4. 最后，检查 dp[m-1][n-1] 中的最大分数，确保花费不超过 k。
 
 关键点:
-- [TODO]
+- 使用三维 dp 数组来存储每个位置在不同花费下的最大分数。
+- 通过遍历网格并更新 dp 数组来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)
+空间复杂度: O(m * n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(grid: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在总花费不超过 k 的情况下可以获得的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    # 初始化 dp 数组
+    dp = [[[float('-inf')] * (k + 1) for _ in range(n)] for _ in range(m)]
+    dp[0][0][0] = 0
+
+    # 遍历整个网格
+    for i in range(m):
+        for j in range(n):
+            for c in range(k + 1):
+                if dp[i][j][c] == float('-inf'):
+                    continue
+                score = grid[i][j]
+                cost = 1 if score > 0 else 0
+                new_cost = c + cost
+                if new_cost <= k:
+                    if i + 1 < m:
+                        dp[i + 1][j][new_cost] = max(dp[i + 1][j][new_cost], dp[i][j][c] + score)
+                    if j + 1 < n:
+                        dp[i][j + 1][new_cost] = max(dp[i][j + 1][new_cost], dp[i][j][c] + score)
+
+    # 找到 dp[m-1][n-1] 中的最大分数
+    max_score = max(dp[m - 1][n - 1])
+    return max_score if max_score != float('-inf') else -1
 
 
 Solution = create_solution(solution_function_name)

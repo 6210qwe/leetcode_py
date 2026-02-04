@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检查每个长度为 k 的子数组是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 results。
+2. 使用滑动窗口遍历数组 nums，检查每个长度为 k 的子数组是否满足条件。
+3. 如果子数组满足条件，则记录其最大元素；否则记录 -1。
+4. 返回结果数组 results。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来高效地检查每个子数组。
+- 在滑动窗口中，只需检查新加入和移出的元素是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输出数组的空间）
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_power_of_k_size_subarrays(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回长度为 k 的子数组的能量值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    results = [-1] * (n - k + 1)
+    
+    for i in range(n - k + 1):
+        if i == 0 or nums[i - 1] + 1 != nums[i]:
+            is_valid = True
+            for j in range(i, i + k - 1):
+                if nums[j] + 1 != nums[j + 1]:
+                    is_valid = False
+                    break
+            if is_valid:
+                results[i] = nums[i + k - 1]
+        else:
+            if results[i - 1] != -1 and nums[i + k - 1] == results[i - 1] + 1:
+                results[i] = nums[i + k - 1]
+    
+    return results
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_power_of_k_size_subarrays)

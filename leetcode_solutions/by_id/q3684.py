@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来匹配字符串 s 和模式 p。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到模式 p 中的 '*' 符号的位置。
+2. 分别处理 '*' 前后的部分，使用双指针来匹配这些部分。
+3. 如果 '*' 前的部分匹配成功，则继续匹配 '*' 后的部分。
+4. 如果所有部分都匹配成功，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以有效地匹配字符串。
+- 处理 '*' 符号时，需要考虑其前后部分的匹配情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串 s 的长度，m 是模式 p 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_match(s: str, p: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断模式 p 是否可以变成 s 的子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到 '*' 在 p 中的位置
+    star_index = p.find('*')
+    
+    # 如果没有 '*'，直接判断 p 是否是 s 的子字符串
+    if star_index == -1:
+        return p in s
+    
+    # 获取 '*' 前后的部分
+    prefix = p[:star_index]
+    suffix = p[star_index + 1:]
+    
+    # 计算前缀和后缀的总长度
+    total_length = len(prefix) + len(suffix)
+    
+    # 遍历 s，尝试匹配前缀和后缀
+    for i in range(len(s) - total_length + 1):
+        if s[i:i+len(prefix)] == prefix and s[i+len(prefix):i+len(prefix)+len(suffix)] == suffix:
+            return True
+    
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_match)

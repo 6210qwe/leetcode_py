@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定正方形的最大边长，并检查在这个边长下是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将点按距离原点的距离排序。
+2. 使用二分查找来确定最大边长。
+3. 对于每个可能的边长，检查是否存在标签相同的点。
+4. 返回满足条件的最大边长对应的点数。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找最大边长的过程。
+- 使用集合来快速检查是否存在标签相同的点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 points 的长度。排序操作的时间复杂度为 O(n log n)，二分查找的时间复杂度为 O(log n)，每次检查的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储点和标签。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_points_inside_square(points: List[List[int]], s: str) -> int:
+    def distance(point):
+        return max(abs(point[0]), abs(point[1]))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 按距离原点的距离排序
+    points = sorted(points, key=distance)
 
+    def is_valid(length):
+        seen = set()
+        for i in range(len(points)):
+            if distance(points[i]) > length:
+                break
+            if s[i] in seen:
+                return False
+            seen.add(s[i])
+        return True
 
-Solution = create_solution(solution_function_name)
+    left, right = 0, distance(points[-1])
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_valid(mid):
+            left = mid
+        else:
+            right = mid - 1
+
+    # 计算最大边长下的点数
+    seen = set()
+    count = 0
+    for i in range(len(points)):
+        if distance(points[i]) > left:
+            break
+        if s[i] not in seen:
+            seen.add(s[i])
+            count += 1
+
+    return count
+
+Solution = create_solution(max_points_inside_square)

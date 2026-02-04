@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每家商店的产品价格。通过左连接（LEFT JOIN）将产品表和商店价格表连接起来，然后根据商店 ID 和产品 ID 进行分组，最后选择每个产品的最低价格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 LEFT JOIN 将 Products 表和 StoresProducts 表连接起来。
+2. 根据 store_id 和 product_id 进行分组。
+3. 选择每个产品的最低价格。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 LEFT JOIN 确保所有产品都在结果中，即使某些产品在某些商店中没有价格。
+- 使用 GROUP BY 和 MIN 函数来获取每个产品的最低价格。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Products 表的大小，m 是 StoresProducts 表的大小。JOIN 操作的时间复杂度通常为 O(n + m)。
+空间复杂度: O(1)，查询操作的空间复杂度主要取决于数据库的实现，但通常可以认为是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    SELECT p.product_id, p.product_name, s.store_id, COALESCE(MIN(sp.price), NULL) AS price
+    FROM Products p
+    LEFT JOIN StoresProducts sp ON p.product_id = sp.product_id
+    GROUP BY p.product_id, s.store_id
+    ORDER BY p.product_id, s.store_id;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

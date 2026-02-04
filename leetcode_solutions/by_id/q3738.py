@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护一个非递减的子数组，并记录每个元素的最长非递减子数组长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈 `stack` 和一个数组 `lengths` 用于记录每个元素的最长非递减子数组长度。
+2. 遍历数组 `nums`，对于每个元素 `num`：
+   - 如果栈为空或当前元素 `num` 大于等于栈顶元素，则将 `num` 入栈，并更新 `lengths` 数组。
+   - 否则，弹出栈顶元素直到栈顶元素小于等于 `num`，然后将 `num` 入栈，并更新 `lengths` 数组。
+3. 最后返回 `lengths` 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护非递减子数组。
+- 动态更新每个元素的最长非递减子数组长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。每个元素最多入栈和出栈一次。
+空间复杂度: O(n)，需要额外的空间来存储栈和 `lengths` 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算非递减数组的最大长度
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    lengths = [0] * len(nums)
+    
+    for i, num in enumerate(nums):
+        while stack and nums[stack[-1]] > num:
+            stack.pop()
+        
+        if not stack:
+            lengths[i] = 1
+        else:
+            lengths[i] = i - stack[-1]
+        
+        stack.append(i)
+    
+    return max(lengths)
 
 
 Solution = create_solution(solution_function_name)

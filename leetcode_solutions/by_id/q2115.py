@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算不同的好子序列的数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `end_with_0` 和 `end_with_1`，分别表示以 '0' 结尾和以 '1' 结尾的不同好子序列的数目。
+2. 遍历字符串 `binary`，根据当前字符更新 `end_with_0` 和 `end_with_1`。
+3. 最终结果是 `end_with_0` 和 `end_with_1` 的总和，加上单独的 '0' 子序列（如果存在）。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：
+  - 如果当前字符是 '1'，则 `end_with_1` 更新为 `(end_with_0 + end_with_1 + 1) % MOD`。
+  - 如果当前字符是 '0'，则 `end_with_0` 更新为 `(end_with_0 + end_with_1) % MOD`。
+- 最终结果需要考虑单独的 '0' 子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `binary` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +52,23 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(binary: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同的好子序列的数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    end_with_0 = 0
+    end_with_1 = 0
+    has_zero = False
+    
+    for char in binary:
+        if char == '1':
+            end_with_1 = (end_with_0 + end_with_1 + 1) % MOD
+        else:
+            end_with_0 = (end_with_0 + end_with_1) % MOD
+            has_zero = True
+    
+    return (end_with_0 + end_with_1 + (1 if has_zero else 0)) % MOD
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历二叉树，并在遍历过程中记录路径上的最大值。对于每个节点，如果它的值大于等于路径上的最大值，则计数加一。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，该函数接受当前节点和路径上的最大值作为参数。
+2. 如果当前节点为空，返回 0。
+3. 更新路径上的最大值为当前节点值和路径上最大值的较大者。
+4. 递归调用 `dfs` 函数处理左子节点和右子节点。
+5. 如果当前节点值大于等于路径上的最大值，则计数加一。
+6. 返回左子树和右子树的计数总和加上当前节点的计数。
 
 关键点:
-- [TODO]
+- 使用递归进行深度优先搜索。
+- 在递归过程中维护路径上的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def countGreatEnoughNodes(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算足够大的节点数
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode], max_val: int) -> int:
+        if not node:
+            return 0
+        # 更新路径上的最大值
+        new_max_val = max(max_val, node.val)
+        # 递归处理左子节点和右子节点
+        left_count = dfs(node.left, new_max_val)
+        right_count = dfs(node.right, new_max_val)
+        # 当前节点是否足够大
+        current_count = 1 if node.val >= max_val else 0
+        return left_count + right_count + current_count
 
+    return dfs(root, float('-inf'))
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(countGreatEnoughNodes)

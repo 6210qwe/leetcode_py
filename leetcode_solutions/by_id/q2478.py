@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的优雅子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个变量 current_and 来记录当前窗口内所有元素的按位与结果。
+3. 移动右指针扩展窗口，更新 current_and。
+4. 如果 current_and 不为 0，说明当前窗口内的元素不满足优雅子数组的条件，移动左指针缩小窗口，直到 current_and 为 0。
+5. 在每次移动右指针时，更新最长优雅子数组的长度。
 
 关键点:
-- [TODO]
+- 使用按位与操作来判断窗口内的元素是否满足条件。
+- 滑动窗口的动态调整确保了时间复杂度的最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_nice_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长的优雅子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    left = 0
+    current_and = 0
+    max_length = 0
+    
+    for right in range(len(nums)):
+        while (current_and & nums[right]) != 0:
+            current_and ^= nums[left]
+            left += 1
+        current_and |= nums[right]
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_nice_subarray)

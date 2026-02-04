@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个机场的进出航班数量，并找出最繁忙的机场。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表来存储每个机场的进出航班数量。
+2. 使用 UNION ALL 将出发和到达的航班数据合并到一个表中。
+3. 对合并后的表进行分组并计算每个机场的航班总数。
+4. 找出航班总数最多的机场。
 
 关键点:
-- [TODO]
+- 使用 UNION ALL 合并出发和到达的数据。
+- 使用 GROUP BY 和 COUNT 进行分组计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是出发航班的数量，m 是到达航班的数量。
+空间复杂度: O(n + m)，用于存储合并后的数据。
 """
 
 # ============================================================================
@@ -51,10 +54,22 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    WITH combined_flights AS (
+        SELECT departure_airport AS airport FROM flights
+        UNION ALL
+        SELECT arrival_airport AS airport FROM flights
+    )
+    SELECT airport, COUNT(*) AS total_flights
+    FROM combined_flights
+    GROUP BY airport
+    ORDER BY total_flights DESC
+    LIMIT 1;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

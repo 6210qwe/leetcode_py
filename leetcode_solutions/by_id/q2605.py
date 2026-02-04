@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排列组合公式计算每个单词的排列数，并乘以所有单词的排列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将字符串 s 按空格分割成单词列表。
+2. 对于每个单词，计算其排列数。
+3. 计算所有单词排列数的乘积，并对 10^9 + 7 取余。
 
 关键点:
-- [TODO]
+- 使用阶乘和组合公式计算排列数。
+- 使用模运算防止结果溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +50,38 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def factorial(n: int) -> int:
+    """计算 n! 并对 MOD 取余"""
+    result = 1
+    for i in range(2, n + 1):
+        result = (result * i) % MOD
+    return result
+
+def inverse_factorial(n: int) -> int:
+    """计算 n! 的逆元并对其取余"""
+    return pow(factorial(n), MOD - 2, MOD)
+
+def count_anagrams(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算字符串 s 的同位异构字符串的数目，并对 10^9 + 7 取余
     """
-    # TODO: 实现最优解法
-    pass
+    words = s.split()
+    result = 1
+    for word in words:
+        char_count = [0] * 26
+        for char in word:
+            char_count[ord(char) - ord('a')] += 1
+        
+        # 计算当前单词的排列数
+        word_permutations = factorial(len(word))
+        for count in char_count:
+            if count > 0:
+                word_permutations = (word_permutations * inverse_factorial(count)) % MOD
+        
+        result = (result * word_permutations) % MOD
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_anagrams)

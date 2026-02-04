@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和位运算来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个技能映射到一个唯一的整数。
+2. 使用一个掩码来表示每个人掌握的技能集合。
+3. 使用动态规划来找到最小的团队，使得所有技能都被覆盖。
 
 关键点:
-- [TODO]
+- 使用位运算来表示技能集合。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * m)，其中 n 是 req_skills 的长度，m 是 people 的长度。
+空间复杂度: O(2^n * n)，用于存储动态规划的状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def smallestSufficientTeam(req_skills: List[str], people: List[List[str]]) -> List[int]:
+    n = len(req_skills)
+    skill_to_id = {skill: i for i, skill in enumerate(req_skills)}
+    
+    # 将每个人的技能列表转换为位掩码
+    people_masks = []
+    for person in people:
+        mask = 0
+        for skill in person:
+            if skill in skill_to_id:
+                mask |= 1 << skill_to_id[skill]
+        people_masks.append(mask)
+    
+    # 动态规划数组
+    dp = [(float('inf'), [])] * (1 << n)
+    dp[0] = (0, [])
+    
+    for i, mask in enumerate(people_masks):
+        for j in range((1 << n) - 1, -1, -1):
+            new_mask = j | mask
+            if dp[new_mask][0] > dp[j][0] + 1:
+                dp[new_mask] = (dp[j][0] + 1, dp[j][1] + [i])
+    
+    return dp[(1 << n) - 1][1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallestSufficientTeam)

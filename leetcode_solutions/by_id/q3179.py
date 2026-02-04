@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）和记忆化搜索来解决这个问题。我们可以通过递归地处理每个节点及其子树，并使用记忆化来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个递归函数 `dfs`，该函数接受当前节点、父节点、金币数组和剩余的减半操作次数作为参数。
+3. 在 `dfs` 函数中，计算两种收集金币的方法的得分，并选择最大值。
+4. 使用记忆化来存储已经计算过的状态，以避免重复计算。
+5. 从根节点开始调用 `dfs` 函数，返回最终的最大积分。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化时间复杂度。
+- 通过递归处理每个节点及其子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(coins)))，其中 n 是节点数，log(max(coins)) 是金币减半操作的最大次数。
+空间复杂度: O(n * log(max(coins)))，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+def maxPoints(edges: List[List[int]], coins: List[int], k: int) -> int:
+    # 构建树的邻接表表示
+    tree = [[] for _ in range(len(coins))]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(None)
+    def dfs(node: int, parent: int, remaining_halves: int) -> int:
+        # 计算当前节点的金币数
+        current_coins = coins[node] >> remaining_halves
+        if current_coins == 0:
+            return 0
 
+        # 选择第一种方法收集金币
+        points1 = current_coins - k
+        for child in tree[node]:
+            if child != parent:
+                points1 += dfs(child, node, remaining_halves)
 
-Solution = create_solution(solution_function_name)
+        # 选择第二种方法收集金币
+        points2 = current_coins // 2
+        if remaining_halves < 14:  # 最多可以减半 14 次
+            for child in tree[node]:
+                if child != parent:
+                    points2 += dfs(child, node, remaining_halves + 1)
+
+        # 返回两种方法中的最大值
+        return max(points1, points2)
+
+    # 从根节点开始调用 dfs 函数
+    return dfs(0, -1, 0)
+
+Solution = create_solution(maxPoints)

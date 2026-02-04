@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Andrew's monotone chain 算法来找到凸包。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对所有点按 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标升序排序。
+2. 使用 Graham scan 算法构建下凸壳。
+3. 使用 Graham scan 算法构建上凸壳。
+4. 合并上下凸壳得到最终结果。
 
 关键点:
-- [TODO]
+- 使用叉积判断方向。
+- 处理共线点时，选择 y 坐标最小的点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是点的数量，主要由排序决定。
+空间复杂度: O(n)，用于存储凸包的点。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def cross_product(o, a, b):
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+
+def solution_function_name(points: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Andrew's monotone chain 算法来找到凸包。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(points) < 3:
+        return points
+
+    # 按 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标升序排序
+    points.sort(key=lambda p: (p[0], p[1]))
+
+    # 构建下凸壳
+    lower_hull = []
+    for point in points:
+        while len(lower_hull) >= 2 and cross_product(lower_hull[-2], lower_hull[-1], point) < 0:
+            lower_hull.pop()
+        lower_hull.append(point)
+
+    # 构建上凸壳
+    upper_hull = []
+    for point in reversed(points):
+        while len(upper_hull) >= 2 and cross_product(upper_hull[-2], upper_hull[-1], point) < 0:
+            upper_hull.pop()
+        upper_hull.append(point)
+
+    # 合并上下凸壳
+    convex_hull = lower_hull[:-1] + upper_hull[:-1]
+    return convex_hull
 
 
 Solution = create_solution(solution_function_name)

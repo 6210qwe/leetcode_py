@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 通过聚合操作获取每个用户的当前订阅状态、最大历史订阅费用和降级次数。
+2. 过滤出符合条件的用户：当前订阅有效、有降级记录、当前订阅费用低于历史最高订阅费用的 50%、订阅天数至少 60 天。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 获取每个用户的当前订阅状态、最大历史订阅费用和降级次数。
+2. 计算每个用户的订阅天数。
+3. 过滤出符合条件的用户。
+4. 按 days_as_subscriber 降序排序，然后按 user_id 升序排序。
 
 关键点:
-- [TODO]
+- 使用 Pandas 进行数据处理和聚合操作。
+- 通过条件过滤和排序实现最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 subscription_events 表的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储中间结果和最终结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def find_churn_risk_customers(subscription_events: pd.DataFrame) -> pd.DataFrame:
+    # 获取每个用户的当前订阅状态
+    current_subscription = subscription_events.sort_values(by=['user_id', 'event_date']).groupby('user_id').tail(1)
+    
+    # 获取每个用户的最大历史订阅费用
+    max_historical_amount = subscription_events.groupby('user_id')['monthly_amount'].max().reset_index()
+    
+    # 获取每个用户的降级次数
+    downgrade_count = subscription_events[subscription_events['event_type'] == 'downgrade'].groupby('user_id').size().reset_index(name='downgrade_count')
+    
+    # 合并当前订阅状态、最大历史订阅费用和降级次数
+    merged_data = pd.merge(current_subscription, max_historical_amount, on='user_id')
+    merged_data = pd.merge(merged_data, downgrade_count, on='user_id', how='left').fillna(0)
+    
+    # 计算每个用户的订阅天数
+    merged_data['days_as_subscriber'] = (merged_data['event_date'] - subscription_events.groupby('user_id')['event_date'].min()).dt.days
+    
+    # 过滤出符合条件的用户
+    churn_risk_customers = merged_data[
+        (merged_data['event_type'] != 'cancel') &
+        (merged_data['downgrade_count'] > 0) &
+        (merged_data['monthly_amount'] < 0.5 * merged_data['monthly_amount_y']) &
+        (merged_data['days_as_subscriber'] >= 60)
+    ]
+    
+    # 选择需要的列并排序
+    result = churn_risk_customers[['user_id', 'plan_name', 'monthly_amount_x', 'monthly_amount_y', 'days_as_subscriber']].rename(columns={
+        'plan_name': 'current_plan',
+        'monthly_amount_x': 'current_monthly_amount',
+        'monthly_amount_y': 'max_historical_amount'
+    })
+    
+    return result.sort_values(by=['days_as_subscriber', 'user_id'], ascending=[False, True])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_churn_risk_customers)

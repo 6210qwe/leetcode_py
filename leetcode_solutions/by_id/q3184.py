@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组（Fenwick Tree）来维护前缀最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个元素 nums[i] 转换为一个新的值 nums[i] - i，并对其进行离散化处理。
+2. 使用树状数组来维护前缀最大值。
+3. 遍历数组，对于每个元素，查询其在树状数组中的前缀最大值，并更新当前元素的最大和。
+4. 更新树状数组中的当前元素的最大和。
 
 关键点:
-- [TODO]
+- 离散化处理可以将数值映射到较小的范围内，便于使用树状数组。
+- 树状数组用于高效地查询和更新前缀最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。离散化处理的时间复杂度为 O(n log n)，树状数组的操作时间为 O(log n)。
+空间复杂度: O(n)，用于存储离散化后的值和树状数组。
 """
 
 # ============================================================================
@@ -48,13 +51,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class FenwickTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (n + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def update(self, idx, val):
+        while idx <= self.n:
+            self.tree[idx] = max(self.tree[idx], val)
+            idx += idx & -idx
 
+    def query(self, idx):
+        res = 0
+        while idx > 0:
+            res = max(res, self.tree[idx])
+            idx -= idx & -idx
+        return res
+
+def solution_function_name(nums: List[int]) -> int:
+    n = len(nums)
+    # 离散化处理
+    values = sorted(set(nums[i] - i for i in range(n)))
+    rank = {val: i + 1 for i, val in enumerate(values)}
+    
+    # 初始化树状数组
+    tree = FenwickTree(len(values))
+    
+    # 计算最大平衡子序列和
+    max_sum = float('-inf')
+    for i in range(n):
+        val = nums[i] - i
+        idx = rank[val]
+        prev_max = tree.query(idx - 1)
+        current_max = max(prev_max + nums[i], nums[i])
+        max_sum = max(max_sum, current_max)
+        tree.update(idx, current_max)
+    
+    return max_sum
 
 Solution = create_solution(solution_function_name)

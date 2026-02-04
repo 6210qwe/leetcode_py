@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从右向左遍历数组，同时维护一个变量来记录当前的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_right` 为 -1，表示最右侧元素的替换值。
+2. 从右向左遍历数组：
+   - 保存当前元素的值到临时变量 `current`。
+   - 将当前元素替换为 `max_right`。
+   - 更新 `max_right` 为 `current` 和 `max_right` 中的较大值。
 
 关键点:
-- [TODO]
+- 通过从右向左遍历，可以在 O(1) 空间复杂度内完成替换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def replace_elements(arr: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将每个元素替换为右侧最大元素
     """
-    # TODO: 实现最优解法
-    pass
+    max_right = -1
+    for i in range(len(arr) - 1, -1, -1):
+        current = arr[i]
+        arr[i] = max_right
+        max_right = max(max_right, current)
+    return arr
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(replace_elements)

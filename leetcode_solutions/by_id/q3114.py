@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算每个位置作为峰值时的高度和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置作为峰值时左侧和右侧的高度和。
+2. 使用单调栈分别从左到右和从右到左遍历数组，计算每个位置左侧和右侧的高度和。
+3. 对于每个位置，计算其作为峰值时的高度和，并更新最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护左侧和右侧的高度和。
+- 通过两次遍历来计算每个位置作为峰值时的高度和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(maxHeights: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足山脉状塔排列的高度和的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(maxHeights)
+    left_sum = [0] * n
+    right_sum = [0] * n
+    stack = []
+
+    # Calculate left sums
+    for i in range(n):
+        while stack and maxHeights[stack[-1]] > maxHeights[i]:
+            stack.pop()
+        if stack:
+            left_sum[i] = left_sum[stack[-1]] + maxHeights[i] * (i - stack[-1])
+        else:
+            left_sum[i] = maxHeights[i] * (i + 1)
+        stack.append(i)
+
+    stack.clear()
+
+    # Calculate right sums
+    for i in range(n - 1, -1, -1):
+        while stack and maxHeights[stack[-1]] > maxHeights[i]:
+            stack.pop()
+        if stack:
+            right_sum[i] = right_sum[stack[-1]] + maxHeights[i] * (stack[-1] - i)
+        else:
+            right_sum[i] = maxHeights[i] * (n - i)
+        stack.append(i)
+
+    # Find the maximum sum
+    max_sum = 0
+    for i in range(n):
+        max_sum = max(max_sum, left_sum[i] + right_sum[i] - maxHeights[i])
+
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

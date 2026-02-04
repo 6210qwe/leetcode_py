@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合（SortedList）来维护障碍物的位置，并使用二分查找来快速判断物块是否可以放置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `obstacles` 来存储障碍物的位置。
+2. 遍历 `queries` 数组：
+   - 如果是操作类型 1，将障碍物的位置加入 `obstacles`。
+   - 如果是操作类型 2，使用二分查找来判断在范围 [0, x] 内是否存在一个连续的空位可以放置长度为 `sz` 的物块。
 
 关键点:
-- [TODO]
+- 使用有序集合 `SortedList` 可以高效地插入和查找障碍物位置。
+- 通过二分查找快速判断物块是否可以放置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `queries` 的长度。每次插入和查找操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储障碍物的位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
+def block_placement_queries(queries: List[List[int]]) -> List[bool]:
+    obstacles = SortedList()
+    results = []
+    
+    for query in queries:
+        if query[0] == 1:
+            obstacles.add(query[1])
+        elif query[0] == 2:
+            x, sz = query[1], query[2]
+            # 找到第一个大于等于 x - sz + 1 的障碍物位置
+            idx = obstacles.bisect_left(x - sz + 1)
+            # 判断在 [0, x] 范围内是否有足够的空位放置物块
+            if (idx == 0 or obstacles[idx - 1] < x - sz + 1) and (idx == len(obstacles) or obstacles[idx] > x):
+                results.append(True)
+            else:
+                results.append(False)
+    
+    return results
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(block_placement_queries)

@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决问题。我们定义 dp[i][j] 表示将前 i 个元素变成非递减顺序，并且最后一个元素为 j (j=1,2,3) 所需的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示将前 i 个元素变成非递减顺序，并且最后一个元素为 j 所需的最小操作数。
+2. 遍历数组，对于每个元素 nums[i]，更新 dp 数组。
+3. 最后返回 dp[n][1], dp[n][2], dp[n][3] 中的最小值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = min(dp[i-1][k] + (nums[i-1] != j))，其中 k <= j。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 nums 成为非递减顺序所需操作数的最小值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
 
+    # 初始化 dp 数组
+    dp = [[0] * 4 for _ in range(n + 1)]
+
+    # 动态规划填表
+    for i in range(1, n + 1):
+        for j in range(1, 4):
+            dp[i][j] = dp[i - 1][j] + (nums[i - 1] != j)
+            for k in range(1, j):
+                dp[i][j] = min(dp[i][j], dp[i - 1][k] + (nums[i - 1] != j))
+
+    # 返回最小操作数
+    return min(dp[n][1], dp[n][2], dp[n][3])
 
 Solution = create_solution(solution_function_name)

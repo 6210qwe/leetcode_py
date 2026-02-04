@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到在给定时间限制内的最小费用路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用优先队列（最小堆）来存储当前节点、时间和费用。
+3. 初始化优先队列，将起点 (0, 0, 0) 加入队列。
+4. 使用一个二维数组 `dist` 来记录从起点到每个节点在特定时间下的最小费用。
+5. 从优先队列中取出当前节点，并更新其邻居节点的费用和时间。
+6. 如果在规定时间内到达终点，则返回最小费用；否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用优先队列确保每次处理的是当前最小费用的节点。
+- 使用二维数组 `dist` 来避免重复计算和优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E)，其中 E 是边的数量。Dijkstra 算法的时间复杂度主要取决于优先队列的操作。
+空间复杂度: O(N * maxTime)，其中 N 是节点数量，maxTime 是最大时间限制。用于存储 `dist` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def min_cost_to_reach_destination(maxTime: int, edges: List[List[int]], passingFees: List[int]) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(len(passingFees))]
+    for u, v, time in edges:
+        graph[u].append((v, time))
+        graph[v].append((u, time))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 优先队列，存储 (费用, 时间, 节点)
+    pq = [(passingFees[0], 0, 0)]
+    # 记录从起点到每个节点在特定时间下的最小费用
+    dist = [[float('inf')] * (maxTime + 1) for _ in range(len(passingFees))]
+    dist[0][0] = passingFees[0]
 
+    while pq:
+        cost, time, node = heapq.heappop(pq)
 
-Solution = create_solution(solution_function_name)
+        if node == len(passingFees) - 1:
+            return cost
+
+        for neighbor, travel_time in graph[node]:
+            new_time = time + travel_time
+            new_cost = cost + passingFees[neighbor]
+            if new_time <= maxTime and new_cost < dist[neighbor][new_time]:
+                dist[neighbor][new_time] = new_cost
+                heapq.heappush(pq, (new_cost, new_time, neighbor))
+
+    return -1
+
+Solution = create_solution(min_cost_to_reach_destination)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个单词的出现次数，然后找出只出现一次的单词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将两个句子合并成一个字符串。
+2. 将字符串按空格分割成单词列表。
+3. 使用哈希表统计每个单词的出现次数。
+4. 遍历哈希表，找出只出现一次的单词。
 
 关键点:
-- [TODO]
+- 使用哈希表统计单词出现次数。
+- 合并两个句子以简化处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 s1 和 s2 的长度。
+空间复杂度: O(n + m)，用于存储单词及其出现次数。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def uncommon_from_sentences(s1: str, s2: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回两个句子中的不常见单词
     """
-    # TODO: 实现最优解法
-    pass
+    # 合并两个句子
+    combined = s1 + " " + s2
+    # 将字符串按空格分割成单词列表
+    words = combined.split()
+    # 使用哈希表统计每个单词的出现次数
+    word_count = {}
+    for word in words:
+        if word in word_count:
+            word_count[word] += 1
+        else:
+            word_count[word] = 1
+    # 找出只出现一次的单词
+    result = [word for word, count in word_count.items() if count == 1]
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(uncommon_from_sentences)

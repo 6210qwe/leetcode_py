@@ -21,40 +21,56 @@ LCP 65. 舒适的湿度 - 力扣嘉年华为了确保更舒适的游览环境条
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和前缀和来找到最小的整体不适宜度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的上下界。
+2. 对于每个中间值，使用前缀和数组检查是否可以通过修改某些指令来达到该中间值。
+3. 如果可以，则更新上界；否则，更新下界。
+4. 最终返回下界作为结果。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小搜索范围。
+- 使用前缀和数组来快速计算子数组的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log S)，其中 n 是 operate 的长度，S 是 operate 中的最大值。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_uncomfortableness(operate: List[int]) -> int:
+    def check(mid: int) -> bool:
+        prefix_sum = [0]
+        for num in operate:
+            if num > mid:
+                prefix_sum.append(prefix_sum[-1] + num - mid)
+            else:
+                prefix_sum.append(prefix_sum[-1])
+        
+        min_prefix_sum = 0
+        for i in range(len(operate)):
+            if prefix_sum[i + 1] - min_prefix_sum >= mid:
+                return True
+            min_prefix_sum = min(min_prefix_sum, prefix_sum[i + 1])
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, max(operate)
+    while left < right:
+        mid = (left + right) // 2
+        if check(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_uncomfortableness)

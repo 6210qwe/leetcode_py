@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来生成会话柱状图
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 sessions 表中选择 session_id 和 duration 字段。
+2. 按照 duration 进行分组，并计算每个分组的会话数量。
+3. 将结果按照 duration 从小到大排序。
 
 关键点:
-- [TODO]
+- 使用 COUNT 函数统计每个分组的会话数量。
+- 使用 GROUP BY 对 duration 进行分组。
+- 使用 ORDER BY 对 duration 进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 sessions 表中的记录数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储分组和计数结果需要 O(n) 的空间。
 """
 
 # ============================================================================
@@ -51,10 +54,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        duration,
+        COUNT(session_id) AS session_count
+    FROM 
+        sessions
+    GROUP BY 
+        duration
+    ORDER BY 
+        duration ASC
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）从叶子节点向上遍历，通过状态转移来决定每个节点是否需要安装摄像头。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义三种状态：0 表示该节点未被覆盖，1 表示该节点被覆盖但没有摄像头，2 表示该节点有摄像头。
+2. 从叶子节点开始向上遍历，根据子节点的状态决定当前节点的状态。
+3. 如果某个子节点未被覆盖，则当前节点必须安装摄像头。
+4. 如果某个子节点有摄像头，则当前节点不需要安装摄像头。
+5. 如果所有子节点都被覆盖但没有摄像头，则当前节点可以选择不安装摄像头，但在根节点处需要特殊处理。
 
 关键点:
-- [TODO]
+- 使用 DFS 从叶子节点向上遍历。
+- 通过状态转移来决定每个节点是否需要安装摄像头。
+- 特殊处理根节点，确保整个树都被覆盖。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def min_camera_cover(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算监控树的所有节点所需的最小摄像头数量
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node):
+        if not node:
+            return 0, 1  # (摄像头数量, 状态)
+        
+        l_count, l_state = dfs(node.left)
+        r_count, r_state = dfs(node.right)
+        
+        if l_state == 0 or r_state == 0:  # 子节点未被覆盖
+            return l_count + r_count + 1, 2  # 当前节点安装摄像头
+        
+        if l_state == 2 or r_state == 2:  # 子节点有摄像头
+            return l_count + r_count, 1  # 当前节点被覆盖但没有摄像头
+        
+        return l_count + r_count, 0  # 子节点都被覆盖但没有摄像头
+    
+    count, state = dfs(root)
+    return count + (state == 0)  # 如果根节点未被覆盖，需要再加一个摄像头
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_camera_cover)

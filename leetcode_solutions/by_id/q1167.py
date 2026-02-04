@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列（最小堆）来最小化建造街区的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有块的高度放入一个最小堆中。
+2. 每次从堆中取出两个最小的高度，计算它们的合并高度，并将合并后的高度重新放入堆中。
+3. 重复上述过程直到堆中只剩下一个元素，即为最终的最小时间。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取当前最小的两个高度。
+- 合并高度时，选择较小的高度进行累加以保证总时间最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是块的数量。每次插入和删除操作的时间复杂度为 O(log n)，总共需要进行 n-1 次合并操作。
+空间复杂度: O(n)，用于存储堆中的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def minimum_time_to_build_blocks(blocks: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算建造街区的最短时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有块的高度放入最小堆中
+    min_heap = blocks[:]
+    heapq.heapify(min_heap)
+    
+    total_time = 0
+    
+    # 每次从堆中取出两个最小的高度，计算它们的合并高度，并将合并后的高度重新放入堆中
+    while len(min_heap) > 1:
+        first_min = heapq.heappop(min_heap)
+        second_min = heapq.heappop(min_heap)
+        merged_height = first_min + second_min
+        total_time += merged_height
+        heapq.heappush(min_heap, merged_height)
+    
+    return total_time
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_time_to_build_blocks)

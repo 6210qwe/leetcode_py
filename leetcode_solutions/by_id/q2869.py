@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护两个数组 dp1 和 dp2，分别表示以 nums1[i] 和 nums2[i] 结尾的最长非递减子数组的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 dp1 和 dp2，长度为 n，初始值为 1。
+2. 遍历数组，对于每个位置 i，更新 dp1[i] 和 dp2[i]。
+3. 如果 nums1[i] >= nums1[i-1]，则 dp1[i] = dp1[i-1] + 1；如果 nums1[i] >= nums2[i-1]，则 dp1[i] = max(dp1[i], dp2[i-1] + 1)。
+4. 同理更新 dp2[i]。
+5. 最后返回 dp1 和 dp2 中的最大值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 保持 dp1 和 dp2 的更新逻辑一致
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def longest_non_decreasing_subarray(nums1: List[int], nums2: List[int]) -> int:
+    n = len(nums1)
+    dp1 = [1] * n
+    dp2 = [1] * n
+    
+    for i in range(1, n):
+        if nums1[i] >= nums1[i - 1]:
+            dp1[i] = dp1[i - 1] + 1
+        if nums1[i] >= nums2[i - 1]:
+            dp1[i] = max(dp1[i], dp2[i - 1] + 1)
+        
+        if nums2[i] >= nums2[i - 1]:
+            dp2[i] = dp2[i - 1] + 1
+        if nums2[i] >= nums1[i - 1]:
+            dp2[i] = max(dp2[i], dp1[i - 1] + 1)
+    
+    return max(max(dp1), max(dp2))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_non_decreasing_subarray)

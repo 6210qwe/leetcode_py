@@ -14,29 +14,34 @@
 # 问题描述
 # ============================================================================
 """
-2539. 好子序列的个数 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个二进制字符串 s，返回 s 的好子序列的个数。如果一个子序列中 1 的数量大于等于 0 的数量，则该子序列是好的。
+由于答案可能很大，请将结果对 10^9 + 7 取模。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算好子序列的个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串 s 中 1 和 0 的数量。
+2. 使用动态规划数组 dp[i][j] 表示前 i 个字符中 1 的数量为 j 的子序列个数。
+3. 初始化 dp 数组，dp[0][0] = 1。
+4. 遍历字符串 s，更新 dp 数组。
+5. 计算所有符合条件的子序列个数，并对 10^9 + 7 取模。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = dp[i-1][j] * 2 (如果 s[i-1] 是 0) 或 dp[i][j] = dp[i-1][j] + dp[i-1][j-1] (如果 s[i-1] 是 1)。
+- 使用组合数学计算最终结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串 s 的长度，m 是 1 的数量。
+空间复杂度: O(n * m)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -48,13 +53,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_good_subsequences(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好子序列的个数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    ones = s.count('1')
+    zeros = s.count('0')
+    
+    # dp[i][j] 表示前 i 个字符中 1 的数量为 j 的子序列个数
+    dp = [[0] * (ones + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(ones + 1):
+            if s[i - 1] == '0':
+                dp[i][j] = dp[i - 1][j] * 2 % MOD
+            else:
+                dp[i][j] = (dp[i - 1][j] + (dp[i - 1][j - 1] if j > 0 else 0)) % MOD
+    
+    # 计算所有符合条件的子序列个数
+    result = sum(dp[n][j] for j in range(ones + 1) if j >= zeros) % MOD
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_subsequences)

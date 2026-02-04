@@ -14,47 +14,54 @@
 # 问题描述
 # ============================================================================
 """
-1230. 抛掷硬币 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+你有 n 枚硬币，每枚硬币都有一个正面朝上的概率 prob[i]。如果你抛掷所有这些硬币，求恰好有 k 枚硬币正面朝上的概率。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算恰好有 k 枚硬币正面朝上的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示前 i 枚硬币中有 j 枚正面朝上的概率。
+2. 对于每个硬币 i 和每个可能的正面朝上数量 j，更新 dp[i][j]。
+3. 最终结果是 dp[n][k]。
 
 关键点:
-- [TODO]
+- 使用动态规划避免重复计算。
+- 通过状态转移方程更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(probs: List[float], k: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算恰好有 k 枚硬币正面朝上的概率
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(probs)
+    dp = [[0.0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1.0  # 初始状态：0 枚硬币中 0 枚正面朝上的概率为 1
 
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            if j == 0:
+                dp[i][j] = dp[i - 1][j] * (1 - probs[i - 1])
+            else:
+                dp[i][j] = dp[i - 1][j] * (1 - probs[i - 1]) + dp[i - 1][j - 1] * probs[i - 1]
+
+    return dp[n][k]
 
 Solution = create_solution(solution_function_name)

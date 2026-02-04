@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针分别遍历 start 和 end 字符串，跳过 'X' 字符，比较 'L' 和 'R' 的位置关系。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 start 和 end 字符串的起始位置。
+2. 遍历字符串，跳过 'X' 字符，找到 'L' 或 'R'。
+3. 比较当前字符的位置关系：
+   - 如果 start 中的 'L' 在 end 中对应的 'L' 的右边，返回 False。
+   - 如果 start 中的 'R' 在 end 中对应的 'R' 的左边，返回 False。
+4. 如果遍历完所有字符且没有违反上述规则，返回 True。
 
 关键点:
-- [TODO]
+- 'L' 只能向左移动，'R' 只能向右移动。
+- 'L' 和 'R' 的相对顺序不能改变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def canTransform(start: str, end: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断 start 是否可以通过一系列移动操作转换为 end
     """
-    # TODO: 实现最优解法
-    pass
+    if len(start) != len(end):
+        return False
+
+    i, j = 0, 0
+    n = len(start)
+
+    while i < n or j < n:
+        # 跳过 start 中的 'X'
+        while i < n and start[i] == 'X':
+            i += 1
+        # 跳过 end 中的 'X'
+        while j < n and end[j] == 'X':
+            j += 1
+
+        # 如果其中一个指针已经到达末尾，另一个还没有，说明字符数量不匹配
+        if i == n or j == n:
+            break
+
+        # 比较当前字符
+        if start[i] != end[j]:
+            return False
+
+        # 'L' 只能向左移动
+        if start[i] == 'L' and i < j:
+            return False
+        # 'R' 只能向右移动
+        if start[i] == 'R' and i > j:
+            return False
+
+        i += 1
+        j += 1
+
+    # 确保所有字符都匹配
+    return i == n and j == n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(canTransform)

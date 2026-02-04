@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来解析布尔表达式，并根据操作符进行相应的逻辑运算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前处理的子表达式。
+2. 遍历表达式字符串，根据字符的不同进行不同的处理：
+   - 如果是 't' 或 'f'，直接压入栈中。
+   - 如果是 '!', '&' 或 '|'，将操作符压入栈中。
+   - 如果是 ')', 弹出栈中的子表达式并进行相应的逻辑运算，直到遇到对应的 '('。
+3. 最终栈中剩下的值即为表达式的计算结果。
 
 关键点:
-- [TODO]
+- 使用栈来处理嵌套的子表达式。
+- 根据操作符的不同，进行相应的逻辑运算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表达式的长度。每个字符只会被处理一次。
+空间复杂度: O(n)，最坏情况下栈的大小可能达到 n。
 """
 
 # ============================================================================
@@ -49,12 +54,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def parse_boolean_expression(expression: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    解析布尔表达式并返回其运算结果。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in expression:
+        if char == 't':
+            stack.append(True)
+        elif char == 'f':
+            stack.append(False)
+        elif char in ('!', '&', '|'):
+            stack.append(char)
+        elif char == ')':
+            sub_expr = []
+            while stack and stack[-1] != '(':
+                sub_expr.append(stack.pop())
+            stack.pop()  # 弹出 '('
+            op = stack.pop()
+            if op == '!':
+                result = not sub_expr[0]
+            elif op == '&':
+                result = all(sub_expr)
+            elif op == '|':
+                result = any(sub_expr)
+            stack.append(result)
+    
+    return stack[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(parse_boolean_expression)

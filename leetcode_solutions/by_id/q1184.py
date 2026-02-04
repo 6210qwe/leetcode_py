@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每个站点的乘客变化，并通过前缀和计算每个站点的实际乘客数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个大小为 1001 的差分数组 `diff`，用于记录每个站点的乘客变化。
+2. 遍历 `trips` 数组，对于每个行程 `[numPassengers, from, to]`，在 `from` 站点增加 `numPassengers`，在 `to` 站点减少 `numPassengers`。
+3. 通过前缀和计算每个站点的实际乘客数。
+4. 检查每个站点的实际乘客数是否超过 `capacity`，如果超过则返回 `False`，否则返回 `True`。
 
 关键点:
-- [TODO]
+- 使用差分数组可以高效地处理区间更新问题。
+- 前缀和可以快速计算每个站点的实际乘客数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `trips` 的长度，m 是站点的数量（最大为 1000）。
+空间复杂度: O(m)，需要一个大小为 1001 的数组来存储差分数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def carPooling(trips: List[List[int]], capacity: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以在所有给定的行程中接送所有乘客
     """
-    # TODO: 实现最优解法
-    pass
+    # 差分数组
+    diff = [0] * 1001
+    
+    # 更新差分数组
+    for num_passengers, start, end in trips:
+        diff[start] += num_passengers
+        diff[end] -= num_passengers
+    
+    # 计算前缀和并检查容量
+    current_passengers = 0
+    for passengers_change in diff:
+        current_passengers += passengers_change
+        if current_passengers > capacity:
+            return False
+    
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(carPooling)

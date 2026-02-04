@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到所有递增乘积块，并计算它们的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 `dp`，其中 `dp[i]` 表示以 `i` 结尾的递增乘积块的最大值。
+2. 遍历数组，对于每个元素 `nums[i]`，检查它是否可以与前面的元素形成递增乘积块。
+3. 更新 `dp` 数组，并维护一个变量 `total_sum` 来记录所有递增乘积块的和。
 
 关键点:
-- [TODO]
+- 使用 `dp` 数组来存储以每个位置结尾的递增乘积块的最大值。
+- 动态更新 `dp` 数组和 `total_sum`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。因为我们需要遍历数组并检查每个元素之前的元素。
+空间复杂度: O(n)，用于存储 `dp` 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算递增乘积块之和
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
 
+    n = len(nums)
+    dp = [1] * n  # dp[i] 表示以 i 结尾的递增乘积块的最大值
+    total_sum = 0
+
+    for i in range(n):
+        for j in range(i):
+            if nums[i] > nums[j]:
+                dp[i] = max(dp[i], dp[j] * nums[i])
+        total_sum += dp[i]
+
+    return total_sum
 
 Solution = create_solution(solution_function_name)

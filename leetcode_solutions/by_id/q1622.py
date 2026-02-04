@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双端队列来维护一个滑动窗口，确保队列中的点满足 |xi - xj| <= k 的条件，并且队列中的点按 (yi - xi) 降序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个双端队列 `deque` 和结果变量 `max_value`。
+2. 遍历每个点 `(x, y)`：
+   - 移除队列中所有不符合 |xi - xj| <= k 条件的点。
+   - 计算当前点与队列头部点的值 `y + x + (deque[0][1] - deque[0][0])`，更新 `max_value`。
+   - 将当前点 `(x, y - x)` 加入队列，同时移除队列尾部所有比当前点小的点，以保持队列按 (yi - xi) 降序排列。
+3. 返回 `max_value`。
 
 关键点:
-- [TODO]
+- 使用双端队列来维护滑动窗口，确保队列中的点满足 |xi - xj| <= k 的条件。
+- 通过移除队列尾部比当前点小的点，保持队列按 (yi - xi) 降序排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 points 的长度。每个点最多被加入和移除队列一次。
+空间复杂度: O(k)，队列中最多存储 k 个点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def findMaxValueOfEquation(points: List[List[int]], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 yi + yj + |xi - xj| 的最大值，其中 |xi - xj| <= k 且 1 <= i < j <= points.length
     """
-    # TODO: 实现最优解法
-    pass
+    deque = deque()
+    max_value = float('-inf')
+    
+    for x, y in points:
+        # 移除队列中所有不符合 |xi - xj| <= k 条件的点
+        while deque and x - deque[0][0] > k:
+            deque.popleft()
+        
+        # 计算当前点与队列头部点的值
+        if deque:
+            max_value = max(max_value, y + x + (deque[0][1] - deque[0][0]))
+        
+        # 将当前点 (x, y - x) 加入队列，同时移除队列尾部所有比当前点小的点
+        while deque and y - x >= deque[-1][1]:
+            deque.pop()
+        deque.append((x, y - x))
+    
+    return max_value
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findMaxValueOfEquation)

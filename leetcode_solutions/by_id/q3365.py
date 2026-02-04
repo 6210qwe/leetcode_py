@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储唯一的邮件域名。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空集合用于存储唯一的邮件域名。
+2. 遍历每个电子邮件地址，提取域名部分并将其添加到集合中。
+3. 返回集合中的所有唯一域名。
 
 关键点:
-- [TODO]
+- 使用集合来确保域名的唯一性。
+- 提取电子邮件地址中的域名部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是电子邮件地址的数量。每个电子邮件地址的处理时间是常数级别的。
+空间复杂度: O(m)，其中 m 是不同域名的数量。集合中存储的是唯一的域名。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(emails: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有不同的邮件域名
     """
-    # TODO: 实现最优解法
-    pass
+    unique_domains = set()
+    
+    for email in emails:
+        domain = email.split('@')[1]
+        unique_domains.add(domain)
+    
+    return list(unique_domains)
 
 
 Solution = create_solution(solution_function_name)

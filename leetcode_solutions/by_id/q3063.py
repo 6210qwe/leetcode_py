@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas的DataFrame方法链来筛选和排序数据。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 筛选出体重严格超过100千克的动物。
+2. 按体重降序排序。
+3. 选择动物名称列。
 
 关键点:
-- [TODO]
+- 使用Pandas的`query`方法进行筛选。
+- 使用`sort_values`方法进行排序。
+- 使用`[[]]`选择特定列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中n是DataFrame的行数。主要由排序操作决定。
+空间复杂度: O(1)，方法链操作不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import pandas as pd
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(animals: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用Pandas方法链筛选并排序动物
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用方法链筛选并排序
+    result = animals.query('weight > 100').sort_values(by='weight', ascending=False)[['name']]
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串并计数空格来找到前 k 个单词的结束位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录遇到的空格数。
+2. 遍历字符串 `s`，每遇到一个空格就增加 `count`。
+3. 当 `count` 达到 `k` 时，记录当前索引位置 `end_index`。
+4. 返回从开始到 `end_index` 的子字符串。
 
 关键点:
-- [TODO]
+- 使用单次遍历来减少时间复杂度。
+- 通过记录空格数来确定截断位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。最坏情况下需要遍历整个字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def truncate_sentence(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 截断句子
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    end_index = 0
+    
+    for i, char in enumerate(s):
+        if char == ' ':
+            count += 1
+            if count == k:
+                end_index = i
+                break
+    else:
+        # 如果没有提前退出循环，说明 k 等于单词总数
+        end_index = len(s)
+    
+    return s[:end_index]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(truncate_sentence)

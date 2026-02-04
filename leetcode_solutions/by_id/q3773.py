@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到需要移除的最小数对，使得数组变为非递减。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录操作次数。
+2. 遍历数组，检查每对相邻元素是否满足非递减条件。
+3. 如果不满足条件，移除这对元素，并增加计数器 `count`。
+4. 重复上述步骤直到数组变为非递减。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到所有需要移除的数对。
+- 通过贪心策略，每次移除和最小的相邻元素对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_sort(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将数组变为非递减所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    n = len(nums)
+    
+    for i in range(1, n):
+        if nums[i] < nums[i - 1]:
+            # 移除当前元素对
+            nums[i] = nums[i - 1]
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_sort)

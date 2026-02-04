@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来计算最早和最晚的回合数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp` 来计算从当前状态到目标状态的最小和最大回合数。
+2. 使用记忆化技术来避免重复计算。
+3. 在每一步中，考虑所有可能的比拼结果，并更新最小和最大回合数。
+4. 返回最终的结果。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归过程。
+- 考虑所有可能的比拼结果以确保找到最早和最晚的回合数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log n)，其中 n 是运动员的数量。由于使用了记忆化搜索，每个状态只会计算一次。
+空间复杂度: O(n^2 * log n)，用于存储记忆化搜索的状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from functools import lru_cache
 
+def earliestAndLatest(n: int, firstPlayer: int, secondPlayer: int) -> List[int]:
+    @lru_cache(None)
+    def dp(start: int, end: int, p1: int, p2: int) -> Tuple[int, int]:
+        if start + 1 == end:
+            return (1, 1)
+        
+        min_round = float('inf')
+        max_round = float('-inf')
+        
+        for i in range(start, (start + end) // 2):
+            j = start + end - 1 - i
+            if i < p1 and p1 < j and i < p2 and p2 < j:
+                continue
+            if p1 <= i and p2 >= j:
+                new_p1 = p1 - start
+                new_p2 = p2 - (end - 1)
+                next_min, next_max = dp(i + 1, j, new_p1, new_p2)
+            elif p1 > i and p2 < j:
+                new_p1 = p1 - (i + 1)
+                new_p2 = p2 - (j - 1)
+                next_min, next_max = dp(i + 1, j, new_p1, new_p2)
+            else:
+                next_min, next_max = 1, 1
+            min_round = min(min_round, next_min + 1)
+            max_round = max(max_round, next_max + 1)
+        
+        return (min_round, max_round)
+    
+    return list(dp(0, n - 1, firstPlayer - 1, secondPlayer - 1))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliestAndLatest)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算斐波那契数，避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，dp[0] = 0, dp[1] = 1。
+2. 从 2 到 n 进行迭代，计算 dp[i] = dp[i-1] + dp[i-2]。
+3. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用动态规划可以将时间复杂度降低到 O(n)，空间复杂度也可以优化到 O(1) 通过只存储前两个值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def fibonacci_number(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算斐波那契数 F(n)。
     """
-    # TODO: 实现最优解法
-    pass
+    if n <= 1:
+        return n
+    
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(fibonacci_number)

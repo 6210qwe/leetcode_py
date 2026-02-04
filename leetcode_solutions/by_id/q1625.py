@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库对数据进行处理，按日期分组并计算每个日期的不同产品数量及其名称。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入数据并将其转换为 Pandas DataFrame。
+2. 按 `sell_date` 列进行分组。
+3. 对每个分组，计算不同产品的数量，并将产品名称按词典序排序后拼接成字符串。
+4. 将结果重新组合成一个新的 DataFrame 并按 `sell_date` 排序。
 
 关键点:
-- [TODO]
+- 使用 `groupby` 和 `agg` 方法进行分组和聚合操作。
+- 使用 `nunique` 计算不同产品的数量。
+- 使用 `join` 方法将产品名称拼接成字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是输入数据的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储分组后的结果需要 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def group_sold_products(activities: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按日期分组销售产品
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 sell_date 分组
+    grouped = activities.groupby('sell_date')['product'].agg(
+        num_sold=pd.NamedAgg(column='product', aggfunc=lambda x: x.nunique()),
+        products=pd.NamedAgg(column='product', aggfunc=lambda x: ','.join(sorted(set(x))))
+    ).reset_index()
+    
+    # 按 sell_date 排序
+    result = grouped.sort_values(by='sell_date')
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(group_sold_products)

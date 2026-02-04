@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和滑动窗口来找到满足条件的最短子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串中每个字符的总数。
+2. 如果任一字符的总数小于 k，则返回 -1。
+3. 使用双指针从两端向中间收缩，确保每种字符至少有 k 个。
+4. 计算并更新最小长度。
 
 关键点:
-- [TODO]
+- 使用双指针和滑动窗口来高效地找到满足条件的最短子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def take_characters(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回需要的最少分钟数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计字符串中每个字符的总数
+    count = [0] * 3
+    for char in s:
+        count[ord(char) - ord('a')] += 1
+    
+    # 如果任一字符的总数小于 k，则返回 -1
+    if any(c < k for c in count):
+        return -1
+    
+    # 初始化双指针
+    left, right = 0, len(s) - 1
+    min_length = len(s)
+    
+    while left <= right:
+        # 从左端取字符
+        while left < len(s) and all(count[c] >= k for c in range(3)):
+            count[ord(s[left]) - ord('a')] -= 1
+            left += 1
+        
+        # 从右端取字符
+        while right >= 0 and all(count[c] >= k for c in range(3)):
+            count[ord(s[right]) - ord('a')] -= 1
+            right -= 1
+        
+        # 更新最小长度
+        min_length = min(min_length, left + (len(s) - 1 - right))
+        
+        # 移动指针
+        if left < len(s):
+            count[ord(s[left]) - ord('a')] += 1
+            left += 1
+        if right >= 0:
+            count[ord(s[right]) - ord('a')] += 1
+            right -= 1
+    
+    return min_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(take_characters)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 分别提取奇数下标和偶数下标的值，进行排序后再放回原数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 提取奇数下标和偶数下标的值。
+2. 对奇数下标的值进行非递增排序。
+3. 对偶数下标的值进行非递减排序。
+4. 将排序后的值放回原数组。
 
 关键点:
-- [TODO]
+- 使用列表切片提取奇数和偶数下标的值。
+- 使用 Python 内置的 `sorted` 函数进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间存储奇数和偶数下标的值。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_even_odd_indices(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    对奇偶下标分别排序 - 给你一个下标从 0 开始的整数数组 nums 。根据下述规则重排 nums 中的值：
+    1. 按 非递增 顺序排列 nums 奇数下标 上的所有值。
+    2. 按 非递减 顺序排列 nums 偶数下标 上的所有值。
+    返回重排 nums 的值之后形成的数组。
     """
-    # TODO: 实现最优解法
-    pass
+    # 提取奇数下标和偶数下标的值
+    odd_values = nums[1::2]
+    even_values = nums[0::2]
+
+    # 对奇数下标的值进行非递增排序
+    sorted_odd_values = sorted(odd_values, reverse=True)
+
+    # 对偶数下标的值进行非递减排序
+    sorted_even_values = sorted(even_values)
+
+    # 将排序后的值放回原数组
+    result = []
+    for i in range(len(nums)):
+        if i % 2 == 0:
+            result.append(sorted_even_values[i // 2])
+        else:
+            result.append(sorted_odd_values[(i - 1) // 2])
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_even_odd_indices)

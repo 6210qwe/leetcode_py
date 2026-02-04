@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过将所有元素增加到数组的中位数来最小化操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 找到数组的中位数。
+3. 计算每个元素与中位数的差值之和，即为所需的操作次数。
 
 关键点:
-- [TODO]
+- 使用中位数可以确保总操作次数最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_moves_to_equal_array_elements(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使数组中的所有元素都相等所需的最小总操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 找到数组的中位数
+    median = nums[len(nums) // 2]
+    
+    # 计算每个元素与中位数的差值之和
+    total_moves = sum(abs(num - median) for num in nums)
+    
+    return total_moves
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_equal_array_elements)

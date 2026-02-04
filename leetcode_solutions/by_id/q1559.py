@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个三维数组 dp，其中 dp[r][c1][c2] 表示当机器人 1 在 (r, c1) 且机器人 2 在 (r, c2) 时，能收集到的最大樱桃数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][cols-1] = grid[0][0] + grid[0][cols-1]。
+2. 从第 1 行开始，逐行计算 dp 值。
+3. 对于每一行 r，遍历所有可能的 (c1, c2) 组合，更新 dp[r][c1][c2]。
+4. 更新 dp[r][c1][c2] 时，考虑上一行的所有可能状态 (c1', c2')，选择最大值。
+5. 返回 dp[rows-1] 中的最大值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[r][c1][c2] = max(dp[r-1][c1'][c2']) + grid[r][c1] + (c1 != c2) * grid[r][c2]
+- 边界条件处理：确保 c1 和 c2 不越界
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(rows * cols^2)
+空间复杂度: O(rows * cols^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def cherryPickup(grid: List[List[int]]) -> int:
+    rows, cols = len(grid), len(grid[0])
+    dp = [[[float('-inf')] * cols for _ in range(cols)] for _ in range(rows)]
+    
+    # 初始状态
+    dp[0][0][cols-1] = grid[0][0] + grid[0][cols-1]
+    
+    # 动态规划
+    for r in range(1, rows):
+        for c1 in range(cols):
+            for c2 in range(cols):
+                for dc1 in [-1, 0, 1]:
+                    for dc2 in [-1, 0, 1]:
+                        nc1, nc2 = c1 + dc1, c2 + dc2
+                        if 0 <= nc1 < cols and 0 <= nc2 < cols:
+                            dp[r][c1][c2] = max(dp[r][c1][c2], dp[r-1][nc1][nc2] + grid[r][c1] + (c1 != c2) * grid[r][c2])
+    
+    # 返回结果
+    return max(max(row) for row in dp[rows-1])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(cherryPickup)

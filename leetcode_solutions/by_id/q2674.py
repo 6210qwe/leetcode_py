@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个最小堆来维护当前的前缀和，并在需要时从堆中取出最小值进行调整。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆和一个变量 `prefix_sum` 来记录当前的前缀和。
+2. 遍历数组，对于每个元素，将其加到 `prefix_sum` 中。
+3. 如果 `prefix_sum` 小于 0，则从堆中取出最小值并将其加到 `prefix_sum` 中，同时记录操作次数。
+4. 将当前元素加入堆中。
+5. 返回操作次数。
 
 关键点:
-- [TODO]
+- 使用最小堆来动态调整前缀和，确保其非负。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次插入和删除堆的操作时间复杂度为 O(log n)。
+空间复杂度: O(n)，最坏情况下堆中可能包含所有元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使前缀和数组非负
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 初始化最小堆和前缀和
+    min_heap = []
+    prefix_sum = 0
+    operations = 0
+    
+    for num in nums:
+        prefix_sum += num
+        if prefix_sum < 0:
+            # 从堆中取出最小值并调整前缀和
+            min_val = heapq.heappop(min_heap)
+            prefix_sum -= min_val
+            operations += 1
+        heapq.heappush(min_heap, num)
+    
+    return operations
 
 Solution = create_solution(solution_function_name)

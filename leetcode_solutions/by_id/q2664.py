@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和双指针的方法来最大化伟大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用两个指针 `i` 和 `j`，其中 `i` 指向当前处理的元素，`j` 指向下一个可能的大于 `nums[i]` 的元素。
+3. 如果 `nums[j] > nums[i]`，则 `j` 指向的元素可以用于 `perm[i]`，并移动 `i` 和 `j`。
+4. 如果 `nums[j] <= nums[i]`，则继续移动 `j` 直到找到一个大于 `nums[i]` 的元素。
+5. 重复上述步骤直到遍历完数组。
 
 关键点:
-- [TODO]
+- 通过排序和双指针的方法，确保每次选择的 `perm[i]` 都是尽可能小但大于 `nums[i]` 的元素。
+- 这样可以最大化伟大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回重新排列 nums 后的最大伟大值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    n = len(nums)
+    i, j = 0, 0
+    greatness = 0
+    
+    while i < n and j < n:
+        if nums[j] > nums[i]:
+            # 找到一个大于 nums[i] 的元素
+            greatness += 1
+            i += 1
+            j += 1
+        else:
+            # 继续寻找大于 nums[i] 的元素
+            j += 1
+    
+    return greatness
 
 
 Solution = create_solution(solution_function_name)

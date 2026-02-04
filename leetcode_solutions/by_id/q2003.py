@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录每个子数组中的不同数字。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录当前窗口内的数字频率。
+2. 使用两个指针 `left` 和 `right` 来表示滑动窗口的左右边界。
+3. 遍历数组，对于每个右指针 `right`，将其对应的数字加入哈希表，并更新计数。
+4. 如果窗口大小超过 `k`，则移动左指针 `left`，并从哈希表中移除相应的数字。
+5. 在每次移动右指针时，记录当前窗口内不同数字的数量。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以将时间复杂度从 O(n * k) 降低到 O(n)。
+- 哈希表用于快速记录和更新窗口内的数字频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)，其中 k 是子数组的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def distinct_numbers_in_subarrays(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回每个长度为 k 的子数组中不同数字的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    result = []
+    left = 0
+    
+    for right in range(len(nums)):
+        if nums[right] not in count:
+            count[nums[right]] = 0
+        count[nums[right]] += 1
+        
+        if right - left + 1 > k:
+            count[nums[left]] -= 1
+            if count[nums[left]] == 0:
+                del count[nums[left]]
+            left += 1
+        
+        if right >= k - 1:
+            result.append(len(count))
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distinct_numbers_in_subarrays)

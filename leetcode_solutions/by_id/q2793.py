@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历每个连通分量，并检查每个连通分量是否为完全连通分量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 DFS 遍历每个连通分量，记录每个连通分量中的节点数和边数。
+3. 检查每个连通分量是否为完全连通分量：如果一个连通分量有 k 个节点，则它必须有 k * (k - 1) / 2 条边。
+4. 统计完全连通分量的数量。
 
 关键点:
-- [TODO]
+- 使用邻接表表示图。
+- 使用 DFS 遍历图。
+- 检查每个连通分量的节点数和边数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。我们需要遍历每个节点和每条边。
+空间复杂度: O(n + m)，存储图的邻接表和递归栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_complete_components(n: int, edges: List[List[int]]) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, visited: List[bool], component_nodes: List[int]) -> None:
+        if visited[node]:
+            return
+        visited[node] = True
+        component_nodes.append(node)
+        for neighbor in graph[node]:
+            dfs(neighbor, visited, component_nodes)
 
+    def is_complete_component(nodes: List[int]) -> bool:
+        num_nodes = len(nodes)
+        expected_edges = num_nodes * (num_nodes - 1) // 2
+        actual_edges = sum(len(graph[node]) for node in nodes) // 2
+        return actual_edges == expected_edges
 
-Solution = create_solution(solution_function_name)
+    visited = [False] * n
+    complete_components = 0
+
+    for i in range(n):
+        if not visited[i]:
+            component_nodes = []
+            dfs(i, visited, component_nodes)
+            if is_complete_component(component_nodes):
+                complete_components += 1
+
+    return complete_components
+
+Solution = create_solution(count_complete_components)

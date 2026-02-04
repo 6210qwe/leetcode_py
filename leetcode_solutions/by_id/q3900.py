@@ -21,40 +21,85 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来预处理每个节点到根节点的距离，并使用最近公共祖先 (LCA) 来找到两个节点之间的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 预处理每个节点到根节点的距离。
+3. 使用 LCA 找到两个节点之间的路径。
+4. 在路径上找到带权中位节点。
 
 关键点:
-- [TODO]
+- 使用 DFS 预处理距离可以快速计算任意节点到根节点的距离。
+- 使用 LCA 可以快速找到两个节点之间的路径。
+- 在路径上使用二分查找来找到带权中位节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log n)，其中 n 是节点数，q 是查询数。构建树的邻接表和预处理距离的时间复杂度是 O(n)，每个查询的时间复杂度是 O(log n)。
+空间复杂度: O(n)，存储邻接表和预处理距离的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+def find_weighted_median_node(n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 构建树的邻接表
+    tree = defaultdict(list)
+    for u, v, w in edges:
+        tree[u].append((v, w))
+        tree[v].append((u, w))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 预处理每个节点到根节点的距离
+    distances = [0] * n
+    def dfs(node: int, parent: int, distance: int):
+        distances[node] = distance
+        for neighbor, weight in tree[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, distance + weight)
 
+    dfs(0, -1, 0)
 
-Solution = create_solution(solution_function_name)
+    # 最近公共祖先 (LCA) 函数
+    def lca(u: int, v: int) -> int:
+        while u != v:
+            if u > v:
+                u, v = v, u
+            v = v // 2
+        return u
+
+    # 二分查找带权中位节点
+    def binary_search(u: int, v: int, target_distance: float) -> int:
+        path = []
+        while u != v:
+            if u > v:
+                u, v = v, u
+            path.append(u)
+            u = u // 2
+        path.append(u)
+        low, high = 0, len(path) - 1
+        while low < high:
+            mid = (low + high) // 2
+            if distances[path[mid]] < target_distance:
+                low = mid + 1
+            else:
+                high = mid
+        return path[low]
+
+    result = []
+    for u, v in queries:
+        total_distance = distances[u] + distances[v] - 2 * distances[lca(u, v)]
+        target_distance = total_distance / 2
+        median_node = binary_search(u, v, target_distance)
+        result.append(median_node)
+
+    return result
+
+Solution = create_solution(find_weighted_median_node)

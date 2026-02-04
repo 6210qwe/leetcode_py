@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和二分查找来找到所有可能的移除递增子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组的最长严格递增前缀和后缀。
+2. 使用双指针遍历前缀和后缀，计算可以移除的子数组数量。
+3. 对于每个前缀结尾和后缀开头，使用二分查找来确定可以移除的子数组范围。
 
 关键点:
-- [TODO]
+- 利用双指针和二分查找来高效地找到所有可能的移除递增子数组。
+- 通过前缀和后缀的性质来简化问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。双指针遍历的时间复杂度为 O(n)，二分查找的时间复杂度为 O(log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_incremovable_subarrays(nums: List[int]) -> int:
+    n = len(nums)
+    left, right = 0, n - 1
+    
+    # 找到最长严格递增前缀
+    while left < n - 1 and nums[left] < nums[left + 1]:
+        left += 1
+    
+    # 如果整个数组是严格递增的，直接返回所有子数组的数量
+    if left == n - 1:
+        return n * (n + 1) // 2
+    
+    # 找到最长严格递增后缀
+    while right > 0 and nums[right] > nums[right - 1]:
+        right -= 1
+    
+    # 计算可以移除的子数组数量
+    count = 0
+    for i in range(left + 1):
+        j = right
+        while j < n and (i == left or nums[j] > nums[i]):
+            j += 1
+        count += n - j
+    
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_incremovable_subarrays)

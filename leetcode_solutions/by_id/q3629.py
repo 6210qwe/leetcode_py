@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法计算最终字符串的长度，避免直接模拟转换过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串中 'z' 的数量。
+2. 计算非 'z' 字符的数量。
+3. 根据 'z' 和非 'z' 字符的数量以及转换次数 t，计算最终字符串的长度。
 
 关键点:
-- [TODO]
+- 'z' 转换为 "ab" 会使字符串长度增加 1。
+- 非 'z' 字符转换为下一个字符不会改变字符串长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串一次来统计 'z' 和非 'z' 字符的数量。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, t: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串转换后的长度
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    z_count = s.count('z')
+    non_z_count = len(s) - z_count
+    
+    # 计算转换 t 次后 'z' 对应的长度增量
+    length_increase = (2 * z_count * t) % MOD
+    
+    # 计算最终字符串长度
+    final_length = (non_z_count + length_increase) % MOD
+    
+    return final_length
 
 
 Solution = create_solution(solution_function_name)

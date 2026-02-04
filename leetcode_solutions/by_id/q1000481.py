@@ -21,22 +21,24 @@ LCP 66. 最小展台数量 - 力扣嘉年华将举办一系列展览活动，后
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每种展台的最大需求量，然后求和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `max_demand` 来记录每种展台的最大需求量。
+2. 遍历每一天的需求，更新 `max_demand` 中每种展台的最大需求量。
+3. 计算 `max_demand` 中所有值的总和，即为所需的最小展台数量。
 
 关键点:
-- [TODO]
+- 使用字典来记录每种展台的最大需求量。
+- 遍历每一天的需求，更新字典中的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是需求列表的长度，m 是每个需求字符串的平均长度。
+空间复杂度: O(1)，因为字母种类是固定的（26个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(demand: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小展台数量
     """
-    # TODO: 实现最优解法
-    pass
+    max_demand = {}
+    
+    for day in demand:
+        day_count = {}
+        for char in day:
+            day_count[char] = day_count.get(char, 0) + 1
+        
+        for char, count in day_count.items():
+            max_demand[char] = max(max_demand.get(char, 0), count)
+    
+    return sum(max_demand.values())
 
 
 Solution = create_solution(solution_function_name)

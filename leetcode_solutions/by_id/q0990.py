@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个映射表来存储外星语字母表的顺序，然后逐对比较相邻单词是否按字典序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个映射表，将外星语字母表中的每个字母映射到其对应的索引。
+2. 逐对比较相邻单词，检查它们是否按字典序排列。
+3. 如果发现不满足字典序的情况，返回 False；否则，返回 True。
 
 关键点:
-- [TODO]
+- 使用映射表来快速查找每个字母的顺序。
+- 逐对比较相邻单词，确保整个列表按字典序排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是单词的数量，m 是单词的最大长度。
+空间复杂度: O(1)，映射表的大小固定为 26。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_alien_sorted(words: List[str], order: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定的单词列表是否按外星语字母表的顺序排列
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建映射表
+    order_index = {char: idx for idx, char in enumerate(order)}
+
+    # 逐对比较相邻单词
+    for i in range(len(words) - 1):
+        word1, word2 = words[i], words[i + 1]
+        for j in range(min(len(word1), len(word2))):
+            if word1[j] != word2[j]:
+                if order_index[word1[j]] > order_index[word2[j]]:
+                    return False
+                break
+        else:
+            # 如果所有字符都相同，但 word1 比 word2 长，则不满足字典序
+            if len(word1) > len(word2):
+                return False
+
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_alien_sorted)

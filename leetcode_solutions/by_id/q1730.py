@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对数组进行排序，然后从大到小遍历数组，找到第一个满足条件的 x。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 从大到小遍历数组，检查每个可能的 x 值。
+3. 如果当前元素大于或等于 x，并且 x 的计数与 x 相等，则返回 x。
+4. 如果遍历完数组没有找到满足条件的 x，则返回 -1。
 
 关键点:
-- [TODO]
+- 排序后可以从大到小遍历，减少不必要的比较。
+- 使用计数器来记录大于或等于当前 x 的元素数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def special_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到特殊数组的特征值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    n = len(nums)
+    for x in range(n + 1):
+        # 二分查找第一个大于等于 x 的位置
+        left, right = 0, n
+        while left < right:
+            mid = (left + right) // 2
+            if nums[mid] >= x:
+                right = mid
+            else:
+                left = mid + 1
+        
+        # 检查是否有 x 个元素大于或等于 x
+        if n - left == x:
+            return x
+    
+    return -1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(special_array)

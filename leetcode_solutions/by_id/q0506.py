@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对分数进行降序排序，然后根据排序后的索引分配名次。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将分数和原始索引配对。
+2. 按分数降序排序。
+3. 根据排序后的索引分配名次。
+4. 构建结果数组。
 
 关键点:
-- [TODO]
+- 使用元组 (分数, 原始索引) 来保持分数和索引的对应关系。
+- 排序后直接分配名次，前三名特殊处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(n) - 需要额外的空间来存储分数和索引的配对。
 """
 
 # ============================================================================
@@ -49,12 +52,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_relative_ranks(score: List[int]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到相对名次
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(score)
+    if n == 0:
+        return []
+
+    # 将分数和原始索引配对
+    score_with_index = [(s, i) for i, s in enumerate(score)]
+    
+    # 按分数降序排序
+    sorted_score_with_index = sorted(score_with_index, key=lambda x: x[0], reverse=True)
+    
+    # 初始化结果数组
+    result = [""] * n
+    
+    # 分配名次
+    for rank, (s, i) in enumerate(sorted_score_with_index):
+        if rank == 0:
+            result[i] = "Gold Medal"
+        elif rank == 1:
+            result[i] = "Silver Medal"
+        elif rank == 2:
+            result[i] = "Bronze Medal"
+        else:
+            result[i] = str(rank + 1)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_relative_ranks)

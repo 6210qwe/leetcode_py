@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典映射来确定需要检查的属性索引，然后遍历所有物品，统计符合条件的物品数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，将 ruleKey 映射到对应的属性索引。
+2. 初始化一个计数器，用于记录匹配的物品数量。
+3. 遍历每个物品，检查指定属性是否等于 ruleValue，如果是则增加计数器。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用字典映射来快速找到需要检查的属性索引。
+- 一次遍历即可完成统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 items 的长度。我们需要遍历整个 items 数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_matches(items: List[List[str]], rule_key: str, rule_value: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计匹配检索规则的物品数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 字典映射 ruleKey 到对应的属性索引
+    key_to_index = {"type": 0, "color": 1, "name": 2}
+    
+    # 获取需要检查的属性索引
+    index = key_to_index[rule_key]
+    
+    # 初始化计数器
+    count = 0
+    
+    # 遍历每个物品，统计符合条件的物品数量
+    for item in items:
+        if item[index] == rule_value:
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_matches)

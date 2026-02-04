@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和贪心算法找到最大可能的 k 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查数组是否已经排序，如果是则返回 0。
+2. 构建一个字典，记录每个元素的位置。
+3. 从最高位到最低位遍历每一位，尝试找到可以交换的 k 值。
+4. 如果找到一个 k 值使得数组可以排序，则返回该 k 值。
 
 关键点:
-- [TODO]
+- 使用位运算来检查和交换元素。
+- 通过贪心算法找到最大的 k 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。需要遍历每一位，并且在最坏情况下需要对每一位进行检查。
+空间复杂度: O(n)，需要额外的空间来存储每个元素的位置。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到可以使数组按非递减顺序排序的最大值 k
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if nums == list(range(n)):
+        return 0
+
+    # 构建位置字典
+    pos = {num: i for i, num in enumerate(nums)}
+
+    # 从最高位到最低位遍历每一位
+    for bit in range(17, -1, -1):
+        k = 0
+        for i in range(bit, -1, -1):
+            if (1 << i) & k == 0:
+                k |= 1 << i
+                new_nums = [num for num in nums]
+                for j in range(n):
+                    if (new_nums[j] & k) != (j & k):
+                        new_pos = pos[(j & k) ^ (new_nums[j] & k)]
+                        new_nums[j], new_nums[new_pos] = new_nums[new_pos], new_nums[j]
+                        pos[new_nums[j]], pos[new_nums[new_pos]] = pos[new_nums[new_pos]], pos[new_nums[j]]
+                if new_nums == list(range(n)):
+                    return k
+    return 0
 
 
 Solution = create_solution(solution_function_name)

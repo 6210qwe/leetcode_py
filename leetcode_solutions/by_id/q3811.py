@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个字符在反转字母表中的位置，并将其与字符在字符串中的位置相乘，然后将所有乘积累加。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `reverse_degree` 为 0，用于存储最终的反转度。
+2. 遍历字符串 `s`，对于每个字符：
+   - 计算其在反转字母表中的位置。
+   - 将其位置与其在字符串中的位置相乘。
+   - 将乘积累加到 `reverse_degree` 中。
+3. 返回 `reverse_degree`。
 
 关键点:
-- [TODO]
+- 使用 ASCII 码来快速计算字符在反转字母表中的位置。
+- 通过遍历字符串一次完成计算，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串的反转度
     """
-    # TODO: 实现最优解法
-    pass
+    reverse_degree = 0
+    for i, char in enumerate(s):
+        # 计算字符在反转字母表中的位置
+        reverse_pos = 26 - (ord(char) - ord('a'))
+        # 将其位置与其在字符串中的位置相乘
+        reverse_degree += reverse_pos * (i + 1)
+    return reverse_degree
 
 
 Solution = create_solution(solution_function_name)

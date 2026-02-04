@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个差值出现的次数，从而快速统计符合条件的对数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `rev` 来计算一个整数的反转。
+2. 初始化一个哈希表 `count` 来记录每个差值 `nums[i] - rev(nums[i])` 出现的次数。
+3. 遍历数组 `nums`，对于每个元素 `nums[i]`，计算 `diff = nums[i] - rev(nums[i])`。
+4. 将 `diff` 在哈希表中的计数加到结果中，并更新哈希表中 `diff` 的计数。
+5. 返回结果对 `10^9 + 7` 取余后的值。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录差值出现的次数，避免了双重循环的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。每个元素只需要常数时间处理。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储 n 个不同的差值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_nice_pairs(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计数组中好对子的数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    
+    def rev(x: int) -> int:
+        """计算整数 x 的反转值"""
+        return int(str(x)[::-1])
+    
+    count = {}
+    result = 0
+    
+    for num in nums:
+        diff = num - rev(num)
+        if diff in count:
+            result += count[diff]
+            result %= MOD
+        count[diff] = count.get(diff, 0) + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_nice_pairs)

@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个哈希表来记录每个 ID 的频率，并使用一个有序集合来维护频率的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `id_freq` 来记录每个 ID 的频率。
+2. 初始化一个有序集合 `freq_set` 来维护频率的最大值。
+3. 遍历 `nums` 和 `freq`，更新 `id_freq` 和 `freq_set`。
+4. 每次更新后，从 `freq_set` 中获取当前最大频率。
 
 关键点:
-- [TODO]
+- 使用有序集合 `SortedSet` 来维护频率的最大值。
+- 使用哈希表 `id_freq` 来记录每个 ID 的频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `nums` 的长度。每次插入和删除有序集合的时间复杂度是 O(log n)。
+空间复杂度: O(n)，哈希表和有序集合的空间复杂度都是 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedSet
 
+def most_frequent_ids(nums: List[int], freq: List[int]) -> List[int]:
+    id_freq = {}
+    freq_set = SortedSet()
+    result = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(nums)):
+        num = nums[i]
+        f = freq[i]
 
+        if num in id_freq:
+            old_freq = id_freq[num]
+            freq_set.discard(old_freq)
+            new_freq = old_freq + f
+            id_freq[num] = new_freq
+            freq_set.add(new_freq)
+        else:
+            id_freq[num] = f
+            freq_set.add(f)
 
-Solution = create_solution(solution_function_name)
+        if freq_set:
+            result.append(freq_set[-1])
+        else:
+            result.append(0)
+
+    return result
+
+Solution = create_solution(most_frequent_ids)

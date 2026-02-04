@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[node][k] 为从 node 出发，恰好使用 k 条边的最大边权和。通过递归和记忆化搜索来计算每个状态。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 定义递归函数 dfs(node, k) 来计算从 node 出发，恰好使用 k 条边的最大边权和。
+3. 使用记忆化搜索来避免重复计算。
+4. 初始化 dp 数组，并从每个节点开始进行搜索。
+5. 返回最大边权和，如果不存在满足条件的路径则返回 -1。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来优化递归过程。
+- 通过递归函数来计算每个状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k * m)，其中 n 是节点数，k 是边数，m 是每条边的权重范围。
+空间复杂度: O(n * k)，用于存储 dp 数组和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import lru_cache
 
+def maximum_weighted_k_edge_path(n: int, edges: List[List[int]], k: int, t: int) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v, w in edges:
+        graph[u].append((v, w))
+    
+    @lru_cache(None)
+    def dfs(node: int, remaining_edges: int) -> int:
+        if remaining_edges == 0:
+            return 0
+        max_weight = -float('inf')
+        for next_node, weight in graph[node]:
+            if weight >= t:
+                continue
+            max_weight = max(max_weight, weight + dfs(next_node, remaining_edges - 1))
+        return max_weight
+    
+    result = -1
+    for i in range(n):
+        result = max(result, dfs(i, k))
+    
+    return result if result < t else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_weighted_k_edge_path)

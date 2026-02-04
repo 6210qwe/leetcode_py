@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来高效处理子矩阵的增量操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 (n+1) x (n+1) 的差分矩阵 diff。
+2. 对于每个查询，更新差分矩阵的四个角。
+3. 通过累加差分矩阵，计算最终的矩阵结果。
 
 关键点:
-- [TODO]
+- 使用差分数组可以将多次子矩阵增量操作的时间复杂度从 O(n^2) 降低到 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 + q)，其中 n 是矩阵的边长，q 是查询的数量。
+空间复杂度: O(n^2)，用于存储差分矩阵。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def apply_queries(n: int, queries: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    应用所有查询并返回最终矩阵。
+    
+    :param n: 矩阵的边长
+    :param queries: 查询列表
+    :return: 最终矩阵
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化差分矩阵
+    diff = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    # 更新差分矩阵
+    for r1, c1, r2, c2 in queries:
+        diff[r1][c1] += 1
+        diff[r1][c2 + 1] -= 1
+        diff[r2 + 1][c1] -= 1
+        diff[r2 + 1][c2 + 1] += 1
+    
+    # 通过累加差分矩阵计算最终矩阵
+    result = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if i == 0 and j == 0:
+                result[i][j] = diff[i][j]
+            elif i == 0:
+                result[i][j] = result[i][j - 1] + diff[i][j]
+            elif j == 0:
+                result[i][j] = result[i - 1][j] + diff[i][j]
+            else:
+                result[i][j] = result[i - 1][j] + result[i][j - 1] - result[i - 1][j - 1] + diff[i][j]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(apply_queries)

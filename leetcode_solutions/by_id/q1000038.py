@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Boyer-Moore 投票算法来找到主要元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化候选元素和计数器。
+2. 遍历数组，更新候选元素和计数器。
+3. 检查候选元素是否为主要元素。
 
 关键点:
-- [TODO]
+- Boyer-Moore 投票算法能够在 O(N) 时间复杂度和 O(1) 空间复杂度内找到主要元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Boyer-Moore 投票算法找到主要元素
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return -1
+
+    # Step 1: Find the candidate
+    candidate = None
+    count = 0
+    for num in nums:
+        if count == 0:
+            candidate = num
+        count += (1 if num == candidate else -1)
+
+    # Step 2: Verify the candidate
+    if nums.count(candidate) > len(nums) // 2:
+        return candidate
+    else:
+        return -1
 
 
 Solution = create_solution(solution_function_name)

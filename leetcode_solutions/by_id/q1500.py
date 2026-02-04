@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数位和对应的数字数量，然后找到最大数量的组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `groups` 来记录每个数位和对应的数字数量。
+2. 遍历从 1 到 n 的所有数字，计算每个数字的数位和，并更新 `groups` 字典。
+3. 找到 `groups` 字典中最大值，并统计具有该最大值的组的数量。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录数位和及其对应的数字数量。
+- 通过遍历 `groups` 字典来找到最大数量的组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是输入的范围，d 是数字的最大位数（对于 10^4 范围内的数字，d 最大为 5）。
+空间复杂度: O(n)，用于存储哈希表 `groups`。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_largest_group(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计最大组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    def digit_sum(num: int) -> int:
+        """计算一个数字的数位和"""
+        return sum(int(digit) for digit in str(num))
+
+    # 初始化哈希表
+    groups = {}
+
+    # 遍历从 1 到 n 的所有数字
+    for i in range(1, n + 1):
+        ds = digit_sum(i)
+        if ds in groups:
+            groups[ds] += 1
+        else:
+            groups[ds] = 1
+
+    # 找到最大数量的组
+    max_count = max(groups.values())
+    return sum(1 for count in groups.values() if count == max_count)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_largest_group)

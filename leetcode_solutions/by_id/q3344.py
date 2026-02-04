@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算所有点对的最大曼哈顿距离，并尝试移除每个点来找到最小的最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有点对的最大曼哈顿距离。
+2. 对于每个点，尝试移除该点并重新计算剩余点对的最大曼哈顿距离。
+3. 返回移除一个点后最小的最大曼哈顿距离。
 
 关键点:
-- [TODO]
+- 使用排序和双指针技术来优化计算过程。
+- 通过维护四个有序列表来高效计算最大曼哈顿距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_manhattan_distances(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 最小化曼哈顿距离
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(points)
+    if n == 3:
+        return min(
+            abs(points[0][0] - points[1][0]) + abs(points[0][1] - points[1][1]),
+            abs(points[0][0] - points[2][0]) + abs(points[0][1] - points[2][1]),
+            abs(points[1][0] - points[2][0]) + abs(points[1][1] - points[2][1])
+        )
+
+    # 按 x + y 排序
+    points.sort(key=lambda p: p[0] + p[1])
+    sorted_x_plus_y = [p[0] + p[1] for p in points]
+    # 按 x - y 排序
+    points.sort(key=lambda p: p[0] - p[1])
+    sorted_x_minus_y = [p[0] - p[1] for p in points]
+
+    def max_distance(x_plus_y, x_minus_y):
+        return max(
+            x_plus_y[-1] - x_plus_y[0],
+            x_minus_y[-1] - x_minus_y[0]
+        )
+
+    max_dist = max_distance(sorted_x_plus_y, sorted_x_minus_y)
+    min_max_dist = float('inf')
+
+    for i in range(n):
+        # 移除第 i 个点
+        new_x_plus_y = sorted_x_plus_y[:i] + sorted_x_plus_y[i+1:]
+        new_x_minus_y = sorted_x_minus_y[:i] + sorted_x_minus_y[i+1:]
+        new_max_dist = max_distance(new_x_plus_y, new_x_minus_y)
+        min_max_dist = min(min_max_dist, new_max_dist)
+
+    return min_max_dist
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_manhattan_distances)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三维动态规划来记录在每个位置 (i, j) 时，剩余 k 次感化能力的最大金币数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维 DP 表 dp[i][j][k]，表示在位置 (i, j) 且剩余 k 次感化能力时的最大金币数。
+2. 填充 DP 表，考虑从左边和上边转移过来的情况，并根据当前单元格的金币数更新 DP 表。
+3. 返回 dp[m-1][n-1][2] 作为结果。
 
 关键点:
-- [TODO]
+- 三维 DP 表的初始化和状态转移方程。
+- 处理边界情况，确保不会越界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 3) = O(m * n)
+空间复杂度: O(m * n * 3) = O(m * n)
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(coins: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(coins), len(coins[0])
+    dp = [[[float('-inf')] * 3 for _ in range(n)] for _ in range(m)]
+    
+    # 初始化起点
+    dp[0][0][2] = coins[0][0]
+    
+    for i in range(m):
+        for j in range(n):
+            for k in range(3):
+                if i > 0:
+                    dp[i][j][k] = max(dp[i][j][k], dp[i-1][j][k] + coins[i][j])
+                if j > 0:
+                    dp[i][j][k] = max(dp[i][j][k], dp[i][j-1][k] + coins[i][j])
+                if k > 0 and coins[i][j] < 0:
+                    if i > 0:
+                        dp[i][j][k-1] = max(dp[i][j][k-1], dp[i-1][j][k])
+                    if j > 0:
+                        dp[i][j][k-1] = max(dp[i][j][k-1], dp[i][j-1][k])
+    
+    return max(dp[m-1][n-1])
 
 
 Solution = create_solution(solution_function_name)

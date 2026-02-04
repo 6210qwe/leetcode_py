@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个计数器分别记录每一行和每一列中服务器的数量。然后遍历整个网格，对于每个服务器，如果它所在的行或列中有超过一个服务器，则该服务器可以与其他服务器通信。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `row_count` 和 `col_count`，分别记录每一行和每一列中服务器的数量。
+2. 遍历整个网格，更新 `row_count` 和 `col_count`。
+3. 再次遍历整个网格，对于每个服务器，检查其所在行或列中的服务器数量是否大于1，如果是，则将该服务器计入结果。
 
 关键点:
-- [TODO]
+- 使用两个计数器来记录每一行和每一列中服务器的数量，避免了多次遍历。
+- 只需要两次遍历网格即可完成计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是网格的行数，n 是网格的列数。我们需要遍历网格两次。
+空间复杂度: O(m + n)，用于存储每一行和每一列中服务器的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_servers(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计能够与至少一台其他服务器进行通信的服务器的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
 
+    m, n = len(grid), len(grid[0])
+    row_count = [0] * m
+    col_count = [0] * n
 
-Solution = create_solution(solution_function_name)
+    # 计算每一行和每一列中服务器的数量
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                row_count[i] += 1
+                col_count[j] += 1
+
+    # 统计能够与至少一台其他服务器进行通信的服务器的数量
+    result = 0
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1 and (row_count[i] > 1 or col_count[j] > 1):
+                result += 1
+
+    return result
+
+Solution = create_solution(count_servers)

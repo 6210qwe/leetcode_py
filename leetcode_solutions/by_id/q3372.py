@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个变量分别记录当前递增和递减子数组的长度，并在遍历过程中更新最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `inc_len` 和 `dec_len` 分别记录当前递增和递减子数组的长度，初始值为 1。
+2. 初始化一个变量 `max_len` 记录最长的严格递增或递减子数组的长度，初始值为 1。
+3. 遍历数组 `nums`，从第二个元素开始：
+   - 如果当前元素大于前一个元素，更新 `inc_len` 并重置 `dec_len`。
+   - 如果当前元素小于前一个元素，更新 `dec_len` 并重置 `inc_len`。
+   - 如果当前元素等于前一个元素，重置 `inc_len` 和 `dec_len`。
+   - 更新 `max_len` 为 `inc_len` 和 `dec_len` 中的最大值。
+4. 返回 `max_len`。
 
 关键点:
-- [TODO]
+- 使用两个变量分别记录递增和递减子数组的长度，避免多次遍历。
+- 在遍历过程中动态更新最大长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +56,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_strictly_increasing_or_decreasing_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回数组 nums 中 严格递增 或 严格递减 的最长非空子数组的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    inc_len = 1
+    dec_len = 1
+    max_len = 1
+
+    for i in range(1, len(nums)):
+        if nums[i] > nums[i - 1]:
+            inc_len += 1
+            dec_len = 1
+        elif nums[i] < nums[i - 1]:
+            dec_len += 1
+            inc_len = 1
+        else:
+            inc_len = 1
+            dec_len = 1
+
+        max_len = max(max_len, inc_len, dec_len)
+
+    return max_len
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_strictly_increasing_or_decreasing_subarray)

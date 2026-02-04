@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用乘2取整法将小数转换为二进制，并检查是否能在32位内完成转换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果字符串为 "0."
+2. 循环32次：
+   - 将当前小数乘以2。
+   - 如果结果大于等于1，说明当前位是1，否则是0。
+   - 更新小数部分。
+   - 如果小数部分变为0，提前结束循环。
+3. 如果循环结束后小数部分仍不为0，返回 "ERROR"；否则返回结果字符串。
 
 关键点:
-- [TODO]
+- 通过乘2取整法逐步构建二进制表示。
+- 检查是否能在32位内完成转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 最多进行32次循环。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: float) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将给定的小数转换为二进制字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    if num <= 0 or num >= 1:
+        return "ERROR"
+
+    result = "0."
+    while len(result) <= 32 and num != 0:
+        num *= 2
+        if num >= 1:
+            result += '1'
+            num -= 1
+        else:
+            result += '0'
+
+    if len(result) > 32:
+        return "ERROR"
+    return result
 
 
 Solution = create_solution(solution_function_name)

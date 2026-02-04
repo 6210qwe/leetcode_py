@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序的思想，统计每个数值出现的次数，然后从大到小遍历，找到可以进行操作的合法整数 h。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数值出现的次数。
+2. 从大到小遍历数值，找到可以进行操作的合法整数 h。
+3. 计算操作次数，直到所有元素都变为 k。
 
 关键点:
-- [TODO]
+- 使用计数数组来统计每个数值出现的次数。
+- 从大到小遍历数值，确保每次操作都是合法的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是数组长度，m 是数值范围（100）。
+空间复杂度: O(m)，用于存储计数数组。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组的值全部为 K 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数值出现的次数
+    count = [0] * 101
+    for num in nums:
+        count[num] += 1
+    
+    # 从大到小遍历数值，找到可以进行操作的合法整数 h
+    operations = 0
+    current_max = 100
+    for i in range(100, k, -1):
+        if count[i] > 0:
+            if current_max == i:
+                current_max = i - 1
+                operations += 1
+            else:
+                return -1  # 无法将所有元素都变为 k
+    
+    # 检查是否所有元素都小于等于 k
+    for i in range(k + 1, 101):
+        if count[i] > 0:
+            return -1  # 无法将所有元素都变为 k
+    
+    return operations
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查数组中是否有至少两个偶数，因为偶数的最低位是0，按位或运算后仍然会保留尾随零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器来记录偶数的数量。
+2. 遍历数组，统计偶数的数量。
+3. 如果偶数的数量大于等于2，返回True；否则，返回False。
 
 关键点:
-- [TODO]
+- 只需要统计偶数的数量，因为偶数的最低位是0，按位或运算后仍然会保留尾随零。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是数组的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_bitwise_or_has_trailing_zeros(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查数组中是否有至少两个偶数，因为偶数的最低位是0，按位或运算后仍然会保留尾随零。
     """
-    # TODO: 实现最优解法
-    pass
+    even_count = 0  # 计数器，用于记录偶数的数量
+    for num in nums:
+        if num % 2 == 0:
+            even_count += 1
+            if even_count >= 2:
+                return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_bitwise_or_has_trailing_zeros)

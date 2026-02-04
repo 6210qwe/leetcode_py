@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历分别获取两棵树的有序数组，然后合并这两个有序数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对两棵树分别进行中序遍历，得到两个有序数组。
+2. 合并两个有序数组。
 
 关键点:
-- [TODO]
+- 中序遍历二叉搜索树可以得到有序数组。
+- 合并两个有序数组的时间复杂度为 O(n + m)，其中 n 和 m 分别是两个数组的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两棵树的节点数。
+空间复杂度: O(n + m)，存储两个有序数组和最终结果。
 """
 
 # ============================================================================
@@ -44,17 +45,39 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def inorder_traversal(root: Optional[TreeNode]) -> List[int]:
+    """中序遍历二叉搜索树，返回有序数组"""
+    if not root:
+        return []
+    return inorder_traversal(root.left) + [root.val] + inorder_traversal(root.right)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def merge_sorted_arrays(arr1: List[int], arr2: List[int]) -> List[int]:
+    """合并两个有序数组"""
+    result = []
+    i, j = 0, 0
+    while i < len(arr1) and j < len(arr2):
+        if arr1[i] < arr2[j]:
+            result.append(arr1[i])
+            i += 1
+        else:
+            result.append(arr2[j])
+            j += 1
+    result.extend(arr1[i:])
+    result.extend(arr2[j:])
+    return result
 
+def solution_function_name(root1: Optional[TreeNode], root2: Optional[TreeNode]) -> List[int]:
+    """
+    函数式接口 - 返回两棵二叉搜索树中的所有元素，并按升序排序
+    """
+    # 中序遍历两棵树，得到两个有序数组
+    arr1 = inorder_traversal(root1)
+    arr2 = inorder_traversal(root2)
+    
+    # 合并两个有序数组
+    return merge_sorted_arrays(arr1, arr2)
 
 Solution = create_solution(solution_function_name)

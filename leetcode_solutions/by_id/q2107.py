@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用对角线法构造一个不在 nums 中的二进制字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空字符串 result。
+2. 遍历 nums 中的每个字符串，对于第 i 个字符串，取其第 i 位字符的反字符（即 '0' 变 '1'，'1' 变 '0'），并将其添加到 result 中。
+3. 返回 result。
 
 关键点:
-- [TODO]
+- 对角线法确保生成的字符串与 nums 中的每一个字符串至少有一个位置不同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_unique_binary_string(nums: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用对角线法构造一个不在 nums 中的二进制字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = []
+    for i in range(n):
+        if nums[i][i] == '0':
+            result.append('1')
+        else:
+            result.append('0')
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_unique_binary_string)

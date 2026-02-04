@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法，从链表尾部开始处理，确保每个节点的右侧没有更大的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 递归遍历链表，直到链表尾部。
+2. 从链表尾部开始返回最大值，并构建新的链表。
+3. 如果当前节点的值小于递归返回的最大值，则跳过当前节点。
 
 关键点:
-- [TODO]
+- 递归处理链表，从尾部开始构建新的链表。
+- 使用递归返回的最大值来决定是否保留当前节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点只访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为链表的长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def remove_nodes(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    从链表中移除每个右侧有一个更大数值的节点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return None
+    
+    # 递归处理下一个节点
+    next_node = remove_nodes(head.next)
+    
+    # 如果当前节点的值小于下一个节点的值，则跳过当前节点
+    if next_node and head.val < next_node.val:
+        return next_node
+    else:
+        head.next = next_node
+        return head
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_nodes)

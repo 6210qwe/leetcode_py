@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到 1 和 n 在数组中的位置，计算将 1 移动到开头和 n 移动到末尾所需的最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到 1 和 n 在数组中的索引。
+2. 计算将 1 移动到开头所需的交换次数。
+3. 计算将 n 移动到末尾所需的交换次数。
+4. 如果 1 的索引大于 n 的索引，则需要额外减去 1 次交换（因为 1 和 n 会在移动过程中相遇）。
 
 关键点:
-- [TODO]
+- 通过找到 1 和 n 的位置，可以直接计算出所需的最小交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历数组找到 1 和 n 的位置。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 nums 变成半有序排列所需的最小操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到 1 和 n 在数组中的索引
+    index_1 = nums.index(1)
+    index_n = nums.index(len(nums))
+    
+    # 计算将 1 移动到开头所需的交换次数
+    moves_to_start = index_1
+    
+    # 计算将 n 移动到末尾所需的交换次数
+    moves_to_end = len(nums) - 1 - index_n
+    
+    # 如果 1 的索引大于 n 的索引，则需要额外减去 1 次交换
+    if index_1 > index_n:
+        return moves_to_start + moves_to_end - 1
+    else:
+        return moves_to_start + moves_to_end
 
 
 Solution = create_solution(solution_function_name)

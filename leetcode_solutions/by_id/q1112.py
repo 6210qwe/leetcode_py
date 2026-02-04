@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录 chars 中每个字符的出现次数，然后遍历每个 word，检查其是否可以由 chars 中的字符组成。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 Counter 计算 chars 中每个字符的出现次数。
+2. 遍历每个 word，使用 Counter 计算 word 中每个字符的出现次数。
+3. 对于每个 word，检查其字符出现次数是否不超过 chars 中的字符出现次数。
+4. 如果满足条件，则将 word 的长度累加到结果中。
 
 关键点:
-- [TODO]
+- 使用 Counter 进行字符计数，简化了字符频率的比较。
+- 通过遍历和计数，确保每个 word 的字符都在 chars 中且数量足够。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 chars 的长度，m 是 words 中所有字符串的总长度。
+空间复杂度: O(1)，因为只使用了常数级的额外空间（字母表大小固定为 26）。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def count_characters(words: List[str], chars: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以由 chars 中的字符组成的 words 中所有字符串的长度之和
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 chars 中每个字符的出现次数
+    char_count = Counter(chars)
+    
+    total_length = 0
+    
+    for word in words:
+        word_count = Counter(word)
+        # 检查 word 中每个字符的出现次数是否不超过 chars 中的字符出现次数
+        if all(word_count[char] <= char_count[char] for char in word_count):
+            total_length += len(word)
+    
+    return total_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_characters)

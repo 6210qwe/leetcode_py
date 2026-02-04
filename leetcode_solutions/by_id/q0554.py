@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个砖缝的位置，并统计每个位置出现的次数。选择出现次数最多的砖缝位置，这样穿过的砖块数最少。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个砖缝的位置及其出现次数。
+2. 遍历每一行砖块，计算每个砖缝的位置，并在哈希表中更新该位置的计数。
+3. 找出哈希表中最大值的位置，即为穿过的砖块数最少的位置。
+4. 返回总行数减去最大值，即为穿过的砖块数。
 
 关键点:
-- [TODO]
+- 使用前缀和的思想来计算每个砖缝的位置。
+- 通过哈希表记录每个位置的出现次数，找到出现次数最多的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是墙的高度，m 是每行砖块的最大数量。
+空间复杂度: O(n * m)，最坏情况下哈希表需要存储所有的砖缝位置。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(wall: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到穿过的砖块数最少的垂线
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+
+    # 哈希表记录每个砖缝的位置及其出现次数
+    edge_count = defaultdict(int)
+
+    for row in wall:
+        edge_position = 0
+        for brick in row[:-1]:  # 不包括最后一块砖的右边
+            edge_position += brick
+            edge_count[edge_position] += 1
+
+    # 找出出现次数最多的砖缝位置
+    max_edges = max(edge_count.values(), default=0)
+
+    # 返回穿过的砖块数
+    return len(wall) - max_edges
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算曼哈顿距离来判断你是否能在阻碍者之前到达目标点。如果任何一个阻碍者能比你更快或同时到达目标点，则你无法逃脱。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算你从起点 [0, 0] 到目标点 target 的曼哈顿距离。
+2. 遍历每个阻碍者，计算它们从各自起点到目标点的曼哈顿距离。
+3. 如果有任何一个阻碍者的曼哈顿距离小于或等于你的曼哈顿距离，则返回 False，表示你无法逃脱。
+4. 如果所有阻碍者的曼哈顿距离都大于你的曼哈顿距离，则返回 True，表示你能逃脱。
 
 关键点:
-- [TODO]
+- 曼哈顿距离公式: |x1 - x2| + |y1 - y2|
+- 只要有一个阻碍者能比你更快或同时到达目标点，你就无法逃脱。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是阻碍者的数量。我们需要遍历每个阻碍者来计算曼哈顿距离。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def escape_ghosts(ghosts: List[List[int]], target: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断你是否能在阻碍者之前到达目标点
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算你从起点 [0, 0] 到目标点 target 的曼哈顿距离
+    my_distance = abs(target[0]) + abs(target[1])
+    
+    # 遍历每个阻碍者，计算它们从各自起点到目标点的曼哈顿距离
+    for ghost in ghosts:
+        ghost_distance = abs(ghost[0] - target[0]) + abs(ghost[1] - target[1])
+        # 如果有任何一个阻碍者的曼哈顿距离小于或等于你的曼哈顿距离，则返回 False
+        if ghost_distance <= my_distance:
+            return False
+    
+    # 如果所有阻碍者的曼哈顿距离都大于你的曼哈顿距离，则返回 True
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(escape_ghosts)

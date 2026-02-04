@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护从右到左的递减高度序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `answer` 为全 0。
+2. 从右向左遍历 `heights` 数组，使用一个栈 `stack` 来维护当前可见的递减高度序列。
+3. 对于每个高度 `heights[i]`，弹出栈中所有小于 `heights[i]` 的高度，并记录弹出次数作为 `answer[i]` 的值。
+4. 如果栈非空，则 `answer[i]` 再加 1（表示能看到栈顶元素）。
+5. 将当前高度 `heights[i]` 压入栈中。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护从右到左的递减高度序列，确保每次弹出的都是当前可见的最矮高度。
+- 通过记录弹出次数来计算每个人能看到的人数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 heights 的长度。每个元素最多被压入和弹出栈一次。
+空间复杂度: O(n)，栈的最大空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_visible_people(heights: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回一个长度为 n 的数组 answer，其中 answer[i] 是第 i 个人在他右侧队列中能看到的人数。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(heights)
+    answer = [0] * n
+    stack = []
+
+    for i in range(n - 1, -1, -1):
+        while stack and stack[-1] < heights[i]:
+            stack.pop()
+            answer[i] += 1
+        if stack:
+            answer[i] += 1
+        stack.append(heights[i])
+
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_visible_people)

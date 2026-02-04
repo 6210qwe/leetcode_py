@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最优的元素进行乘2操作，以最大化最终的按位或结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始的按位或结果。
+2. 对每个元素，计算将其乘2^k后的按位或结果，并记录最大值。
 
 关键点:
-- [TODO]
+- 通过预计算每个元素的前缀和后缀按位或结果，可以在O(1)时间内计算出某个元素乘2^k后的按位或结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +49,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_or(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_or = [0] * (n + 1)
+    suffix_or = [0] * (n + 1)
+
+    # 计算前缀按位或
+    for i in range(n):
+        prefix_or[i + 1] = prefix_or[i] | nums[i]
+
+    # 计算后缀按位或
+    for i in range(n - 1, -1, -1):
+        suffix_or[i] = suffix_or[i + 1] | nums[i]
+
+    max_or = 0
+    for i in range(n):
+        # 计算当前元素乘2^k后的按位或结果
+        current_or = (prefix_or[i] | (nums[i] << k) | suffix_or[i + 1])
+        max_or = max(max_or, current_or)
+
+    return max_or
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_or)

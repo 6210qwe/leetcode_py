@@ -21,40 +21,57 @@ LCP 12. 小张刷题计划 - 为了提高自己的代码能力，小张制定了
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的最大做题时间T。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_finish` 来判断在给定的最大做题时间T下，是否可以在m天内完成所有题目。
+2. 初始化二分查找的左右边界，左边界为0，右边界为题目时间之和。
+3. 进行二分查找，找到最小的T使得 `can_finish(T)` 为True。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找过程，减少时间复杂度。
+- 辅助函数 `can_finish` 通过贪心策略来判断是否可以在给定时间内完成任务。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(sum(time)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_finish(time: List[int], max_time: int, m: int) -> bool:
+    days = 1
+    current_time = 0
+    max_time_today = 0
+    
+    for t in time:
+        if current_time + t - max_time_today > max_time:
+            if days == m:
+                return False
+            days += 1
+            current_time = 0
+            max_time_today = 0
+        current_time += t
+        max_time_today = max(max_time_today, t)
+    
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_max_time(time: List[int], m: int) -> int:
+    left, right = 0, sum(time)
+    while left < right:
+        mid = (left + right) // 2
+        if can_finish(time, mid, m):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_max_time)

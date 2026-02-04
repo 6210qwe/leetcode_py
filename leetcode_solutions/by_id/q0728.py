@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每个数字是否为自除数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_self_dividing` 来判断一个数字是否为自除数。
+2. 遍历从 `left` 到 `right` 的所有数字，使用 `is_self_dividing` 函数筛选出自除数。
 
 关键点:
-- [TODO]
+- 使用字符串操作来提取数字的每一位。
+- 确保数字中不包含 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是区间 [left, right] 的长度，d 是数字的最大位数（最多为 5 位）。
+空间复杂度: O(1)，除了输出结果外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_self_dividing(num: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断一个数字是否为自除数
     """
-    # TODO: 实现最优解法
-    pass
+    original_num = num
+    while num > 0:
+        digit = num % 10
+        if digit == 0 or original_num % digit != 0:
+            return False
+        num //= 10
+    return True
+
+
+def solution_function_name(left: int, right: int) -> List[int]:
+    """
+    返回范围 [left, right] 内的所有自除数
+    """
+    result = []
+    for num in range(left, right + 1):
+        if is_self_dividing(num):
+            result.append(num)
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，计算每个元素的数位和，并检查是否等于其下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `digit_sum` 来计算一个整数的数位和。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`，计算其数位和。
+3. 检查数位和是否等于当前下标 `i`，如果是，则返回该下标。
+4. 如果遍历完数组后没有找到满足条件的下标，返回 -1。
 
 关键点:
-- [TODO]
+- 使用辅助函数简化数位和的计算。
+- 一次遍历数组，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def digit_sum(num: int) -> int:
+    """计算一个整数的数位和"""
+    return sum(int(digit) for digit in str(num))
+
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数位和等于下标的最小下标
     """
-    # TODO: 实现最优解法
-    pass
+    for i, num in enumerate(nums):
+        if digit_sum(num) == i:
+            return i
+    return -1
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录每个前缀和出现的位置，并通过枚举每个位置的变化来计算最大分割方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的前缀和。
+2. 使用哈希表记录每个前缀和出现的位置。
+3. 枚举每个位置的变化，计算新的前缀和，并更新最大分割方案数。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子数组的和。
+- 使用哈希表记录前缀和的位置，可以快速查找和更新分割方案数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,56 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_ways_to_partition(nums: List[int], k: int) -> int:
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    total_sum = prefix_sum[-1]
+    left_diff_count = {}
+    right_diff_count = {}
+    
+    # 记录左边的差值
+    for i in range(1, n):
+        diff = prefix_sum[i] - (total_sum - prefix_sum[i])
+        if diff not in left_diff_count:
+            left_diff_count[diff] = 0
+        left_diff_count[diff] += 1
+    
+    # 初始的最大分割方案数
+    max_ways = left_diff_count.get(0, 0)
+    
+    # 枚举每个位置的变化
+    for i in range(n):
+        new_val = k
+        old_val = nums[i]
+        diff = new_val - old_val
+        
+        # 更新左边的差值
+        for d, count in left_diff_count.items():
+            new_d = d - diff
+            if new_d not in right_diff_count:
+                right_diff_count[new_d] = 0
+            right_diff_count[new_d] += count
+            left_diff_count[d] -= count
+            if left_diff_count[d] == 0:
+                del left_diff_count[d]
+        
+        # 更新右边的差值
+        for j in range(i + 1, n):
+            diff = prefix_sum[j] - (total_sum - prefix_sum[j])
+            if diff not in right_diff_count:
+                right_diff_count[diff] = 0
+            right_diff_count[diff] += 1
+        
+        # 更新最大分割方案数
+        max_ways = max(max_ways, right_diff_count.get(0, 0))
+        
+        # 清空右边的差值
+        right_diff_count.clear()
+    
+    return max_ways
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_ways_to_partition)

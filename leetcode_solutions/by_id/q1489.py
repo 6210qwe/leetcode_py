@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划解决这个问题。我们需要找到在不相邻的情况下选取 n 个元素的最大和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将环形数组转换为两个线性数组，分别处理。
+2. 对于每个线性数组，使用动态规划计算最大和。
+3. 最后取两个结果的最大值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] 表示在前 i 个元素中选取 j 个不相邻元素的最大和。
+- 初始化 dp 数组，并处理边界情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 slices 的长度。
+空间复杂度: O(n^2)，用于存储动态规划状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_pizza_sum(slices: List[int]) -> int:
+    def max_sum_non_adjacent(nums: List[int], k: int) -> int:
+        n = len(nums)
+        dp = [[0] * (k + 1) for _ in range(n + 1)]
+        
+        for i in range(1, n + 1):
+            for j in range(1, k + 1):
+                dp[i][j] = max(dp[i - 1][j], nums[i - 1] + (dp[i - 2][j - 1] if i >= 2 else 0))
+        
+        return dp[n][k]
+    
+    n = len(slices) // 3
+    # Case 1: Exclude the first slice
+    case1 = max_sum_non_adjacent(slices[1:], n)
+    # Case 2: Exclude the last slice
+    case2 = max_sum_non_adjacent(slices[:-1], n)
+    
+    return max(case1, case2)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_pizza_sum)

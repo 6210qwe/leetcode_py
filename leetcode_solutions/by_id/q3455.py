@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符的出现次数，然后遍历字符串，对于每个字符，如果它的出现次数大于1，则可以删除它及其左右相同的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个字符的出现次数。
+2. 初始化一个栈，用于存储可以保留的字符。
+3. 遍历字符串，对于每个字符：
+   - 如果该字符在哈希表中的出现次数大于1且不在栈中，则将其加入栈。
+   - 否则，跳过该字符。
+4. 返回栈的长度，即为最终字符串的最短长度。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符出现次数，以便快速判断是否可以删除字符。
+- 使用栈来存储可以保留的字符，避免重复删除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次，并使用哈希表进行常数时间的查找。
+空间复杂度: O(1)，因为哈希表的大小最多为26（小写字母的数量），可以视为常数空间。
 """
 
 # ============================================================================
@@ -49,12 +54,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_length_after_operations(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算操作后字符串的最短长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个字符的出现次数
+    char_count = {}
+    for char in s:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # 初始化一个栈，用于存储可以保留的字符
+    stack = []
+    
+    # 遍历字符串
+    for char in s:
+        # 如果该字符在哈希表中的出现次数大于1且不在栈中，则将其加入栈
+        if char_count[char] > 1 and char not in stack:
+            stack.append(char)
+    
+    # 返回栈的长度，即为最终字符串的最短长度
+    return len(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_length_after_operations)

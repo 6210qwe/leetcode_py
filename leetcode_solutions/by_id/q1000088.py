@@ -21,22 +21,25 @@ LCP 15. 游乐园的迷宫 - 小王来到了游乐园，她玩的第一个项目
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从任意起点开始，根据方向选择下一个点，确保每次选择的点满足方向要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 选择一个起点和终点。
+2. 从起点开始，根据方向选择下一个点。
+3. 重复步骤2，直到所有点都被访问过。
+4. 返回访问顺序。
 
 关键点:
-- [TODO]
+- 使用叉积判断转向方向。
+- 通过维护一个已访问点的集合来避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N^2)，其中N是points的长度。每次选择下一个点时，需要遍历所有未访问的点。
+空间复杂度: O(N)，用于存储已访问点的集合和结果路径。
 """
 
 # ============================================================================
@@ -49,12 +52,55 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def cross_product(p1, p2, p3):
+    """计算向量 p1p2 和 p1p3 的叉积"""
+    return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0])
+
+
+def solution_function_name(points: List[List[int]], direction: str) -> List[int]:
+    n = len(points)
+    visited = set()
+    path = []
+
+    def dfs(current, prev, index):
+        if len(visited) == n:
+            return True
+        for i in range(n):
+            if i not in visited:
+                if index < len(direction):
+                    if direction[index] == 'L' and cross_product(points[current], points[prev], points[i]) > 0:
+                        visited.add(i)
+                        path.append(i)
+                        if dfs(i, current, index + 1):
+                            return True
+                        path.pop()
+                        visited.remove(i)
+                    elif direction[index] == 'R' and cross_product(points[current], points[prev], points[i]) < 0:
+                        visited.add(i)
+                        path.append(i)
+                        if dfs(i, current, index + 1):
+                            return True
+                        path.pop()
+                        visited.remove(i)
+                else:
+                    visited.add(i)
+                    path.append(i)
+                    if dfs(i, current, index + 1):
+                        return True
+                    path.pop()
+                    visited.remove(i)
+        return False
+
+    for start in range(n):
+        for end in range(n):
+            if start != end:
+                visited = {start}
+                path = [start]
+                if dfs(end, start, 0):
+                    path.append(end)
+                    return path
+
+    return []
 
 
 Solution = create_solution(solution_function_name)

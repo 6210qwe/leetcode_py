@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希映射将黑名单中的数字映射到非黑名单的数字上，从而实现 O(1) 时间复杂度的 pick 操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算有效数字的数量 size = n - len(blacklist)。
+2. 将黑名单中的数字分成两部分：小于 size 的部分和大于等于 size 的部分。
+3. 对于小于 size 的黑名单数字，找到一个大于等于 size 且不在黑名单中的数字进行映射。
+4. 在 pick 操作中，生成一个 [0, size) 范围内的随机数，如果该数在映射中，则返回映射后的值，否则直接返回该数。
 
 关键点:
-- [TODO]
+- 通过哈希映射将黑名单中的数字映射到非黑名单的数字上。
+- 生成随机数时只考虑 [0, size) 范围内的数字，确保每个数字都有同等的概率被选中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 初始化时需要遍历黑名单并进行映射。
+空间复杂度: O(b) - 需要存储黑名单中的映射关系，其中 b 是黑名单的长度。
 """
 
 # ============================================================================
@@ -44,17 +47,36 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import random
 
+class Solution:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, n: int, blacklist: List[int]):
+        self.size = n - len(blacklist)
+        self.mapping = {}
+        
+        # 将黑名单中的数字分成两部分
+        black_set = set(blacklist)
+        last = n - 1
+        
+        for b in blacklist:
+            if b < self.size:
+                while last in black_set:
+                    last -= 1
+                self.mapping[b] = last
+                last -= 1
 
+    def pick(self) -> int:
+        index = random.randint(0, self.size - 1)
+        return self.mapping.get(index, index)
 
-Solution = create_solution(solution_function_name)
+# 工厂函数
+def create_solution(n: int, blacklist: List[int]) -> Solution:
+    return Solution(n, blacklist)
+
+# 测试
+if __name__ == "__main__":
+    solution = create_solution(7, [2, 3, 5])
+    print(solution.pick())  # 可能输出 0, 1, 4, 6
+    print(solution.pick())  # 可能输出 0, 1, 4, 6
+    print(solution.pick())  # 可能输出 0, 1, 4, 6

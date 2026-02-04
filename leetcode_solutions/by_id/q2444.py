@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个字符的最大理想子序列长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 26 的数组 dp，用于记录以每个字符结尾的最长理想子序列长度。
+2. 遍历字符串 s，对于每个字符，更新其在 dp 数组中的值。
+3. 对于每个字符 c，检查其前后 k 个字符范围内的所有字符，更新 dp[c] 的值。
+4. 最后，返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用 dp 数组来记录以每个字符结尾的最长理想子序列长度。
+- 通过遍历字符及其前后 k 个字符范围内的字符来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是字符串 s 的长度，k 是给定的整数。
+空间复杂度: O(1)，dp 数组的大小固定为 26。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_ideal_subsequence(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最长理想子序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组，长度为 26，初始值为 0
+    dp = [0] * 26
+    
+    # 遍历字符串 s
+    for char in s:
+        char_index = ord(char) - ord('a')
+        # 更新 dp[char_index] 的值
+        dp[char_index] += 1
+        
+        # 检查前后 k 个字符范围内的所有字符
+        for i in range(max(0, char_index - k), min(26, char_index + k + 1)):
+            if i != char_index:
+                dp[char_index] = max(dp[char_index], dp[i] + 1)
+    
+    # 返回 dp 数组中的最大值
+    return max(dp)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_ideal_subsequence)

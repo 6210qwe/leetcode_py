@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个新字符串来存储重新排列后的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 len(s) 的空字符串 result。
+2. 遍历 indices 数组，将 s 中的字符按照 indices 的指示位置放入 result 中。
+3. 返回 result。
 
 关键点:
-- [TODO]
+- 使用一个新字符串来存储结果，避免多次修改原字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历整个 indices 数组一次。
+空间复杂度: O(n)，我们使用了一个新的字符串来存储结果。
 """
 
 # ============================================================================
@@ -49,12 +50,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def restore_string(s: str, indices: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新排列字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为 len(s) 的空字符串 result
+    result = [''] * len(s)
+    
+    # 遍历 indices 数组，将 s 中的字符按照 indices 的指示位置放入 result 中
+    for i in range(len(s)):
+        result[indices[i]] = s[i]
+    
+    # 返回 result
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(restore_string)

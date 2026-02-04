@@ -21,40 +21,75 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和堆来最大化分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字的质数分数。
+2. 使用一个堆来存储每个数字及其索引，按质数分数降序排列。
+3. 从堆中取出最大的质数分数的数字，计算其可以被使用的次数，并更新分数。
+4. 重复上述步骤直到进行了 k 次操作或堆为空。
 
 关键点:
-- [TODO]
+- 使用堆来高效地获取当前质数分数最高的数字。
+- 通过维护一个计数器来记录每个数字已经被使用了多少次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + k log n)，其中 n 是 nums 的长度，k 是操作次数。计算质数分数的时间复杂度为 O(n log n)，堆操作的时间复杂度为 O(k log n)。
+空间复杂度: O(n)，用于存储质数分数和堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
+from collections import Counter
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def prime_score(x):
+    score = 0
+    if x % 2 == 0:
+        score += 1
+        while x % 2 == 0:
+            x //= 2
+    for i in range(3, int(x**0.5) + 1, 2):
+        if x % i == 0:
+            score += 1
+            while x % i == 0:
+                x //= i
+    if x > 2:
+        score += 1
+    return score
 
+def max_score(nums: List[int], k: int) -> int:
+    n = len(nums)
+    scores = [prime_score(num) for num in nums]
+    
+    # 堆存储 (质数分数, 数字, 索引)
+    heap = [(-scores[i], nums[i], i) for i in range(n)]
+    heapq.heapify(heap)
+    
+    count = Counter()
+    result = 1
+    
+    for _ in range(k):
+        if not heap:
+            break
+        _, num, idx = heapq.heappop(heap)
+        left = count[idx - 1] if idx > 0 else 0
+        right = count[idx + 1] if idx < n - 1 else 0
+        available = (idx - left) * (n - idx - right)
+        if available > 0:
+            result = (result * num) % MOD
+            count[idx] += 1
+            heapq.heappush(heap, (-scores[idx], num, idx))
+    
+    return result
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score)

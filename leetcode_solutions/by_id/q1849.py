@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算子数组的和，并维护最大和最小的前缀和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和 `prefix_sum` 为 0。
+2. 初始化最大前缀和 `max_prefix` 和最小前缀和 `min_prefix` 为 0。
+3. 遍历数组 `nums`，更新前缀和 `prefix_sum`。
+4. 更新 `max_prefix` 和 `min_prefix`。
+5. 计算最大绝对值 `max_abs` 为 `max_prefix - min_prefix`。
 
 关键点:
-- [TODO]
+- 前缀和可以帮助我们快速计算任意子数组的和。
+- 通过维护最大和最小的前缀和，可以找到和的绝对值最大的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_absolute_sum(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中和的绝对值最大的子数组
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = 0
+    max_prefix = 0
+    min_prefix = 0
+    max_abs = 0
+    
+    for num in nums:
+        prefix_sum += num
+        max_prefix = max(max_prefix, prefix_sum)
+        min_prefix = min(min_prefix, prefix_sum)
+        max_abs = max(max_abs, max_prefix - min_prefix)
+    
+    return max_abs
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_absolute_sum)

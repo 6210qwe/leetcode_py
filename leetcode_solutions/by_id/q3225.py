@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到满足条件的最长子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别表示滑动窗口的左右边界。
+2. 使用一个哈希表 freq 来记录当前窗口内每个元素的频率。
+3. 移动右指针 right，将新元素加入窗口，并更新其频率。
+4. 如果某个元素的频率超过了 k，则移动左指针 left，直到该元素的频率不超过 k。
+5. 记录每次满足条件时的窗口长度，并更新最大长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，确保窗口内的所有元素频率不超过 k。
+- 通过哈希表记录频率，快速判断和更新频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。每个元素最多被访问两次（一次通过右指针，一次通过左指针）。
+空间复杂度: O(m)，其中 m 是数组 nums 中不同元素的数量。哈希表的空间取决于不同元素的数量。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中最长好子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, 0
+    freq = {}
+    max_length = 0
+    
+    while right < len(nums):
+        # 更新右指针对应元素的频率
+        if nums[right] in freq:
+            freq[nums[right]] += 1
+        else:
+            freq[nums[right]] = 1
+        
+        # 如果当前窗口不满足条件，移动左指针
+        while freq[nums[right]] > k:
+            freq[nums[left]] -= 1
+            left += 1
+        
+        # 更新最大长度
+        max_length = max(max_length, right - left + 1)
+        right += 1
+    
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

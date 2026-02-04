@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据表的动态旋转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的数据表。
+2. 使用 `pivot_table` 方法将数据表进行旋转。
+3. 返回旋转后的数据表。
 
 关键点:
-- [TODO]
+- 使用 `pivot_table` 方法可以方便地对数据表进行旋转。
+- 确保处理好索引和列名的映射关系。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是数据表中的元素数量。Pandas 的 `pivot_table` 方法的时间复杂度为线性。
+空间复杂度: O(n) - 旋转后的数据表需要额外的空间存储。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(params: List[List[str]]) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现表的动态旋转
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将输入参数转换为 DataFrame
+    df = pd.DataFrame(params[1:], columns=params[0])
+    
+    # 使用 pivot_table 方法进行旋转
+    pivoted_df = df.pivot_table(index='id', columns='month', values='value', aggfunc='sum').reset_index()
+    
+    # 返回旋转后的 DataFrame
+    return pivoted_df
 
 Solution = create_solution(solution_function_name)

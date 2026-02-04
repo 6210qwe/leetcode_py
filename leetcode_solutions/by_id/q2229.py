@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与滑动窗口来计算在给定步数内可以摘到的最大水果数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建前缀和数组，用于快速计算任意区间的水果数量。
+2. 使用滑动窗口技术，枚举所有可能的移动路径，计算在给定步数内可以摘到的最大水果数量。
 
 关键点:
-- [TODO]
+- 使用前缀和数组优化区间查询。
+- 滑动窗口技术用于枚举所有可能的移动路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def maxTotalFruits(fruits: List[List[int]], startPos: int, k: int) -> int:
+    n = len(fruits)
+    prefix_sum = [0] * (n + 1)
+    
+    # 构建前缀和数组
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + fruits[i - 1][1]
+    
+    def get_fruits_in_range(left: int, right: int) -> int:
+        """计算区间 [left, right] 内的水果总数"""
+        return prefix_sum[right + 1] - prefix_sum[left]
+    
+    max_fruits = 0
+    
+    # 枚举所有可能的移动路径
+    for i in range(n):
+        left = i
+        right = i
+        while right < n and fruits[right][0] - fruits[left][0] + min(abs(fruits[left][0] - startPos), abs(fruits[right][0] - startPos)) <= k:
+            max_fruits = max(max_fruits, get_fruits_in_range(left, right))
+            right += 1
+    
+    return max_fruits
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxTotalFruits)

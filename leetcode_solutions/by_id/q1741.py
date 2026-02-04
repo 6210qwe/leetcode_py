@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器统计频率，然后根据频率和数值进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `collections.Counter` 统计每个元素的频率。
+2. 将数组按频率升序排序，如果频率相同则按数值降序排序。
 
 关键点:
-- [TODO]
+- 使用 `Counter` 来高效统计频率。
+- 使用 `sorted` 函数进行多键排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，用于存储频率计数和排序后的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def frequencySort(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按照频率将数组升序排序
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的频率
+    freq = Counter(nums)
+    
+    # 按频率升序排序，如果频率相同则按数值降序排序
+    sorted_nums = sorted(nums, key=lambda x: (freq[x], -x))
+    
+    return sorted_nums
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(frequencySort)

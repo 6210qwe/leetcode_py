@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算将数组划分成若干好子数组的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `mod` 为 10^9 + 7。
+2. 遍历数组 `nums`，找到所有值为 1 的元素的索引，并存储在列表 `ones` 中。
+3. 如果 `ones` 的长度小于 2，说明无法划分成多个好子数组，直接返回 1。
+4. 初始化 `dp` 数组，`dp[i]` 表示将前 i 个 1 划分成若干好子数组的方法数。
+5. 动态规划转移方程：`dp[i] = (dp[i-1] + dp[i-2]) % mod`。
+6. 返回 `dp` 数组的最后一个元素。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过存储 1 的索引来简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。遍历数组和动态规划的时间复杂度都是 O(n)。
+空间复杂度: O(m)，其中 m 是数组 `nums` 中 1 的个数。需要存储 1 的索引和动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +54,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将数组划分成若干好子数组的方法数
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    ones = [i for i, num in enumerate(nums) if num == 1]
+    
+    if len(ones) < 2:
+        return 1
+    
+    dp = [0] * (len(ones) + 1)
+    dp[0], dp[1] = 1, 1
+    
+    for i in range(2, len(ones) + 1):
+        dp[i] = (dp[i - 1] + dp[i - 2]) % mod
+    
+    return dp[-1]
 
 
 Solution = create_solution(solution_function_name)

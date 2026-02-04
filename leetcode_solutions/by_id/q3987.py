@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们需要找到两个不相交的子数组，使得它们的和最大。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][0] 表示以第 i 个元素结尾的最大子数组和，dp[i][1] 表示以第 i 个元素结尾的第二大子数组和。
+2. 遍历数组，更新 dp 数组。
+3. 最后遍历 dp 数组，找到两个不相交的子数组的最大和。
 
 关键点:
-- [TODO]
+- 使用 dp 数组来记录每个位置的最大子数组和和第二大的子数组和。
+- 确保两个子数组不相交。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 2:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [[0, 0] for _ in range(n)]
+    dp[0][0] = nums[0]
+
+    max_sum = float('-inf')
+
+    for i in range(1, n):
+        # 更新 dp[i][0] 和 dp[i][1]
+        dp[i][0] = max(dp[i-1][0] + nums[i], nums[i])
+        dp[i][1] = max(dp[i-1][1], dp[i-1][0])
+
+        # 更新最大和
+        if i > 1:
+            max_sum = max(max_sum, dp[i][0] + dp[i-1][1])
+
+    return max_sum if max_sum != float('-inf') else 0
 
 
 Solution = create_solution(solution_function_name)

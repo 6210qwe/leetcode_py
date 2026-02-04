@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用状态压缩动态规划来解决这个问题。我们使用一个二进制掩码来表示当前已经访问过的节点集合，并使用递归来计算从某个节点出发，经过某些节点后，能够形成的最长回文串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用一个三维数组 `dp[mask][i][j]` 来存储在访问了 `mask` 表示的节点集合后，从节点 `i` 出发，以节点 `j` 结束的最长回文串的长度。
+3. 递归地计算 `dp` 数组，对于每个状态 `mask` 和每个节点 `i`，尝试访问所有未访问的邻居节点 `j`，并更新 `dp` 数组。
+4. 最终结果是 `dp[(1 << n) - 1][i][j]` 中的最大值。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示访问过的节点集合。
+- 递归地计算 `dp` 数组，确保每个状态只计算一次。
+- 通过预处理字符出现次数来快速判断是否能形成回文串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)
+空间复杂度: O(2^n * n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def longest_palindromic_path(n: int, edges: List[List[int]], label: str) -> int:
+    # 构建图的邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # 状态压缩 DP 数组
+    dp = [[[0] * n for _ in range(n)] for _ in range(1 << n)]
+    
+    def dfs(mask: int, u: int, v: int) -> int:
+        if dp[mask][u][v] > 0:
+            return dp[mask][u][v]
+        
+        max_length = 1 if label[u] == label[v] else 0
+        for w in graph[u]:
+            if mask & (1 << w) == 0:
+                new_mask = mask | (1 << w)
+                max_length = max(max_length, dfs(new_mask, w, v) + (label[u] == label[w]))
+        
+        dp[mask][u][v] = max_length
+        return max_length
+    
+    result = 0
+    for i in range(n):
+        for j in range(n):
+            result = max(result, dfs(1 << i, i, j))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindromic_path)

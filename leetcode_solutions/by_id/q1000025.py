@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来模拟加法操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用异或操作 (a ^ b) 来计算不带进位的和。
+2. 使用与操作 (a & b) 并左移一位 ((a & b) << 1) 来计算进位。
+3. 将不带进位的和赋值给 a，将进位赋值给 b，并重复上述步骤直到 b 为 0。
 
 关键点:
-- [TODO]
+- 异或操作用于计算不带进位的和。
+- 与操作并左移一位用于计算进位。
+- 循环直到进位为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 由于 32 位整数的位数是固定的，因此循环次数也是固定的。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def add_without_plus(a: int, b: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现不用加号的加法
     """
-    # TODO: 实现最优解法
-    pass
+    # 32 位整数的最大值
+    MAX = 0x7FFFFFFF
+    # 32 位掩码
+    mask = 0xFFFFFFFF
+    
+    while b != 0:
+        # 计算不带进位的和
+        a, b = (a ^ b) & mask, ((a & b) << 1) & mask
+    
+    # 如果 a 是负数，则需要将其转换为 Python 的负数表示
+    return a if a <= MAX else ~(a ^ mask)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_without_plus)

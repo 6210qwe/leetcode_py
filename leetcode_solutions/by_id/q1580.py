@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，分别指向 x 和 y 部分的起始位置，交替添加到结果数组中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 x 部分和 y 部分的起始位置。
+2. 创建一个空的结果数组 result。
+3. 循环 n 次，每次从 x 部分和 y 部分各取一个元素，依次添加到结果数组中。
+4. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以简化代码逻辑，并且保证时间复杂度和空间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的一半长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，除了输出数组外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shuffle(nums: List[int], n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组按 [x1,y1,x2,y2,...,xn,yn] 格式重新排列
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i in range(n):
+        result.append(nums[i])
+        result.append(nums[i + n])
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shuffle)

@@ -21,40 +21,102 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 找出每个患者的首次阳性检测日期和首次阴性检测日期。
+2. 计算从首次阳性检测到首次阴性检测之间的天数。
+3. 过滤出同时具有阳性及阴性检测结果的患者，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找出每个患者的首次阳性检测日期。
+2. 使用子查询找出每个患者的首次阴性检测日期。
+3. 将两个子查询的结果进行连接，计算康复时间。
+4. 过滤出康复时间大于0的患者。
+5. 按照康复时间和患者姓名进行排序。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `MIN` 和 `CASE` 来找出每个患者的首次阳性检测日期和首次阴性检测日期。
+- 使用 `DATEDIFF` 函数计算康复时间。
+- 使用 `JOIN` 将两个子查询的结果进行连接。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 covid_tests 表中的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(patients, covid_tests):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出从 COVID 中康复的患者
     """
-    # TODO: 实现最优解法
-    pass
+    # 找出每个患者的首次阳性检测日期
+    first_positive_query = """
+    SELECT
+        patient_id,
+        MIN(test_date) AS first_positive_date
+    FROM
+        (SELECT
+            patient_id,
+            test_date,
+            CASE
+                WHEN result = 'Positive' THEN 1
+                ELSE 0
+            END AS is_positive
+        FROM
+            covid_tests) AS subquery
+    WHERE
+        is_positive = 1
+    GROUP BY
+        patient_id
+    """
 
+    # 找出每个患者的首次阴性检测日期
+    first_negative_query = """
+    SELECT
+        patient_id,
+        MIN(test_date) AS first_negative_date
+    FROM
+        (SELECT
+            patient_id,
+            test_date,
+            CASE
+                WHEN result = 'Negative' THEN 1
+                ELSE 0
+            END AS is_negative
+        FROM
+            covid_tests) AS subquery
+    WHERE
+        is_negative = 1
+    GROUP BY
+        patient_id
+    """
+
+    # 将两个子查询的结果进行连接，计算康复时间
+    final_query = f"""
+    SELECT
+        p.patient_id,
+        p.patient_name,
+        p.age,
+        DATEDIFF(n.first_negative_date, p.first_positive_date) AS recovery_time
+    FROM
+        ({first_positive_query}) AS p
+    JOIN
+        ({first_negative_query}) AS n
+    ON
+        p.patient_id = n.patient_id
+    WHERE
+        n.first_negative_date > p.first_positive_date
+    ORDER BY
+        recovery_time ASC, p.patient_name ASC
+    """
+
+    # 执行最终查询
+    return final_query
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树结构，并计算从根节点到每个叶子节点的最大时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典，表示每个经理的直接下属。
+2. 使用 DFS 从根节点 (headID) 开始遍历，递归地计算每个节点的最大通知时间。
+3. 返回最大通知时间。
 
 关键点:
-- [TODO]
+- 使用 DFS 递归遍历树结构。
+- 计算从根节点到每个叶子节点的最大时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工数量。每个员工只被访问一次。
+空间复杂度: O(n)，用于存储子节点关系和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def numOfMinutes(n: int, headID: int, manager: List[int], informTime: List[int]) -> int:
+    # 构建一个字典，表示每个经理的直接下属
+    subordinates = {i: [] for i in range(n)}
+    for i, m in enumerate(manager):
+        if m != -1:
+            subordinates[m].append(i)
+    
+    def dfs(employee: int) -> int:
+        # 递归计算从当前员工到所有下属的最大通知时间
+        max_time = 0
+        for subordinate in subordinates[employee]:
+            max_time = max(max_time, dfs(subordinate))
+        return informTime[employee] + max_time
+    
+    # 从根节点 (headID) 开始计算最大通知时间
+    return dfs(headID)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numOfMinutes)

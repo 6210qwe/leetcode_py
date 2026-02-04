@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每个数找到其所有因数，并检查是否恰好有四个因数。如果有，计算这些因数的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `get_divisors` 来获取一个数的所有因数。
+2. 遍历数组中的每个数，使用 `get_divisors` 获取其因数。
+3. 检查因数的数量是否为4，如果是，计算这些因数的和并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用平方根优化因数查找过程，避免重复计算。
+- 只考虑小于等于平方根的因数，以减少计算量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(m))，其中 n 是数组长度，m 是数组中的最大值。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_divisors(num: int) -> List[int]:
+    """获取一个数的所有因数"""
+    divisors = set()
+    for i in range(1, int(num**0.5) + 1):
+        if num % i == 0:
+            divisors.add(i)
+            divisors.add(num // i)
+    return list(divisors)
+
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组中恰有四个因数的这些整数的各因数之和
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    for num in nums:
+        divisors = get_divisors(num)
+        if len(divisors) == 4:
+            result += sum(divisors)
+    return result
 
 
 Solution = create_solution(solution_function_name)

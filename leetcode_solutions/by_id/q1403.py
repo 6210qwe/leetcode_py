@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 `dp[i][j]` 表示将前 `i` 个字符分割成 `j` 个回文子串所需的最小修改次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理计算每个子串变成回文串所需的最小修改次数。
+2. 初始化 `dp` 数组，`dp[i][1]` 表示将前 `i` 个字符分割成 1 个回文子串所需的最小修改次数。
+3. 使用动态规划填充 `dp` 数组，状态转移方程为 `dp[i][k] = min(dp[i][k], dp[j][k-1] + cost[j+1][i])`。
+4. 返回 `dp[n][k]` 即为所求结果。
 
 关键点:
-- [TODO]
+- 预处理每个子串变成回文串所需的最小修改次数。
+- 动态规划的状态转移方程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def palindrome_partition(s: str, k: int) -> int:
+    n = len(s)
+    
+    # 预处理每个子串变成回文串所需的最小修改次数
+    cost = [[0] * n for _ in range(n)]
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            cost[i][j] = cost[i + 1][j - 1] + (s[i] != s[j])
+    
+    # 初始化 dp 数组
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        dp[i][1] = cost[0][i - 1]
+    
+    # 填充 dp 数组
+    for i in range(2, n + 1):
+        for j in range(2, min(i, k) + 1):
+            for l in range(1, i):
+                dp[i][j] = min(dp[i][j], dp[l][j - 1] + cost[l][i - 1])
+    
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(palindrome_partition)

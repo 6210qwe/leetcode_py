@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀 GCD 来高效计算子数组的最大公因数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果计数器 `res` 为 0。
+2. 遍历数组 `nums`，对于每个起始位置 `i`，使用变量 `gcd_val` 记录当前子数组的最大公因数。
+3. 对于每个起始位置 `i`，遍历从 `i` 到数组末尾的所有结束位置 `j`，更新 `gcd_val` 并检查是否等于 `k`。
+4. 如果 `gcd_val` 等于 `k`，则增加结果计数器 `res`。
 
 关键点:
-- [TODO]
+- 使用 `math.gcd` 函数来计算两个数的最大公因数。
+- 通过滑动窗口和前缀 GCD 来减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 需要遍历所有可能的子数组。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+import math
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计并返回 nums 的子数组中元素的最大公因数等于 k 的子数组数目。
     """
-    # TODO: 实现最优解法
-    pass
+    res = 0
+    n = len(nums)
+    
+    for i in range(n):
+        gcd_val = 0
+        for j in range(i, n):
+            gcd_val = math.gcd(gcd_val, nums[j])
+            if gcd_val == k:
+                res += 1
+            elif gcd_val < k:
+                break
+    
+    return res
 
 
 Solution = create_solution(solution_function_name)

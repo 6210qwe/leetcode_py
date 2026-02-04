@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，将较大的值分配给度数较高的城市，从而最大化道路的重要性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个城市的度数。
+2. 将城市按度数从高到低排序。
+3. 从 n 开始，依次将较大的值分配给度数较高的城市。
+4. 计算所有道路的重要性之和。
 
 关键点:
-- [TODO]
+- 使用贪心算法，确保度数较高的城市获得较大的值。
+- 通过排序和遍历，实现最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximum_total_importance(n: int, roads: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大总重要性
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个城市的度数
+    degree = [0] * n
+    for a, b in roads:
+        degree[a] += 1
+        degree[b] += 1
+    
+    # 将城市按度数从高到低排序
+    sorted_cities = sorted(range(n), key=lambda x: -degree[x])
+    
+    # 从 n 开始，依次将较大的值分配给度数较高的城市
+    city_values = [0] * n
+    for i, city in enumerate(sorted_cities):
+        city_values[city] = n - i
+    
+    # 计算所有道路的重要性之和
+    total_importance = 0
+    for a, b in roads:
+        total_importance += city_values[a] + city_values[b]
+    
+    return total_importance
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_total_importance)

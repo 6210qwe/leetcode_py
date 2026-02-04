@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用组合数学和动态规划来计算所有合法方案的曼哈顿距离之和。
+- 通过预计算行和列的贡献来优化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算行和列的贡献。
+2. 使用动态规划计算所有合法方案的曼哈顿距离之和。
 
 关键点:
-- [TODO]
+- 通过预计算行和列的贡献来减少重复计算。
+- 使用动态规划来高效地计算所有合法方案的曼哈顿距离之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -48,13 +51,42 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(m: int, n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有放置棋子的合法方案中，每对棋子之间的曼哈顿距离之和。
     """
-    # TODO: 实现最优解法
-    pass
+    def comb(n, k):
+        if k > n or k < 0:
+            return 0
+        num, den = 1, 1
+        for i in range(1, min(k, n - k) + 1):
+            num = num * (n + 1 - i) % MOD
+            den = den * i % MOD
+        return num * pow(den, MOD - 2, MOD) % MOD
 
+    def precompute_contributions(m, n):
+        row_contrib = [0] * (m * n + 1)
+        col_contrib = [0] * (m * n + 1)
+        for i in range(1, m * n + 1):
+            row_contrib[i] = (row_contrib[i - 1] + (i - 1) // n) % MOD
+            col_contrib[i] = (col_contrib[i - 1] + (i - 1) % n) % MOD
+        return row_contrib, col_contrib
+
+    row_contrib, col_contrib = precompute_contributions(m, n)
+    dp = [0] * (k + 1)
+    dp[0] = 1
+
+    for i in range(1, k + 1):
+        for j in range(i - 1, -1, -1):
+            dp[i] = (dp[i] + dp[j] * comb(m * n - j, i - j)) % MOD
+
+    total_distance = 0
+    for i in range(1, k + 1):
+        for j in range(i - 1, -1, -1):
+            total_distance = (total_distance + dp[j] * dp[i - j] * (row_contrib[i] - row_contrib[j] + col_contrib[i] - col_contrib[j])) % MOD
+
+    return total_distance
 
 Solution = create_solution(solution_function_name)

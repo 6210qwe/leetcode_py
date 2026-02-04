@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 找到从根节点到起点和终点的路径，然后计算从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 找到从根节点到起点和终点的路径。
+2. 计算两个路径的公共前缀，这是它们的最近公共祖先。
+3. 构建从起点到终点的路径，通过将起点路径中的非公共部分替换为 'U'，然后连接终点路径的非公共部分。
 
 关键点:
-- [TODO]
+- 使用 DFS 找到路径。
+- 计算公共前缀以确定最近公共祖先。
+- 构建最终路径时，使用 'U' 替换起点路径中的非公共部分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。DFS 遍历整个树一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def find_path(root: TreeNode, target: int, path: List[str]) -> bool:
+    if not root:
+        return False
+    if root.val == target:
+        return True
+    if find_path(root.left, target, path):
+        path.append('L')
+        return True
+    if find_path(root.right, target, path):
+        path.append('R')
+        return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def get_directions(root: Optional[TreeNode], startValue: int, destValue: int) -> str:
+    start_path = []
+    dest_path = []
+    
+    # Find paths from root to start and destination
+    find_path(root, startValue, start_path)
+    find_path(root, destValue, dest_path)
+    
+    # Reverse the paths to make them easier to work with
+    start_path.reverse()
+    dest_path.reverse()
+    
+    # Find the common prefix
+    i = 0
+    while i < len(start_path) and i < len(dest_path) and start_path[i] == dest_path[i]:
+        i += 1
+    
+    # Construct the final path
+    result = 'U' * (len(start_path) - i) + ''.join(dest_path[i:])
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_directions)

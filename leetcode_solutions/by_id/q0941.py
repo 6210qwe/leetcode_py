@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，一个指针从头开始寻找奇数，另一个指针从尾开始寻找偶数，然后交换这两个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，left 指向数组的起始位置，right 指向数组的末尾。
+2. 当 left < right 时，进行以下操作：
+   - 如果 nums[left] 是偶数，则 left 向右移动一位。
+   - 如果 nums[right] 是奇数，则 right 向左移动一位。
+   - 如果 nums[left] 是奇数且 nums[right] 是偶数，则交换 nums[left] 和 nums[right]。
+3. 最终返回排序后的数组。
 
 关键点:
-- [TODO]
+- 使用双指针可以在线性时间内完成排序。
+- 交换操作在原地进行，不需要额外的空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_array_by_parity(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按奇偶排序数组
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(nums) - 1
+    while left < right:
+        if nums[left] % 2 == 0:
+            left += 1
+        elif nums[right] % 2 == 1:
+            right -= 1
+        else:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1
+            right -= 1
+    return nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_array_by_parity)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 来判断是否可以将牌分成若干组，每组有相同数量的牌。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每种牌的数量。
+2. 计算所有牌数量的最大公约数 (GCD)。
+3. 如果 GCD 大于等于 2，则返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 `math.gcd` 函数来计算两个数的最大公约数。
+- 使用 `reduce` 函数来计算多个数的最大公约数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是牌的数量，k 是牌的最大数量。
+空间复杂度: O(n)，用于存储每种牌的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+from functools import reduce
+import math
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def has_groups_size_x(deck: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以将牌分成若干组，每组有相同数量的牌，并且每组的牌数大于等于 2。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每种牌的数量
+    count = {}
+    for card in deck:
+        if card in count:
+            count[card] += 1
+        else:
+            count[card] = 1
+    
+    # 计算所有牌数量的最大公约数
+    gcd_value = reduce(math.gcd, count.values())
+    
+    # 判断 GCD 是否大于等于 2
+    return gcd_value >= 2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(has_groups_size_x)

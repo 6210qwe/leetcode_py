@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）结合回溯来找到从起点到终点的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs` 来进行深度优先搜索。
+2. 从起点 (0, 0) 开始，尝试向右或向下移动。
+3. 如果到达终点 (m-1, n-1)，记录路径并返回。
+4. 如果当前单元格是障碍物或已经访问过，则跳过。
+5. 标记当前单元格为已访问，并继续搜索。
+6. 如果没有找到路径，回溯并取消标记。
 
 关键点:
-- [TODO]
+- 使用一个二维数组 `visited` 来记录已经访问过的单元格，避免重复访问。
+- 使用一个列表 `path` 来记录当前路径。
+- 使用回溯来找到所有可能的路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^(m+n))，在最坏情况下，每个单元格都可能被访问两次（一次向下，一次向右）。
+空间复杂度: O(m*n)，用于存储 `visited` 数组和递归调用栈。
 """
 
 # ============================================================================
@@ -44,17 +50,31 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def find_path(grid: List[List[int]]) -> List[List[int]]:
+    def dfs(x: int, y: int, path: List[List[int]], visited: List[List[bool]]) -> bool:
+        if x == m - 1 and y == n - 1:
+            path.append([x, y])
+            return True
+        if x < 0 or x >= m or y < 0 or y >= n or grid[x][y] == 1 or visited[x][y]:
+            return False
+        
+        visited[x][y] = True
+        path.append([x, y])
+        
+        if dfs(x + 1, y, path, visited) or dfs(x, y + 1, path, visited):
+            return True
+        
+        path.pop()
+        return False
+    
+    m, n = len(grid), len(grid[0])
+    visited = [[False] * n for _ in range(m)]
+    path = []
+    
+    if dfs(0, 0, path, visited):
+        return path
+    else:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_path)

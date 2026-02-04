@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，统计满足条件的员工数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 为 0。
+2. 遍历 `hours` 数组，对于每个元素 `hour`，如果 `hour` 大于等于 `target`，则将 `count` 加 1。
+3. 返回 `count`。
 
 关键点:
-- [TODO]
+- 通过一次遍历数组来统计满足条件的员工数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `hours` 数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(hours: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计满足目标工作时长的员工数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for hour in hours:
+        if hour >= target:
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

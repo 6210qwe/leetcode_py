@@ -21,22 +21,26 @@ LCR 124. 推理二叉树 - 某二叉树的先序遍历结果记录于整数数�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过前序遍历和中序遍历构建二叉树。前序遍历的第一个元素是根节点，然后在中序遍历中找到该根节点的位置，从而确定左子树和右子树的范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表存储中序遍历的值及其索引，以便快速查找。
+2. 递归地构建二叉树：
+   - 从前序遍历中获取当前子树的根节点。
+   - 在中序遍历中找到根节点的位置，从而确定左子树和右子树的范围。
+   - 递归地构建左子树和右子树。
 
 关键点:
-- [TODO]
+- 使用哈希表存储中序遍历的值及其索引，以减少查找时间。
+- 递归地构建子树，并传递正确的索引范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点的数量。每个节点只访问一次。
+空间复杂度: O(n)，用于存储哈希表和递归调用栈。
 """
 
 # ============================================================================
@@ -44,17 +48,27 @@ LCR 124. 推理二叉树 - 某二叉树的先序遍历结果记录于整数数�
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def build_tree(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    def build(pre_start: int, pre_end: int, in_start: int, in_end: int) -> Optional[TreeNode]:
+        if pre_start > pre_end:
+            return None
+        
+        root_val = preorder[pre_start]
+        root_index = in_map[root_val]
+        
+        left_size = root_index - in_start
+        right_size = in_end - root_index
+        
+        root = TreeNode(root_val)
+        root.left = build(pre_start + 1, pre_start + left_size, in_start, root_index - 1)
+        root.right = build(pre_start + left_size + 1, pre_end, root_index + 1, in_end)
+        
+        return root
+    
+    in_map = {val: idx for idx, val in enumerate(inorder)}
+    return build(0, len(preorder) - 1, 0, len(inorder) - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(build_tree)

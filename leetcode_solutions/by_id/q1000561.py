@@ -21,22 +21,26 @@ LCP 73. 探险营地 - 探险家小扣的行动轨迹，都将保存在记录仪
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录已知的营地，并在每次探险中检查新发现的营地。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `known_camps` 来存储已知的营地。
+2. 遍历 `expeditions` 数组，从第一个元素开始提取已知的营地并加入 `known_camps`。
+3. 对于后续的每次探险，将当前探险记录中的营地拆分成单独的营地名称。
+4. 计算当前探险中发现的新营地数量，并更新最大新发现营地数量及其对应的索引。
+5. 返回最大新发现营地数量对应的索引，如果没有新发现则返回 `-1`。
 
 关键点:
-- [TODO]
+- 使用集合来高效地检查和存储已知的营地。
+- 通过遍历和拆分字符串来提取每次探险中的营地名称。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `expeditions` 的长度，m 是每次探险记录的平均长度。
+空间复杂度: O(k)，其中 k 是所有营地名称的总长度。
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(expeditions: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出小扣发现新营地最多且索引最小的那次探险，并返回对应的记录索引。
     """
-    # TODO: 实现最优解法
-    pass
+    known_camps = set()
+    
+    # 提取初始已知的营地
+    if expeditions[0]:
+        known_camps.update(expeditions[0].split("->"))
+    
+    max_new_camps = 0
+    max_index = -1
+    
+    for i in range(1, len(expeditions)):
+        if not expeditions[i]:
+            continue
+        
+        current_camps = expeditions[i].split("->")
+        new_camps_count = sum(1 for camp in current_camps if camp not in known_camps)
+        
+        if new_camps_count > max_new_camps:
+            max_new_camps = new_camps_count
+            max_index = i
+        
+        known_camps.update(current_camps)
+    
+    return max_index
 
 
 Solution = create_solution(solution_function_name)

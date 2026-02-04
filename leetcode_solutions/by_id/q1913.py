@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个位置的最小修改次数，使得所有长度为 k 的子数组的异或结果为零。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 DP 数组 dp，其中 dp[j][x] 表示将第 j 个位置的元素修改为 x 所需的最小修改次数。
+2. 遍历每个位置 i，对于每个位置 i，计算从 i 开始的每 k 个位置的异或值。
+3. 更新 DP 数组，计算每个位置的最小修改次数。
+4. 最终返回 dp[0] 中的最小值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过预处理每个位置的异或值来优化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^10)，其中 n 是数组的长度，2^10 是可能的异或值的数量。
+空间复杂度: O(k * 2^10)，其中 k 是子数组的长度，2^10 是可能的异或值的数量。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_changes_to_zero_xor(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使所有长度为 k 的子数组的异或结果为零所需的最小修改次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    MAX_VAL = 1 << 10  # 2^10
+    dp = [[float('inf')] * MAX_VAL for _ in range(k)]
+    
+    # 初始化 dp 数组
+    for i in range(n):
+        dp[i % k][nums[i]] = 1
+    
+    # 动态规划更新 dp 数组
+    for i in range(k):
+        count = [0] * MAX_VAL
+        for j in range(i, n, k):
+            x = nums[j]
+            count[x] += 1
+            for y in range(MAX_VAL):
+                dp[i][y] = min(dp[i][y], dp[i][(y ^ x)] + (count[y] - (j // k - count[y])))
+    
+    # 返回最终结果
+    return min(dp[0])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_changes_to_zero_xor)

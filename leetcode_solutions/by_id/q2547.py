@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个差值数组出现的次数，找到唯一一个出现一次的差值数组对应的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `get_difference` 来计算字符串的差值数组。
+2. 使用哈希表记录每个差值数组出现的次数。
+3. 遍历哈希表，找到唯一一个出现一次的差值数组对应的字符串。
 
 关键点:
-- [TODO]
+- 使用哈希表记录差值数组及其对应的字符串。
+- 找到唯一一个出现一次的差值数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是字符串数组的长度，n 是每个字符串的长度。
+空间复杂度: O(m * n)，用于存储差值数组及其对应的字符串。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def get_difference(s: str) -> List[int]:
+    """计算字符串的差值数组"""
+    return [ord(s[i + 1]) - ord(s[i]) for i in range(len(s) - 1)]
 
+
+def solution_function_name(words: List[str]) -> str:
+    """
+    函数式接口 - 找到差值数组不同的字符串
+    """
+    diff_count = {}
+    
+    for word in words:
+        diff = tuple(get_difference(word))
+        if diff in diff_count:
+            diff_count[diff].append(word)
+        else:
+            diff_count[diff] = [word]
+    
+    for diff, words in diff_count.items():
+        if len(words) == 1:
+            return words[0]
 
 Solution = create_solution(solution_function_name)

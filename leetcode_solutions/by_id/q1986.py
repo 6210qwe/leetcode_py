@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序和动态规划来解决这个问题。首先通过拓扑排序判断图中是否有环，如果有环则直接返回 -1。然后使用动态规划来计算每个节点的最大颜色值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示，并记录每个节点的入度。
+2. 使用队列进行拓扑排序，初始化队列为所有入度为 0 的节点。
+3. 如果在拓扑排序过程中无法遍历所有节点，则说明图中有环，返回 -1。
+4. 使用动态规划计算每个节点的最大颜色值。dp[node][color] 表示从起点到 node 节点路径中颜色 color 的最大出现次数。
+5. 更新 dp 数组，并在每次更新时维护全局最大颜色值。
 
 关键点:
-- [TODO]
+- 使用拓扑排序判断图中是否有环。
+- 使用动态规划计算每个节点的最大颜色值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。构建图的邻接表和入度数组的时间复杂度是 O(m)，拓扑排序的时间复杂度是 O(n + m)。
+空间复杂度: O(n + m)，存储图的邻接表和入度数组的空间复杂度是 O(m)，存储 dp 数组的空间复杂度是 O(26n)。
 """
 
 # ============================================================================
@@ -49,12 +53,42 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def largest_color_value_in_directed_graph(colors: str, edges: List[List[int]]) -> int:
+    n = len(colors)
+    graph = [[] for _ in range(n)]
+    in_degree = [0] * n
+    dp = [[0] * 26 for _ in range(n)]
+    
+    # 构建图的邻接表和入度数组
+    for u, v in edges:
+        graph[u].append(v)
+        in_degree[v] += 1
+    
+    # 初始化队列，包含所有入度为 0 的节点
+    queue = [u for u in range(n) if in_degree[u] == 0]
+    
+    # 拓扑排序
+    visited = 0
+    while queue:
+        u = queue.pop(0)
+        visited += 1
+        color_idx = ord(colors[u]) - ord('a')
+        dp[u][color_idx] = max(dp[u][color_idx], 1)
+        
+        for v in graph[u]:
+            for c in range(26):
+                dp[v][c] = max(dp[v][c], dp[u][c])
+            in_degree[v] -= 1
+            if in_degree[v] == 0:
+                queue.append(v)
+    
+    # 如果不能遍历所有节点，说明图中有环
+    if visited != n:
+        return -1
+    
+    # 计算最大颜色值
+    max_color_value = max(max(dp[u]) for u in range(n))
+    return max_color_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_color_value_in_directed_graph)

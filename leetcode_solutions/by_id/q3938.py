@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置的路径数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维 DP 数组 dp，其中 dp[i][j][0] 表示从 (0, 0) 到 (i, j) 且最后一步是向右移动的路径数，dp[i][j][1] 表示从 (0, 0) 到 (i, j) 且最后一步是向下移动的路径数。
+2. 设置初始条件 dp[0][0][0] = 1 和 dp[0][0][1] = 1。
+3. 遍历整个网格，根据当前格子是否有镜子更新 dp 值。
+4. 最后返回 dp[m-1][n-1][0] + dp[m-1][n-1][1]。
 
 关键点:
-- [TODO]
+- 使用三维 DP 数组来记录不同方向的路径数。
+- 处理镜子反射的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_paths(grid: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    m, n = len(grid), len(grid[0])
+    dp = [[[0, 0] for _ in range(n)] for _ in range(m)]
+    dp[0][0][0] = 1
+    dp[0][0][1] = 1
+    
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                if i > 0:
+                    dp[i][j][0] = dp[i-1][j][1]
+                if j > 0:
+                    dp[i][j][1] = dp[i][j-1][0]
+            else:
+                if i > 0:
+                    dp[i][j][0] = (dp[i-1][j][0] + dp[i-1][j][1]) % MOD
+                if j > 0:
+                    dp[i][j][1] = (dp[i][j-1][0] + dp[i][j-1][1]) % MOD
+    
+    return (dp[m-1][n-1][0] + dp[m-1][n-1][1]) % MOD
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_paths)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从后向前遍历字符串，找到第一个可以修改的位置，并确保修改后的字符串仍然是美丽字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从后向前遍历字符串，找到第一个可以修改的位置。
+2. 修改该位置的字符，使其成为下一个合法字符。
+3. 从该位置向后重新构造字符串，确保新字符串是美丽字符串且字典序最小。
 
 关键点:
-- [TODO]
+- 从后向前遍历，确保修改后的字符串字典序最小。
+- 通过检查前一个和后一个字符来避免回文子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字典序最小的美丽字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def is_beautiful(ch, prev, next_ch):
+        return ch != prev and (next_ch is None or ch != next_ch)
+
+    n = len(s)
+    s = list(s)
+    
+    for i in range(n - 1, -1, -1):
+        for j in range(ord(s[i]) + 1, ord('a') + k):
+            ch = chr(j)
+            if is_beautiful(ch, s[i - 1] if i > 0 else None, s[i + 1] if i < n - 1 else None):
+                s[i] = ch
+                for j in range(i + 1, n):
+                    for k in range(ord('a'), ord('a') + k):
+                        ch = chr(k)
+                        if is_beautiful(ch, s[j - 1], s[j + 1] if j < n - 1 else None):
+                            s[j] = ch
+                            break
+                    else:
+                        return ""
+                return "".join(s)
+    
+    return ""
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个三维数组 dp，其中 dp[i][j][k] 表示前 i 个工作，使用 j 个人，至少获得 k 利润的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，大小为 (m+1) x (n+1) x (minProfit+1)，其中 m 是工作的数量。
+2. 设置初始条件 dp[0][0][0] = 1，表示没有工作时，0 人可以获得 0 利润的方案数为 1。
+3. 遍历每个工作，对于每个工作，遍历所有可能的人数和利润，更新 dp 数组。
+4. 最后，dp[m][i][minProfit] 的和即为所求的结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为：
+  - 如果选择当前工作，则 dp[i+1][j+group[i]][max(k-profit[i], 0)] += dp[i][j][k]
+  - 如果不选择当前工作，则 dp[i+1][j][k] += dp[i][j][k]
+- 最终结果需要对 10^9 + 7 取模。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * minProfit)，其中 m 是工作的数量，n 是员工的数量，minProfit 是最小利润。
+空间复杂度: O(m * n * minProfit)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -48,13 +53,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def profitable_schemes(n: int, min_profit: int, group: List[int], profit: List[int]) -> int:
+    m = len(group)
+    dp = [[[0] * (min_profit + 1) for _ in range(n + 1)] for _ in range(m + 1)]
+    dp[0][0][0] = 1
 
+    for i in range(m):
+        for j in range(n + 1):
+            for k in range(min_profit + 1):
+                # 不选择当前工作
+                dp[i + 1][j][k] = dp[i][j][k]
+                if j + group[i] <= n:
+                    # 选择当前工作
+                    dp[i + 1][j + group[i]][max(k - profit[i], 0)] += dp[i][j][k]
+                    dp[i + 1][j + group[i]][max(k - profit[i], 0)] %= MOD
 
-Solution = create_solution(solution_function_name)
+    result = sum(dp[m][i][min_profit] for i in range(n + 1)) % MOD
+    return result
+
+Solution = create_solution(profitable_schemes)

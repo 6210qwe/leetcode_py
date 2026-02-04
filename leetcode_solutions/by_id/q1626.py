@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序后检查相邻元素的差是否相等来判断是否可以形成等差数列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前两个元素的差值作为公差。
+3. 遍历排序后的数组，检查每对相邻元素的差值是否等于公差。
 
 关键点:
-- [TODO]
+- 排序后，如果所有相邻元素的差值都相等，则可以形成等差数列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_make_arithmetic_progression(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以重新排列数组形成等差数列
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    arr.sort()
+    
+    # 计算前两个元素的差值作为公差
+    if len(arr) < 2:
+        return False
+    common_difference = arr[1] - arr[0]
+    
+    # 遍历排序后的数组，检查每对相邻元素的差值是否等于公差
+    for i in range(2, len(arr)):
+        if arr[i] - arr[i - 1] != common_difference:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_make_arithmetic_progression)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用位运算和组合数学来计算所有子集的异或总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用动态规划的方法，通过遍历数组中的每个元素，逐步构建所有子集的异或总和。
+2. 对于每个元素，将其与之前的所有子集进行异或操作，并将结果加入到新的子集中。
+3. 最后，将所有子集的异或总和相加，得到最终结果。
 
 关键点:
-- [TODO]
+- 利用位运算和组合数学的思想，通过动态规划逐步构建所有子集的异或总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是数组的长度。因为我们需要考虑所有的子集。
+空间复杂度: O(2^n)，存储所有子集的异或总和。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有子集的异或总和
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化结果列表，包含空子集的异或总和 0
+    result = [0]
+    
+    # 遍历数组中的每个元素
+    for num in nums:
+        # 生成新的子集异或总和
+        new_result = []
+        for subset_xor in result:
+            new_result.append(subset_xor ^ num)
+        # 将新生成的子集异或总和加入结果列表
+        result.extend(new_result)
+    
+    # 返回所有子集的异或总和之和
+    return sum(result)
 
 
 Solution = create_solution(solution_function_name)

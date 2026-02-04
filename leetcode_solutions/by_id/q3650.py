@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个州的城市列表，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Cities` 表中选择所有城市及其对应的州。
+2. 按照州名和城市名进行排序。
+3. 使用 GROUP BY 和 GROUP_CONCAT 函数将每个州的城市名拼接成一个字符串。
+4. 返回结果集。
 
 关键点:
-- [TODO]
+- 使用 GROUP_CONCAT 函数将城市名拼接成一个字符串。
+- 确保结果按州名和城市名排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `Cities` 表中的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询过程中使用的额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -58,3 +61,21 @@ def solution_function_name(params):
 
 
 Solution = create_solution(solution_function_name)
+
+# SQL 查询实现
+def find_cities_in_each_state() -> str:
+    query = """
+    SELECT 
+        state, 
+        GROUP_CONCAT(city ORDER BY city ASC SEPARATOR ', ') AS cities
+    FROM 
+        Cities
+    GROUP BY 
+        state
+    ORDER BY 
+        state ASC;
+    """
+    return query
+
+# 示例调用
+print(find_cities_in_each_state())

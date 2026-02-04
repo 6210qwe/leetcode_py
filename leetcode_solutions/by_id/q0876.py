@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器和贪心算法来检查是否可以将手牌分成连续的组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 `hand` 的长度是否是 `groupSize` 的倍数，如果不是，直接返回 `False`。
+2. 使用 `Counter` 统计每张牌的数量。
+3. 对 `hand` 进行排序。
+4. 遍历排序后的 `hand`，对于每个牌，如果它在计数器中的数量大于 0，则尝试构建一个长度为 `groupSize` 的连续序列。
+5. 如果在构建过程中发现某个牌的数量不足，则返回 `False`。
+6. 如果成功构建所有组，返回 `True`。
 
 关键点:
-- [TODO]
+- 使用 `Counter` 来高效统计每张牌的数量。
+- 通过排序和贪心算法来确保每次选择最小的牌开始构建连续序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `hand` 的长度。排序操作的时间复杂度是 O(n log n)，遍历操作是 O(n)。
+空间复杂度: O(n)，用于存储计数器。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def is_n_straight_hand(hand: List[int], group_size: int) -> bool:
+    if len(hand) % group_size != 0:
+        return False
+    
+    count = Counter(hand)
+    hand.sort()
+    
+    for card in hand:
+        if count[card] == 0:
+            continue
+        for i in range(group_size):
+            if count[card + i] == 0:
+                return False
+            count[card + i] -= 1
+    
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_n_straight_hand)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个玩家的得分，然后比较得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `calculate_score` 来计算单个玩家的得分。
+2. 使用辅助函数计算两个玩家的得分。
+3. 比较两个玩家的得分，返回结果。
 
 关键点:
-- [TODO]
+- 在计算得分时，需要考虑前两轮是否击中了 10 个瓶子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def calculate_score(scores: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算单个玩家的得分。
     """
-    # TODO: 实现最优解法
-    pass
+    score = 0
+    last_ten_rounds = [False, False]
+    
+    for i in range(len(scores)):
+        if last_ten_rounds[0] or last_ten_rounds[1]:
+            score += 2 * scores[i]
+        else:
+            score += scores[i]
+        
+        # 更新前两轮是否击中 10 个瓶子的状态
+        last_ten_rounds[0] = last_ten_rounds[1]
+        last_ten_rounds[1] = (scores[i] == 10)
+    
+    return score
+
+
+def solution_function_name(player1: List[int], player2: List[int]) -> int:
+    """
+    函数式接口 - 计算并比较两个玩家的得分，返回获胜者。
+    """
+    score1 = calculate_score(player1)
+    score2 = calculate_score(player2)
+    
+    if score1 > score2:
+        return 1
+    elif score1 < score2:
+        return 2
+    else:
+        return 0
 
 
 Solution = create_solution(solution_function_name)

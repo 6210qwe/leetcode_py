@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和滑动窗口来计算爱丽丝得分不超过 n 的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，其中 dp[i] 表示得分为 i 的概率。
+2. 使用滑动窗口来维护当前得分范围的概率和。
+3. 通过动态规划更新每个得分的概率。
+4. 最后返回所有不超过 n 的得分的概率和。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来优化时间复杂度。
+- 动态规划的状态转移方程为 dp[i] = (dp[i-1] + ... + dp[i-maxPts]) / maxPts。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def new_21_game(n: int, k: int, maxPts: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算爱丽丝得分不超过 n 的概率
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 0 or n >= k + maxPts:
+        return 1.0
+
+    dp = [0.0] * (n + 1)
+    dp[0] = 1.0
+    window_sum = 1.0
+    result = 0.0
+
+    for i in range(1, n + 1):
+        dp[i] = window_sum / maxPts
+        if i < k:
+            window_sum += dp[i]
+        else:
+            result += dp[i]
+        if i - maxPts >= 0:
+            window_sum -= dp[i - maxPts]
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(new_21_game)

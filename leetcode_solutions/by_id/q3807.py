@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右和从右到左两次遍历，确保每个位置的值在限制范围内最大化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的数组 a，所有元素初始化为 0。
+2. 从左到右遍历，更新每个位置的最大可能值，同时考虑限制条件。
+3. 从右到左遍历，再次更新每个位置的最大可能值，同时考虑限制条件。
+4. 返回数组 a 中的最大值。
 
 关键点:
-- [TODO]
+- 两次遍历确保每个位置的值在限制范围内最大化。
+- 使用贪心算法，逐步更新每个位置的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_max_value(n: int, restrictions: List[List[int]], diff: List[int]) -> int:
+    # 初始化数组 a
+    a = [0] * n
+    
+    # 从左到右遍历
+    for i in range(1, n):
+        a[i] = a[i - 1] + diff[i - 1]
+    
+    # 处理限制条件
+    for idx, max_val in restrictions:
+        a[idx] = min(a[idx], max_val)
+    
+    # 从右到左遍历
+    for i in range(n - 2, -1, -1):
+        a[i] = min(a[i], a[i + 1] + diff[i])
+    
+    # 再次处理限制条件
+    for idx, max_val in restrictions:
+        a[idx] = min(a[idx], max_val)
+    
+    # 返回最大值
+    return max(a)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_value)

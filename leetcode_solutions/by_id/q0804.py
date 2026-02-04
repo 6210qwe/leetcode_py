@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算从 1 到 N 中有多少个数 X 是好数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义状态 dp[i][j] 表示长度为 i 的数字中，是否包含 2, 5, 6, 9 中的一个，并且是否包含 3, 4, 7 中的一个。
+2. 初始化 dp 数组，dp[0][0] = 1 表示空字符串是有效的。
+3. 遍历每一位数字，更新 dp 数组。
+4. 最终结果为 dp[len(N)][0]。
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算。
+- 使用位运算优化状态表示。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * 2^d)，其中 d 是 N 的位数。
+空间复杂度: O(d * 2^d)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 1 到 N 中有多少个数 X 是好数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 N 转换为字符串
+    n_str = str(n)
+    d = len(n_str)
+    
+    # 定义 dp 数组
+    dp = [[0 for _ in range(2)] for _ in range(d + 1)]
+    dp[0][0] = 1
+    
+    # 有效数字集合
+    valid_digits = {'0', '1', '8'}
+    good_digits = {'2', '5', '6', '9'}
+    invalid_digits = {'3', '4', '7'}
+    
+    for i in range(1, d + 1):
+        for j in range(10):
+            if str(j) in invalid_digits:
+                continue
+            is_good = 1 if str(j) in good_digits else 0
+            for k in range(2):
+                if j < int(n_str[i - 1]):
+                    dp[i][k | is_good] += dp[i - 1][k]
+                elif j == int(n_str[i - 1]):
+                    dp[i][k | is_good] += dp[i - 1][k]
+    
+    return dp[d][1]
 
 
 Solution = create_solution(solution_function_name)

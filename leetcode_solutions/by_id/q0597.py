@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算好友申请的总体通过率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总的发送的好友请求数量。
+2. 计算总的接受的好友请求数量。
+3. 计算并通过率 = 接受的好友请求数量 / 发送的好友请求数量。
 
 关键点:
-- [TODO]
+- 使用子查询来分别计算发送和接受的好友请求数量。
+- 确保在分母为零的情况下处理好除法操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是请求记录的数量。我们需要遍历所有记录来计算总数。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算好友申请的总体通过率
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义 SQL 查询
+    query = """
+    SELECT 
+        ROUND(
+            IFNULL(
+                (SELECT COUNT(*) FROM request_accepted) / 
+                (SELECT COUNT(*) FROM friend_request), 
+                0
+            ), 
+            2
+        ) AS accept_rate
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

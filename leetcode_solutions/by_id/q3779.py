@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法和排序来最大化体重增加。在奇数天选择最大的披萨，在偶数天选择次大的披萨。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对披萨数组进行排序。
+2. 初始化总重量为 0。
+3. 从后向前遍历披萨数组，每次取 4 个披萨。
+4. 在奇数天，增加最大披萨的重量；在偶数天，增加次大披萨的重量。
+5. 更新总重量并继续遍历直到所有披萨都被吃掉。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略确保每一步都选择最优解。
+- 从后向前遍历以确保每次都选择当前最大的披萨。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 只使用常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(pizzas: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以增加的最大总重量
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 对披萨数组进行排序
+    pizzas.sort()
+    
+    total_weight = 0
+    n = len(pizzas)
+    for i in range(n // 4):
+        # 从后向前遍历披萨数组，每次取 4 个披萨
+        w, x, y, z = pizzas[4 * i], pizzas[4 * i + 1], pizzas[4 * i + 2], pizzas[4 * i + 3]
+        
+        # 在奇数天，增加最大披萨的重量；在偶数天，增加次大披萨的重量
+        if (i + 1) % 2 == 1:
+            total_weight += z
+        else:
+            total_weight += y
+    
+    return total_weight
 
 Solution = create_solution(solution_function_name)

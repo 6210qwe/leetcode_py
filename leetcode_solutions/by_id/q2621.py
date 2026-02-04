@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算的性质，可以将问题简化为对数组中所有元素的异或结果进行计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中所有元素的异或结果。
+2. 返回该异或结果。
 
 关键点:
-- [TODO]
+- 通过位运算的性质，可以证明最终结果就是所有元素的异或结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_xor_beauty(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组的异或美丽值
     """
-    # TODO: 实现最优解法
-    pass
+    xor_result = 0
+    for num in nums:
+        xor_result ^= num
+    return xor_result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_xor_beauty)

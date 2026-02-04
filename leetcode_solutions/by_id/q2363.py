@@ -21,40 +21,82 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 通过计算每个单元格中因数 2 和 5 的数量，使用前缀和来快速计算路径上的因数 2 和 5 的数量。
+- 通过四个方向的前缀和来计算不同路径的尾随零数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个单元格中因数 2 和 5 的数量。
+2. 计算四个方向（上、下、左、右）的前缀和。
+3. 对于每个单元格，计算其作为拐点时的路径尾随零数量。
+4. 返回最大尾随零数量。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算路径上的因数 2 和 5 的数量。
+- 通过四个方向的前缀和来计算不同路径的尾随零数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_factors(num: int, factor: int) -> int:
+    count = 0
+    while num % factor == 0:
+        num //= factor
+        count += 1
+    return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_trailing_zeros(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    
+    # 计算每个单元格中因数 2 和 5 的数量
+    factors = [[[0, 0] for _ in range(n)] for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            factors[i][j][0] = count_factors(grid[i][j], 2)
+            factors[i][j][1] = count_factors(grid[i][j], 5)
+    
+    # 计算四个方向的前缀和
+    prefix_sum_up = [[[0, 0] for _ in range(n)] for _ in range(m + 1)]
+    prefix_sum_left = [[[0, 0] for _ in range(n + 1)] for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            prefix_sum_up[i + 1][j][0] = prefix_sum_up[i][j][0] + factors[i][j][0]
+            prefix_sum_up[i + 1][j][1] = prefix_sum_up[i][j][1] + factors[i][j][1]
+            prefix_sum_left[i][j + 1][0] = prefix_sum_left[i][j][0] + factors[i][j][0]
+            prefix_sum_left[i][j + 1][1] = prefix_sum_left[i][j][1] + factors[i][j][1]
+    
+    # 计算每个单元格作为拐点时的路径尾随零数量
+    max_zeros = 0
+    for i in range(m):
+        for j in range(n):
+            up = prefix_sum_up[i][j]
+            down = [prefix_sum_up[m][j][k] - prefix_sum_up[i + 1][j][k] for k in range(2)]
+            left = prefix_sum_left[i][j]
+            right = [prefix_sum_left[i][n][k] - prefix_sum_left[i][j + 1][k] for k in range(2)]
+            
+            paths = [
+                (up, left),
+                (up, right),
+                (down, left),
+                (down, right)
+            ]
+            
+            for (p1, p2) in paths:
+                zeros = min(p1[0] + p2[0], p1[1] + p2[1]) + factors[i][j][0] + factors[i][j][1]
+                max_zeros = max(max_zeros, zeros)
+    
+    return max_zeros
 
-
-Solution = create_solution(solution_function_name)
+Solution = max_trailing_zeros

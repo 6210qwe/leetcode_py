@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到最小的最大分配值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_valid` 来判断在给定的最大分配值 `x` 下，是否可以将所有商品分配到不超过 `n` 个商店。
+2. 使用二分查找来找到最小的 `x`，使得 `is_valid(x)` 为真。
 
 关键点:
-- [TODO]
+- 二分查找的范围是从 1 到 `max(quantities)`。
+- 辅助函数 `is_valid` 通过计算每个商品需要的商店数量来判断是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log(max(quantities)))，其中 m 是 `quantities` 的长度，log(max(quantities)) 是二分查找的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimized_maximum(n: int, quantities: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最小的可能的最大分配值
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid(x: int) -> bool:
+        # 计算在最大分配值为 x 的情况下，需要的商店数量
+        return sum((q + x - 1) // x for q in quantities) <= n
+
+    left, right = 1, max(quantities)
+    while left < right:
+        mid = (left + right) // 2
+        if is_valid(mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimized_maximum)

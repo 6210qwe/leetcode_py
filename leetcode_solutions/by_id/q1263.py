@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示使用 i 个骰子得到和为 j 的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示使用 i 个骰子得到和为 j 的方法数。
+2. 对于每一个骰子数量 i，从 1 到 n，对于每一个可能的和 j，从 i 到 min(i * f, target)，更新 dp[i][j]。
+3. 最终返回 dp[n][target] 即可。
 
 关键点:
-- [TODO]
+- 使用滚动数组优化空间复杂度。
+- 对每一步的结果取模以防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target * f)
+空间复杂度: O(target)
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def numRollsToTarget(n: int, k: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使用 n 个骰子得到和为 target 的方法数
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    if n * k < target or n > target:
+        return 0
+
+    # 使用滚动数组优化空间复杂度
+    dp = [0] * (target + 1)
+    dp[0] = 1
+
+    for i in range(1, n + 1):
+        new_dp = [0] * (target + 1)
+        for j in range(i, min(i * k, target) + 1):
+            for face in range(1, min(k, j) + 1):
+                new_dp[j] = (new_dp[j] + dp[j - face]) % MOD
+        dp = new_dp
+
+    return dp[target]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numRollsToTarget)

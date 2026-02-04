@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算子数组的数量，并通过枚举删除每个冲突对来找到最大子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有子数组的数量。
+2. 对于每个冲突对，计算删除该冲突对后的子数组数量。
+3. 选择最大值作为结果。
 
 关键点:
-- [TODO]
+- 使用前缀和快速计算子数组数量。
+- 枚举每个冲突对并计算删除后的子数组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是数组长度，m 是冲突对的数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -44,17 +46,28 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def max_subarrays_after_removing_one_conflicting_pair(n: int, conflicting_pairs: List[List[int]]) -> int:
+    def count_subarrays_with_conflicts(conflicts: List[List[int]]) -> int:
+        # 计算有冲突的子数组数量
+        total_subarrays = n * (n + 1) // 2
+        for a, b in conflicts:
+            if a < b:
+                total_subarrays -= (b - a - 1) * (n - (b - a - 1))
+            else:
+                total_subarrays -= (a - b - 1) * (n - (a - b - 1))
+        return total_subarrays
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算初始的子数组数量
+    initial_subarrays = n * (n + 1) // 2
 
+    # 枚举删除每个冲突对后的子数组数量
+    max_subarrays = 0
+    for i in range(len(conflicting_pairs)):
+        remaining_pairs = conflicting_pairs[:i] + conflicting_pairs[i+1:]
+        subarrays = count_subarrays_with_conflicts(remaining_pairs)
+        max_subarrays = max(max_subarrays, subarrays)
 
-Solution = create_solution(solution_function_name)
+    return max_subarrays
+
+Solution = create_solution(max_subarrays_after_removing_one_conflicting_pair)

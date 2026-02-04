@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历字符串，查找所有长度为3且由同一个数字组成的子字符串，并记录最大的那个。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_quality` 为空字符串，用于记录最大的优质整数。
+2. 遍历字符串 `num`，检查每个长度为3的子字符串是否由同一个数字组成。
+3. 如果找到这样的子字符串，更新 `max_quality` 为当前子字符串和 `max_quality` 中较大的一个。
+4. 返回 `max_quality`。
 
 关键点:
-- [TODO]
+- 通过遍历字符串并检查每个长度为3的子字符串，确保找到所有的优质整数。
+- 使用字符串比较来更新最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `num` 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串中最大的3位相同数字
     """
-    # TODO: 实现最优解法
-    pass
+    max_quality = ""
+    for i in range(len(num) - 2):
+        if num[i] == num[i + 1] == num[i + 2]:
+            max_quality = max(max_quality, num[i:i+3])
+    return max_quality
 
 
 Solution = create_solution(solution_function_name)

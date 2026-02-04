@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到最小值和最大值的位置，然后计算从数组前面和后面移除这些元素所需的最小删除次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小值和最大值及其对应的索引。
+2. 计算从数组前面移除最小值和最大值所需的删除次数。
+3. 计算从数组后面移除最小值和最大值所需的删除次数。
+4. 取上述两种情况中的最小值作为结果。
 
 关键点:
-- [TODO]
+- 通过比较不同移除方式的删除次数来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_deletions_to_remove_min_max(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从数组中移除最大值和最小值所需的最小删除次数
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+    
+    min_index = max_index = 0
+    for i in range(len(nums)):
+        if nums[i] < nums[min_index]:
+            min_index = i
+        elif nums[i] > nums[max_index]:
+            max_index = i
+    
+    # 确保 min_index 是较小的索引
+    if min_index > max_index:
+        min_index, max_index = max_index, min_index
+    
+    # 从前面移除
+    front_deletions = max_index + 1
+    # 从后面移除
+    back_deletions = len(nums) - min_index
+    # 从两边移除
+    both_sides_deletions = (min_index + 1) + (len(nums) - max_index)
+    
+    return min(front_deletions, back_deletions, both_sides_deletions)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletions_to_remove_min_max)

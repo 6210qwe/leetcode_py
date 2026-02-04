@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和前缀和来找到可以最大化频率分数的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前缀和数组。
+3. 使用滑动窗口来找到满足条件的最大子数组长度。
+4. 返回最大频率分数。
 
 关键点:
-- [TODO]
+- 排序后，可以使用前缀和快速计算子数组的和。
+- 滑动窗口用于找到满足条件的最大子数组长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，滑动窗口的时间复杂度为 O(n)。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximize_frequency_score(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 执行操作使频率分数最大
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 计算前缀和数组
+    prefix_sum = [0]
+    for num in nums:
+        prefix_sum.append(prefix_sum[-1] + num)
+    
+    max_freq = 0
+    left = 0
+    for right in range(len(nums)):
+        while (right - left + 1) * nums[right] - (prefix_sum[right + 1] - prefix_sum[left]) > k:
+            left += 1
+        max_freq = max(max_freq, right - left + 1)
+    
+    return max_freq
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_frequency_score)

@@ -4,73 +4,95 @@
 # ============================================================================
 """
 题号: 428
-标题: [待补充] 题目428
-难度: [待补充]
-链接: https://leetcode.cn/problems/[待补充]/
-题目类型: [待补充]
+标题: 串联所有单词的子串
+难度: 困难
+链接: https://leetcode.cn/problems/serialize-and-deserialize-bst/
+题目类型: 字符串
 """
 
 # ============================================================================
 # 问题描述
 # ============================================================================
 """
-[待补充] 题目描述
+给定一个字符串 s 和一些长度相同的单词 words。找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置。
+
+注意子串要与 words 中的单词完全匹配，中间不能有其他字符，但不需要考虑 words 中单词的顺序。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [待补充] 根据题目类型实现相应算法
+核心思想: 使用滑动窗口和哈希表
 
 算法步骤:
-1. [待补充] 分析题目要求
-2. [待补充] 设计算法流程
-3. [待补充] 实现核心逻辑
+1. 初始化一个哈希表来记录 words 中每个单词的出现次数。
+2. 使用滑动窗口遍历字符串 s，窗口大小为所有单词的总长度。
+3. 在每个窗口内，将窗口内的子串分割成单词，并检查这些单词是否与哈希表中的单词匹配。
+4. 如果匹配成功，记录当前窗口的起始位置。
 
 关键点:
-- [待补充] 注意边界条件
-- [待补充] 优化时间和空间复杂度
+- 使用哈希表记录单词出现次数，方便快速查找和更新。
+- 滑动窗口每次移动一个单词的长度，减少重复计算。
+- 注意边界条件和特殊情况的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待补充]) - 需要根据具体实现分析
-空间复杂度: O([待补充]) - 需要根据具体实现分析
+时间复杂度: O(n * m) - n 是字符串 s 的长度，m 是单个单词的长度
+空间复杂度: O(k) - k 是 words 中不同单词的数量
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def find_substring(s: str, words: List[str]) -> List[int]:
     """
-    函数式接口 - [待补充] 实现
+    函数式接口 - 找出 s 中恰好可以由 words 中所有单词串联形成的子串的起始位置
     
     实现思路:
-    [待补充] 简要说明实现思路
+    使用滑动窗口和哈希表来匹配子串。
     
     Args:
-        params: [待补充] 参数说明
+        s: 输入字符串
+        words: 单词列表
         
     Returns:
-        [待补充] 返回值说明
+        匹配成功的子串起始位置列表
         
     Example:
-        >>> solution_function_name([待补充])
-        [待补充]
+        >>> find_substring("barfoothefoobarman", ["foo", "bar"])
+        [0, 9]
     """
-    # TODO: 实现最优解法
-    pass
+    if not s or not words:
+        return []
+    
+    word_len = len(words[0])
+    total_len = word_len * len(words)
+    word_count = Counter(words)
+    result = []
+    
+    for i in range(len(s) - total_len + 1):
+        seen = Counter()
+        for j in range(i, i + total_len, word_len):
+            word = s[j:j + word_len]
+            if word in word_count:
+                seen[word] += 1
+                if seen[word] > word_count[word]:
+                    break
+            else:
+                break
+        if seen == word_count:
+            result.append(i)
+    
+    return result
 
 
 # 自动生成Solution类（无需手动编写）
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_substring)

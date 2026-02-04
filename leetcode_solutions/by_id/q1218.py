@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来找到最深的叶节点，并记录它们的最近公共祖先。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `dfs`，该函数返回当前节点的深度和最深叶节点的最近公共祖先。
+2. 在 `dfs` 函数中，递归地计算左子树和右子树的深度及最近公共祖先。
+3. 如果左右子树的深度相同，则当前节点即为最近公共祖先。
+4. 返回当前节点的深度和最近公共祖先。
 
 关键点:
-- [TODO]
+- 使用 DFS 一次遍历即可找到最深叶节点及其最近公共祖先。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def lca_deepest_leaves(root: Optional[TreeNode]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最深叶节点的最近公共祖先
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode]) -> (int, Optional[TreeNode]):
+        if not node:
+            return 0, None
+        
+        left_depth, left_lca = dfs(node.left)
+        right_depth, right_lca = dfs(node.right)
+        
+        if left_depth == right_depth:
+            return left_depth + 1, node
+        elif left_depth > right_depth:
+            return left_depth + 1, left_lca
+        else:
+            return right_depth + 1, right_lca
+    
+    _, lca = dfs(root)
+    return lca
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(lca_deepest_leaves)

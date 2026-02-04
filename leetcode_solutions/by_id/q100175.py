@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来遍历每一层的节点，并将每一层的节点构造成链表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 进行 BFS 遍历，每次处理一层的所有节点。
+3. 对于每一层的节点，构造一个链表，并将链表头节点加入结果列表。
+4. 将当前层的所有子节点加入队列，继续处理下一层。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每一层的节点构造成链表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(n)，队列中最多存储 n/2 个节点（完全二叉树的最后一层）。
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def list_of_depth(root: Optional[TreeNode]) -> List[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 创建含有某一深度上所有节点的链表
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
+
+    result = []
+    queue = [root]
+
+    while queue:
+        level_size = len(queue)
+        dummy = ListNode(0)
+        current = dummy
+
+        for _ in range(level_size):
+            node = queue.pop(0)
+            current.next = ListNode(node.val)
+            current = current.next
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        result.append(dummy.next)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(list_of_depth)

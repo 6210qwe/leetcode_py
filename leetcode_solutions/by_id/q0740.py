@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以将问题转化为一个类似于“打家劫舍”的问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字的总点数。
+2. 将问题转化为在一个数组上进行选择的问题，其中相邻的元素不能同时选择。
+3. 使用动态规划来解决这个转化后的问题。
 
 关键点:
-- [TODO]
+- 使用一个数组来存储每个数字的总点数。
+- 动态规划的状态转移方程为 `dp[i] = max(dp[i-1], dp[i-2] + total_points[i])`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是 nums 中的最大值。
+空间复杂度: O(m)，其中 m 是 nums 中的最大值。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def delete_and_earn(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    # 计算每个数字的总点数
+    max_num = max(nums)
+    total_points = [0] * (max_num + 1)
+    for num in nums:
+        total_points[num] += num
+
+    # 动态规划数组
+    dp = [0] * (max_num + 1)
+    dp[1] = total_points[1]
+
+    for i in range(2, max_num + 1):
+        dp[i] = max(dp[i - 1], dp[i - 2] + total_points[i])
+
+    return dp[max_num]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(delete_and_earn)

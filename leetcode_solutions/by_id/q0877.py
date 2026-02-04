@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）结合状态压缩来找到最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列和访问集合，队列中存储 (当前节点, 当前状态, 当前步数)。
+2. 状态使用位掩码表示，每个节点是否被访问过。
+3. 对于每个节点，如果所有节点都被访问过，则返回当前步数。
+4. 否则，将当前节点的所有邻居节点加入队列，并更新状态和步数。
+5. 重复上述过程直到找到最短路径。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示节点的访问状态。
+- 使用 BFS 来确保找到的路径是最短的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)，其中 n 是节点数。每个状态有 2^n 种可能，每种状态下最多需要处理 n 个节点。
+空间复杂度: O(2^n * n)，用于存储状态和队列。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_path_length(graph: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回能够访问所有节点的最短路径的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(graph)
+    all_visited = (1 << n) - 1  # 所有节点都访问过的状态
+    queue = [(i, 1 << i, 0) for i in range(n)]  # (当前节点, 当前状态, 当前步数)
+    visited = set(queue)
 
+    while queue:
+        node, state, steps = queue.pop(0)
+        if state == all_visited:
+            return steps
+        for neighbor in graph[node]:
+            new_state = state | (1 << neighbor)
+            if (neighbor, new_state) not in visited:
+                visited.add((neighbor, new_state))
+                queue.append((neighbor, new_state, steps + 1))
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_path_length)

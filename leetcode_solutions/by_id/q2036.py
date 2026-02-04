@@ -14,47 +14,62 @@
 # 问题描述
 # ============================================================================
 """
-1885. 统计数对 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定两个整数数组 nums1 和 nums2，以及一个整数 k。返回满足以下条件的 (i, j) 对的数量：
+- 0 <= i < nums1.length
+- 0 <= j < nums2.length
+- nums1[i] * nums2[j] < k
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和排序来优化查找过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums1 和 nums2 进行排序。
+2. 使用双指针遍历两个数组，找到满足条件的 (i, j) 对。
+3. 对于每个 nums1[i]，使用二分查找在 nums2 中找到第一个大于等于 k / nums1[i] 的位置，从而计算出满足条件的 (i, j) 对的数量。
 
 关键点:
-- [TODO]
+- 排序后可以使用二分查找来快速确定满足条件的范围。
+- 双指针遍历可以减少不必要的比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m + n log m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(1)，不考虑排序所需的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
-
-def solution_function_name(params):
+def count_pairs(nums1: List[int], nums2: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的 (i, j) 对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 nums1 和 nums2 进行排序
+    nums1.sort()
+    nums2.sort()
+    
+    count = 0
+    for num1 in nums1:
+        if num1 == 0:
+            if k > 0:
+                count += len(nums2)
+            continue
+        
+        # 使用二分查找找到第一个大于等于 k / num1 的位置
+        pos = bisect.bisect_left(nums2, k / num1)
+        count += pos
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_pairs)

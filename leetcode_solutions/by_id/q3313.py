@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中选择 j 个不相交子数组的最大能量值。通过状态转移方程来更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示前 i 个元素中选择 j 个不相交子数组的最大能量值。
+2. 遍历数组，对于每个元素，考虑是否将其加入当前子数组或开始一个新的子数组。
+3. 更新 dp 数组，计算当前子数组的能量值，并更新最大能量值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程
+- 处理子数组的选择和能量值的计算
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_strength_of_k_disjoint_subarrays(nums: List[int], k: int) -> int:
+    n = len(nums)
+    dp = [[float('-inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(1, k + 1):
+            # 不选择当前元素
+            dp[i][j] = dp[i - 1][j]
+            # 选择当前元素
+            current_sum = 0
+            for l in range(i, 0, -1):
+                current_sum += nums[l - 1]
+                sign = 1 if (i - l + 1) % 2 == 1 else -1
+                dp[i][j] = max(dp[i][j], dp[l - 1][j - 1] + sign * current_sum * (k - j + 1))
+
+    return dp[n][k]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_strength_of_k_disjoint_subarrays)

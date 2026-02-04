@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个数组来记录当前的颜色状态，并在每次查询时更新相邻对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的数组 colors，所有元素初始为 0。
+2. 初始化一个变量 count 来记录颜色相同的相邻对的数量。
+3. 遍历每个查询：
+   - 如果当前索引的颜色与新的颜色不同，则更新相邻对的数量。
+   - 更新 colors 数组中的颜色。
+   - 将当前的 count 添加到结果列表中。
 
 关键点:
-- [TODO]
+- 通过维护一个 count 变量来高效地更新相邻对的数量。
+- 仅在颜色变化时更新相邻对的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是数组的长度，q 是查询的数量。
+空间复杂度: O(n)，用于存储 colors 数组。
 """
 
 # ============================================================================
@@ -49,12 +54,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    colors = [0] * n
+    count = 0
+    result = []
+
+    for index, color in queries:
+        # 更新相邻对的数量
+        if 0 <= index - 1 < n and colors[index] == colors[index - 1] and colors[index] != 0:
+            count -= 1
+        if 0 <= index + 1 < n and colors[index] == colors[index + 1] and colors[index] != 0:
+            count -= 1
+
+        # 更新颜色
+        colors[index] = color
+
+        # 再次更新相邻对的数量
+        if 0 <= index - 1 < n and colors[index] == colors[index - 1]:
+            count += 1
+        if 0 <= index + 1 < n and colors[index] == colors[index + 1]:
+            count += 1
+
+        # 记录当前的 count
+        result.append(count)
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

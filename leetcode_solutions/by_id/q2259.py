@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维DP数组dp[i][j]，表示将前i行的第j列变成0所需的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化DP数组，处理第一行的情况。
+2. 对于每一行，更新DP数组，考虑当前行的每个元素是否为1，并计算将其变为0所需的操作数。
+3. 最后返回DP数组的最后一行的最小值。
 
 关键点:
-- [TODO]
+- 使用滚动数组优化空间复杂度。
+- 动态规划的状态转移方程需要考虑当前行和上一行的状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中m是矩阵的行数，n是矩阵的列数。
+空间复杂度: O(n)，使用滚动数组优化后的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_remove_adjacent_ones(matrix: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使矩阵中的 1 互不相邻的最小操作数
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return 0
 
+    m, n = len(matrix), len(matrix[0])
+    dp = [0] * n
+    prev_dp = [0] * n
 
-Solution = create_solution(solution_function_name)
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == 1:
+                dp[j] = 1 + (prev_dp[j-1] if j > 0 else 0)
+                if j < n - 1:
+                    dp[j] = min(dp[j], 1 + (prev_dp[j+1] if j < n - 1 else 0))
+            else:
+                dp[j] = prev_dp[j]
+        dp, prev_dp = prev_dp, dp
+
+    return min(prev_dp)
+
+Solution = create_solution(min_operations_to_remove_adjacent_ones)

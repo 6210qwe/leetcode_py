@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来检测相邻的严格递增子数组，并记录最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别表示当前窗口的左右边界。
+2. 初始化变量 `max_k` 用于记录最大长度。
+3. 遍历数组，使用 `right` 指针扩展窗口，直到遇到不递增的情况。
+4. 如果窗口长度大于等于 `max_k`，则更新 `max_k`。
+5. 移动 `left` 指针到新的起始位置，继续扩展窗口。
+6. 返回 `max_k`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来检测严格递增的子数组。
+- 更新最大长度时，确保子数组是相邻的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检测相邻递增子数组 II
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    max_k = 0
+    left = 0
+    right = 0
+
+    while right < n - 1:
+        if nums[right] < nums[right + 1]:
+            right += 1
+        else:
+            window_length = right - left + 1
+            if window_length >= max_k and right - left == max_k - 1:
+                max_k = window_length
+            left = right + 1
+            right = left
+
+    # Check the last window
+    window_length = right - left + 1
+    if window_length >= max_k and right - left == max_k - 1:
+        max_k = window_length
+
+    return max_k
 
 
 Solution = create_solution(solution_function_name)

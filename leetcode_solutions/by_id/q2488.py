@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最小堆来解决这个问题。首先将所有区间的左端点和右端点分别存储，并按时间顺序排序。然后使用一个最小堆来跟踪当前活动的区间组。每次遇到一个新的左端点时，检查是否有可以合并的区间组；如果没有，则创建一个新的区间组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有区间的左端点和右端点分别存储在两个列表中。
+2. 按时间顺序对这些端点进行排序。
+3. 使用一个最小堆来跟踪当前活动的区间组。
+4. 遍历排序后的端点列表，对于每个左端点：
+   - 如果堆为空或堆顶元素大于当前左端点，说明需要一个新的区间组。
+   - 否则，从堆中弹出一个元素，表示该区间组可以继续使用。
+5. 对于每个右端点，将其加入堆中。
+6. 最终堆的大小即为所需的最少区间组数。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地管理当前活动的区间组。
+- 按时间顺序处理端点，确保正确处理区间的重叠情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 intervals 的长度。主要的时间开销在于排序操作。
+空间复杂度: O(n)，用于存储端点和最小堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_groups(intervals: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将区间分为最少组数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有区间的左端点和右端点分别存储
+    events = []
+    for start, end in intervals:
+        events.append((start, 1))  # 左端点
+        events.append((end + 1, -1))  # 右端点
 
+    # 按时间顺序对这些端点进行排序
+    events.sort()
 
-Solution = create_solution(solution_function_name)
+    # 使用一个最小堆来跟踪当前活动的区间组
+    active_groups = 0
+    max_groups = 0
+    for _, event_type in events:
+        active_groups += event_type
+        max_groups = max(max_groups, active_groups)
+
+    return max_groups
+
+Solution = create_solution(min_groups)

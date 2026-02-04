@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的出现次数，然后遍历哈希表，累加出现次数能被 k 整除的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表统计每个元素的出现次数。
+2. 遍历哈希表，对于每个元素，如果其出现次数能被 k 整除，则将其值乘以出现次数并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用哈希表进行频率统计。
+- 通过遍历哈希表来计算满足条件的元素总和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 nums 的长度。需要遍历数组一次来统计频率，再遍历哈希表一次来计算总和。
+空间复杂度: O(n)，哈希表的空间开销。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_elements_with_frequency_divisible_by_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算出现次数能被 k 整除的元素总和
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的出现次数
+    frequency = {}
+    for num in nums:
+        if num in frequency:
+            frequency[num] += 1
+        else:
+            frequency[num] = 1
+
+    # 计算总和
+    total_sum = 0
+    for num, count in frequency.items():
+        if count % k == 0:
+            total_sum += num * count
+
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_elements_with_frequency_divisible_by_k)

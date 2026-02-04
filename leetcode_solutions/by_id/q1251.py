@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到最长的段式回文分解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向字符串的开头和结尾。
+2. 从左到右和从右到左同时遍历字符串，寻找最长的相同子串。
+3. 如果找到相同的子串，则将其计入结果，并移动指针。
+4. 重复上述过程直到左右指针相遇。
 
 关键点:
-- [TODO]
+- 使用双指针从两端向中间遍历，确保每次找到的子串都是最长的。
+- 通过比较子串的哈希值来快速判断是否相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。最坏情况下，每个子串都需要进行比较。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_decomposition(text: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最长段式回文分解
     """
-    # TODO: 实现最优解法
-    pass
+    def get_hash(s: str) -> int:
+        """计算字符串的哈希值"""
+        p = 31
+        m = 10**9 + 7
+        hash_value = 0
+        power = 1
+        for char in s:
+            hash_value = (hash_value + (ord(char) - ord('a') + 1) * power) % m
+            power = (power * p) % m
+        return hash_value
+
+    n = len(text)
+    left, right = 0, n - 1
+    count = 0
+    while left < right:
+        l, r = left, right
+        while l < r and get_hash(text[left:l+1]) != get_hash(text[r:right+1]):
+            l += 1
+            r -= 1
+        if l < r:
+            count += 2
+            left = l + 1
+            right = r - 1
+        else:
+            count += 1
+            break
+    return count if left >= right else count + 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_decomposition)

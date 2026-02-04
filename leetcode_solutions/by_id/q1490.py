@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字符来构造字符串，确保每个字符出现的次数为奇数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 n 是奇数，直接返回 n 个相同的字符。
+2. 如果 n 是偶数，返回 (n-1) 个相同的字符和 1 个不同的字符。
 
 关键点:
-- [TODO]
+- 通过选择两个字符来保证每个字符出现的次数为奇数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def generate_the_string(n: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    生成一个含 n 个字符的字符串，其中每种字符在该字符串中都恰好出现奇数次。
     """
-    # TODO: 实现最优解法
-    pass
+    if n % 2 == 1:
+        # 如果 n 是奇数，直接返回 n 个 'a'
+        return 'a' * n
+    else:
+        # 如果 n 是偶数，返回 (n-1) 个 'a' 和 1 个 'b'
+        return 'a' * (n - 1) + 'b'
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_the_string)

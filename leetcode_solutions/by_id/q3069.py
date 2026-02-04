@@ -21,40 +21,37 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将 DataFrame 中的 'grade' 列从浮点数转换为整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 pandas 库读取输入的 DataFrame。
+2. 将 'grade' 列的数据类型从浮点数转换为整数。
+3. 返回修改后的 DataFrame。
 
 关键点:
-- [TODO]
+- 使用 pandas 的 astype 方法进行数据类型转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。遍历一次 DataFrame 进行类型转换。
+空间复杂度: O(1)，除了输入和输出外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(students: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将 DataFrame 中的 'grade' 列从浮点数转换为整数。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将 'grade' 列的数据类型从浮点数转换为整数
+    students['grade'] = students['grade'].astype(int)
+    return students
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和哈希表来存储每一行的状态，并尝试找到满足条件的好子集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每一行转换为一个整数表示，其中每一位表示该行对应列的值。
+2. 使用一个哈希表存储每一行的状态及其对应的行索引。
+3. 遍历所有可能的行组合，检查它们是否满足好子集的条件。
+4. 如果找到满足条件的组合，返回其行索引；否则返回空数组。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地表示和操作每一行的状态。
+- 使用哈希表来快速查找和匹配行状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * 2^n)，其中 m 是行数，n 是列数。我们需要遍历所有可能的行组合。
+空间复杂度: O(m)，用于存储每一行的状态及其对应的行索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_good_subset(grid: List[List[int]]) -> List[int]:
+    m, n = len(grid), len(grid[0])
+    
+    # 将每一行转换为一个整数表示
+    row_masks = [sum(val << (n - col - 1) for col, val in enumerate(row)) for row in grid]
+    
+    # 使用哈希表存储每一行的状态及其对应的行索引
+    row_dict = {mask: i for i, mask in enumerate(row_masks)}
+    
+    # 检查两个行组合是否满足好子集的条件
+    def is_good_subset(mask1, mask2):
+        return (mask1 & mask2) == 0
+    
+    # 尝试找到满足条件的好子集
+    for i in range(m):
+        for j in range(i + 1, m):
+            if is_good_subset(row_masks[i], row_masks[j]):
+                return [i, j]
+    
+    # 如果没有找到满足条件的组合，返回空数组
+    return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_good_subset)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过找到所有操作的最小范围来确定矩阵中最大整数的个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 min_a 和 min_b 为 m 和 n。
+2. 遍历操作数组 ops，更新 min_a 和 min_b 为所有操作中的最小值。
+3. 返回 min_a * min_b，即为矩阵中最大整数的个数。
 
 关键点:
-- [TODO]
+- 通过找到所有操作的最小范围，可以确定矩阵中最大整数的个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)，其中 k 是 ops 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_count(m: int, n: int, ops: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中最大整数的个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最小范围
+    min_a = m
+    min_b = n
+
+    # 遍历操作数组，更新最小范围
+    for op in ops:
+        min_a = min(min_a, op[0])
+        min_b = min(min_b, op[1])
+
+    # 返回最大整数的个数
+    return min_a * min_b
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_count)

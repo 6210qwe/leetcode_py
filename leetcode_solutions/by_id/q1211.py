@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的组合，并存储在一个列表中。然后使用迭代器来遍历这些组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在构造函数中，使用回溯法生成所有长度为 combinationLength 的组合，并将它们存储在一个列表中。
+2. 初始化一个索引来跟踪当前访问到的组合。
+3. 在 next() 方法中，返回当前索引指向的组合，并将索引加一。
+4. 在 hasNext() 方法中，检查当前索引是否已经超出组合列表的范围。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的组合。
+- 使用列表存储组合，以便快速访问。
+- 使用索引来跟踪当前访问到的组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(C(n, k))，其中 n 是 characters 的长度，k 是 combinationLength。生成所有组合的时间复杂度是组合数 C(n, k)。
+空间复杂度: O(C(n, k))，存储所有组合的空间复杂度是组合数 C(n, k)。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class CombinationIterator:
+    def __init__(self, characters: str, combinationLength: int):
+        self.combinations = []
+        self.index = 0
+        self._generate_combinations(characters, combinationLength, 0, "")
+
+    def _generate_combinations(self, characters: str, length: int, start: int, current: str):
+        if len(current) == length:
+            self.combinations.append(current)
+            return
+        for i in range(start, len(characters)):
+            self._generate_combinations(characters, length, i + 1, current + characters[i])
+
+    def next(self) -> str:
+        result = self.combinations[self.index]
+        self.index += 1
+        return result
+
+    def hasNext(self) -> bool:
+        return self.index < len(self.combinations)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(CombinationIterator)

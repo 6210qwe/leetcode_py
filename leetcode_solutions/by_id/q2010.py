@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将每个字符串转换为其对应的数值，然后检查 firstWord 和 secondWord 的数值之和是否等于 targetWord 的数值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `word_to_num`，将字符串转换为其对应的数值。
+2. 使用 `word_to_num` 函数计算 firstWord、secondWord 和 targetWord 的数值。
+3. 检查 firstWord 和 secondWord 的数值之和是否等于 targetWord 的数值。
 
 关键点:
-- [TODO]
+- 字符串转换为数值时，需要将每个字符映射到其对应的数字。
+- 使用字符串拼接来构建数值，最后转换为整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的最大长度。我们需要遍历每个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def word_to_num(word: str) -> int:
+    """将字符串转换为其对应的数值"""
+    return int("".join(str(ord(char) - ord('a')) for char in word))
+
+
+def solution_function_name(firstWord: str, secondWord: str, targetWord: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查 firstWord 和 secondWord 的数值之和是否等于 targetWord 的数值
     """
-    # TODO: 实现最优解法
-    pass
+    num_first = word_to_num(firstWord)
+    num_second = word_to_num(secondWord)
+    num_target = word_to_num(targetWord)
+    
+    return num_first + num_second == num_target
 
 
 Solution = create_solution(solution_function_name)

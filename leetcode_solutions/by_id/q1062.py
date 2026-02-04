@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算数组总和，判断是否能被3整除，然后使用双指针找到两个分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和，如果总和不能被3整除，则直接返回False。
+2. 使用双指针从左到右找到第一个分割点，使得其和为总和的三分之一。
+3. 使用双指针从右到左找到第二个分割点，使得其和为总和的三分之一。
+4. 如果能找到两个分割点，则返回True，否则返回False。
 
 关键点:
-- [TODO]
+- 数组总和必须能被3整除。
+- 使用双指针高效地找到分割点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是数组的长度。我们需要遍历数组两次来找到分割点。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_three_parts_equal_sum(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断数组是否可以分成三个和相等的部分
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(arr)
+    if total_sum % 3 != 0:
+        return False
+    
+    target_sum = total_sum // 3
+    current_sum = 0
+    count = 0
+    
+    for num in arr:
+        current_sum += num
+        if current_sum == target_sum:
+            count += 1
+            current_sum = 0
+            if count == 2:
+                break
+    
+    return count == 2 and current_sum == 0
 
-
-Solution = create_solution(solution_function_name)
+Solution = can_three_parts_equal_sum

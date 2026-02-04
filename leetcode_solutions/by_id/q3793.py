@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和动态规划来找到最长的回文串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 `dp`，其中 `dp[i][j]` 表示从 `s[i:]` 和 `t[:j]` 中可以构造的最长回文串的长度。
+2. 遍历 `s` 和 `t` 的所有可能的子串组合，更新 `dp` 数组。
+3. 对于每个组合，检查是否可以通过添加当前字符来扩展回文串。
+4. 返回 `dp` 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过双指针来高效地找到回文串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 和 m 分别是字符串 s 和 t 的长度。
+空间复杂度: O(n * m)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_palindrome_after_concatenation(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个字符串 s 和 t 中可以构造的最长回文串的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(s), len(t)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # 初始化 dp 数组
+    for i in range(n):
+        dp[i][0] = 1 if s[i] == s[i] else 0
+    for j in range(m):
+        dp[n][j] = 1 if t[j] == t[j] else 0
+    
+    max_length = 0
+    
+    # 动态规划填充 dp 数组
+    for i in range(n - 1, -1, -1):
+        for j in range(1, m + 1):
+            if s[i] == t[j - 1]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+            max_length = max(max_length, dp[i][j])
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_palindrome_after_concatenation)

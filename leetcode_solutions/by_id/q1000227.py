@@ -21,22 +21,25 @@ LCS 03. 主题空间 - 「以扣会友」线下活动所在场地由若干主题
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历每个主题空间，并记录其面积。在遍历过程中，如果发现该主题空间与走廊相邻，则标记为无效。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维布尔数组 `visited`，用于记录每个位置是否被访问过。
+2. 定义一个递归函数 `dfs`，用于计算从某个位置出发的主题空间的面积，并标记是否与走廊相邻。
+3. 遍历整个 `grid`，对于每个未访问过的非走廊位置，调用 `dfs` 计算其面积，并更新最大面积。
+4. 返回最大面积。
 
 关键点:
-- [TODO]
+- 使用 `visited` 数组避免重复访问。
+- 在 `dfs` 中，如果遇到走廊或边界，则标记当前主题空间为无效。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 `grid` 的行数和列数。每个位置最多被访问一次。
+空间复杂度: O(m * n)，用于存储 `visited` 数组和递归调用栈。
 """
 
 # ============================================================================
@@ -48,13 +51,34 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def dfs(grid, visited, i, j, char):
+    if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == '0' or visited[i][j]:
+        return 0, False
+    visited[i][j] = True
+    area, is_valid = 1, True
+    for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+        ni, nj = i + di, j + dj
+        sub_area, sub_is_valid = dfs(grid, visited, ni, nj, char)
+        area += sub_area
+        if not sub_is_valid:
+            is_valid = False
+    return area, is_valid
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(grid: List[str]) -> int:
+    if not grid or not grid[0]:
+        return 0
+    
+    m, n = len(grid), len(grid[0])
+    visited = [[False] * n for _ in range(m)]
+    max_area = 0
+    
+    for i in range(m):
+        for j in range(n):
+            if not visited[i][j] and grid[i][j] != '0':
+                area, is_valid = dfs(grid, visited, i, j, grid[i][j])
+                if is_valid:
+                    max_area = max(max_area, area)
+    
+    return max_area
 
 Solution = create_solution(solution_function_name)

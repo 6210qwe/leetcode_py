@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最大频率的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用滑动窗口来找到满足条件的最大长度子数组。
+3. 计算滑动窗口内的元素个数，并更新最大频率。
 
 关键点:
-- [TODO]
+- 排序后的数组可以方便地使用滑动窗口来找到满足条件的子数组。
+- 滑动窗口的右边界不断扩展，直到不满足条件时收缩左边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_frequency(nums: List[int], k: int, num_operations: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回执行操作后元素的最高频率
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化滑动窗口的左右边界
+    left = 0
+    max_freq = 0
+    total_operations = 0
+    
+    # 滑动窗口的右边界
+    for right in range(len(nums)):
+        # 计算当前窗口内需要的操作次数
+        total_operations += (nums[right] - nums[right - 1]) * (right - left)
+        
+        # 如果操作次数超过限制，收缩左边界
+        while total_operations > k * num_operations:
+            total_operations -= nums[right] - nums[left]
+            left += 1
+        
+        # 更新最大频率
+        max_freq = max(max_freq, right - left + 1)
+    
+    return max_freq
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_frequency)

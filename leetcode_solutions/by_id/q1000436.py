@@ -21,22 +21,26 @@ LCP 53. 守护太空城 - 各位勇者请注意，力扣太空城发布陨石雨
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们用一个整数来表示当前时刻的状态，每一位表示一个舱室是否开启了屏障。通过递归和记忆化搜索来计算每个时刻的最小能量消耗。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将时间和位置按时间排序。
+2. 使用递归函数 `dp(t, state)` 来计算从时刻 t 开始，状态为 state 时的最小能量消耗。
+3. 在递归函数中，如果当前时刻没有新的陨石冲击，则直接返回上一个时刻的能量消耗。
+4. 如果当前时刻有新的陨石冲击，则枚举所有可能的状态，计算最小能量消耗。
+5. 使用记忆化搜索来避免重复计算。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示每个舱室的状态。
+- 通过递归和记忆化搜索来计算最小能量消耗。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(T * 2^N)，其中 T 是时间的最大值（不超过 5），N 是舱室的数量（不超过 100）。
+空间复杂度: O(T * 2^N)，用于存储记忆化搜索的结果。
 """
 
 # ============================================================================
@@ -47,14 +51,49 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def min_energy_to_defend(time: List[int], position: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算守护所有舱室所需的最少能量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将时间和位置按时间排序
+    events = sorted(zip(time, position))
+    
+    # 获取最大时间
+    max_time = max(time)
+    
+    # 获取最大位置
+    max_pos = max(position)
+    
+    # 状态压缩，使用一个整数表示当前时刻的状态
+    @lru_cache(None)
+    def dp(t: int, state: int) -> int:
+        if t == max_time + 1:
+            return 0
+        
+        # 当前时刻没有新的陨石冲击
+        if all(pos not in [p for _, p in events if _ == t] for pos in range(max_pos + 1)):
+            return dp(t + 1, state)
+        
+        # 枚举所有可能的状态
+        min_energy = float('inf')
+        for new_state in range(1 << (max_pos + 1)):
+            if any((new_state >> pos) & 1 and (state >> pos) & 1 for pos in range(max_pos + 1)):
+                continue
+            energy = 0
+            for pos in range(max_pos + 1):
+                if (new_state >> pos) & 1:
+                    if pos > 0 and (new_state >> (pos - 1)) & 1:
+                        energy += 3
+                    else:
+                        energy += 2
+            if t > 0:
+                energy += bin(state).count('1')
+            min_energy = min(min_energy, energy + dp(t + 1, new_state))
+        
+        return min_energy
+    
+    return dp(1, 0)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_energy_to_defend)

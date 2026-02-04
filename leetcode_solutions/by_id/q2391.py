@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查密码是否满足所有给定的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查密码长度是否至少为8个字符。
+2. 检查密码是否包含至少一个小写字母、一个大写字母、一个数字和一个特殊字符。
+3. 检查密码是否包含两个连续相同的字符。
 
 关键点:
-- [TODO]
+- 使用正则表达式来简化字符类型的检查。
+- 通过遍历密码字符串来检查连续相同字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是密码的长度。我们需要遍历密码字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def strong_password_checker(password: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查密码是否是强密码
     """
-    # TODO: 实现最优解法
-    pass
+    if len(password) < 8:
+        return False
+    
+    has_lower = any(c.islower() for c in password)
+    has_upper = any(c.isupper() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_special = any(c in "!@#$%^&*()-+" for c in password)
+    
+    if not (has_lower and has_upper and has_digit and has_special):
+        return False
+    
+    for i in range(len(password) - 1):
+        if password[i] == password[i + 1]:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(strong_password_checker)

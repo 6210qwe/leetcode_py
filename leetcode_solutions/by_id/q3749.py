@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来构建字典序最大的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向字符串的开头和结尾。
+2. 从后向前遍历字符串，找到第一个可以替换的位置。
+3. 从当前指针位置向前遍历，找到可以替换的最大字符。
+4. 替换字符，并将替换后的部分按降序排列。
 
 关键点:
-- [TODO]
+- 使用双指针来优化查找和替换过程。
+- 通过贪心策略确保每次替换都能得到局部最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。最坏情况下，每次替换都需要遍历整个字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_lexicographically_largest_string(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    s = list(s)
+    n = len(s)
+    i = n - 1
+
+    while i > 0:
+        # 找到第一个可以替换的位置
+        if s[i] > s[i - 1]:
+            max_char = s[i]
+            max_index = i
+            # 从当前指针位置向前遍历，找到可以替换的最大字符
+            for j in range(i - 1, n):
+                if s[j] > s[i - 1] and s[j] >= max_char:
+                    max_char = s[j]
+                    max_index = j
+            # 替换字符
+            s[i - 1], s[max_index] = s[max_index], s[i - 1]
+            # 将替换后的部分按降序排列
+            s[i:] = sorted(s[i:], reverse=True)
+            break
+        i -= 1
+
+    return ''.join(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_lexicographically_largest_string)

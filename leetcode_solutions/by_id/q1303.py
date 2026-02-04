@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从 target 反向推导到 1，优先使用加倍操作，如果不能加倍则使用递增操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化步数为 0。
+2. 当 target 大于 1 时：
+   - 如果 maxDoubles > 0 且 target 是偶数，则使用加倍操作，target 减半，maxDoubles 减 1。
+   - 否则，使用递增操作，target 减 1。
+3. 返回步数。
 
 关键点:
-- [TODO]
+- 优先使用加倍操作，因为它能更快地减少 target 的值。
+- 当 target 为奇数时，只能使用递增操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(target))，因为每次加倍操作都会将 target 减半。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_moves_to_reach_target_score(target: int, maxDoubles: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算从 1 到 target 所需的最少行动次数
     """
-    # TODO: 实现最优解法
-    pass
+    steps = 0
+    while target > 1:
+        if maxDoubles > 0 and target % 2 == 0:
+            target //= 2
+            maxDoubles -= 1
+        else:
+            target -= 1
+        steps += 1
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_reach_target_score)

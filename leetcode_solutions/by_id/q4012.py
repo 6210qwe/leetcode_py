@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个任务的完成时间，并找到最早完成的任务的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `min_completion_time` 为正无穷大。
+2. 遍历每个任务，计算其完成时间 `completion_time = start_time + duration`。
+3. 更新 `min_completion_time` 为当前任务的完成时间和 `min_completion_time` 的最小值。
+4. 返回 `min_completion_time`。
 
 关键点:
-- [TODO]
+- 直接遍历任务列表，计算每个任务的完成时间，并找到最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是任务的数量。我们需要遍历每个任务一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def earliest_time_to_finish_one_task(tasks: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算完成一个任务的最早时间
     """
-    # TODO: 实现最优解法
-    pass
+    min_completion_time = float('inf')
+    for start_time, duration in tasks:
+        completion_time = start_time + duration
+        min_completion_time = min(min_completion_time, completion_time)
+    return min_completion_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(earliest_time_to_finish_one_task)

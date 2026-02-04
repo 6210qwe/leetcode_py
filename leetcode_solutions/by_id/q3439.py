@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 计算每棵树的直径。
+2. 计算每棵树的每个节点到最远节点的距离。
+3. 通过合并两棵树的任意节点，找到最小的合并后树的直径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用DFS计算每棵树的直径。
+2. 使用DFS计算每棵树的每个节点到最远节点的距离。
+3. 通过遍历所有可能的节点对，找到最小的合并后树的直径。
 
 关键点:
-- [TODO]
+- 通过两次DFS计算每棵树的直径和每个节点到最远节点的距离。
+- 通过合并两棵树的任意节点，找到最小的合并后树的直径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)
+空间复杂度: O(n + m)
 """
 
 # ============================================================================
@@ -44,17 +49,65 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def find_farthest_node(tree, start):
+    def dfs(node, parent, depth):
+        if depth > farthest_depth[0]:
+            farthest_depth[0] = depth
+            farthest_node[0] = node
+        for neighbor in tree[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, depth + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    farthest_depth = [0]
+    farthest_node = [start]
+    dfs(start, -1, 0)
+    return farthest_node[0], farthest_depth[0]
 
+def calculate_diameter_and_distances(tree, n):
+    # 找到最远的节点
+    farthest_node, _ = find_farthest_node(tree, 0)
+    # 从最远的节点开始再找一次最远的节点，得到直径
+    _, diameter = find_farthest_node(tree, farthest_node)
+    
+    # 计算每个节点到最远节点的距离
+    distances = [0] * n
+    def dfs(node, parent, depth):
+        distances[node] = depth
+        for neighbor in tree[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, depth + 1)
+    
+    dfs(farthest_node, -1, 0)
+    return diameter, distances
 
-Solution = create_solution(solution_function_name)
+def find_min_diameter(edges1, edges2):
+    n = len(edges1) + 1
+    m = len(edges2) + 1
+    
+    # 构建邻接表
+    tree1 = [[] for _ in range(n)]
+    tree2 = [[] for _ in range(m)]
+    
+    for u, v in edges1:
+        tree1[u].append(v)
+        tree1[v].append(u)
+    
+    for u, v in edges2:
+        tree2[u].append(v)
+        tree2[v].append(u)
+    
+    # 计算每棵树的直径和每个节点到最远节点的距离
+    diameter1, distances1 = calculate_diameter_and_distances(tree1, n)
+    diameter2, distances2 = calculate_diameter_and_distances(tree2, m)
+    
+    # 通过合并两棵树的任意节点，找到最小的合并后树的直径
+    min_diameter = float('inf')
+    for i in range(n):
+        for j in range(m):
+            new_diameter = max(diameter1, diameter2, distances1[i] + distances2[j] + 1)
+            min_diameter = min(min_diameter, new_diameter)
+    
+    return min_diameter
+
+Solution = create_solution(find_min_diameter)

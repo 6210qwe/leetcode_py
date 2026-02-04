@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个盒子中的小球数量，并计算每个编号的小球对应的盒子编号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `box_counts` 来记录每个盒子中的小球数量。
+2. 遍历从 `lowLimit` 到 `highLimit` 的每个小球编号。
+3. 对于每个小球编号，计算其各位数字之和，得到盒子编号。
+4. 在哈希表中更新该盒子编号对应的小球数量。
+5. 最后，返回哈希表中最大值。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地记录和查找每个盒子中的小球数量。
+- 计算每个小球编号的各位数字之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是小球的数量 (highLimit - lowLimit + 1)，d 是小球编号的位数（最多为 5 位）。
+空间复杂度: O(n)，最坏情况下，每个小球编号的各位数字之和可能不同，需要存储 n 个不同的盒子编号。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_box_balls(low_limit: int, high_limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回放有最多小球的盒子中的小球数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def digit_sum(num: int) -> int:
+        """计算一个数的各位数字之和。"""
+        return sum(int(digit) for digit in str(num))
+
+    box_counts = {}
+    for ball_number in range(low_limit, high_limit + 1):
+        box_number = digit_sum(ball_number)
+        if box_number in box_counts:
+            box_counts[box_number] += 1
+        else:
+            box_counts[box_number] = 1
+
+    return max(box_counts.values())
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_box_balls)

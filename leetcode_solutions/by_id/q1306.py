@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对数组进行排序，然后遍历相邻元素对，找到最小绝对差的元素对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化最小绝对差为无穷大。
+3. 遍历排序后的数组，计算相邻元素的差值，更新最小绝对差。
+4. 再次遍历数组，将所有具有最小绝对差的元素对加入结果列表。
 
 关键点:
-- [TODO]
+- 排序后相邻元素的差值是可能的最小绝对差。
+- 只需要一次遍历即可找到所有具有最小绝对差的元素对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 主要由排序操作决定。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def minimum_abs_difference(arr: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有具有最小绝对差的元素对，并且按升序的顺序返回。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    arr.sort()
+    
+    # 初始化最小绝对差为无穷大
+    min_diff = float('inf')
+    
+    # 遍历排序后的数组，计算相邻元素的差值，更新最小绝对差
+    for i in range(len(arr) - 1):
+        diff = arr[i + 1] - arr[i]
+        if diff < min_diff:
+            min_diff = diff
+    
+    # 再次遍历数组，将所有具有最小绝对差的元素对加入结果列表
+    result = []
+    for i in range(len(arr) - 1):
+        if arr[i + 1] - arr[i] == min_diff:
+            result.append([arr[i], arr[i + 1]])
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_abs_difference)

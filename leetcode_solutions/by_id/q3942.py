@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个司机在上半年和下半年的平均燃油效率，并找出燃油效率有所提高的司机。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个司机在上半年和下半年的平均燃油效率。
+2. 过滤出在上半年和下半年都有行程的司机。
+3. 计算每个司机的燃油效率提升。
+4. 将结果四舍五入到小数点后两位。
+5. 按照提升效率降序排列，然后按司机姓名升序排列。
 
 关键点:
-- [TODO]
+- 使用子查询和聚合函数来计算平均燃油效率。
+- 使用条件过滤来确保只包含在上半年和下半年都有行程的司机。
+- 使用四舍五入函数来处理结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 trips 表中的行数。主要的时间开销在于排序操作。
+空间复杂度: O(n)，需要存储中间结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(drivers, trips):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    import pandas as pd
+
+    # 将输入数据转换为 DataFrame
+    drivers_df = pd.DataFrame(drivers)
+    trips_df = pd.DataFrame(trips)
+
+    # 计算每次行程的燃油效率
+    trips_df['efficiency'] = trips_df['distance_km'] / trips_df['fuel_consumed']
+
+    # 计算上半年和下半年的平均燃油效率
+    first_half_avg = trips_df[trips_df['trip_date'].dt.month <= 6].groupby('driver_id')['efficiency'].mean().reset_index(name='first_half_avg')
+    second_half_avg = trips_df[trips_df['trip_date'].dt.month >= 7].groupby('driver_id')['efficiency'].mean().reset_index(name='second_half_avg')
+
+    # 合并上半年和下半年的平均燃油效率
+    merged_avg = pd.merge(first_half_avg, second_half_avg, on='driver_id', how='inner')
+
+    # 计算燃油效率提升
+    merged_avg['efficiency_improvement'] = (merged_avg['second_half_avg'] - merged_avg['first_half_avg']).round(2)
+
+    # 过滤出燃油效率提升的司机
+    improved_drivers = merged_avg[merged_avg['efficiency_improvement'] > 0]
+
+    # 合并司机信息
+    result = pd.merge(improved_drivers, drivers_df, on='driver_id', how='left')
+
+    # 按照提升效率降序排列，然后按司机姓名升序排列
+    result = result.sort_values(by=['efficiency_improvement', 'driver_name'], ascending=[False, True])
+
+    # 选择输出列
+    result = result[['driver_id', 'driver_name', 'first_half_avg', 'second_half_avg', 'efficiency_improvement']]
+
+    return result.to_dict(orient='records')
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和二分查找来找到最小的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_finish` 来判断在给定时间内是否可以将山的高度降低到 0。
+2. 使用二分查找来找到最小的时间，使得所有工人在该时间内可以将山的高度降低到 0。
 
 关键点:
-- [TODO]
+- 辅助函数 `can_finish` 通过计算每个工人在给定时间内可以降低的高度来判断是否可以完成任务。
+- 二分查找的范围是从 1 到 `mountainHeight * min(workerTimes)`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_height * min_time))，其中 n 是 workerTimes 的长度，max_height 是 mountainHeight，min_time 是 workerTimes 中的最小值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_finish(mountain_height: int, time: int, worker_times: List[int]) -> bool:
+    total_reduced = 0
+    for worker_time in worker_times:
+        # 计算当前工人在给定时间内可以降低的高度
+        reduced = 0
+        while (reduced + 1) * worker_time <= time:
+            reduced += 1
+        total_reduced += reduced
+        if total_reduced >= mountain_height:
+            return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimum_seconds_to_make_mountain_height_zero(mountain_height: int, worker_times: List[int]) -> int:
+    left, right = 1, mountain_height * min(worker_times)
+    while left < right:
+        mid = (left + right) // 2
+        if can_finish(mountain_height, mid, worker_times):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_seconds_to_make_mountain_height_zero)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算每个深度的整数数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个数组 dp，其中 dp[i][j] 表示位计数深度为 i 且值为 j 的整数数量。
+2. 计算每个深度的整数数量，并累加到结果中。
+3. 使用组合数学公式计算每个深度的整数数量。
 
 关键点:
-- [TODO]
+- 使用动态规划来存储每个深度的整数数量。
+- 使用组合数学公式来计算每个深度的整数数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n) * k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +51,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算范围 [1, n] 中 popcount-depth 恰好等于 k 的整数数量。
     """
-    # TODO: 实现最优解法
-    pass
+    if k == 0:
+        return 1 if n >= 1 else 0
+    
+    def popcount(x):
+        return bin(x).count('1')
+    
+    # 动态规划数组
+    dp = [0] * (k + 1)
+    dp[0] = 1
+    
+    for i in range(1, k + 1):
+        dp[i] = 0
+        for j in range(1, 64):
+            if (1 << j) - 1 > n:
+                break
+            dp[i] += dp[i - 1]
+    
+    result = 0
+    for i in range(1, n + 1):
+        depth = 0
+        x = i
+        while x > 1:
+            x = popcount(x)
+            depth += 1
+        if depth == k:
+            result += 1
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

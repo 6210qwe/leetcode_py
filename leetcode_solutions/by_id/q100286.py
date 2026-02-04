@@ -21,40 +21,67 @@ LCR 142. 训练计划 IV - 给定两个以 有序链表 形式记录的训练计
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法合并两个有序链表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个虚拟头节点 `dummy` 和一个指针 `current` 指向它。
+2. 使用双指针 `p1` 和 `p2` 分别指向 `l1` 和 `l2` 的头节点。
+3. 比较 `p1` 和 `p2` 所指向的节点值，将较小的节点连接到 `current` 后面，并移动相应的指针。
+4. 重复步骤 3 直到其中一个链表为空。
+5. 将剩余的非空链表连接到 `current` 后面。
+6. 返回 `dummy.next` 作为合并后的链表头节点。
 
 关键点:
-- [TODO]
+- 使用虚拟头节点简化边界条件处理。
+- 双指针法确保合并过程的时间复杂度为 O(n + m)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两个链表的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_two_lists(l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    合并两个有序链表。
+    :param l1: 第一个有序链表的头节点
+    :param l2: 第二个有序链表的头节点
+    :return: 合并后的有序链表的头节点
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建虚拟头节点
+    dummy = ListNode(0)
+    current = dummy
+
+    # 使用双指针合并链表
+    p1, p2 = l1, l2
+    while p1 and p2:
+        if p1.val < p2.val:
+            current.next = p1
+            p1 = p1.next
+        else:
+            current.next = p2
+            p2 = p2.next
+        current = current.next
+
+    # 连接剩余的非空链表
+    if p1:
+        current.next = p1
+    elif p2:
+        current.next = p2
+
+    return dummy.next
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_two_lists)

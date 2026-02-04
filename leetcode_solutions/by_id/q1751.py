@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到按键持续时间最长的键，并在有多个键持续时间相同的情况下选择字母顺序最大的键。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `max_duration` 为 0，用于记录当前最长的按键持续时间。
+2. 初始化变量 `result` 为第一个按键，用于记录当前持续时间最长的键。
+3. 遍历 `releaseTimes` 和 `keysPressed`，计算每个按键的持续时间。
+4. 如果当前按键的持续时间大于 `max_duration`，更新 `max_duration` 和 `result`。
+5. 如果当前按键的持续时间等于 `max_duration`，但按键的字母顺序更大，则更新 `result`。
+6. 返回 `result`。
 
 关键点:
-- [TODO]
+- 一次遍历即可完成，时间复杂度为 O(n)。
+- 使用常数空间存储中间结果，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def slowest_key(release_times: List[int], keys_pressed: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出按键持续时间最长的键
     """
-    # TODO: 实现最优解法
-    pass
+    max_duration = 0
+    result = keys_pressed[0]
+    
+    for i in range(len(keys_pressed)):
+        if i == 0:
+            duration = release_times[i]
+        else:
+            duration = release_times[i] - release_times[i - 1]
+        
+        if duration > max_duration or (duration == max_duration and keys_pressed[i] > result):
+            max_duration = duration
+            result = keys_pressed[i]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(slowest_key)

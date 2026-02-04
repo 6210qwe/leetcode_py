@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大的美味度和。我们需要找到一个最小的美味度和，使得可以将巧克力分成 K+1 段，每段的美味度和都至少为这个值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_valid`，用于判断给定的美味度和是否满足条件。
+2. 初始化二分查找的左右边界。
+3. 进行二分查找，不断调整中间值，直到找到最大的美味度和。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算任意子数组的和。
+- 二分查找的终止条件是左边界大于右边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(sum(nums)))
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_valid(nums: List[int], k: int, mid: int) -> bool:
+    count = 0
+    current_sum = 0
+    for num in nums:
+        current_sum += num
+        if current_sum >= mid:
+            count += 1
+            current_sum = 0
+    return count > k
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    left, right = min(nums), sum(nums) // (k + 1)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if is_valid(prefix_sum, k, mid):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
 Solution = create_solution(solution_function_name)

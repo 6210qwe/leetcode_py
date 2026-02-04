@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来高效地获取和移除最重的石头。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有石头的重量放入一个最大堆中。
+2. 每次从堆中取出两个最重的石头，计算它们粉碎后的剩余重量。
+3. 如果有剩余重量，将其重新放入堆中。
+4. 重复上述过程，直到堆中剩下的石头数量少于2个。
+5. 返回堆中剩下的石头重量（如果有的话），否则返回0。
 
 关键点:
-- [TODO]
+- 使用 `heapq` 模块实现最大堆，通过取负数的方式将最小堆转换为最大堆。
+- 每次操作堆的时间复杂度为 O(log n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是石头的数量。每次插入和删除操作的时间复杂度为 O(log n)，总共进行 n 次操作。
+空间复杂度: O(n)，因为需要存储所有的石头重量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
 
-def solution_function_name(params):
+def last_stone_weight(stones: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最后一块石头的重量
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有石头的重量转换为负数，以便使用最小堆模拟最大堆
+    stones = [-stone for stone in stones]
+    heapq.heapify(stones)
+
+    while len(stones) > 1:
+        # 取出两个最重的石头
+        first = -heapq.heappop(stones)
+        second = -heapq.heappop(stones)
+
+        # 计算粉碎后的剩余重量
+        if first != second:
+            remaining = first - second
+            heapq.heappush(stones, -remaining)
+
+    # 如果堆中还有石头，返回其重量，否则返回0
+    return -stones[0] if stones else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(last_stone_weight)

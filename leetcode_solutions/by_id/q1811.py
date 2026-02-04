@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 的内置函数 `INITCAP` 或 `UPPER` 和 `LOWER` 来修复名字，并按 `user_id` 排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `INITCAP` 函数将名字的第一个字符转换为大写，其余字符转换为小写。
+2. 按 `user_id` 排序返回结果表。
 
 关键点:
-- [TODO]
+- 使用 SQL 内置函数 `INITCAP` 简化字符串处理。
+- 确保结果按 `user_id` 排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 Users 表的行数。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，不需要额外的空间，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +52,15 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT user_id, INITCAP(name) AS name
+    FROM Users
+    ORDER BY user_id
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

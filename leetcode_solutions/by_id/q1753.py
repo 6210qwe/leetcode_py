@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来找到从起点到终点的最小体力消耗路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，并将起点 (0, 0) 加入队列，初始体力消耗为 0。
+2. 使用一个二维数组 `dist` 来记录从起点到每个点的最小体力消耗，初始值为无穷大，起点设为 0。
+3. 从优先队列中取出当前体力消耗最小的节点，检查其四个方向的邻居节点。
+4. 对于每个邻居节点，计算从当前节点到邻居节点的高度差绝对值，更新邻居节点的最小体力消耗。
+5. 如果邻居节点的体力消耗被更新，将其加入优先队列。
+6. 重复上述过程，直到到达终点 (rows-1, columns-1)。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次处理的都是当前体力消耗最小的节点。
+- 更新邻居节点的体力消耗时，取当前路径的最大高度差绝对值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(rows * columns * log(rows * columns))，其中 rows 和 columns 分别是地图的行数和列数。每个节点最多会被处理一次，优先队列的操作时间复杂度为 O(log(rows * columns))。
+空间复杂度: O(rows * columns)，用于存储距离数组和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minimum_effort_path(heights: List[List[int]]) -> int:
+    rows, cols = len(heights), len(heights[0])
+    dist = [[float('inf')] * cols for _ in range(rows)]
+    dist[0][0] = 0
+    pq = [(0, 0, 0)]  # (effort, row, col)
+    
+    while pq:
+        effort, r, c = heapq.heappop(pq)
+        
+        if r == rows - 1 and c == cols - 1:
+            return effort
+        
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols:
+                new_effort = max(effort, abs(heights[r][c] - heights[nr][nc]))
+                if new_effort < dist[nr][nc]:
+                    dist[nr][nc] = new_effort
+                    heapq.heappush(pq, (new_effort, nr, nc))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_effort_path)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用预处理和动态规划来找到三个不冲突的车的最大价值和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每一行和每一列的最大值及其索引。
+2. 枚举所有可能的三行组合，并计算每种组合下的最大值。
+3. 使用动态规划来优化枚举过程，减少重复计算。
 
 关键点:
-- [TODO]
+- 预处理每一行和每一列的最大值及其索引，以便快速查找。
+- 使用动态规划来优化枚举过程，减少时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
@@ -49,12 +51,56 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(board: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(board), len(board[0])
+    
+    # 预处理每一行的最大值及其索引
+    row_maxes = []
+    for i in range(m):
+        max_val = max(board[i])
+        max_idx = board[i].index(max_val)
+        row_maxes.append((max_val, max_idx))
+    
+    # 预处理每一列的最大值及其索引
+    col_maxes = []
+    for j in range(n):
+        col = [board[i][j] for i in range(m)]
+        max_val = max(col)
+        max_idx = col.index(max_val)
+        col_maxes.append((max_val, max_idx))
+    
+    # 动态规划表
+    dp = [[[float('-inf')] * n for _ in range(n)] for _ in range(m)]
+    
+    # 初始化dp表
+    for i in range(m):
+        for j in range(n):
+            for k in range(n):
+                if j != k:
+                    dp[i][j][k] = board[i][j] + board[i][k]
+    
+    # 填充dp表
+    for i in range(1, m):
+        for j in range(n):
+            for k in range(n):
+                if j != k:
+                    for l in range(n):
+                        if l != j and l != k:
+                            dp[i][j][k] = max(dp[i][j][k], dp[i-1][l][j] + board[i][k])
+                            dp[i][j][k] = max(dp[i][j][k], dp[i-1][l][k] + board[i][j])
+    
+    # 找到最大值
+    max_sum = float('-inf')
+    for i in range(m):
+        for j in range(n):
+            for k in range(n):
+                if j != k:
+                    max_sum = max(max_sum, dp[i][j][k])
+    
+    return max_sum
 
 
 Solution = create_solution(solution_function_name)

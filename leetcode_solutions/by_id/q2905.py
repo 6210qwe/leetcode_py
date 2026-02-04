@@ -6,7 +6,7 @@
 题号: 2905
 标题: Count Paths That Can Form a Palindrome in a Tree
 难度: hard
-链接: https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/
+链接: https://leetcode.cn/problems/count-paths-that-can-form-a palindrome-in-a-tree/
 题目类型: 位运算、树、深度优先搜索、动态规划、状态压缩
 """
 
@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和DFS来记录每个节点到根节点的路径状态，并使用哈希表统计每种状态出现的次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用DFS遍历树，同时使用位运算记录从根节点到当前节点的路径状态。
+3. 使用哈希表记录每种路径状态出现的次数。
+4. 在DFS过程中，计算当前路径状态与之前路径状态的异或结果，如果结果是一个回文路径，则计数。
 
 关键点:
-- [TODO]
+- 使用位运算记录路径状态，通过异或操作判断是否可以形成回文。
+- 使用哈希表记录每种路径状态出现的次数，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_palindromic_paths(parent: List[int], s: str) -> int:
+    def dfs(node: int, state: int) -> None:
+        nonlocal count
+        # 计算当前状态的回文路径数量
+        count += freq[state]
+        for char in range(26):
+            new_state = state ^ (1 << char)
+            count += freq[new_state]
+        # 更新当前状态的频率
+        freq[state] += 1
+        # 递归处理子节点
+        for child in tree[node]:
+            edge_char = ord(s[child]) - ord('a')
+            dfs(child, state ^ (1 << edge_char))
+        # 回溯时减少当前状态的频率
+        freq[state] -= 1
+
+    n = len(parent)
+    tree = [[] for _ in range(n)]
+    for i in range(1, n):
+        tree[parent[i]].append(i)
+
+    count = 0
+    freq = [0] * (1 << 26)
+    freq[0] = 1  # 空路径状态
+    dfs(0, 0)
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_palindromic_paths)

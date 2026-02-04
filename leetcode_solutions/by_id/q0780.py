@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，遍历数组并记录当前最大值，当当前最大值等于当前索引时，说明可以分割成一个块。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_val` 用于记录当前遍历到的最大值。
+2. 初始化一个变量 `chunks` 用于记录块的数量。
+3. 遍历数组：
+   - 更新 `max_val` 为当前元素和 `max_val` 中的较大值。
+   - 如果 `max_val` 等于当前索引，则增加 `chunks` 计数。
+4. 返回 `chunks`。
 
 关键点:
-- [TODO]
+- 通过比较当前最大值和当前索引，确定是否可以分割成一个块。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历整个数组一次。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_chunks_to_make_sorted(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组能分成的最多块数量
     """
-    # TODO: 实现最优解法
-    pass
+    max_val = 0
+    chunks = 0
+    for i, num in enumerate(arr):
+        max_val = max(max_val, num)
+        if max_val == i:
+            chunks += 1
+    return chunks
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_chunks_to_make_sorted)

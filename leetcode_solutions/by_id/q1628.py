@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和单调栈来计算每个位置的矩形数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个高度矩阵 `heights`，其中 `heights[i][j]` 表示从第 i 行到第 j 列的连续 1 的高度。
+2. 对于每一行，使用单调栈来计算以该行为底的所有全 1 子矩形的数量。
+3. 将每一行的结果累加得到最终结果。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效计算每行的全 1 子矩形数量。
+- 动态规划用于更新高度矩阵。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def countSubmatrices(mat: List[List[int]]) -> int:
+    def count_rectangle(heights: List[int]) -> int:
+        stack = []
+        count = 0
+        for i, h in enumerate(heights):
+            while stack and heights[stack[-1]] >= h:
+                top = stack.pop()
+                if not stack:
+                    width = i
+                else:
+                    width = i - stack[-1] - 1
+                count += (heights[top] - (heights[stack[-1]] if stack else 0)) * width
+            stack.append(i)
+        
+        while stack:
+            top = stack.pop()
+            if not stack:
+                width = len(heights)
+            else:
+                width = len(heights) - stack[-1] - 1
+            count += (heights[top] - (heights[stack[-1]] if stack else 0)) * width
+        
+        return count
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    heights = [0] * n
+    result = 0
 
+    for row in mat:
+        for j in range(n):
+            heights[j] = heights[j] + 1 if row[j] == 1 else 0
+        result += count_rectangle(heights)
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(countSubmatrices)

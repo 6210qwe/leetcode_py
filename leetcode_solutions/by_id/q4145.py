@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和归并排序来计算逆序对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `min_inversions` 来存储最小逆序对数量。
+2. 使用滑动窗口技术遍历数组，并在每次移动窗口时更新逆序对的数量。
+3. 使用归并排序来计算当前窗口内的逆序对数量。
+4. 更新 `min_inversions` 为当前窗口内的逆序对数量的最小值。
 
 关键点:
-- [TODO]
+- 使用归并排序来高效计算逆序对的数量。
+- 滑动窗口技术用于维护固定长度的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -48,13 +51,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def merge_sort_and_count(nums: List[int]) -> int:
+    if len(nums) <= 1:
+        return nums, 0
+    
+    mid = len(nums) // 2
+    left, inv_left = merge_sort_and_count(nums[:mid])
+    right, inv_right = merge_sort_and_count(nums[mid:])
+    
+    merged, inv_merge = merge_and_count(left, right)
+    return merged, inv_left + inv_right + inv_merge
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def merge_and_count(left: List[int], right: List[int]) -> (List[int], int):
+    merged = []
+    inversions = 0
+    i, j = 0, 0
+    
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            inversions += len(left) - i
+            j += 1
+    
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+    
+    return merged, inversions
 
+def min_inversion_subarray(nums: List[int], k: int) -> int:
+    n = len(nums)
+    min_inversions = float('inf')
+    window = nums[:k]
+    
+    for i in range(n - k + 1):
+        if i > 0:
+            window.pop(0)
+            window.append(nums[i + k - 1])
+        
+        sorted_window, inversions = merge_sort_and_count(window)
+        min_inversions = min(min_inversions, inversions)
+    
+    return min_inversions
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_inversion_subarray)

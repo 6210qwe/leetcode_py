@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用迭代方法计算每轮比赛的配对次数，直到只剩下一个队伍。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化配对次数为 0。
+2. 当队伍数大于 1 时，继续循环：
+   - 如果队伍数是偶数，配对次数加上 n // 2，队伍数减半。
+   - 如果队伍数是奇数，配对次数加上 (n - 1) // 2，队伍数变为 (n - 1) // 2 + 1。
+3. 返回总配对次数。
 
 关键点:
-- [TODO]
+- 通过迭代计算每轮比赛的配对次数，直到只剩下一个队伍。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 每轮比赛队伍数减半，最多需要 log n 轮。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_matches(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算比赛中的配对次数
     """
-    # TODO: 实现最优解法
-    pass
+    matches = 0
+    while n > 1:
+        if n % 2 == 0:
+            matches += n // 2
+            n //= 2
+        else:
+            matches += (n - 1) // 2
+            n = (n - 1) // 2 + 1
+    return matches
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_matches)

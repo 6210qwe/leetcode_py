@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历所有的塔，计算每个塔与中心点的曼哈顿距离，并筛选出在给定半径内的塔。然后从这些塔中选择质量因子最大的塔，如果有多座塔具有相同的质量因子，则选择字典序最小的塔。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 `[-1, -1]`，表示如果没有可到达的塔则返回此值。
+2. 初始化最大质量因子 `max_quality` 为负无穷大。
+3. 遍历每一座塔：
+   - 计算塔与中心点的曼哈顿距离。
+   - 如果曼哈顿距离小于等于给定半径，则检查当前塔的质量因子是否大于 `max_quality`，或者质量因子相等但字典序更小。
+   - 更新 `max_quality` 和 `result`。
+4. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用曼哈顿距离判断塔是否可到达。
+- 选择质量因子最大的塔，如果有多座塔具有相同的质量因子，则选择字典序最小的塔。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是塔的数量。我们需要遍历每一座塔来计算曼哈顿距离并更新结果。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def best_reachable_tower(towers: List[List[int]], center: List[int], radius: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回在给定半径内质量因子最大的塔的坐标，如果有多座塔具有相同的质量因子，则返回字典序最小的塔。
+    如果没有塔是可到达的，返回 [-1, -1]。
     """
-    # TODO: 实现最优解法
-    pass
+    result = [-1, -1]
+    max_quality = float('-inf')
 
+    for tower in towers:
+        x, y, quality = tower
+        distance = abs(x - center[0]) + abs(y - center[1])
+        
+        if distance <= radius:
+            if quality > max_quality or (quality == max_quality and [x, y] < result):
+                max_quality = quality
+                result = [x, y]
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(best_reachable_tower)

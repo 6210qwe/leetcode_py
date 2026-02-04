@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到数组中的最小值和最大值，然后遍历数组，统计既大于最小值又小于最大值的元素个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小值和最大值。
+2. 遍历数组，统计既大于最小值又小于最大值的元素个数。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到最小值和最大值。
+- 再次遍历数组进行计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要两次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_elements(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计在 nums 中同时至少具有一个严格较小元素和一个严格较大元素的元素数目。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) < 3:
+        return 0
+
+    min_val = min(nums)
+    max_val = max(nums)
+
+    count = 0
+    for num in nums:
+        if min_val < num < max_val:
+            count += 1
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_elements)

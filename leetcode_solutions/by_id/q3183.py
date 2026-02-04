@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对每一位进行计数，如果某一位上1的数量大于等于k，则该位的结果为1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为32的计数数组，用于记录每一位上1的数量。
+2. 遍历数组中的每个数字，更新计数数组。
+3. 根据计数数组，构建最终的K-or值。
 
 关键点:
-- [TODO]
+- 使用位操作来检查和更新每一位的状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_k_or(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中的 K-or 值
     """
-    # TODO: 实现最优解法
-    pass
+    # 计数数组，记录每一位上1的数量
+    bit_count = [0] * 32
+    
+    # 遍历数组中的每个数字，更新计数数组
+    for num in nums:
+        for i in range(32):
+            if num & (1 << i):
+                bit_count[i] += 1
+    
+    # 构建最终的K-or值
+    result = 0
+    for i in range(32):
+        if bit_count[i] >= k:
+            result |= (1 << i)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_k_or)

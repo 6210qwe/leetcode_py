@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的连续子数组，使得在不超过 k 次操作的情况下，可以将所有字符变为相同的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 来表示滑动窗口的左右边界。
+2. 遍历字符串，扩展右边界 right，并记录当前窗口内的 'T' 和 'F' 的数量。
+3. 如果当前窗口内需要的操作次数超过 k，则移动左边界 left，直到操作次数不超过 k。
+4. 记录最大窗口长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护一个满足条件的子数组。
+- 通过移动左右指针来动态调整窗口大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 answerKey 的长度。每个字符最多被访问两次（一次作为右边界，一次作为左边界）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_consecutive_answers(answer_key: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回在不超过 k 次操作的情况下，最大连续 'T' 或者 'F' 的数目。
     """
-    # TODO: 实现最优解法
-    pass
+    def max_consecutive_char(char: str) -> int:
+        left, max_length, count = 0, 0, 0
+        for right in range(len(answer_key)):
+            if answer_key[right] != char:
+                count += 1
+            while count > k:
+                if answer_key[left] != char:
+                    count -= 1
+                left += 1
+            max_length = max(max_length, right - left + 1)
+        return max_length
+
+    return max(max_consecutive_char('T'), max_consecutive_char('F'))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_consecutive_answers)

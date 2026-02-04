@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过三重循环枚举所有可能的三元组，并检查它们是否满足给定的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用三重循环枚举所有可能的三元组 (i, j, k)。
+3. 对于每个三元组，检查是否满足 |arr[i] - arr[j]| <= a, |arr[j] - arr[k]| <= b, |arr[i] - arr[k]| <= c。
+4. 如果满足条件，将计数器 count 加 1。
+5. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 三重循环枚举所有可能的三元组。
+- 条件判断确保三元组满足给定的约束。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是数组 arr 的长度。需要三重循环枚举所有可能的三元组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int], a: int, b: int, c: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计好三元组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    n = len(arr)
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                if abs(arr[i] - arr[j]) <= a and abs(arr[j] - arr[k]) <= b and abs(arr[i] - arr[k]) <= c:
+                    count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典记录蚂蚁走过的路径，并动态扩展网格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化网格为全白，蚂蚁位置为 (0, 0)，方向为右。
+2. 使用字典记录每个位置的颜色（默认为白色）。
+3. 模拟蚂蚁的 K 步操作：
+   - 根据当前颜色决定转向方向。
+   - 翻转当前格子的颜色。
+   - 更新蚂蚁的位置。
+4. 计算蚂蚁走过的最小矩形范围，并构建最终的网格。
 
 关键点:
-- [TODO]
+- 使用字典记录颜色可以避免预先分配大量空间。
+- 动态扩展网格以适应蚂蚁的移动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(K)
+空间复杂度: O(K)
 """
 
 # ============================================================================
@@ -49,12 +55,50 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def langtons_ant(k: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    模拟兰顿蚂蚁的前 K 个动作，并返回最终的网格。
     """
-    # TODO: 实现最优解法
-    pass
+    # 方向向量
+    directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
+    # 蚂蚁初始位置和方向
+    x, y = 0, 0
+    direction = 0  # 0: 右, 1: 上, 2: 左, 3: 下
+    # 记录颜色的字典
+    grid = {}
+    
+    for _ in range(k):
+        # 获取当前格子的颜色
+        color = grid.get((x, y), '_')
+        # 根据颜色决定转向
+        if color == '_':
+            direction = (direction + 1) % 4
+        else:
+            direction = (direction - 1) % 4
+        # 翻转颜色
+        grid[(x, y)] = 'X' if color == '_' else '_'
+        # 更新位置
+        dx, dy = directions[direction]
+        x, y = x + dx, y + dy
+    
+    # 找到蚂蚁走过的最小矩形范围
+    min_x = min(x for x, y in grid.keys())
+    max_x = max(x for x, y in grid.keys())
+    min_y = min(y for x, y in grid.keys())
+    max_y = max(y for x, y in grid.keys())
+    
+    # 构建最终的网格
+    result = []
+    for i in range(min_x, max_x + 1):
+        row = []
+        for j in range(min_y, max_y + 1):
+            if (i, j) == (x, y):
+                row.append('LRUD'[direction])
+            else:
+                row.append(grid.get((i, j), '_'))
+        result.append(''.join(row))
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(langtons_ant)

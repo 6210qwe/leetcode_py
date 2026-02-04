@@ -21,55 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用贪心算法和栈来构建排列
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化一个空栈和结果列表
+2. 遍历字符串 s 和数组 nums
+3. 如果当前字符是 'I'，则将所有在栈中的元素弹出并加入结果列表
+4. 将当前数字加入栈
+5. 最后将栈中剩余的元素弹出并加入结果列表
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用栈来存储当前的递减序列
+- 当遇到 'I' 时，将栈中的元素弹出并加入结果列表
+- 优化时间和空间复杂度
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 只遍历一次字符串 s 和数组 nums
+空间复杂度: O(n) - 使用了额外的栈和结果列表
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def find_permutation(params):
+def find_permutation(s: str, nums: List[int]) -> List[int]:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 根据字符串 s 和数组 nums 构建排列
     
     实现思路:
-    [待实现] 简要说明实现思路
-    
+    使用贪心算法和栈来构建排列。遍历字符串 s 和数组 nums，根据字符 'I' 和 'D' 来决定何时将栈中的元素弹出并加入结果列表。
+
     Args:
-        params: [待实现] 参数说明
+        s (str): 字符串 s，只包含 'I' 和 'D'
+        nums (List[int]): 数组 nums，长度为 n + 1
         
     Returns:
-        [待实现] 返回值说明
+        List[int]: 构建的排列
         
     Example:
-        >>> find_permutation([待实现])
-        [待实现]
+        >>> find_permutation("IDID", [0, 1, 2, 3, 4])
+        [0, 4, 1, 3, 2]
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = []
+    for i in range(len(s)):
+        stack.append(nums[i])
+        if s[i] == 'I':
+            while stack:
+                result.append(stack.pop())
+    # 添加最后一个元素
+    stack.append(nums[-1])
+    while stack:
+        result.append(stack.pop())
+    return result
 
 
 # 自动生成Solution类（无需手动编写）

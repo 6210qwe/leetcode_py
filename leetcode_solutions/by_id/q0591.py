@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理标签的嵌套和匹配问题。同时，处理 CDATA 部分，确保其不会被误解析为标签。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈，用于存储未匹配的起始标签。
+2. 遍历输入字符串 `code`，使用指针 `i` 来追踪当前的位置。
+3. 如果遇到 `<`，检查接下来的部分：
+   - 如果是 `<![CDATA[`，则跳过 CDATA 部分。
+   - 如果是 `</`，则尝试匹配栈顶的起始标签。
+   - 如果是 `<`，则提取并验证标签名，将其压入栈中。
+4. 如果遇到 `>`，检查栈是否为空，如果不为空则弹出栈顶元素。
+5. 最后，检查栈是否为空，如果为空则说明所有标签都已匹配，返回 `True`，否则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用栈来处理标签的嵌套和匹配。
+- 处理 CDATA 部分，确保其不会被误解析为标签。
+- 验证标签名是否合法。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `code` 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(n)，最坏情况下，栈中可能会存储所有的起始标签。
 """
 
 # ============================================================================
@@ -49,12 +57,43 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(code: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现标签验证器
     """
-    # TODO: 实现最优解法
-    pass
+    def is_valid_tag_name(tag_name: str) -> bool:
+        return 1 <= len(tag_name) <= 9 and all(c.isupper() for c in tag_name)
+
+    stack = []
+    i = 0
+    while i < len(code):
+        if code[i] == '<':
+            if i + 9 < len(code) and code[i:i+9] == '<![CDATA[':
+                j = code.find(']]>', i)
+                if j == -1:
+                    return False
+                i = j + 3
+            elif i + 2 < len(code) and code[i:i+2] == '</':
+                j = code.find('>', i)
+                if j == -1:
+                    return False
+                tag_name = code[i+2:j]
+                if not stack or stack.pop() != tag_name:
+                    return False
+                i = j + 1
+            else:
+                j = code.find('>', i)
+                if j == -1:
+                    return False
+                tag_name = code[i+1:j]
+                if not is_valid_tag_name(tag_name):
+                    return False
+                stack.append(tag_name)
+                i = j + 1
+        else:
+            i += 1
+
+    return not stack
 
 
 Solution = create_solution(solution_function_name)

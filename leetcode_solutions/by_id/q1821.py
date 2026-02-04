@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个产品的总金额，并筛选出总金额大于或等于指定阈值的产品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `GROUP BY` 子句按产品分组。
+2. 使用 `SUM` 函数计算每个产品的总金额。
+3. 使用 `HAVING` 子句筛选出总金额大于或等于指定阈值的产品。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `HAVING` 子句进行分组和筛选。
+- 使用 `SUM` 函数计算总金额。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是发票记录的数量。需要遍历所有记录进行分组和计算。
+空间复杂度: O(m)，其中 m 是不同产品的数量。需要存储每个产品的总金额。
 """
 
 # ============================================================================
@@ -48,13 +50,17 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    SELECT product_id, SUM(quantity * price) AS total_amount
+    FROM invoices
+    GROUP BY product_id
+    HAVING total_amount >= 100;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

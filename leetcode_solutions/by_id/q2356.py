@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过统计每个二进制位上为1的数字个数，找到最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为32的数组，用于记录每个二进制位上为1的数字个数。
+2. 遍历每个数字，更新二进制位计数数组。
+3. 找到计数数组中的最大值，即为按位与结果大于0的最长组合的长度。
 
 关键点:
-- [TODO]
+- 使用一个长度为32的数组来记录每个二进制位上为1的数字个数。
+- 通过遍历每个数字的二进制表示，更新计数数组。
+- 最后找到计数数组中的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_combination(candidates: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算按位与结果大于0的最长组合的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为32的数组，用于记录每个二进制位上为1的数字个数
+    bit_count = [0] * 32
+    
+    # 遍历每个数字，更新二进制位计数数组
+    for num in candidates:
+        for i in range(32):
+            if num & (1 << i):
+                bit_count[i] += 1
+    
+    # 找到计数数组中的最大值
+    return max(bit_count)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_combination)

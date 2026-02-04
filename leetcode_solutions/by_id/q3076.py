@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库提供的 shape 属性来获取 DataFrame 的行数和列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 使用 pandas 的 shape 属性获取 DataFrame 的行数和列数。
+3. 返回包含行数和列数的列表。
 
 关键点:
-- [TODO]
+- pandas 库提供了高效的方法来处理 DataFrame。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 获取 DataFrame 的 shape 属性是常数时间操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+from typing import List
 
-
-def solution_function_name(params):
+def get_dataframe_size(players: pd.DataFrame) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 获取 DataFrame 的行数和列数
     """
-    # TODO: 实现最优解法
-    pass
+    # 获取 DataFrame 的行数和列数
+    num_rows, num_cols = players.shape
+    return [num_rows, num_cols]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_dataframe_size)

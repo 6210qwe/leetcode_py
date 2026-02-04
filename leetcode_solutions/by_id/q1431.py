@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来找到每个节点的所有祖先。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化一个结果列表 `answer`，其中每个元素是一个空集合，用于存储每个节点的祖先。
+3. 对于每个节点，使用 DFS 递归地找到其所有祖先，并将这些祖先添加到对应的结果集中。
+4. 将结果集转换为升序排列的列表。
 
 关键点:
-- [TODO]
+- 使用集合来存储祖先以避免重复。
+- 使用递归来实现 DFS。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(n + m)，存储图的邻接表和递归调用栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_ancestors(n: int, edges: List[List[int]]) -> List[List[int]]:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+    
+    # 结果列表，每个元素是一个集合，用于存储每个节点的祖先
+    answer = [set() for _ in range(n)]
+    
+    def dfs(node: int, ancestors: set):
+        # 将当前节点的祖先添加到结果集中
+        answer[node].update(ancestors)
+        
+        # 递归地找到当前节点的所有后代的祖先
+        for neighbor in graph[node]:
+            if neighbor not in ancestors:
+                dfs(neighbor, ancestors | {node})
+    
+    # 对每个节点进行 DFS
+    for i in range(n):
+        dfs(i, set())
+    
+    # 将结果集转换为升序排列的列表
+    return [sorted(ans) for ans in answer]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_ancestors)

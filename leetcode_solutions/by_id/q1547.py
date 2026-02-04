@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录起点和终点城市，然后找到不在起点集合中的终点城市。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建两个集合，一个用于存储所有起点城市，另一个用于存储所有终点城市。
+2. 遍历路径列表，将每个路径的起点和终点分别加入对应的集合。
+3. 返回在终点城市集合中但不在起点城市集合中的城市。
 
 关键点:
-- [TODO]
+- 使用集合操作来高效地查找终点城市。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是路径的数量。我们需要遍历路径列表一次。
+空间复杂度: O(n)，我们使用了两个集合来存储起点和终点城市。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_destination_city(paths: List[List[str]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到旅行的终点站
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建两个集合，一个用于存储所有起点城市，另一个用于存储所有终点城市
+    start_cities = set()
+    end_cities = set()
 
+    # 遍历路径列表，将每个路径的起点和终点分别加入对应的集合
+    for path in paths:
+        start_cities.add(path[0])
+        end_cities.add(path[1])
 
-Solution = create_solution(solution_function_name)
+    # 返回在终点城市集合中但不在起点城市集合中的城市
+    for city in end_cities:
+        if city not in start_cities:
+            return city
+
+Solution = create_solution(find_destination_city)

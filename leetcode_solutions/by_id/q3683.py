@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法找到字典序最大的字符串。每次选择当前未使用的最大字符作为起始点，尽可能多地扩展该字符串，直到无法再扩展为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_str` 用于存储当前找到的最大字符串。
+2. 遍历字符串 `word`，从右向左查找每个字符，确保每个字符都能成为某个子字符串的起始点。
+3. 对于每个起始点，尽可能多地扩展子字符串，直到无法再扩展为止。
+4. 更新 `max_str` 为当前找到的最大字符串。
+5. 返回 `max_str`。
 
 关键点:
-- [TODO]
+- 从右向左遍历字符串，确保每次选择的都是当前未使用的最大字符。
+- 尽可能多地扩展子字符串，确保找到的字符串是字典序最大的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 `word` 的长度。最坏情况下，需要遍历字符串并进行多次扩展操作。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(word: str, numFriends: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    def find_max_substring(start: int) -> str:
+        max_substring = ""
+        for i in range(start, len(word)):
+            if word[i] >= max_substring[0] if max_substring else True:
+                max_substring = word[start:i+1]
+        return max_substring
+
+    max_str = ""
+    for i in range(len(word) - 1, -1, -1):
+        max_substring = find_max_substring(i)
+        if max_substring > max_str:
+            max_str = max_substring
+    return max_str
 
 
 Solution = create_solution(solution_function_name)

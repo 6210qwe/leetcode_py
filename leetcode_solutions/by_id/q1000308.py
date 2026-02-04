@@ -21,40 +21,61 @@ LCR 112. 矩阵中的最长递增路径 - 给定一个 m x n 整数矩阵 matrix
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 并结合记忆化搜索 (Memoization) 来避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，用于存储从每个单元格开始的最长递增路径长度。
+2. 定义一个递归函数 dfs(i, j)，表示从位置 (i, j) 开始的最长递增路径长度。
+3. 在 dfs 函数中，如果 dp[i][j] 已经计算过，则直接返回 dp[i][j]。
+4. 否则，遍历当前位置的四个方向，如果下一个位置的值大于当前值，则递归调用 dfs 函数，并更新 dp[i][j]。
+5. 最后，遍历整个矩阵，找到最长的递增路径长度。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算，从而提高效率。
+- 通过递归和回溯来找到每个单元格的最长递增路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个单元格最多只会被访问一次。
+空间复杂度: O(m * n)，用于存储 dp 数组和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def longest_increasing_path(matrix: List[List[int]]) -> int:
+    if not matrix or not matrix[0]:
+        return 0
+    
+    m, n = len(matrix), len(matrix[0])
+    dp = [[0] * n for _ in range(m)]
+    
+    def dfs(i, j):
+        if dp[i][j] != 0:
+            return dp[i][j]
+        
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        max_length = 1
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < m and 0 <= nj < n and matrix[ni][nj] > matrix[i][j]:
+                length = 1 + dfs(ni, nj)
+                max_length = max(max_length, length)
+        
+        dp[i][j] = max_length
+        return max_length
+    
+    max_path = 0
+    for i in range(m):
+        for j in range(n):
+            max_path = max(max_path, dfs(i, j))
+    
+    return max_path
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_increasing_path)

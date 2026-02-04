@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接将原数组拼接到自身后面，形成新的数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个新的数组，将原数组 nums 拼接到自身后面。
+2. 返回新数组。
 
 关键点:
-- [TODO]
+- 使用列表的加法操作来拼接数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 遍历和拼接数组的时间复杂度是线性的。
+空间复杂度: O(n) - 新数组的空间复杂度是线性的。
 """
 
 # ============================================================================
@@ -49,12 +49,12 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_concatenation(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将原数组拼接到自身后面，形成新的数组。
     """
-    # TODO: 实现最优解法
-    pass
+    # 直接将原数组拼接到自身后面
+    return nums + nums
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_concatenation)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 `asyncio` 库来处理异步操作，等待两个 Promise 对象解析完成后，将它们的结果相加并返回一个新的 Promise。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `asyncio.gather` 同时等待两个 Promise 对象解析。
+2. 将解析后的结果相加。
+3. 返回一个新的 Promise 对象，解析为两个 Promise 对象的和。
 
 关键点:
-- [TODO]
+- 使用 `asyncio.gather` 可以同时等待多个异步操作完成。
+- 返回一个新的 Promise 对象，解析为两个 Promise 对象的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为我们只是在等待两个 Promise 对象解析并进行一次加法操作。
+空间复杂度: O(1) - 除了输入和输出的 Promise 对象外，没有使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import asyncio
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+async def add_two_promises(promise1, promise2):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个新的 Promise，解析为两个输入 Promise 的和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 等待两个 Promise 对象解析
+    result1, result2 = await asyncio.gather(promise1, promise2)
+    
+    # 计算两个结果的和
+    total = result1 + result2
+    
+    # 返回一个新的 Promise，解析为两个结果的和
+    return total
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(add_two_promises)

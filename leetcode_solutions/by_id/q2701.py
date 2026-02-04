@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和动态规划来找到最小得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `left` 和 `right`，分别记录从左到右和从右到左的最长公共子序列的长度。
+2. 从左到右遍历字符串 `t`，使用双指针记录 `s` 中与 `t` 匹配的字符位置。
+3. 从右到左遍历字符串 `t`，同样使用双指针记录 `s` 中与 `t` 匹配的字符位置。
+4. 计算最小得分，即 `right - left + 1`。
 
 关键点:
-- [TODO]
+- 使用双指针和动态规划来优化时间复杂度。
+- 通过两次遍历来记录匹配的位置，从而减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 s 的长度，m 是字符串 t 的长度。
+空间复杂度: O(m)，用于存储 `left` 和 `right` 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_score_subsequence(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使 t 成为 s 子序列的最小得分
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(s), len(t)
+    left, right = [0] * m, [0] * m
+    
+    # 从左到右遍历
+    j = 0
+    for i in range(n):
+        if j < m and s[i] == t[j]:
+            left[j] = i + 1
+            j += 1
+    
+    # 从右到左遍历
+    j = m - 1
+    for i in range(n - 1, -1, -1):
+        if j >= 0 and s[i] == t[j]:
+            right[j] = n - i
+            j -= 1
+    
+    # 计算最小得分
+    min_score = float('inf')
+    for i in range(m):
+        if i > 0 and i < m - 1:
+            min_score = min(min_score, right[i] - left[i - 1] + 1)
+    
+    return min_score if min_score != float('inf') else m
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_score_subsequence)

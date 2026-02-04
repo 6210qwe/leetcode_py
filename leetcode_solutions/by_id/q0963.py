@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过统计数组中 1 的位置来确定三个部分的划分点，并验证这些部分是否相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中 1 的总数。
+2. 如果 1 的总数不是 3 的倍数，直接返回 [-1, -1]。
+3. 找到每部分的第一个 1 的位置。
+4. 比较三部分的二进制值是否相等。
+5. 如果相等，返回划分点；否则返回 [-1, -1]。
 
 关键点:
-- [TODO]
+- 通过 1 的位置来确定划分点。
+- 验证三部分的二进制值是否相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将数组分成三个相等的二进制部分
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    ones = [i for i, x in enumerate(arr) if x == 1]
+    num_ones = len(ones)
+
+    if num_ones % 3 != 0:
+        return [-1, -1]
+
+    if num_ones == 0:
+        return [0, n - 1]
+
+    part_length = num_ones // 3
+    first_part_start = ones[0]
+    second_part_start = ones[part_length]
+    third_part_start = ones[2 * part_length]
+
+    if (n - third_part_start) < (second_part_start - first_part_start):
+        return [-1, -1]
+
+    for i in range(part_length):
+        if arr[first_part_start + i] != arr[second_part_start + i] or arr[first_part_start + i] != arr[third_part_start + i]:
+            return [-1, -1]
+
+    return [first_part_start + part_length - 1, second_part_start + part_length]
 
 
 Solution = create_solution(solution_function_name)

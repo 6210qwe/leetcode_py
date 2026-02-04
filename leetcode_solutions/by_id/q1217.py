@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数排序来实现相对排序
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个计数数组 `count`，统计 `arr1` 中每个元素的出现次数。
+2. 按照 `arr2` 中的顺序，将 `arr2` 中的元素依次从 `count` 中取出并放入结果数组 `result`。
+3. 将 `arr1` 中不在 `arr2` 中的元素按升序放入结果数组 `result`。
 
 关键点:
-- [TODO]
+- 使用计数数组来统计 `arr1` 中每个元素的出现次数。
+- 按照 `arr2` 的顺序处理 `arr1` 中的元素。
+- 最后处理 `arr1` 中不在 `arr2` 中的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `arr1` 的长度，m 是 `arr2` 的长度。
+空间复杂度: O(k)，其中 k 是 `arr1` 中元素的取值范围（最大为 1001）。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def relative_sort_array(arr1: List[int], arr2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现相对排序
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建计数数组
+    count = [0] * 1001
+    for num in arr1:
+        count[num] += 1
+    
+    result = []
+    # 按照 arr2 的顺序处理 arr1 中的元素
+    for num in arr2:
+        while count[num] > 0:
+            result.append(num)
+            count[num] -= 1
+    
+    # 处理 arr1 中不在 arr2 中的元素
+    for i in range(1001):
+        while count[i] > 0:
+            result.append(i)
+            count[i] -= 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(relative_sort_array)

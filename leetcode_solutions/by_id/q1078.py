@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来记录括号的嵌套层次，当遇到一个完整的原语时，去掉最外层的括号。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈和一个结果字符串。
+2. 遍历输入字符串 s 中的每个字符：
+   - 如果当前字符是 '(', 将其压入栈中。
+   - 如果当前字符是 ')', 弹出栈顶元素。
+   - 如果栈不为空，则将当前字符添加到结果字符串中。
+3. 返回结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来记录括号的嵌套层次。
+- 当栈为空时，表示遇到了一个完整的原语，此时不将当前字符添加到结果字符串中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(n)，在最坏情况下，栈的大小可能达到字符串长度的一半。
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_outer_parentheses(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除最外层的括号
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = []
+    for char in s:
+        if char == '(':
+            if stack:
+                result.append(char)
+            stack.append(char)
+        elif char == ')':
+            stack.pop()
+            if stack:
+                result.append(char)
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_outer_parentheses)

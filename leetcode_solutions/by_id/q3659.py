@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和前缀异或来计算路径的异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][x] 表示从 (0, 0) 到 (i, j) 且路径异或值为 x 的路径数。
+2. 初始化 dp[0][0][grid[0][0]] = 1。
+3. 逐行逐列更新 dp 数组，对于每个格子 (i, j)，更新其从上方和左方来的路径数。
+4. 最终结果为 dp[m-1][n-1][k]。
 
 关键点:
-- [TODO]
+- 使用前缀异或来记录路径的异或值。
+- 通过动态规划避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 16) = O(m * n)，因为 k 的范围是 0 到 15。
+空间复杂度: O(m * n * 16) = O(m * n)，因为 k 的范围是 0 到 15。
 """
 
 # ============================================================================
@@ -48,13 +51,25 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_paths_with_given_xor(grid: List[List[int]], k: int) -> int:
+    MOD = 10**9 + 7
+    m, n = len(grid), len(grid[0])
+    dp = [[[0 for _ in range(16)] for _ in range(n)] for _ in range(m)]
+    
+    # 初始化起点
+    dp[0][0][grid[0][0]] = 1
+    
+    # 逐行逐列更新 dp 数组
+    for i in range(m):
+        for j in range(n):
+            for x in range(16):
+                if i > 0:
+                    dp[i][j][(x ^ grid[i][j]) % 16] += dp[i-1][j][x]
+                    dp[i][j][(x ^ grid[i][j]) % 16] %= MOD
+                if j > 0:
+                    dp[i][j][(x ^ grid[i][j]) % 16] += dp[i][j-1][x]
+                    dp[i][j][(x ^ grid[i][j]) % 16] %= MOD
+    
+    return dp[m-1][n-1][k]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_paths_with_given_xor)

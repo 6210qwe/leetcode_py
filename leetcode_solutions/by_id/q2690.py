@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和贪心算法来确定最小的窃取能力。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界，left 为 1，right 为 max(nums)。
+2. 在二分查找的过程中，计算中间值 mid，并检查是否可以使用 mid 作为窃取能力窃取至少 k 间房屋。
+3. 如果可以，则缩小右边界；否则，扩大左边界。
+4. 最终返回 left 作为最小的窃取能力。
 
 关键点:
-- [TODO]
+- 使用二分查找来确定最小的窃取能力。
+- 使用贪心算法来检查当前窃取能力是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是 nums 的长度，log(max(nums)) 是二分查找的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_rob_houses(nums: List[int], k: int, max_amount: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以使用 max_amount 作为窃取能力窃取至少 k 间房屋。
     """
-    # TODO: 实现最优解法
-    pass
+    count, prev = 0, -2
+    for i in range(len(nums)):
+        if nums[i] <= max_amount and i > prev + 1:
+            count += 1
+            prev = i
+    return count >= k
 
 
-Solution = create_solution(solution_function_name)
+def min_capability(nums: List[int], k: int) -> int:
+    """
+    返回小偷的最小窃取能力。
+    """
+    left, right = 1, max(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if can_rob_houses(nums, k, mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
+
+
+Solution = create_solution(min_capability)

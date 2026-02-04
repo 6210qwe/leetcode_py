@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个循环遍历字符串 S，计算每行的宽度并更新行数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化行数 lines 为 1 和当前行的宽度 current_width 为 0。
+2. 遍历字符串 S 中的每个字符：
+   - 计算该字符的宽度。
+   - 如果当前行的宽度加上该字符的宽度超过 100，则增加行数并将当前行的宽度重置为该字符的宽度。
+   - 否则，将该字符的宽度加到当前行的宽度中。
+3. 返回行数和最后一行的宽度。
 
 关键点:
-- [TODO]
+- 每次遇到超过 100 单位的情况时，需要增加行数并重置当前行的宽度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 S 的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_lines(widths: List[int], s: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算写字符串需要的行数和最后一行的宽度
     """
-    # TODO: 实现最优解法
-    pass
+    lines = 1
+    current_width = 0
+    
+    for char in s:
+        char_width = widths[ord(char) - ord('a')]
+        if current_width + char_width > 100:
+            lines += 1
+            current_width = char_width
+        else:
+            current_width += char_width
+    
+    return [lines, current_width]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_lines)

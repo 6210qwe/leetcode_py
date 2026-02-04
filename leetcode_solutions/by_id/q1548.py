@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来检查相邻的 1 之间的距离是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `last_one_index` 用于记录上一个 1 的位置。
+2. 遍历数组，对于每一个 1，检查它与上一个 1 之间的距离是否小于 k。
+3. 如果发现不满足条件的情况，返回 False。
+4. 如果遍历完整个数组都满足条件，返回 True。
 
 关键点:
-- [TODO]
+- 通过一次遍历和一个变量来记录上一个 1 的位置，从而实现 O(n) 的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查所有 1 是否至少相隔 k 个元素
     """
-    # TODO: 实现最优解法
-    pass
+    last_one_index = -k - 1  # 初始化为 -k-1 以确保第一个 1 不会误判
+    for i, num in enumerate(nums):
+        if num == 1:
+            if i - last_one_index <= k:
+                return False
+            last_one_index = i
+    return True
 
 
 Solution = create_solution(solution_function_name)

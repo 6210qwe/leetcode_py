@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示从第 i 个人到第 j 个人之间不相交握手的最大数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示从第 i 个人到第 j 个人之间不相交握手的最大数量。
+2. 对于每个子区间 [i, j]，考虑两种情况：
+   - 不进行握手：dp[i][j] = dp[i+1][j]
+   - 进行握手：dp[i][j] = max(dp[i][j], dp[i+1][k-1] + dp[k+1][j-1] + 1)，其中 k 从 i+1 到 j-1
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算子问题
+- 状态转移方程需要考虑不进行握手和进行握手两种情况
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 个人之间不相交握手的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    # 动态规划填表
+    for length in range(2, n + 1):
+        for i in range(1, n - length + 2):
+            j = i + length - 1
+            dp[i][j] = dp[i + 1][j]
+            for k in range(i + 1, j):
+                dp[i][j] = max(dp[i][j], dp[i + 1][k - 1] + dp[k + 1][j - 1] + 1)
+    
+    return dp[1][n]
 
 
 Solution = create_solution(solution_function_name)

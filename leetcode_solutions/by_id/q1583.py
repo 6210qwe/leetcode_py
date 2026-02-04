@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三维动态规划来解决这个问题。dp[i][j][k] 表示前 i 个房子，最后一个房子的颜色为 j，且形成了 k 个街区的最小花费。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，所有值设为无穷大。
+2. 处理初始状态，如果某个房子已经有颜色，则设置 dp[0][color-1][1] 为 0。
+3. 通过遍历房子、颜色和街区数量来填充 dp 数组。
+4. 最后，从 dp[m-1][...][target] 中找到最小值，如果最小值为无穷大，则返回 -1，否则返回该最小值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑当前房子的颜色与前一个房子的颜色是否相同。
+- 如果颜色相同，则街区数量不变；如果颜色不同，则街区数量加一。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * target)
+空间复杂度: O(m * n * target)
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost(houses: List[int], cost: List[List[int]], m: int, n: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组，所有值设为无穷大
+    dp = [[[float('inf')] * (target + 1) for _ in range(n)] for _ in range(m)]
+    
+    # 处理初始状态
+    for color in range(n):
+        if houses[0] == 0 or houses[0] - 1 == color:
+            dp[0][color][1] = cost[0][color]
+    
+    # 填充 dp 数组
+    for i in range(1, m):
+        for color in range(n):
+            for prev_color in range(n):
+                for k in range(1, target + 1):
+                    if houses[i] != 0 and houses[i] - 1 != color:
+                        continue
+                    if color == prev_color:
+                        dp[i][color][k] = min(dp[i][color][k], dp[i-1][prev_color][k] + (cost[i][color] if houses[i] == 0 else 0))
+                    elif k > 1:
+                        dp[i][color][k] = min(dp[i][color][k], dp[i-1][prev_color][k-1] + (cost[i][color] if houses[i] == 0 else 0))
+    
+    # 找到最小值
+    min_cost = min(dp[m-1][color][target] for color in range(n))
+    return -1 if min_cost == float('inf') else min_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

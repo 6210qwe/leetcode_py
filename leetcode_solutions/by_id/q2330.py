@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来最大化总美丽值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对花园进行排序。
+2. 计算前缀和以便快速计算需要的花朵数量。
+3. 使用双指针遍历花园，尝试将尽可能多的花园变为完善花园，并计算剩余花朵用于不完善花园的最大最小值。
+4. 更新最大总美丽值。
 
 关键点:
-- [TODO]
+- 通过排序和前缀和优化计算。
+- 使用双指针平衡完善和不完善花园的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(n) - 存储前缀和数组。
 """
 
 # ============================================================================
@@ -49,12 +52,50 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_total_beauty(flowers: List[int], new_flowers: int, target: int, full: int, partial: int) -> int:
+    n = len(flowers)
+    flowers.sort()
+    
+    # 如果所有花园都已经完善
+    if flowers[0] >= target:
+        return n * full
+    
+    # 计算前缀和
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + flowers[i - 1]
+    
+    max_beauty = 0
+    j = n - 1
+    
+    while j >= 0 and new_flowers >= 0:
+        # 将当前花园变为完善花园
+        if flowers[j] < target:
+            needed = target - flowers[j]
+            if new_flowers >= needed:
+                new_flowers -= needed
+                flowers[j] = target
+            else:
+                break
+        
+        # 计算剩余不完善花园的最大最小值
+        left = 0
+        right = j
+        while left < right:
+            mid = (left + right + 1) // 2
+            required = mid * flowers[mid] - prefix_sum[mid]
+            if required <= new_flowers:
+                left = mid
+            else:
+                right = mid - 1
+        
+        min_flowers = (new_flowers + prefix_sum[left]) // (left + 1)
+        beauty = (n - j - 1) * full + min_flowers * partial
+        max_beauty = max(max_beauty, beauty)
+        
+        j -= 1
+    
+    return max_beauty
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_total_beauty)

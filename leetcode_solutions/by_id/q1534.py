@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来跟踪每个字符的状态，并确保每个字符的顺序正确。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化五个计数器，分别对应 'c', 'r', 'o', 'a', 'k'。
+2. 遍历字符串，根据当前字符更新相应的计数器。
+3. 检查每个字符的顺序是否正确，如果不正确则返回 -1。
+4. 计算同时发声的青蛙数量的最大值。
 
 关键点:
-- [TODO]
+- 使用计数器来跟踪每个字符的状态。
+- 确保每个字符的顺序正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minNumberOfFrogs(croakOfFrogs: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回模拟字符串中所有蛙鸣所需不同青蛙的最少数目。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(croakOfFrogs) % 5 != 0:
+        return -1
+    
+    count = [0] * 5  # 计数器，分别对应 'c', 'r', 'o', 'a', 'k'
+    max_frogs = 0  # 最多同时发声的青蛙数量
+    for char in croakOfFrogs:
+        idx = "croak".find(char)
+        count[idx] += 1
+        if idx > 0 and count[idx] > count[idx - 1]:
+            return -1
+        if idx == 0:
+            max_frogs = max(max_frogs, sum(count))
+        elif idx == 4:
+            for i in range(4):
+                count[i] -= 1
+    
+    if any(count):
+        return -1
+    return max_frogs
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minNumberOfFrogs)

@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或数组来快速计算子数组的异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或数组 prefix_xor，其中 prefix_xor[i] 表示从 arr[0] 到 arr[i-1] 的异或值。
+2. 对于每个查询 [L, R]，结果为 prefix_xor[L] ^ prefix_xor[R + 1]。
 
 关键点:
-- [TODO]
+- 使用前缀异或数组可以将每次查询的时间复杂度降低到 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是数组 arr 的长度，q 是查询的数量。
+空间复杂度: O(n)，用于存储前缀异或数组。
 """
 
 # ============================================================================
@@ -49,12 +49,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int], queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算子数组的异或值
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀异或数组
+    n = len(arr)
+    prefix_xor = [0] * (n + 1)
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ arr[i]
+
+    # 处理每个查询
+    results = []
+    for L, R in queries:
+        results.append(prefix_xor[L] ^ prefix_xor[R + 1])
+
+    return results
 
 
 Solution = create_solution(solution_function_name)

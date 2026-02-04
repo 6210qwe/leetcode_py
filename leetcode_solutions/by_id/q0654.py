@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法构建最大二叉树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到当前数组中的最大值及其索引。
+2. 创建一个根节点，其值为最大值。
+3. 递归地在最大值左边的子数组上构建左子树。
+4. 递归地在最大值右边的子数组上构建右子树。
 
 关键点:
-- [TODO]
+- 递归终止条件：当子数组为空时，返回 None。
+- 递归构建左右子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 在最坏情况下，每次找到最大值需要 O(n) 时间，递归深度为 n。
+空间复杂度: O(n) - 递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -44,17 +47,27 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def construct_maximum_binary_tree(nums: List[int]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    递归构建最大二叉树
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return None
 
+    # 找到当前数组中的最大值及其索引
+    max_val = max(nums)
+    max_index = nums.index(max_val)
 
-Solution = create_solution(solution_function_name)
+    # 创建根节点
+    root = TreeNode(max_val)
+
+    # 递归构建左子树和右子树
+    root.left = construct_maximum_binary_tree(nums[:max_index])
+    root.right = construct_maximum_binary_tree(nums[max_index + 1:])
+
+    return root
+
+Solution = create_solution(construct_maximum_binary_tree)

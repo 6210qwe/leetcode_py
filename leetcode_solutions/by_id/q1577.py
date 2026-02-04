@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算两个盒子中球的颜色数相同的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总的球数 `total_balls` 和总的颜色数 `k`。
+2. 初始化一个三维 DP 数组 `dp`，其中 `dp[i][j][x]` 表示前 `i` 种颜色的球放入第一个盒子 `j` 个，且第一个盒子中有 `x` 种不同颜色的概率。
+3. 初始化边界条件：`dp[0][0][0] = 1`。
+4. 使用动态规划填充 `dp` 数组：
+   - 对于每种颜色 `i`，遍历可以放入第一个盒子的球数 `j`。
+   - 计算剩余球数 `remaining` 和可以放入第二个盒子的球数 `y`。
+   - 更新 `dp` 数组。
+5. 计算总的合法分配方案数 `total_ways` 和满足条件的分配方案数 `valid_ways`。
+6. 返回 `valid_ways / total_ways` 作为结果。
 
 关键点:
-- [TODO]
+- 使用组合数学计算球的分配方案数。
+- 动态规划状态转移方程的设计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k * n^2)，其中 k 是颜色数，n 是总球数的一半。
+空间复杂度: O(k * n^2)，用于存储 DP 数组。
 """
 
 # ============================================================================
@@ -47,14 +55,33 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def get_probability(balls: List[int]) -> float:
+    k = len(balls)
+    total_balls = sum(balls)
+    n = total_balls // 2
+
+    # 初始化 DP 数组
+    dp = [[[0 for _ in range(k + 1)] for _ in range(n + 1)] for _ in range(k + 1)]
+    dp[0][0][0] = 1
+
+    # 动态规划填充 DP 数组
+    for i in range(1, k + 1):
+        for j in range(n + 1):
+            for x in range(i + 1):
+                for b in range(min(balls[i - 1], j) + 1):
+                    remaining = balls[i - 1] - b
+                    y = min(j - b, x)
+                    if remaining >= y and remaining + b == balls[i - 1]:
+                        dp[i][j][x] += dp[i - 1][j - b][y] * math.comb(balls[i - 1], b)
+
+    # 计算总的合法分配方案数
+    total_ways = sum(dp[k][n][x] for x in range(k + 1))
+    valid_ways = sum(dp[k][n][x] for x in range(k + 1) if x == (k - x))
+
+    return valid_ways / total_ways
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_probability)

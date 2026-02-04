@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。我们定义一个三维的 dp 数组 dp[l][r][k] 表示移除区间 [l, r] 内的所有盒子，并且在区间外有 k 个与 boxes[r] 相同颜色的盒子时的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维的 dp 数组，dp[l][r][k] 用于存储子问题的结果。
+2. 定义一个递归函数 dfs(l, r, k)，表示移除区间 [l, r] 内的所有盒子，并且在区间外有 k 个与 boxes[r] 相同颜色的盒子时的最大得分。
+3. 在递归函数中，如果 l > r，则返回 0。
+4. 尝试移除区间 [l, r] 内的所有盒子，并且在区间外有 k 个与 boxes[r] 相同颜色的盒子。
+5. 如果 boxes[r] 与 boxes[r-1] 相同，则可以合并这两个盒子，继续递归处理剩下的盒子。
+6. 否则，尝试在区间 [l, r-1] 内找到与 boxes[r] 相同颜色的盒子，将其移到区间末尾，继续递归处理剩下的盒子。
+7. 返回 dp[l][r][k] 的值。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过合并相同颜色的盒子来优化得分。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^4)
+空间复杂度: O(n^3)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def removeBoxes(boxes: List[int]) -> int:
+    n = len(boxes)
+    dp = [[[0] * n for _ in range(n)] for _ in range(n)]
+    
+    def dfs(l: int, r: int, k: int) -> int:
+        if l > r:
+            return 0
+        if dp[l][r][k] != 0:
+            return dp[l][r][k]
+        
+        # 合并相同的盒子
+        while r > l and boxes[r] == boxes[r - 1]:
+            r -= 1
+            k += 1
+        
+        # 基本情况
+        dp[l][r][k] = dfs(l, r - 1, 0) + (k + 1) ** 2
+        
+        # 尝试将相同的盒子移到区间末尾
+        for i in range(l, r):
+            if boxes[i] == boxes[r]:
+                dp[l][r][k] = max(dp[l][r][k], dfs(l, i, k + 1) + dfs(i + 1, r - 1, 0))
+        
+        return dp[l][r][k]
+    
+    return dfs(0, n - 1, 0)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(removeBoxes)

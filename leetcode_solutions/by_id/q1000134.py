@@ -21,22 +21,26 @@ LCP 21. 追逐游戏 - 秋游中的小力和小扣设计了一个追逐游戏。
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用 BFS 计算从每个节点出发到其他所有节点的最短距离。
+- 通过这些最短距离，模拟小力和小扣的移动过程，计算小力追到小扣所需的最少回合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 BFS 计算从每个节点出发到其他所有节点的最短距离。
+3. 模拟小力和小扣的移动过程，计算小力追到小扣所需的最少回合。
 
 关键点:
-- [TODO]
+- 使用 BFS 计算最短路径。
+- 模拟小力和小扣的移动过程，确保小力和小扣都采取最优策略。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N + M)，其中 N 是节点数，M 是边数。构建图和 BFS 计算最短路径的时间复杂度都是 O(N + M)。
+空间复杂度: O(N + M)，存储图的邻接表和最短路径的距离矩阵。
 """
 
 # ============================================================================
@@ -44,17 +48,52 @@ LCP 21. 追逐游戏 - 秋游中的小力和小扣设计了一个追逐游戏。
 # ============================================================================
 
 from typing import List, Optional
+from collections import deque
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def bfs_shortest_paths(graph: List[List[int]], start: int) -> List[int]:
+    n = len(graph)
+    distances = [-1] * n
+    queue = deque([start])
+    distances[start] = 0
+
+    while queue:
+        current = queue.popleft()
+        for neighbor in graph[current]:
+            if distances[neighbor] == -1:
+                distances[neighbor] = distances[current] + 1
+                queue.append(neighbor)
+
+    return distances
 
 
-Solution = create_solution(solution_function_name)
+def chase_game(edges: List[List[int]], startA: int, startB: int) -> int:
+    n = len(edges) + 1
+    graph = [[] for _ in range(n)]
+    
+    for u, v in edges:
+        graph[u - 1].append(v - 1)
+        graph[v - 1].append(u - 1)
+    
+    # 计算从每个节点出发到其他所有节点的最短距离
+    dist_from_A = bfs_shortest_paths(graph, startA - 1)
+    dist_from_B = bfs_shortest_paths(graph, startB - 1)
+    
+    # 模拟小力和小扣的移动过程
+    max_distance = 0
+    for i in range(n):
+        if dist_from_A[i] < dist_from_B[i]:
+            max_distance = max(max_distance, dist_from_B[i])
+    
+    # 检查是否存在环
+    for i in range(n):
+        if dist_from_A[i] == dist_from_B[i] and dist_from_A[i] != -1:
+            return -1
+    
+    return max_distance
+
+
+Solution = create_solution(chase_game)

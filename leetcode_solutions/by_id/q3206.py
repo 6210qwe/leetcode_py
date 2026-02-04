@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个数组中元素的出现情况，然后通过比较两个哈希表来计算公共元素的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建两个哈希表，分别记录 nums1 和 nums2 中每个元素的出现次数。
+2. 遍历 nums1，统计每个元素在 nums2 中出现的次数，累加到 answer1。
+3. 遍历 nums2，统计每个元素在 nums1 中出现的次数，累加到 answer2。
 
 关键点:
-- [TODO]
+- 使用哈希表可以高效地统计元素出现次数，并且可以在 O(1) 时间内查找元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。我们需要遍历两个数组来构建哈希表，并再次遍历来计算公共元素的数量。
+空间复杂度: O(n + m)，用于存储两个哈希表。
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_common_elements(nums1: List[int], nums2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个数组中的公共元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建两个哈希表，分别记录 nums1 和 nums2 中每个元素的出现次数
+    count_nums1 = {}
+    count_nums2 = {}
+
+    for num in nums1:
+        count_nums1[num] = count_nums1.get(num, 0) + 1
+
+    for num in nums2:
+        count_nums2[num] = count_nums2.get(num, 0) + 1
+
+    # 计算 answer1 和 answer2
+    answer1 = sum(min(count_nums1[num], count_nums2.get(num, 0)) for num in count_nums1)
+    answer2 = sum(min(count_nums2[num], count_nums1.get(num, 0)) for num in count_nums2)
+
+    return [answer1, answer2]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_common_elements)

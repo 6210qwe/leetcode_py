@@ -21,40 +21,44 @@ LCR 193. 二叉搜索树的最近公共祖先 - 给定一个二叉搜索树, 找
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质，如果当前节点的值介于 p 和 q 之间，则当前节点就是最近公共祖先。否则，根据 p 和 q 的值决定向左子树或右子树递归查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 p 和 q 的值都小于当前节点的值，则递归在左子树中查找。
+2. 如果 p 和 q 的值都大于当前节点的值，则递归在右子树中查找。
+3. 否则，当前节点就是最近公共祖先。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质，减少不必要的遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h)，其中 h 是树的高度。最坏情况下，树退化成链表，时间复杂度为 O(n)。
+空间复杂度: O(h)，递归调用栈的空间复杂度。最坏情况下，树退化成链表，空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def lowest_common_ancestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 求二叉搜索树的最近公共祖先
     """
-    # TODO: 实现最优解法
-    pass
+    # 当前节点的值介于 p 和 q 之间，则当前节点就是最近公共祖先
+    if p.val < root.val > q.val:
+        return lowest_common_ancestor(root.left, p, q)
+    if p.val > root.val < q.val:
+        return lowest_common_ancestor(root.right, p, q)
+    return root
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(lowest_common_ancestor)

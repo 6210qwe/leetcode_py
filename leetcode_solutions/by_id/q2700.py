@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用预处理和哈希表来快速查找每个查询的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理所有可能的子字符串，并记录它们的起始位置。
+2. 对于每个查询，计算目标值 target = firsti ^ secondi。
+3. 在预处理的哈希表中查找目标值，找到最短的子字符串。
 
 关键点:
-- [TODO]
+- 预处理时，只需要考虑长度不超过 30 的子字符串，因为 2^30 > 10^9。
+- 使用哈希表存储每个值的最短子字符串的起始位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 30 + m)，其中 n 是字符串 s 的长度，m 是 queries 的长度。
+空间复杂度: O(n * 30)，用于存储预处理结果。
 """
 
 # ============================================================================
@@ -49,12 +51,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, queries: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 预处理所有可能的子字符串，并记录它们的起始位置
+    max_len = 30
+    value_to_index = {}
+    
+    for i in range(len(s)):
+        if s[i] == '0':
+            if 0 not in value_to_index:
+                value_to_index[0] = (i, i)
+            continue
+        
+        current_value = 0
+        for j in range(i, min(i + max_len, len(s))):
+            current_value = (current_value << 1) | (int(s[j]))
+            if current_value not in value_to_index:
+                value_to_index[current_value] = (i, j)
+    
+    # 处理每个查询
+    result = []
+    for first, second in queries:
+        target = first ^ second
+        if target in value_to_index:
+            result.append(list(value_to_index[target]))
+        else:
+            result.append([-1, -1])
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

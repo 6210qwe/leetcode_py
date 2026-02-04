@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用计数器来统计每个元素的出现次数，然后检查是否可以将这些元素分成若干组，每组恰好有 k 个不同的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `Counter` 统计每个元素的出现次数。
+2. 将每个元素的出现次数存储在一个列表中，并对该列表进行降序排序。
+3. 检查每个元素的出现次数是否可以被 k 整除，如果不能则返回 False。
+4. 逐个减少每个元素的出现次数，直到所有元素都被分配到组中。
+5. 如果所有元素都能被分配到组中，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用计数器来统计每个元素的出现次数。
+- 通过排序和逐个减少元素的出现次数来确保每组恰好有 k 个不同的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储计数器和排序后的列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def can_partition_k_subsets(nums: List[int], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以将 nums 中的所有元素分成一个或多个组，使得每个组恰好包含 k 个元素且每组中的元素互不相同。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个元素的出现次数
+    count = Counter(nums)
+    
+    # 将每个元素的出现次数存储在一个列表中，并对该列表进行降序排序
+    freqs = sorted(count.values(), reverse=True)
+    
+    # 检查每个元素的出现次数是否可以被 k 整除
+    if any(freq % k != 0 for freq in freqs):
+        return False
+    
+    # 逐个减少每个元素的出现次数
+    while freqs:
+        freqs[-1] -= 1
+        if freqs[-1] == 0:
+            freqs.pop()
+        
+        # 将当前最大频率减小后重新排序
+        freqs.sort(reverse=True)
+    
+    return True
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_partition_k_subsets)

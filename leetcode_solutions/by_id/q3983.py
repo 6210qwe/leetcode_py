@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和队列来记录每次操作的下标，确保每次操作都能最大化地减少剩余的 '0'。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列来存储需要翻转的下标。
+2. 遍历字符串，将所有 '0' 的下标加入队列。
+3. 如果队列中的 '0' 数量小于 k 且队列不为空，则无法完成操作，返回 -1。
+4. 否则，进行操作，每次从队列中取出 k 个 '0' 的下标进行翻转，并将这些下标重新加入队列。
+5. 记录操作次数，直到队列为空。
 
 关键点:
-- [TODO]
+- 使用队列来记录需要翻转的下标，确保每次操作都能最大化地减少剩余的 '0'。
+- 通过贪心算法，每次操作尽可能多地翻转 '0'，从而减少总的操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_equalize_binary_string(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使二进制字符串全为 1 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import deque
+
+    # 初始化队列
+    queue = deque()
+    for i, char in enumerate(s):
+        if char == '0':
+            queue.append(i)
+
+    operations = 0
+
+    while queue:
+        if len(queue) < k:
+            return -1
+        for _ in range(k):
+            index = queue.popleft()
+            # 将翻转后的下标重新加入队列
+            queue.append(index + len(s))
+        operations += 1
+
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_equalize_binary_string)

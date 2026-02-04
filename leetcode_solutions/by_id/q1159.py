@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和单调栈来构建字典序最小的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的最后出现位置。
+2. 使用一个栈来构建结果字符串。
+3. 遍历字符串，对于每个字符：
+   - 如果该字符已经在栈中，则跳过。
+   - 否则，比较当前字符和栈顶字符，如果当前字符比栈顶字符小且栈顶字符在后面还会出现，则弹出栈顶字符。
+   - 将当前字符压入栈中。
+4. 最终栈中的字符即为所求的最小子序列。
 
 关键点:
-- [TODO]
+- 使用单调栈来保持字典序最小。
+- 记录每个字符的最后出现位置以决定是否弹出栈顶字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(1) 或 O(26)，因为栈的最大长度不会超过字符集的大小（26个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +55,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_subsequence(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 s 字典序最小的子序列，该子序列包含 s 的所有不同字符，且只包含一次。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的最后出现位置
+    last_occurrence = {char: i for i, char in enumerate(s)}
+    
+    # 使用栈来构建结果字符串
+    stack = []
+    
+    # 遍历字符串
+    for i, char in enumerate(s):
+        if char in stack:
+            continue
+        
+        # 比较当前字符和栈顶字符
+        while stack and char < stack[-1] and i < last_occurrence[stack[-1]]:
+            stack.pop()
+        
+        # 将当前字符压入栈中
+        stack.append(char)
+    
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_subsequence)

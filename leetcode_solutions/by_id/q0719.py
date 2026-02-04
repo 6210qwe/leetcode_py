@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到第 k 小的数对距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用二分查找来确定最小的距离 d，使得数组中存在至少 k 个数对的距离小于等于 d。
+3. 在每次二分查找的过程中，使用滑动窗口来计算当前距离 d 下的数对数量。
 
 关键点:
-- [TODO]
+- 排序后的数组可以方便地使用滑动窗口来计算数对数量。
+- 二分查找的时间复杂度较低，适合处理大规模数据。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + n log d)，其中 n 是数组长度，d 是数组中的最大值减去最小值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出第 K 小的数对距离
     """
-    # TODO: 实现最优解法
-    pass
+    def count_pairs(nums, mid):
+        count = 0
+        left = 0
+        for right in range(len(nums)):
+            while nums[right] - nums[left] > mid:
+                left += 1
+            count += right - left
+        return count
 
+    nums.sort()
+    low, high = 0, nums[-1] - nums[0]
+    
+    while low < high:
+        mid = (low + high) // 2
+        if count_pairs(nums, mid) < k:
+            low = mid + 1
+        else:
+            high = mid
+    return low
 
 Solution = create_solution(solution_function_name)

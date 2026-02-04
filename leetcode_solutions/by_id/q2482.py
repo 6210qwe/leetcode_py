@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和回溯法来枚举所有可能的列组合，并计算每种组合能覆盖的最大行数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每一行转换为一个整数，用二进制表示该行的 1 和 0。
+2. 使用回溯法枚举所有可能的列组合。
+3. 对于每一种列组合，计算它能覆盖的行数。
+4. 返回最大覆盖行数。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地表示和操作每一行。
+- 使用回溯法来枚举所有可能的列组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * m)，其中 n 是列数，m 是行数。最坏情况下需要枚举所有可能的列组合。
+空间复杂度: O(n + m)，递归调用栈的深度为 n，存储每一行的整数表示需要 O(m) 空间。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_rows_covered(matrix: List[List[int]], num_select: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以由 numSelect 列构成的集合覆盖的最大行数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(matrix), len(matrix[0])
+    rows = [0] * m
+    
+    # 将每一行转换为一个整数
+    for i in range(m):
+        for j in range(n):
+            if matrix[i][j] == 1:
+                rows[i] |= (1 << j)
+    
+    max_covered = 0
+    
+    def backtrack(start: int, selected: int, count: int):
+        nonlocal max_covered
+        if count == num_select:
+            covered = sum(1 for row in rows if (row & selected) == row)
+            max_covered = max(max_covered, covered)
+            return
+        
+        for i in range(start, n):
+            if (selected & (1 << i)) == 0:
+                backtrack(i + 1, selected | (1 << i), count + 1)
+    
+    backtrack(0, 0, 0)
+    return max_covered
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_rows_covered)

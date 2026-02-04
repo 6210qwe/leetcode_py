@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和二分查找来确定最佳抽水时机。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `full_lakes` 来记录每个湖泊上次下雨的时间。
+2. 初始化一个列表 `dry_days` 来记录可以抽干湖泊的日子。
+3. 遍历 `rains` 数组：
+   - 如果当前湖泊下雨且已经满了，则尝试在 `dry_days` 中找到一个合适的日子来抽干该湖泊。
+   - 如果找不到合适的抽干日子，则返回空数组。
+   - 否则，更新 `full_lakes` 和 `dry_days`。
+4. 对于 `rains` 中为 0 的日子，在 `dry_days` 中选择一个湖泊进行抽干。
 
 关键点:
-- [TODO]
+- 使用二分查找在 `dry_days` 中找到合适的抽干日子。
+- 保持 `dry_days` 有序，以便高效地进行二分查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 rains 的长度。最坏情况下，每次插入和查找操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，需要额外的空间来存储 `full_lakes` 和 `dry_days`。
 """
 
 # ============================================================================
@@ -49,12 +55,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def avoid_flood(rains: List[int]) -> List[int]:
+    full_lakes = {}
+    dry_days = []
+    result = [-1] * len(rains)
+    
+    for day, lake in enumerate(rains):
+        if lake > 0:
+            if lake in full_lakes:
+                # 二分查找找到第一个大于等于 full_lakes[lake] 的 dry_day
+                idx = bisect.bisect_left(dry_days, full_lakes[lake])
+                if idx == len(dry_days):
+                    return []
+                result[dry_days.pop(idx)] = lake
+            full_lakes[lake] = day
+        else:
+            dry_days.append(day)
+    
+    # 对于剩下的 dry_days，随便选择一个湖泊进行抽干
+    for day in dry_days:
+        result[day] = 1  # 选择任意一个湖泊
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(avoid_flood)

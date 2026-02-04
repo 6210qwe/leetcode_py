@@ -21,22 +21,25 @@ LCR 065. 单词的压缩编码 - 单词数组 words 的 有效编码 由任意�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储单词的反序，这样可以有效地找到所有后缀相同的单词，并将其合并。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 反转每个单词并存入集合中。
+2. 将反转后的单词插入字典树。
+3. 遍历字典树，计算每个叶子节点的深度，累加这些深度得到最终结果。
 
 关键点:
-- [TODO]
+- 反转单词以便处理后缀。
+- 使用字典树来存储和查找单词。
+- 计算每个叶子节点的深度并累加。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是单词的数量，m 是单词的最大长度。
+空间复杂度: O(n * m)，存储所有单词的反转和字典树的空间。
 """
 
 # ============================================================================
@@ -48,13 +51,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def get_leaf_depths(self) -> int:
+        def dfs(node, depth):
+            if not node.children:
+                return depth + 1
+            total_depth = 0
+            for child in node.children.values():
+                total_depth += dfs(child, depth + 1)
+            return total_depth
+
+        return dfs(self.root, 0)
+
+def solution_function_name(words: List[str]) -> int:
+    """
+    函数式接口 - 返回成功对 words 进行编码的最小助记字符串 s 的长度
+    """
+    # 反转每个单词并去重
+    reversed_words = set(word[::-1] for word in words)
+    
+    # 创建字典树
+    trie = Trie()
+    
+    # 插入反转后的单词
+    for word in reversed_words:
+        trie.insert(word)
+    
+    # 计算每个叶子节点的深度并累加
+    return trie.get_leaf_depths()
 
 Solution = create_solution(solution_function_name)

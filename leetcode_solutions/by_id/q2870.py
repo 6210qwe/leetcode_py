@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最长的交替子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `max_length` 为 -1，用于记录最长交替子数组的长度。
+2. 遍历数组，使用双指针方法来找到每个可能的交替子数组。
+3. 对于每个起始点，检查后续元素是否满足交替条件，并更新 `max_length`。
 
 关键点:
-- [TODO]
+- 使用双指针方法来遍历数组，确保时间复杂度最优。
+- 通过比较相邻元素的差值来判断是否满足交替条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_alternating_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回数组中所有交替子数组中最长的长度，如果不存在交替子数组，则返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    max_length = -1
+    n = len(nums)
+    
+    for i in range(n):
+        if i + 1 < n and nums[i + 1] == nums[i] + 1:
+            length = 2
+            diff = -1
+            j = i + 2
+            while j < n and nums[j] == nums[j - 1] + diff:
+                length += 1
+                diff *= -1
+                j += 1
+            max_length = max(max_length, length)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_alternating_subarray)

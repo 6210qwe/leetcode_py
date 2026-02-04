@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和离散化来处理每个查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums 进行离散化处理，将大范围的数值映射到较小的范围内。
+2. 构建前缀和数组，记录每个位置上各个离散化后的值的频率。
+3. 对于每个查询，使用前缀和数组快速计算子数组中每个元素的频率。
+4. 找出满足条件的频率最高的元素。
 
 关键点:
-- [TODO]
+- 使用离散化减少空间复杂度。
+- 使用前缀和数组快速计算子数组中的频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log n)，其中 n 是 nums 的长度，q 是 queries 的长度。
+空间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是离散化后的值的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+def solution_function_name(nums: List[int], queries: List[List[int]]) -> List[int]:
+    def discretize(nums):
+        unique_vals = sorted(set(nums))
+        val_to_id = {val: idx for idx, val in enumerate(unique_vals)}
+        return [val_to_id[num] for num in nums], len(unique_vals)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def build_prefix_sum(discretized_nums, m):
+        prefix_sum = [[0] * (m + 1) for _ in range(len(discretized_nums) + 1)]
+        for i in range(1, len(discretized_nums) + 1):
+            for j in range(m + 1):
+                prefix_sum[i][j] = prefix_sum[i - 1][j]
+            prefix_sum[i][discretized_nums[i - 1]] += 1
+        return prefix_sum
 
+    def query_range(prefix_sum, l, r, threshold):
+        freq = defaultdict(int)
+        for i in range(m):
+            if prefix_sum[r + 1][i] - prefix_sum[l][i] >= threshold:
+                freq[i] = prefix_sum[r + 1][i] - prefix_sum[l][i]
+        if not freq:
+            return -1
+        max_freq = max(freq.values())
+        return min([k for k, v in freq.items() if v == max_freq])
+
+    discretized_nums, m = discretize(nums)
+    prefix_sum = build_prefix_sum(discretized_nums, m)
+    result = []
+    for l, r, threshold in queries:
+        result.append(query_range(prefix_sum, l, r, threshold))
+    return result
 
 Solution = create_solution(solution_function_name)

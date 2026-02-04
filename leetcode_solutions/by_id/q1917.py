@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来维护每个班级的通过率增量，每次选择增量最大的班级添加一个学生。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，将每个班级的通过率增量 (delta) 和班级索引加入堆中。
+2. 对于每个额外的学生，从堆中取出增量最大的班级，增加一个学生，并更新该班级的通过率增量，再将其重新加入堆中。
+3. 计算最终的平均通过率并返回。
 
 关键点:
-- [TODO]
+- 通过率增量的计算公式为 (pass + 1) / (total + 1) - pass / total。
+- 使用最大堆来高效地找到增量最大的班级。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + k) log n)，其中 n 是班级数量，k 是额外学生的数量。每次插入和删除堆的操作都是 O(log n)。
+空间复杂度: O(n)，用于存储堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def max_average_ratio(classes: List[List[int]], extraStudents: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大平均通过率
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义通过率增量的计算函数
+    def delta(passed, total):
+        return (passed + 1) / (total + 1) - passed / total
 
+    # 初始化最大堆
+    max_heap = []
+    for passed, total in classes:
+        heapq.heappush(max_heap, (-delta(passed, total), passed, total))
 
-Solution = create_solution(solution_function_name)
+    # 为每个额外的学生分配班级
+    for _ in range(extraStudents):
+        d, passed, total = heapq.heappop(max_heap)
+        passed += 1
+        total += 1
+        heapq.heappush(max_heap, (-delta(passed, total), passed, total))
+
+    # 计算最终的平均通过率
+    total_pass_rate = sum((passed / total for _, passed, total in max_heap))
+    return total_pass_rate / len(classes)
+
+Solution = create_solution(max_average_ratio)

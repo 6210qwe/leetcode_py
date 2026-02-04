@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过逆向遍历编码字符串，逐步缩小解码字符串的长度，直到找到第 k 个字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算解码字符串的总长度。
+2. 逆向遍历编码字符串，逐步缩小解码字符串的长度，直到找到第 k 个字符。
 
 关键点:
-- [TODO]
+- 通过逆向遍历避免生成完整的解码字符串，从而优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是编码字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def decoded_string_at_index(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到解码字符串中的第 k 个字符
     """
-    # TODO: 实现最优解法
-    pass
+    size = 0
+    # 计算解码字符串的总长度
+    for char in s:
+        if char.isdigit():
+            size *= int(char)
+        else:
+            size += 1
+    
+    # 逆向遍历编码字符串
+    for char in reversed(s):
+        k %= size
+        if k == 0 and char.isalpha():
+            return char
+        
+        if char.isdigit():
+            size //= int(char)
+        else:
+            size -= 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(decoded_string_at_index)

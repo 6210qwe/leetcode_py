@@ -21,40 +21,79 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个最大堆和两个最小堆来维护前 n 个元素和后 n 个元素的最大和最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组分成两部分，前 2n 个元素和后 2n 个元素。
+2. 对于前 2n 个元素，使用一个最大堆来维护前 n 个最小值的和，使用一个最小堆来维护前 n 个最大值的和。
+3. 对于后 2n 个元素，使用一个最大堆来维护后 n 个最小值的和，使用一个最小堆来维护后 n 个最大值的和。
+4. 遍历前 2n 个元素，更新最大堆和最小堆，并计算当前的差值。
+5. 遍历后 2n 个元素，更新最大堆和最小堆，并计算当前的差值。
+6. 返回最小的差值。
 
 关键点:
-- [TODO]
+- 使用堆来高效地维护前 n 个最小值和最大值的和。
+- 通过遍历和更新堆来计算最小的差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def minimum_difference(nums: List[int]) -> int:
+    n = len(nums) // 3
+    left_max_heap = []
+    left_min_heap = []
+    right_max_heap = []
+    right_min_heap = []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化前 2n 个元素的堆
+    for i in range(2 * n):
+        if i < n:
+            heapq.heappush(left_max_heap, -nums[i])
+            heapq.heappush(right_min_heap, nums[i])
+        else:
+            heapq.heappush(left_min_heap, nums[i])
+            heapq.heappush(right_max_heap, -nums[i])
 
+    # 计算初始的和
+    left_sum = -sum(left_max_heap)
+    right_sum = sum(right_min_heap)
 
-Solution = create_solution(solution_function_name)
+    min_diff = left_sum - right_sum
+
+    # 遍历前 2n 个元素
+    for i in range(2 * n, 3 * n):
+        # 更新右半部分的堆
+        if nums[i] < -right_max_heap[0]:
+            right_sum += nums[i] + right_max_heap[0]
+            heapq.heapreplace(right_max_heap, -nums[i])
+        else:
+            heapq.heappush(right_min_heap, nums[i])
+            right_sum += nums[i]
+
+        # 更新左半部分的堆
+        if -left_max_heap[0] > nums[i - 2 * n]:
+            left_sum += -left_max_heap[0] - nums[i - 2 * n]
+            heapq.heapreplace(left_max_heap, -nums[i - 2 * n])
+        else:
+            heapq.heappush(left_min_heap, nums[i - 2 * n])
+            left_sum -= nums[i - 2 * n]
+
+        # 计算当前的差值
+        min_diff = min(min_diff, left_sum - right_sum)
+
+    return min_diff
+
+Solution = create_solution(minimum_difference)

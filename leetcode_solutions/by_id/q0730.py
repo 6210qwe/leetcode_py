@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示 s[i:j+1] 中的不同回文子序列的数量。通过递归和记忆化搜索来计算每个子区间的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][k] 表示在 s[i:j+1] 中以 k 开头和结尾的不同回文子序列的数量。
+2. 使用递归和记忆化搜索来填充 dp 数组。
+3. 最终结果是 dp[0][n-1][0] 到 dp[0][n-1][3] 的和减去 1（因为要排除空串）。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过递归处理每个子区间的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是字符串 s 的长度。我们需要计算每个子区间的 dp 值。
+空间复杂度: O(n^3)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -48,13 +50,33 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_palindromic_subsequences(s: str) -> int:
+    n = len(s)
+    dp = [[[0] * 4 for _ in range(n)] for _ in range(n)]
+    
+    def dfs(i: int, j: int, k: int) -> int:
+        if i > j:
+            return 0
+        if dp[i][j][k] != 0:
+            return dp[i][j][k]
+        
+        if i == j:
+            dp[i][j][k] = 1 if s[i] == chr(ord('a') + k) else 0
+            return dp[i][j][k]
+        
+        if s[i] == chr(ord('a') + k):
+            dp[i][j][k] = (dfs(i, j - 1, k) + dfs(i + 1, j, k) + 1) % MOD
+        else:
+            dp[i][j][k] = dfs(i + 1, j, k)
+        
+        return dp[i][j][k]
+    
+    result = 0
+    for k in range(4):
+        result = (result + dfs(0, n - 1, k)) % MOD
+    
+    return (result - 1 + MOD) % MOD
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_palindromic_subsequences)

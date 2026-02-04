@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序来找到前 k 个最大和最小的元素，然后计算它们的和并求差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 计算前 k 个最小元素的总和。
+3. 计算后 k 个最大元素的总和。
+4. 返回两者差值的绝对值。
 
 关键点:
-- [TODO]
+- 排序的时间复杂度为 O(n log n)，但这是必要的以确保我们能准确找到前 k 个最大和最小的元素。
+- 空间复杂度为 O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中 k 个最大和最小元素的绝对差值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 计算前 k 个最小元素的总和
+    min_sum = sum(nums[:k])
+    
+    # 计算后 k 个最大元素的总和
+    max_sum = sum(nums[-k:])
+    
+    # 返回两者差值的绝对值
+    return abs(max_sum - min_sum)
 
 
 Solution = create_solution(solution_function_name)

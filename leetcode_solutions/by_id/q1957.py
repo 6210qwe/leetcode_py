@@ -21,40 +21,81 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合和二分查找来高效处理查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对房间按面积从大到小排序。
+2. 对查询按最小面积要求从大到小排序。
+3. 使用有序集合维护当前可用的房间ID。
+4. 遍历查询，对于每个查询：
+   - 将所有面积大于等于当前查询最小面积要求的房间加入有序集合。
+   - 使用二分查找在有序集合中找到最接近的房间ID。
+   - 更新结果数组。
 
 关键点:
-- [TODO]
+- 使用有序集合可以高效地插入和查找最接近的房间ID。
+- 通过排序和二分查找，可以在O(log n)时间内找到最接近的房间ID。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + k) log n)
+- 排序操作的时间复杂度为O(n log n)。
+- 每个查询的处理时间为O(log n)，总共有k个查询，因此总时间复杂度为O(k log n)。
+
+空间复杂度: O(n)
+- 有序集合的空间复杂度为O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
+def closestRoom(rooms: List[List[int]], queries: List[List[int]]) -> List[int]:
+    # 对房间按面积从大到小排序
+    rooms.sort(key=lambda x: -x[1])
+    
+    # 对查询按最小面积要求从大到小排序，并记录原始索引
+    queries = sorted(enumerate(queries), key=lambda x: -x[1][1])
+    
+    # 结果数组
+    result = [-1] * len(queries)
+    
+    # 有序集合，用于存储当前可用的房间ID
+    available_rooms = SortedList()
+    
+    # 当前处理的房间索引
+    room_index = 0
+    
+    for original_index, (preferred, min_size) in queries:
+        # 将所有面积大于等于当前查询最小面积要求的房间加入有序集合
+        while room_index < len(rooms) and rooms[room_index][1] >= min_size:
+            available_rooms.add(rooms[room_index][0])
+            room_index += 1
+        
+        # 如果有序集合为空，说明没有满足条件的房间
+        if not available_rooms:
+            continue
+        
+        # 使用二分查找在有序集合中找到最接近的房间ID
+        pos = available_rooms.bisect_left(preferred)
+        
+        # 找到最接近的房间ID
+        candidates = []
+        if pos > 0:
+            candidates.append(available_rooms[pos - 1])
+        if pos < len(available_rooms):
+            candidates.append(available_rooms[pos])
+        
+        # 选择最接近的房间ID
+        closest_room = min(candidates, key=lambda x: (abs(x - preferred), x))
+        result[original_index] = closest_room
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(closestRoom)

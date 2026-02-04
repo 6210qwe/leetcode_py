@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点到终点的最短路径，并计算最短路径的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 使用 Dijkstra 算法计算从起点到所有节点的最短路径。
+3. 在计算最短路径的同时，记录每个节点的最短路径数量。
+4. 返回从起点到终点的最短路径数量。
 
 关键点:
-- [TODO]
+- 使用优先队列（最小堆）来实现 Dijkstra 算法。
+- 记录每个节点的最短路径数量时，使用动态规划的思想。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是顶点的数量。
+空间复杂度: O(E + V)，用于存储图的邻接表和最短路径相关数据。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
+import heapq
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_paths(n: int, roads: List[List[int]]) -> int:
+    MOD = 10**9 + 7
+    graph = [[] for _ in range(n)]
+    
+    # 构建图的邻接表
+    for u, v, time in roads:
+        graph[u].append((v, time))
+        graph[v].append((u, time))
+    
+    # 初始化距离和路径计数
+    dist = [float('inf')] * n
+    ways = [0] * n
+    dist[0] = 0
+    ways[0] = 1
+    
+    # 最小堆
+    pq = [(0, 0)]  # (distance, node)
+    
+    while pq:
+        d, u = heapq.heappop(pq)
+        
+        if d > dist[u]:
+            continue
+        
+        for v, time in graph[u]:
+            if dist[u] + time < dist[v]:
+                dist[v] = dist[u] + time
+                ways[v] = ways[u]
+                heapq.heappush(pq, (dist[v], v))
+            elif dist[u] + time == dist[v]:
+                ways[v] = (ways[v] + ways[u]) % MOD
+    
+    return ways[n - 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_paths)

@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的 datetime 模块来处理日期计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入的日期字符串转换为 datetime 对象。
+2. 计算两个日期之间的差值。
+3. 返回差值的绝对值。
 
 关键点:
-- [TODO]
+- 使用 datetime.strptime 将字符串转换为日期对象。
+- 使用 (date1 - date2).days 来计算日期差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 日期转换和差值计算都是常数时间操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from datetime import datetime
 
-
-def solution_function_name(params):
+def days_between_dates(date1: str, date2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算两个日期之间的天数差
+    :param date1: 第一个日期字符串
+    :param date2: 第二个日期字符串
+    :return: 两个日期之间的天数差
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串转换为日期对象
+    date_obj1 = datetime.strptime(date1, "%Y-%m-%d")
+    date_obj2 = datetime.strptime(date2, "%Y-%m-%d")
+    
+    # 计算日期差值
+    delta = abs((date_obj1 - date_obj2).days)
+    
+    return delta
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(days_between_dates)

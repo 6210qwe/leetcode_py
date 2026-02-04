@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最小的未出现在 nums 中的正整数，确保追加的 k 个整数之和最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 nums 排序并去重。
+2. 初始化一个变量 `current` 为 1，表示当前要检查的最小正整数。
+3. 使用一个循环来找到 k 个未出现在 nums 中的正整数：
+   - 如果 `current` 不在 nums 中，则将其加入结果，并增加 `current`。
+   - 如果 `current` 在 nums 中，则跳过。
+4. 计算并返回这 k 个整数的和。
 
 关键点:
-- [TODO]
+- 通过排序和去重，确保我们只检查未出现的最小正整数。
+- 通过贪心算法，确保每次选择的都是当前最小的未出现正整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + k)，其中 n 是 nums 的长度，k 是需要追加的整数个数。排序操作的时间复杂度为 O(n log n)，查找 k 个未出现的正整数的时间复杂度为 O(k)。
+空间复杂度: O(n)，用于存储去重后的 nums。
 """
 
 # ============================================================================
@@ -49,12 +54,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def append_k_integers_with_minimal_sum(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    向数组中追加 K 个整数 - 使结果数组的元素和最小。
     """
-    # TODO: 实现最优解法
-    pass
+    # 去重并排序
+    nums = sorted(set(nums))
+    
+    current = 1
+    result = 0
+    added_count = 0
+    
+    for num in nums:
+        while current < num:
+            result += current
+            added_count += 1
+            if added_count == k:
+                return result
+            current += 1
+        current = num + 1
+    
+    while added_count < k:
+        result += current
+        added_count += 1
+        current += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(append_k_integers_with_minimal_sum)

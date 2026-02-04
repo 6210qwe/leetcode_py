@@ -21,22 +21,23 @@ LCR 156. 序列化与反序列化二叉树 - 序列化是将一个数据结构�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前序遍历进行序列化和反序列化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 序列化时，使用前序遍历（根-左-右），将节点值和空节点用特殊字符表示。
+2. 反序列化时，根据前序遍历的结果重建二叉树。
 
 关键点:
-- [TODO]
+- 使用前序遍历可以唯一确定二叉树的结构。
+- 空节点用特殊字符表示，以便在反序列化时正确处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数，每个节点都需要访问一次。
+空间复杂度: O(n)，递归调用栈的空间以及存储序列化结果的空间。
 """
 
 # ============================================================================
@@ -44,17 +45,34 @@ LCR 156. 序列化与反序列化二叉树 - 序列化是将一个数据结构�
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Codec:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string."""
+        if not root:
+            return "None"
+        return f"{root.val},{self.serialize(root.left)},{self.serialize(root.right)}"
 
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree."""
+        def build_tree(nodes: List[str]) -> Optional[TreeNode]:
+            val = nodes.pop(0)
+            if val == "None":
+                return None
+            node = TreeNode(int(val))
+            node.left = build_tree(nodes)
+            node.right = build_tree(nodes)
+            return node
+        
+        nodes = data.split(',')
+        return build_tree(nodes)
 
-Solution = create_solution(solution_function_name)
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+
+Solution = create_solution(Codec)

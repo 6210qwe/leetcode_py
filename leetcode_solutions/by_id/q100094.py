@@ -21,22 +21,27 @@ LCP 05. 发 LeetCoin - 力扣决定给一个刷题团队发LeetCoin作为奖励�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来处理区间更新和查询操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构，并记录每个节点的子树大小。
+2. 初始化线段树，用于处理区间更新和查询。
+3. 对于每种操作：
+   - 操作1：直接更新线段树中对应节点的值。
+   - 操作2：更新线段树中对应节点及其子树的值。
+   - 操作3：查询线段树中对应节点及其子树的值。
 
 关键点:
-- [TODO]
+- 使用线段树可以高效地处理区间更新和查询操作。
+- 通过DFS遍历树，记录每个节点的子树大小，以便在线段树中进行区间更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((N + Q) log N)，其中N是节点数，Q是操作数。每次更新和查询的时间复杂度为O(log N)。
+空间复杂度: O(N)，存储树结构和线段树。
 """
 
 # ============================================================================
@@ -48,13 +53,72 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 1000000007
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
+    
+    def update(self, index, value, node=1, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+        if start == end:
+            self.tree[node] += value
+            self.tree[node] %= MOD
+            return
+        mid = (start + end) // 2
+        if index <= mid:
+            self.update(index, value, 2 * node, start, mid)
+        else:
+            self.update(index, value, 2 * node + 1, mid + 1, end)
+        self.tree[node] = (self.tree[2 * node] + self.tree[2 * node + 1]) % MOD
+    
+    def query(self, left, right, node=1, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+        if left > end or right < start:
+            return 0
+        if left <= start and right >= end:
+            return self.tree[node]
+        mid = (start + end) // 2
+        return (self.query(left, right, 2 * node, start, mid) + 
+                self.query(left, right, 2 * node + 1, mid + 1, end)) % MOD
 
+def dfs(node, parent, tree, subtree_size, depth):
+    subtree_size[node] = 1
+    for child in tree[node]:
+        if child != parent:
+            subtree_size[node] += dfs(child, node, tree, subtree_size, depth + 1)
+    return subtree_size[node]
+
+def solution_function_name(N: int, leadership: List[List[int]], operations: List[List[int]]) -> List[int]:
+    # 构建树结构
+    tree = [[] for _ in range(N)]
+    for a, b in leadership:
+        tree[a - 1].append(b - 1)
+        tree[b - 1].append(a - 1)
+    
+    # 记录每个节点的子树大小
+    subtree_size = [0] * N
+    dfs(0, -1, tree, subtree_size, 0)
+    
+    # 初始化线段树
+    segment_tree = SegmentTree(N)
+    
+    # 处理操作
+    results = []
+    for op in operations:
+        if op[0] == 1:
+            # 更新单个节点
+            segment_tree.update(op[1] - 1, op[2])
+        elif op[0] == 2:
+            # 更新节点及其子树
+            segment_tree.update(op[1] - 1, op[2] * subtree_size[op[1] - 1])
+        elif op[0] == 3:
+            # 查询节点及其子树
+            results.append(segment_tree.query(op[1] - 1, op[1] - 1))
+    
+    return results
 
 Solution = create_solution(solution_function_name)

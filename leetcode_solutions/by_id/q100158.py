@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来检查字符串中的字符是否唯一
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个整数 checker 为 0，用于记录已经出现过的字符。
+2. 遍历字符串中的每个字符。
+3. 对于每个字符，计算其在字母表中的位置（即字符的 ASCII 值减去 'a' 的 ASCII 值）。
+4. 检查该位置在 checker 中是否已经被设置为 1，如果是则返回 False。
+5. 否则，将该位置在 checker 中设置为 1。
+6. 如果遍历完所有字符都没有重复，则返回 True。
 
 关键点:
-- [TODO]
+- 使用位运算可以在 O(1) 空间复杂度内完成检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_unique(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串 s 中的所有字符是否全都不同
     """
-    # TODO: 实现最优解法
-    pass
+    checker = 0
+    for char in s:
+        val = ord(char) - ord('a')
+        if (checker & (1 << val)) > 0:
+            return False
+        checker |= (1 << val)
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_unique)

@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针法来检测链表中的环，并找到环的起始节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 slow 和 fast，都指向链表的头节点。
+2. 快指针每次移动两步，慢指针每次移动一步。如果链表中存在环，快指针和慢指针最终会在环内相遇。
+3. 当快指针和慢指针相遇时，将其中一个指针重新指向链表头节点，另一个指针保持在相遇点。
+4. 两个指针每次都移动一步，它们会在环的起始节点相遇。
 
 关键点:
-- [TODO]
+- 使用快慢指针法可以在 O(1) 的空间复杂度下检测环并找到环的起始节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def detect_cycle(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    检测链表中的环，并返回环的起始节点。如果没有环，返回 None。
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or not head.next:
+        return None
 
+    # 初始化快慢指针
+    slow = head
+    fast = head
 
-Solution = create_solution(solution_function_name)
+    # 快指针每次移动两步，慢指针每次移动一步
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+        # 快慢指针相遇，说明存在环
+        if slow == fast:
+            break
+
+    # 如果快指针或快指针的下一个节点为空，说明没有环
+    if not fast or not fast.next:
+        return None
+
+    # 将慢指针重新指向链表头节点
+    slow = head
+
+    # 两个指针每次都移动一步，直到相遇
+    while slow != fast:
+        slow = slow.next
+        fast = fast.next
+
+    return slow
+
+Solution = create_solution(detect_cycle)

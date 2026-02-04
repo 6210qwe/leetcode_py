@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算即时配送订单的百分比。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算总订单数。
+2. 计算即时配送订单数（即 customer_pref_delivery_date 等于 order_date 的订单数）。
+3. 计算即时配送订单的百分比。
 
 关键点:
-- [TODO]
+- 使用 COUNT 函数来统计订单数。
+- 使用 CASE WHEN 语句来判断是否为即时配送订单。
+- 使用 CAST 函数将结果转换为小数以计算百分比。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是订单表中的行数。我们需要遍历整个表来计算总订单数和即时配送订单数。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name(delivery):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算即时配送订单的百分比
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT 
+        ROUND(
+            (CAST(SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*)) * 100, 
+            2
+        ) AS immediate_percentage
+    FROM 
+        delivery
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

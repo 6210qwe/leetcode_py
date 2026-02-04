@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个余数的最长子序列长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp`，其中 `dp[remainder][i]` 表示以 `nums[i]` 结尾且余数为 `remainder` 的最长子序列长度。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`，计算其与前面所有元素的余数，并更新 `dp` 字典。
+3. 最后返回 `dp` 字典中的最大值。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储每个余数的最长子序列长度，避免重复计算。
+- 动态规划的状态转移方程为 `dp[remainder][i] = max(dp[remainder][i], dp[remainder][j] + 1)`，其中 `remainder = (nums[i] + nums[j]) % k`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组 `nums` 的长度。因为我们需要遍历数组并计算每个元素与前面所有元素的余数。
+空间复杂度: O(n * k)，其中 n 是数组 `nums` 的长度，k 是给定的正整数。因为我们需要存储每个余数的最长子序列长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_max_length(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出有效子序列的最大长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    dp = [{} for _ in range(n)]
+    max_length = 1
 
+    for i in range(n):
+        for j in range(i):
+            remainder = (nums[i] + nums[j]) % k
+            if remainder in dp[j]:
+                if remainder not in dp[i]:
+                    dp[i][remainder] = 0
+                dp[i][remainder] = max(dp[i][remainder], dp[j][remainder] + 1)
+                max_length = max(max_length, dp[i][remainder])
+        
+        # Initialize the current element's remainder
+        remainder = nums[i] % k
+        if remainder not in dp[i]:
+            dp[i][remainder] = 1
+        else:
+            dp[i][remainder] = max(dp[i][remainder], 1)
 
-Solution = create_solution(solution_function_name)
+    return max_length
+
+Solution = create_solution(find_max_length)

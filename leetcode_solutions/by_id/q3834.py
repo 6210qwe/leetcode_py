@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，每次选择当前最小的非零元素进行操作，直到所有元素变为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `operations` 用于记录操作次数。
+2. 使用一个集合 `seen` 来存储已经处理过的元素值。
+3. 遍历数组 `nums`，找到当前最小的非零元素 `min_val`。
+4. 如果 `min_val` 不在 `seen` 中，则将其加入 `seen` 并增加 `operations` 计数。
+5. 将数组中所有等于 `min_val` 的元素设为 0。
+6. 重复步骤 3-5，直到所有元素都变为 0。
 
 关键点:
-- [TODO]
+- 通过使用集合 `seen` 来避免对同一个值进行多次操作。
+- 每次操作后更新数组，确保下次操作时能找到新的最小非零元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次找到最小非零元素的操作时间复杂度为 O(n)，最多需要进行 n 次操作。
+空间复杂度: O(n)，用于存储 `seen` 集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_zero(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    seen = set()
+    
+    while any(num != 0 for num in nums):
+        min_val = float('inf')
+        
+        # 找到当前最小的非零元素
+        for num in nums:
+            if num > 0 and num < min_val and num not in seen:
+                min_val = num
+        
+        if min_val == float('inf'):
+            break
+        
+        seen.add(min_val)
+        operations += 1
+        
+        # 将所有等于 min_val 的元素设为 0
+        for i in range(len(nums)):
+            if nums[i] == min_val:
+                nums[i] = 0
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_zero)

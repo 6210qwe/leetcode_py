@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来解决这个问题。我们可以通过两次遍历数组来模拟循环数组的效果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈和一个结果数组。
+2. 第一次遍历数组，将每个元素的索引压入栈中，并在找到下一个更大元素时更新结果数组。
+3. 第二次遍历数组，重复步骤2，以处理循环数组的情况。
+4. 返回结果数组。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护当前未找到下一个更大元素的索引。
+- 通过两次遍历数组来模拟循环数组的效果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被压入和弹出栈一次。
+空间复杂度: O(n)，栈和结果数组的空间复杂度均为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def next_greater_elements(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回每个元素的下一个更大元素
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = [-1] * n
+    stack = []
 
+    for i in range(2 * n):
+        while stack and (nums[stack[-1]] < nums[i % n]):
+            result[stack.pop()] = nums[i % n]
+        if i < n:
+            stack.append(i)
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(next_greater_elements)

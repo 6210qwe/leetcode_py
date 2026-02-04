@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到最大的 (nums[i] - nums[j]) * nums[k] 值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化三个变量：max_i 用于存储当前最大值的 nums[i]，max_triplet 用于存储当前最大三元组值，current_max 用于存储当前最大的 (nums[i] - nums[j])。
+2. 从右向左遍历数组：
+   - 更新 current_max 为 max(current_max, nums[i] - nums[j])。
+   - 更新 max_triplet 为 max(max_triplet, current_max * nums[k])。
+3. 返回 max_triplet，如果 max_triplet 为负数则返回 0。
 
 关键点:
-- [TODO]
+- 通过从右向左遍历，可以确保在计算 (nums[i] - nums[j]) * nums[k] 时，已经知道 nums[k] 的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出并返回下标三元组的最大值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return 0
+
+    max_triplet = 0
+    current_max = 0
+
+    for k in range(n - 1, 1, -1):
+        for j in range(k - 1, 0, -1):
+            current_max = max(current_max, nums[j - 1] - nums[j])
+            max_triplet = max(max_triplet, current_max * nums[k])
+
+    return max(max_triplet, 0)
 
 
 Solution = create_solution(solution_function_name)

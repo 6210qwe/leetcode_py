@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归解析布尔表达式。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将表达式按照 `&`、`|` 和 `!` 分割成子表达式。
+2. 递归解析每个子表达式，直到遇到基本的布尔值或变量。
+3. 根据运算符计算子表达式的值。
+4. 返回最终的布尔值。
 
 关键点:
-- [TODO]
+- 使用递归处理嵌套的布尔表达式。
+- 使用字典存储变量的值，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表达式的长度。每个字符最多被访问两次（一次在分割时，一次在递归时）。
+空间复杂度: O(n)，递归调用栈和存储变量的字典占用的空间。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def parse_bool_expr(expression: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    解析布尔表达式并返回其值。
     """
-    # TODO: 实现最优解法
-    pass
+    def evaluate(expr: str) -> bool:
+        if expr in {'t', 'f'}:
+            return expr == 't'
+        if expr[0] == '!':
+            return not evaluate(expr[2:-1])
+        if expr[0] == '&':
+            return all(evaluate(subexpr) for subexpr in split_expr(expr[2:-1]))
+        if expr[0] == '|':
+            return any(evaluate(subexpr) for subexpr in split_expr(expr[2:-1]))
+
+    def split_expr(expr: str) -> List[str]:
+        parts = []
+        depth = 0
+        start = 0
+        for i, char in enumerate(expr):
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif char in {',', '&', '|', '!'} and depth == 0:
+                if start < i:
+                    parts.append(expr[start:i])
+                start = i + 1
+        if start < len(expr):
+            parts.append(expr[start:])
+        return parts
+
+    return evaluate(expression)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(parse_bool_expr)

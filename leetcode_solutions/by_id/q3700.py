@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现位置，并通过组合计数计算满足条件的子序列数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用哈希表记录每个元素的出现位置。
+2. 遍历哈希表，对于每个元素，检查其出现次数是否大于等于 3。
+3. 如果元素出现次数大于等于 3，选择该元素作为中间众数，从其两侧选择两个元素组成子序列。
+4. 计算所有满足条件的子序列数量，并对结果取模。
 
 关键点:
-- [TODO]
+- 使用组合计数公式计算子序列数量。
+- 通过哈希表快速查找每个元素的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_subsequences_with_unique_middle_mode(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算唯一中间众数子序列的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from math import comb
 
+    # 记录每个元素的出现位置
+    pos = defaultdict(list)
+    for i, num in enumerate(nums):
+        pos[num].append(i)
 
-Solution = create_solution(solution_function_name)
+    result = 0
+
+    # 遍历每个元素
+    for num, indices in pos.items():
+        if len(indices) >= 3:
+            # 选择中间众数
+            for mid in range(1, len(indices) - 1):
+                left_count = mid
+                right_count = len(indices) - mid - 1
+                # 从左侧选择两个元素
+                left_combinations = comb(left_count, 2)
+                # 从右侧选择两个元素
+                right_combinations = comb(right_count, 2)
+                # 计算子序列数量
+                result += left_combinations * right_combinations
+                result %= MOD
+
+    return result
+
+Solution = create_solution(count_subsequences_with_unique_middle_mode)

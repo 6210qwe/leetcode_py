@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas进行数据处理，筛选出近30天的数据，并统计每天的活跃用户数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取Activity表数据。
+2. 筛选出日期在2019-06-28到2019-07-27之间的数据。
+3. 去重，确保每个用户在同一天只计一次。
+4. 按日期分组，统计每天的活跃用户数。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 使用Pandas进行高效的数据处理。
+- 确保每个用户在同一天只计一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是Activity表的行数。需要遍历整个表进行筛选和去重。
+空间复杂度: O(n)，使用Pandas进行数据处理时，需要存储筛选后的数据。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(activity: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计近30天的每日活跃用户数
     """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出日期在2019-06-28到2019-07-27之间的数据
+    start_date = '2019-06-28'
+    end_date = '2019-07-27'
+    filtered_activity = activity[(activity['activity_date'] >= start_date) & (activity['activity_date'] <= end_date)]
+    
+    # 去重，确保每个用户在同一天只计一次
+    unique_activity = filtered_activity.drop_duplicates(subset=['user_id', 'activity_date'])
+    
+    # 按日期分组，统计每天的活跃用户数
+    daily_active_users = unique_activity.groupby('activity_date')['user_id'].count().reset_index()
+    daily_active_users.columns = ['day', 'active_users']
+    
+    return daily_active_users
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

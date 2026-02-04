@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用深度优先搜索 (DFS) 来遍历树，并在每个节点处计算其子树的节点数和开销。
+- 对于每个节点，如果子树节点数小于 3，则放置 1 个金币；否则，选择子树中最大的 3 个开销来计算金币数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个 DFS 函数，该函数返回子树的节点数和开销列表。
+3. 在 DFS 函数中，递归地计算每个子树的节点数和开销，并合并结果。
+4. 计算每个节点的金币数，并返回结果。
 
 关键点:
-- [TODO]
+- 使用堆（优先队列）来维护子树中最大的 3 个开销。
+- 通过递归 DFS 来高效地遍历树并计算每个节点的金币数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是节点数。每个节点的处理时间是 O(log n)，因为需要维护一个大小为 3 的堆。
+空间复杂度: O(n)，存储树的邻接表和递归栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def find_number_of_coins_to_place_in_tree_nodes(edges: List[List[int]], cost: List[int]) -> List[int]:
+    n = len(cost)
+    tree = [[] for _ in range(n)]
+    
+    # 构建树的邻接表表示
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
+    
+    def dfs(node: int, parent: int) -> (int, List[int]):
+        total_nodes = 1
+        node_costs = [cost[node]]
+        
+        for child in tree[node]:
+            if child != parent:
+                child_nodes, child_costs = dfs(child, node)
+                total_nodes += child_nodes
+                node_costs.extend(child_costs)
+        
+        # 维护一个大小为 3 的堆
+        largest_three = heapq.nlargest(3, node_costs)
+        
+        return total_nodes, largest_three
+    
+    coins = [0] * n
+    
+    def calculate_coins(node: int, parent: int):
+        total_nodes, largest_three = dfs(node, parent)
+        
+        if total_nodes < 3:
+            coins[node] = 1
+        else:
+            product = 1
+            for c in largest_three:
+                product *= c
+            coins[node] = max(0, product)
+    
+    calculate_coins(0, -1)
+    return coins
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_number_of_coins_to_place_in_tree_nodes)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和容斥原理来找到第 n 个丑数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_ugly`，用于计算在给定范围内有多少个丑数。
+2. 使用二分查找来确定第 n 个丑数的位置。
+3. 在二分查找过程中，使用容斥原理来计算在当前范围内的丑数数量。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小查找范围。
+- 使用容斥原理来计算在给定范围内的丑数数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(max(a, b, c) * n))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -47,14 +49,33 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+def gcd(x, y):
+    while y:
+        x, y = y, x % y
+    return x
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def lcm(x, y):
+    return x * y // gcd(x, y)
 
+def count_ugly(num, a, b, c):
+    ab = lcm(a, b)
+    ac = lcm(a, c)
+    bc = lcm(b, c)
+    abc = lcm(ab, c)
+    return (num // a + num // b + num // c 
+            - num // ab - num // ac - num // bc 
+            + num // abc)
 
-Solution = create_solution(solution_function_name)
+def nthUglyNumber(n: int, a: int, b: int, c: int) -> int:
+    left, right = 1, 2 * 10**9
+    while left < right:
+        mid = (left + right) // 2
+        if count_ugly(mid, a, b, c) < n:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+Solution = create_solution(nthUglyNumber)

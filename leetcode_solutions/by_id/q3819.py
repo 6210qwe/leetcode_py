@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录每个坐标的建筑，并检查每个建筑是否在四个方向上都有其他建筑。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有建筑的坐标存入集合。
+2. 遍历每个建筑，检查其上下左右四个方向是否有其他建筑。
+3. 计算并返回被覆盖的建筑数量。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找是否存在某个建筑。
+- 通过遍历和方向检查来确定每个建筑是否被覆盖。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是城市的大小，m 是建筑的数量。遍历建筑和方向检查的时间复杂度为 O(m)。
+空间复杂度: O(m)，用于存储建筑的集合。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_covered_buildings(n: int, buildings: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计被覆盖的建筑
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有建筑的坐标存入集合
+    building_set = set(tuple(building) for building in buildings)
+    
+    # 检查建筑是否在四个方向上都被覆盖
+    def is_covered(x: int, y: int) -> bool:
+        return (x - 1, y) in building_set and (x + 1, y) in building_set and (x, y - 1) in building_set and (x, y + 1) in building_set
+    
+    # 计算被覆盖的建筑数量
+    covered_count = sum(is_covered(x, y) for x, y in building_set)
+    
+    return covered_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_covered_buildings)

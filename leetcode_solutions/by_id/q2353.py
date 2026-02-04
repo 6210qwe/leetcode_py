@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过枚举所有可能的三元组 (a, b, c)，并检查是否存在合法的四元组 (a, b, c, d) 来找到最大分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 对于每个节点，维护其前三个最高分邻居。
+3. 枚举所有可能的三元组 (a, b, c)，并检查是否存在合法的四元组 (a, b, c, d)。
+4. 计算每个合法四元组的分数，并更新最大分数。
 
 关键点:
-- [TODO]
+- 使用邻接表来存储图结构。
+- 通过维护每个节点的前三个最高分邻居来减少枚举的复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E + V * log V)，其中 E 是边的数量，V 是节点的数量。
+空间复杂度: O(V + E)，用于存储图的邻接表。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_score_of_node_sequence(scores: List[int], edges: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回长度为 4 的合法节点序列的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from heapq import heappush, heappop
+
+    # 构建图的邻接表表示
+    graph = defaultdict(list)
+    for u, v in edges:
+        heappush(graph[u], (scores[v], v))
+        heappush(graph[v], (scores[u], u))
+        if len(graph[u]) > 3:
+            heappop(graph[u])
+        if len(graph[v]) > 3:
+            heappop(graph[v])
+
+    max_score = -1
+
+    # 枚举所有可能的三元组 (a, b, c)
+    for b, neighbors in graph.items():
+        for score_a, a in neighbors:
+            for score_c, c in neighbors:
+                if a == c:
+                    continue
+                for score_d, d in graph[c]:
+                    if d != a and d != b:
+                        current_score = scores[b] + score_a + score_c + score_d
+                        max_score = max(max_score, current_score)
+
+    return max_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_score_of_node_sequence)

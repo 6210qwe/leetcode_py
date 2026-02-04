@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为将 i 表示成一些互不相同的正整数的 x 次幂之和的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的数组 dp，其中 dp[0] = 1，表示 0 只有一种表示方法（即不使用任何数）。
+2. 遍历所有可能的底数 i，从 1 到 n^(1/x)。
+3. 对于每个底数 i，计算其 x 次幂 power。
+4. 从 n 开始向前遍历，更新 dp[j] 为 dp[j] + dp[j - power]，表示将 j 表示成 power 加上其他数的方案数。
+5. 最终返回 dp[n] % (10^9 + 7)。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过从 n 向前遍历来确保每个数只被使用一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * sqrt(x))
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def waysToExpressAsSumOfPowers(n: int, x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将 n 表示成一些互不相同的正整数的 x 次幂之和的方案数。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 0 只有一种表示方法，即不使用任何数
+
+    for i in range(1, int(n ** (1 / x)) + 1):
+        power = i ** x
+        for j in range(n, power - 1, -1):
+            dp[j] = (dp[j] + dp[j - power]) % MOD
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(waysToExpressAsSumOfPowers)

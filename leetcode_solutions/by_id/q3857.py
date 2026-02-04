@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来找到所有符合条件的子字符串，并使用动态规划来记录每个位置的最大不相交子字符串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `left` 和 `right`，分别记录每个字符从左到右和从右到左的第一个和最后一个出现位置。
+2. 遍历字符串，填充 `left` 和 `right` 数组。
+3. 使用动态规划数组 `dp` 来记录每个位置的最大不相交子字符串数量。
+4. 遍历字符串，对于每个字符，检查其左侧和右侧的相同字符位置，更新 `dp` 数组。
+5. 最终结果为 `dp` 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用 `left` 和 `right` 数组快速找到每个字符的边界位置。
+- 使用动态规划来记录每个位置的最大不相交子字符串数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串几次，但每次都是线性时间。
+空间复杂度: O(n)，用于存储 `left`、`right` 和 `dp` 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_non_intersecting_substrings(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回以首尾字母相同且长度至少为4的不相交子字符串的最大数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(word)
+    if n < 4:
+        return 0
+
+    # 初始化 left 和 right 数组
+    left = [-1] * 26
+    right = [-1] * 26
+    for i in range(n):
+        char_idx = ord(word[i]) - ord('a')
+        if left[char_idx] == -1:
+            left[char_idx] = i
+        right[char_idx] = i
+
+    # 初始化 dp 数组
+    dp = [0] * (n + 1)
+
+    # 遍历字符串，更新 dp 数组
+    for i in range(1, n + 1):
+        dp[i] = dp[i - 1]
+        char_idx = ord(word[i - 1]) - ord('a')
+        if i - left[char_idx] >= 4:
+            dp[i] = max(dp[i], dp[left[char_idx]] + 1)
+        if right[char_idx] - i + 1 >= 4:
+            dp[i] = max(dp[i], dp[i - 1] + 1)
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_non_intersecting_substrings)

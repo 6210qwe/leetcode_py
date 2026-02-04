@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和计数来计算操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 从后向前遍历数组，记录每个不同元素的操作次数。
+3. 累加操作次数并返回结果。
 
 关键点:
-- [TODO]
+- 通过排序可以方便地找到下一个最大值。
+- 通过计数可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reduction_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使数组元素相等的减少操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化操作次数和当前最大值
+    operations = 0
+    current_max = nums[-1]
+    count = 0
+    
+    # 从后向前遍历数组
+    for i in range(len(nums) - 1, -1, -1):
+        if nums[i] != current_max:
+            # 更新当前最大值
+            current_max = nums[i]
+            # 累加操作次数
+            operations += count
+        # 计数
+        count += 1
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reduction_operations)

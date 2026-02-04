@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个用户的报告数量，并按要求进行排序和过滤。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询计算每个被举报用户的报告次数。
+2. 过滤出报告次数大于等于指定阈值的用户。
+3. 按照报告次数降序排列，如果报告次数相同，则按用户ID升序排列。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 COUNT 函数来统计报告次数。
+- 使用 HAVING 子句来过滤报告次数大于等于指定阈值的用户。
+- 使用 ORDER BY 子句来排序结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是报告记录的数量。主要的时间消耗在于排序操作。
+空间复杂度: O(n)，用于存储中间结果和最终结果。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(reports: List[List[str]], threshold: int) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
+    :param reports: 报告记录列表，每个元素为 [reporter_id, reported_id]
+    :param threshold: 报告次数的阈值
+    :return: 满足条件的用户列表
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    report_count = defaultdict(int)
+    
+    # 统计每个被举报用户的报告次数
+    for _, reported_id in reports:
+        report_count[reported_id] += 1
+    
+    # 过滤出报告次数大于等于阈值的用户
+    result = [[reported_id, count] for reported_id, count in report_count.items() if count >= threshold]
+    
+    # 按报告次数降序排列，如果报告次数相同，则按用户ID升序排列
+    result.sort(key=lambda x: (-x[1], x[0]))
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

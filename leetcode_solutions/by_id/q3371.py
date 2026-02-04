@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算给定整数 x 的各个数位上的数字之和，然后检查 x 是否能被这个和整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将整数 x 转换为字符串，以便逐位处理。
+2. 初始化一个变量 `digit_sum` 用于存储各个数位上的数字之和。
+3. 遍历字符串中的每个字符，将其转换为整数并累加到 `digit_sum` 中。
+4. 检查 x 是否能被 `digit_sum` 整除，如果是，则返回 `digit_sum`，否则返回 -1。
 
 关键点:
-- [TODO]
+- 使用字符串处理来逐位提取数字。
+- 累加各个数位上的数字，并进行整除检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是整数 x 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定整数 x 是否为哈沙德数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将整数 x 转换为字符串
+    str_x = str(x)
+    
+    # 初始化各个数位上的数字之和
+    digit_sum = 0
+    
+    # 遍历字符串中的每个字符，将其转换为整数并累加到 digit_sum 中
+    for char in str_x:
+        digit_sum += int(char)
+    
+    # 检查 x 是否能被 digit_sum 整除
+    if x % digit_sum == 0:
+        return digit_sum
+    else:
+        return -1
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来构建结果字符串，确保没有三个连续相同的字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，其中 `i` 用于遍历输入字符串 `s`，`j` 用于构建结果字符串 `result`。
+2. 遍历字符串 `s`，对于每个字符：
+   - 如果当前字符与前一个字符不同，或者前一个字符在结果字符串中只出现一次，则将当前字符添加到结果字符串中。
+   - 否则，跳过当前字符。
+3. 返回结果字符串。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在线性时间内解决问题。
+- 通过比较当前字符和前一个字符，确保没有三个连续相同的字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(n)，我们需要存储结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除字符使字符串变好
     """
-    # TODO: 实现最优解法
-    pass
+    if not s:
+        return ""
+
+    result = []
+    for char in s:
+        if len(result) < 2 or (len(result) >= 2 and not (result[-1] == result[-2] == char)):
+            result.append(char)
+    
+    return "".join(result)
 
 
 Solution = create_solution(solution_function_name)

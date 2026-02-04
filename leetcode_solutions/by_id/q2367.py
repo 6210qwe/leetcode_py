@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用斜率来判断相邻点是否在同一直线上。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 stockPrices 按日期排序。
+2. 初始化线段数为 1（至少有一条线段）。
+3. 遍历排序后的点，计算每对相邻点的斜率。
+4. 如果当前斜率与前一个斜率不同，则增加线段数。
+5. 返回线段数。
 
 关键点:
-- [TODO]
+- 计算斜率时使用最大公约数来避免浮点误差。
+- 使用 Python 的 math.gcd 函数来简化斜率的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 stockPrices 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
 
-def solution_function_name(params):
+def minimum_lines(stock_prices: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回表示折线图所需的最少线段数。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(stock_prices) < 2:
+        return 0
+
+    # 按日期排序
+    stock_prices.sort(key=lambda x: x[0])
+
+    # 初始化线段数
+    lines = 1
+    prev_slope = None
+
+    for i in range(1, len(stock_prices)):
+        dx = stock_prices[i][0] - stock_prices[i - 1][0]
+        dy = stock_prices[i][1] - stock_prices[i - 1][1]
+        gcd = math.gcd(dx, dy)
+        slope = (dx // gcd, dy // gcd)
+
+        if slope != prev_slope:
+            lines += 1
+            prev_slope = slope
+
+    return lines
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_lines)

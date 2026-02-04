@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用一个二维数组 dp，其中 dp[i][j] 表示前 i 种元素组成的子多重集合和为 j 的数量。通过遍历每种元素及其出现次数，更新 dp 数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每种元素的出现次数。
+2. 初始化 dp 数组，dp[0][0] = 1，表示空集合的和为 0。
+3. 遍历每种元素及其出现次数，更新 dp 数组。
+4. 计算和在 [l, r] 之间的子多重集合的数量。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i]] + ... + dp[i-1][j-k*nums[i]]，其中 k 是该元素的最大出现次数。
+- 优化空间复杂度，使用滚动数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是不同元素的数量，m 是 r+1。
+空间复杂度: O(m)，使用滚动数组优化空间复杂度。
 """
 
 # ============================================================================
@@ -48,13 +51,26 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], l: int, r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中子多重集合的和在闭区间 [l, r] 之间的子多重集合的数目。
     """
-    # TODO: 实现最优解法
-    pass
-
+    from collections import Counter
+    count = Counter(nums)
+    unique_nums = list(count.keys())
+    
+    dp = [0] * (r + 1)
+    dp[0] = 1
+    
+    for num in unique_nums:
+        max_count = count[num]
+        for j in range(r, num - 1, -1):
+            for k in range(1, max_count + 1):
+                if j - k * num >= 0:
+                    dp[j] = (dp[j] + dp[j - k * num]) % MOD
+    
+    return sum(dp[l:r + 1]) % MOD
 
 Solution = create_solution(solution_function_name)

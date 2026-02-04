@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算个位数和两位数的总和，分别与剩余数字的总和进行比较，判断 Alice 是否能赢。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `one_digit_sum` 和 `two_digit_sum` 分别存储个位数和两位数的总和。
+2. 遍历数组 `nums`，将个位数和两位数分别累加到 `one_digit_sum` 和 `two_digit_sum`。
+3. 计算剩余数字的总和 `total_sum` 减去 `one_digit_sum` 和 `two_digit_sum`。
+4. 比较 `one_digit_sum` 和 `two_digit_sum` 与 `total_sum` 的差值，判断 Alice 是否能赢。
 
 关键点:
-- [TODO]
+- 通过一次遍历计算个位数和两位数的总和，避免多次遍历。
+- 通过比较两种情况下的差值来判断 Alice 是否能赢。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历数组一次。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_win_digit_game(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断 Alice 是否能赢得数字游戏。
     """
-    # TODO: 实现最优解法
-    pass
+    one_digit_sum = 0
+    two_digit_sum = 0
+    total_sum = sum(nums)
+    
+    for num in nums:
+        if num < 10:
+            one_digit_sum += num
+        else:
+            two_digit_sum += num
+    
+    # 计算剩余数字的总和
+    remaining_sum_one_digit = total_sum - one_digit_sum
+    remaining_sum_two_digit = total_sum - two_digit_sum
+    
+    # 判断 Alice 是否能赢
+    return one_digit_sum > remaining_sum_one_digit or two_digit_sum > remaining_sum_two_digit
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_win_digit_game)

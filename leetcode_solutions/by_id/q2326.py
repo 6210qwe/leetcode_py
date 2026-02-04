@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Z 函数来计算每个子串的最长公共前缀长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串 s 的 Z 函数值。
+2. 遍历 Z 函数值，累加每个位置的 Z 值。
 
 关键点:
-- [TODO]
+- Z 函数可以在 O(n) 时间复杂度内计算出每个子串的最长公共前缀长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +49,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def z_function(s: str) -> List[int]:
+    n = len(s)
+    z = [0] * n
+    l, r = 0, 0
+    for i in range(1, n):
+        if i <= r:
+            z[i] = min(r - i + 1, z[i - l])
+        while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+            z[i] += 1
+        if i + z[i] - 1 > r:
+            l, r = i, i + z[i] - 1
+    return z
+
+
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算构造字符串的总得分和
     """
-    # TODO: 实现最优解法
-    pass
+    z = z_function(s)
+    return sum(z)
 
 
 Solution = create_solution(solution_function_name)

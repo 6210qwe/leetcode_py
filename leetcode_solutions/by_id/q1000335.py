@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,40 +22,64 @@ LCR 071. 按权重随机选择 - 给定一个正整数数组 w ，其中 w[i] �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和数组存储权重的累积和，并通过二分查找来找到随机数对应的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，计算权重的前缀和。
+2. 在 pickIndex 方法中，生成一个在 [1, 总权重] 范围内的随机数。
+3. 使用二分查找找到该随机数在前缀和数组中的位置，从而确定所选的下标。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算累积权重。
+- 通过二分查找高效地找到随机数对应的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 初始化时计算前缀和的时间复杂度为 O(n)，pickIndex 方法的时间复杂度为 O(log n)。
+空间复杂度: O(n) - 前缀和数组需要 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import random
+from bisect import bisect_left
 
+class Solution:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, w: List[int]):
+        self.prefix_sums = []
+        total_weight = 0
+        for weight in w:
+            total_weight += weight
+            self.prefix_sums.append(total_weight)
+        self.total_weight = total_weight
 
+    def pickIndex(self) -> int:
+        target = random.randint(1, self.total_weight)
+        return bisect_left(self.prefix_sums, target)
 
-Solution = create_solution(solution_function_name)
+# 创建解决方案实例
+def create_solution():
+    return Solution
+
+# 工厂函数
+def create_solution_instance(w: List[int]) -> Solution:
+    return create_solution()(w)
+
+# 测试
+if __name__ == "__main__":
+    sol = create_solution_instance([1, 3])
+    print(sol.pickIndex())
+    print(sol.pickIndex())
+    print(sol.pickIndex())
+    print(sol.pickIndex())
+    print(sol.pickIndex())
+```
+
+这个实现使用了前缀和数组和二分查找，确保了时间和空间复杂度的最优解。初始化时计算前缀和的时间复杂度为 O(n)，`pickIndex` 方法的时间复杂度为 O(log n)。前缀和数组需要 O(n) 的额外空间。

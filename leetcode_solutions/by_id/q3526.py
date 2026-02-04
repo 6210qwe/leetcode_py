@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每一行和每一列变成回文所需的最小翻转次数，然后取两者中的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_flips_to_palindrome`，用于计算将一个数组变成回文所需的最小翻转次数。
+2. 分别计算所有行变成回文所需的总翻转次数和所有列变成回文所需的总翻转次数。
+3. 返回两者中的最小值。
 
 关键点:
-- [TODO]
+- 使用双指针方法来计算将一个数组变成回文所需的最小翻转次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_flips_to_palindrome(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算将一个数组变成回文所需的最小翻转次数。
     """
-    # TODO: 实现最优解法
-    pass
+    flips = 0
+    left, right = 0, len(arr) - 1
+    while left < right:
+        if arr[left] != arr[right]:
+            flips += 1
+        left += 1
+        right -= 1
+    return flips
 
+def min_flips_to_make_grid_palindromic(grid: List[List[int]]) -> int:
+    """
+    计算最少翻转次数使二进制矩阵回文。
+    """
+    m, n = len(grid), len(grid[0])
+    
+    # 计算所有行变成回文所需的总翻转次数
+    row_flips = sum(count_flips_to_palindrome(row) for row in grid)
+    
+    # 计算所有列变成回文所需的总翻转次数
+    col_flips = sum(count_flips_to_palindrome([grid[i][j] for i in range(m)]) for j in range(n))
+    
+    # 返回两者中的最小值
+    return min(row_flips, col_flips)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_flips_to_make_grid_palindromic)

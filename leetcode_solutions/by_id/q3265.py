@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录每个可能的起点，并在遍历过程中找到满足条件的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum` 和哈希表 `seen`。
+2. 遍历数组 `nums`，计算当前前缀和。
+3. 对于每个元素 `nums[j]`，检查 `nums[j] + k` 和 `nums[j] - k` 是否在 `seen` 中。
+4. 如果存在，更新最大子数组和。
+5. 更新 `seen`，记录当前前缀和及其索引。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表来高效地查找满足条件的子数组。
+- 通过哈希表记录每个可能的起点，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_good_subarray_sum(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中 好 子数组的最大和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = 0
+    seen = {}
+    max_sum = float('-inf')
+    
+    for j in range(n):
+        prefix_sum += nums[j]
+        
+        if nums[j] + k in seen:
+            max_sum = max(max_sum, prefix_sum - seen[nums[j] + k])
+        
+        if nums[j] - k in seen:
+            max_sum = max(max_sum, prefix_sum - seen[nums[j] - k])
+        
+        if nums[j] not in seen:
+            seen[nums[j]] = prefix_sum
+    
+    return max_sum if max_sum != float('-inf') else 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_good_subarray_sum)

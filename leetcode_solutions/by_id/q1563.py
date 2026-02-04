@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用几何方法计算两个点之间的中垂线，并检查每个可能的圆心是否能包含最多的飞镖。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每一对飞镖，计算它们之间的中垂线。
+2. 对于每条中垂线，计算可能的圆心位置。
+3. 检查每个可能的圆心位置，统计落在该圆心的圆内的飞镖数量。
+4. 返回最大飞镖数量。
 
 关键点:
-- [TODO]
+- 使用复数表示点和向量，简化几何计算。
+- 通过枚举所有可能的圆心位置，确保找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是飞镖的数量。需要枚举所有点对，并检查每个可能的圆心。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def num_points(darts: List[List[int]], r: int) -> int:
+    def in_circle(center, radius, point):
+        return (point[0] - center[0]) ** 2 + (point[1] - center[1]) ** 2 <= radius ** 2
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def get_circle_center(p1, p2, r):
+        x1, y1 = p1
+        x2, y2 = p2
+        q = (x2 - x1) ** 2 + (y2 - y1) ** 2
+        x3 = (x1 + x2) / 2
+        y3 = (y1 + y2) / 2
+        d = (r ** 2 - (q / 4)) / q
+        if d < 0:
+            return []
+        sqrt_d = d ** 0.5
+        cx1 = x3 - sqrt_d * (y2 - y1)
+        cy1 = y3 + sqrt_d * (x2 - x1)
+        cx2 = x3 + sqrt_d * (y2 - y1)
+        cy2 = y3 - sqrt_d * (x2 - x1)
+        return [(cx1, cy1), (cx2, cy2)]
 
+    max_points = 0
+    for i in range(len(darts)):
+        for j in range(i + 1, len(darts)):
+            centers = get_circle_center(darts[i], darts[j], r)
+            for center in centers:
+                count = sum(in_circle(center, r, dart) for dart in darts)
+                max_points = max(max_points, count)
 
-Solution = create_solution(solution_function_name)
+    # Check if all points can be inside a single circle
+    if max_points == 0:
+        for i in range(len(darts)):
+            count = sum(in_circle(darts[i], r, dart) for dart in darts)
+            max_points = max(max_points, count)
+
+    return max_points
+
+Solution = create_solution(num_points)

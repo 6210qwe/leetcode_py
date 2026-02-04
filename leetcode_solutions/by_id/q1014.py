@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速选择算法来找到第 k 小的距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个计算欧几里得距离平方的函数。
+2. 使用快速选择算法在 O(n) 时间复杂度内找到第 k 小的距离。
+3. 返回前 k 个最近的点。
 
 关键点:
-- [TODO]
+- 快速选择算法的时间复杂度期望为 O(n)，最坏情况下为 O(n^2)。
+- 通过随机选择枢轴可以减少最坏情况的发生概率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)（期望），O(n^2)（最坏情况）
+空间复杂度: O(1)（不考虑递归栈的空间）
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import random
 
+def euclidean_distance_squared(point: List[int]) -> int:
+    return point[0] ** 2 + point[1] ** 2
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def quick_select(points: List[List[int]], k: int) -> int:
+    def partition(left: int, right: int, pivot_index: int) -> int:
+        pivot_distance = euclidean_distance_squared(points[pivot_index])
+        points[pivot_index], points[right] = points[right], points[pivot_index]
+        store_index = left
+        for i in range(left, right):
+            if euclidean_distance_squared(points[i]) < pivot_distance:
+                points[i], points[store_index] = points[store_index], points[i]
+                store_index += 1
+        points[store_index], points[right] = points[right], points[store_index]
+        return store_index
 
+    def select(left: int, right: int, k_smallest: int) -> int:
+        if left == right:
+            return left
+        pivot_index = random.randint(left, right)
+        pivot_index = partition(left, right, pivot_index)
+        if k_smallest == pivot_index:
+            return k_smallest
+        elif k_smallest < pivot_index:
+            return select(left, pivot_index - 1, k_smallest)
+        else:
+            return select(pivot_index + 1, right, k_smallest)
 
-Solution = create_solution(solution_function_name)
+    return select(0, len(points) - 1, k - 1)
+
+def k_closest_points(points: List[List[int]], k: int) -> List[List[int]]:
+    index = quick_select(points, k)
+    return points[:k]
+
+Solution = create_solution(k_closest_points)

@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示从第 i 个问题开始能获得的最大分数。对于每个问题，我们有两个选择：解决它或跳过它。如果解决它，那么我们可以获得 points[i] 分，并且需要跳过接下来的 brainpower[i] 个问题；如果跳过它，那么我们可以继续考虑下一个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的 dp 数组，dp[n] = 0。
+2. 从后往前遍历问题数组，对于每个问题 i，计算 dp[i]。
+3. 对于每个问题 i，有两种选择：
+   - 解决问题 i，那么 dp[i] = points[i] + dp[i + brainpower[i] + 1]。
+   - 跳过问题 i，那么 dp[i] = dp[i + 1]。
+4. 取这两种选择中的最大值作为 dp[i]。
+5. 返回 dp[0] 作为最终结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i] = max(points[i] + dp[i + brainpower[i] + 1], dp[i + 1])。
+- 从后往前遍历可以确保在计算 dp[i] 时，dp[i + brainpower[i] + 1] 已经被计算过。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是问题的数量。我们需要遍历整个问题数组一次。
+空间复杂度: O(n)，我们需要一个长度为 n+1 的 dp 数组来存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +55,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(questions: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(questions)
+    dp = [0] * (n + 1)
+
+    for i in range(n - 1, -1, -1):
+        points, brainpower = questions[i]
+        next_index = i + brainpower + 1
+        if next_index < n:
+            solve = points + dp[next_index]
+        else:
+            solve = points
+        skip = dp[i + 1]
+        dp[i] = max(solve, skip)
+
+    return dp[0]
 
 
 Solution = create_solution(solution_function_name)

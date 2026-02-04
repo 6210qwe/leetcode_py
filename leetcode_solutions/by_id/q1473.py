@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和哈希表来记录每个元音字母的奇偶状态，并利用前缀和的思想找到最长的符合条件的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `state_map`，用于存储每个状态第一次出现的位置，初始状态为 0。
+2. 遍历字符串 `s`，使用一个整数 `state` 来表示当前元音字母的奇偶状态。
+3. 对于每个字符，更新 `state` 的值。
+4. 如果 `state` 已经在 `state_map` 中出现过，则计算当前索引与 `state` 第一次出现的索引之间的距离，并更新最大长度。
+5. 如果 `state` 没有在 `state_map` 中出现过，则将其加入 `state_map`。
 
 关键点:
-- [TODO]
+- 使用位运算来表示元音字母的奇偶状态。
+- 利用哈希表记录每个状态第一次出现的位置。
+- 通过前缀和的思想找到最长的符合条件的子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `s` 的长度。
+空间复杂度: O(1)，状态 `state` 的取值范围是 0 到 31，因此哈希表的大小是常数级的。
 """
 
 # ============================================================================
@@ -49,12 +54,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_the_longest_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足每个元音字母在子字符串中都恰好出现了偶数次的最长子字符串的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表记录每个状态第一次出现的位置
+    state_map = {0: -1}
+    state = 0
+    max_length = 0
+    
+    # 位运算掩码
+    mask_a = 1 << 0
+    mask_e = 1 << 1
+    mask_i = 1 << 2
+    mask_o = 1 << 3
+    mask_u = 1 << 4
+    
+    for i, char in enumerate(s):
+        if char == 'a':
+            state ^= mask_a
+        elif char == 'e':
+            state ^= mask_e
+        elif char == 'i':
+            state ^= mask_i
+        elif char == 'o':
+            state ^= mask_o
+        elif char == 'u':
+            state ^= mask_u
+        
+        if state in state_map:
+            max_length = max(max_length, i - state_map[state])
+        else:
+            state_map[state] = i
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_the_longest_substring)

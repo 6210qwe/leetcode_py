@@ -21,22 +21,26 @@ LCP 71. 集水器 - 字符串数组 `shape` 描述了一个二维平面中的矩
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理连通性问题，将每行和每列的隔板进行合并，并计算最终的蓄水量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将每个位置视为一个节点。
+2. 遍历每一行，将相邻的 'l' 和 'r' 连接起来。
+3. 遍历每一列，将相邻的 'l' 和 'r' 连接起来。
+4. 计算每个连通分量的蓄水量，排除与边界相连的连通分量。
 
 关键点:
-- [TODO]
+- 使用并查集来处理连通性问题。
+- 通过遍历每一行和每一列来连接相邻的 'l' 和 'r'。
+- 计算连通分量的蓄水量时，排除与边界相连的连通分量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 shape 的行数，m 是 shape 的列数。
+空间复杂度: O(n * m)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
@@ -49,12 +53,70 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+
+def solution_function_name(shape: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算集水器的最终蓄水量
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(shape), len(shape[0])
+    uf = UnionFind(n * m + 1)  # 多一个虚拟节点表示边界
+    directions = [(0, 1), (1, 0)]
+
+    for i in range(n):
+        for j in range(m):
+            if shape[i][j] == '.':
+                continue
+            for dx, dy in directions:
+                ni, nj = i + dx, j + dy
+                if 0 <= ni < n and 0 <= nj < m and shape[ni][nj] == shape[i][j]:
+                    uf.union(i * m + j, ni * m + nj)
+
+    # 将边界上的 'l' 和 'r' 连接到虚拟节点
+    for i in range(n):
+        if shape[i][0] == 'l':
+            uf.union(i * m, n * m)
+        if shape[i][m - 1] == 'r':
+            uf.union(i * m + m - 1, n * m)
+    for j in range(m):
+        if shape[0][j] == 'l':
+            uf.union(j, n * m)
+        if shape[n - 1][j] == 'r':
+            uf.union((n - 1) * m + j, n * m)
+
+    water = 0
+    visited = set()
+    for i in range(n):
+        for j in range(m):
+            if shape[i][j] == '.':
+                continue
+            root = uf.find(i * m + j)
+            if root not in visited and root != n * m:
+                visited.add(root)
+                water += 2
+
+    return water
 
 
 Solution = create_solution(solution_function_name)

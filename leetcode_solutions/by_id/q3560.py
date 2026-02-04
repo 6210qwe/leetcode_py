@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们可以通过状态压缩来表示当前棋盘的状态，并使用动态规划来计算每一步的最大移动次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义状态压缩的方式，用一个整数来表示当前棋盘的状态。
+2. 初始化动态规划表 dp，dp[状态] 表示当前状态下，Alice 和 Bob 采取最优策略时的最大总移动次数。
+3. 使用递归加记忆化搜索的方法来填充 dp 表。
+4. 对于每一个状态，枚举所有可能的下一步，计算当前状态下的最大移动次数。
+5. 返回初始状态下的最大移动次数。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示棋盘状态。
+- 使用动态规划和记忆化搜索来计算每一步的最大移动次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)，其中 n 是 positions 的长度。状态总数为 2^n，每个状态需要 O(n^2) 的时间来计算。
+空间复杂度: O(2^n)，用于存储动态规划表。
 """
 
 # ============================================================================
@@ -47,14 +51,39 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
+def get_state(positions: List[List[int]], kx: int, ky: int) -> int:
+    state = 0
+    for px, py in positions:
+        if px == kx and py == ky:
+            continue
+        state |= 1 << (px * 50 + py)
+    return state
 
-def solution_function_name(params):
+@lru_cache(None)
+def dp(state: int, kx: int, ky: int, positions: List[List[int]]) -> int:
+    if state == 0:
+        return 0
+    
+    max_moves = 0
+    for i in range(len(positions)):
+        px, py = positions[i]
+        if (state & (1 << (px * 50 + py))) == 0:
+            continue
+        
+        new_state = state ^ (1 << (px * 50 + py))
+        moves = abs(kx - px) + abs(ky - py)
+        next_kx, next_ky = px, py
+        max_moves = max(max_moves, moves + dp(new_state, next_kx, next_ky, positions))
+    
+    return max_moves
+
+def solution_function_name(kx: int, ky: int, positions: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算吃掉所有兵需要的最多移动次数
     """
-    # TODO: 实现最优解法
-    pass
-
+    state = get_state(positions, kx, ky)
+    return dp(state, kx, ky, tuple(positions))
 
 Solution = create_solution(solution_function_name)

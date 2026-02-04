@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历数组，计算每个连续 0 子数组的长度，并利用组合数学公式计算子数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器和当前连续 0 子数组的长度。
+2. 遍历数组，如果遇到 0，则增加当前连续 0 子数组的长度。
+3. 如果遇到非 0 元素或到达数组末尾，则计算当前连续 0 子数组的所有子数组数量，并重置计数器。
+4. 返回总的数量。
 
 关键点:
-- [TODO]
+- 利用组合数学公式 (n * (n + 1) // 2) 计算长度为 n 的连续 0 子数组的所有子数组数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算全 0 子数组的数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    count = 0
+    current_length = 0
+    
+    for num in nums:
+        if num == 0:
+            current_length += 1
+        else:
+            count += current_length * (current_length + 1) // 2
+            current_length = 0
+    
+    # 处理数组末尾的连续 0 子数组
+    if current_length > 0:
+        count += current_length * (current_length + 1) // 2
+    
+    return count
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟按键操作，逐步构建目标字符串，并记录每一步生成的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前字符串为空字符串。
+2. 遍历目标字符串的每个字符，逐步构建当前字符串。
+3. 对于每个字符，先通过按键 1 追加 'a'，然后通过按键 2 将最后一个字符变为目标字符。
+4. 记录每一步生成的字符串。
 
 关键点:
-- [TODO]
+- 通过按键 1 和按键 2 的组合，逐步构建目标字符串。
+- 记录每一步生成的字符串，确保按顺序返回。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是目标字符串的长度。最坏情况下，每次按键 2 都需要遍历之前的所有字符。
+空间复杂度: O(n^2)，存储所有生成的字符串。
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(target: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 Alice 输入 target 时屏幕上出现的所有字符串列表
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    current = ""
+    
+    for char in target:
+        # 追加 'a' 直到当前字符串的长度等于目标字符的位置
+        while len(current) < len(target):
+            current += 'a'
+            result.append(current)
+        
+        # 将最后一个字符更改为目标字符
+        while current[-1] != char:
+            current = current[:-1] + chr((ord(current[-1]) - ord('a') + 1) % 26 + ord('a'))
+            result.append(current)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

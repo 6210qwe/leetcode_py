@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，先找到需要复写的零的位置，然后从后向前进行复制和复写。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算出需要复写的零的数量。
+2. 使用两个指针，一个指向原数组的末尾，另一个指向新数组的末尾。
+3. 从后向前遍历数组，根据需要复写的零的数量进行复制和复写。
 
 关键点:
-- [TODO]
+- 通过两次遍历数组来实现就地修改，避免使用额外的空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def duplicateZeros(arr: List[int]) -> None:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 复写零
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    count_zeros = arr.count(0)  # 计算数组中零的数量
+    new_length = n + count_zeros  # 新数组的长度
+
+    # 从后向前遍历数组
+    i = n - 1
+    j = new_length - 1
+    while j >= 0:
+        if j < n:
+            arr[j] = arr[i]
+        j -= 1
+        if arr[i] == 0:
+            if j < n:
+                arr[j] = arr[i]
+            j -= 1
+        i -= 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(duplicateZeros)

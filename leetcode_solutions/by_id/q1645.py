@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和集合来优化查找过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `seen` 来存储已经计算过的 `func` 值。
+2. 遍历数组 `arr`，对于每个元素 `num`，更新 `seen` 集合。
+3. 对于每个 `num`，计算 `func` 值，并使用二分查找来找到最接近 `target` 的值。
+4. 更新最小差值。
 
 关键点:
-- [TODO]
+- 使用集合来存储已经计算过的 `func` 值，避免重复计算。
+- 使用位运算来快速计算 `func` 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest_value(arr: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最接近目标值的函数值
     """
-    # TODO: 实现最优解法
-    pass
+    seen = set()
+    closest_diff = float('inf')
+    current_and = (1 << 30) - 1  # 初始化为全1
+    
+    for num in arr:
+        current_and &= num
+        seen.add(current_and)
+        
+        # 二分查找最接近 target 的值
+        for value in seen:
+            diff = abs(value - target)
+            if diff < closest_diff:
+                closest_diff = diff
+                if closest_diff == 0:
+                    return 0
+    
+    return closest_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_value)

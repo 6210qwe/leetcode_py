@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来解决这个问题。我们需要找到每个项目的员工数量，并且只返回那些员工数量大于或等于指定阈值的项目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询来计算每个项目的员工数量。
+2. 过滤出员工数量大于或等于指定阈值的项目。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 HAVING 子句来过滤出符合条件的项目。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工记录的数量。因为我们需要遍历所有记录来计算每个项目的员工数量。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(project_employee: pd.DataFrame, threshold: int) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算每个项目的员工数量
+    project_count = project_employee.groupby('project_id').size().reset_index(name='employee_count')
+    
+    # 过滤出员工数量大于或等于阈值的项目
+    result = project_count[project_count['employee_count'] >= threshold]
+    
+    return result
 
 Solution = create_solution(solution_function_name)

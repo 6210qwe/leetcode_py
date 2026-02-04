@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示从字符串 s 的第 i 个字符开始，删除 j 个字符后的最小压缩长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示从第 i 个字符开始，删除 j 个字符后的最小压缩长度。
+2. 从后向前遍历字符串 s，对于每个字符，考虑删除不同数量的字符，并更新 dp 数组。
+3. 对于每个字符，计算其与后续字符的连续长度，并根据不同的长度更新 dp 数组。
+4. 最终结果保存在 dp[0][k] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑字符的连续长度和删除字符的数量。
+- 使用一个辅助函数来计算压缩后的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是字符串 s 的长度。三重循环分别遍历字符、删除字符的数量和连续字符的长度。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_length(count: int) -> int:
+    """计算给定计数的压缩长度"""
+    if count == 0:
+        return 0
+    if count == 1:
+        return 1
+    if count < 10:
+        return 2
+    if count < 100:
+        return 3
+    return 4
+
+
+def solution_function_name(s: str, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删除最多 k 个字符后，s 行程长度编码的最小长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    
+    for i in range(n + 1):
+        dp[i][0] = n - i  # 不删除任何字符时的长度
+    
+    for i in range(n - 1, -1, -1):
+        for j in range(k + 1):
+            count, del_count = 0, 0
+            for l in range(i, n):
+                if s[l] == s[i]:
+                    count += 1
+                else:
+                    del_count += 1
+                
+                if del_count > j:
+                    break
+                
+                remaining_deletions = j - del_count
+                dp[i][j] = min(dp[i][j], get_length(count) + dp[l + 1][remaining_deletions])
+    
+    return dp[0][k]
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个数字的出现次数，然后对出现两次的数字进行 XOR 操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个数字的出现次数。
+2. 遍历数组，更新哈希表中每个数字的出现次数。
+3. 初始化一个变量 `result` 为 0，用于存储最终的 XOR 结果。
+4. 遍历哈希表，对于出现两次的数字，将其与 `result` 进行 XOR 操作。
+5. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个数字的出现次数，时间复杂度为 O(n)。
+- 对于出现两次的数字进行 XOR 操作，空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_xor_of_numbers_which_appear_twice(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中所有出现两次数字的按位 XOR 值
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个数字的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 计算出现两次的数字的 XOR 值
+    result = 0
+    for num, freq in count.items():
+        if freq == 2:
+            result ^= num
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_xor_of_numbers_which_appear_twice)

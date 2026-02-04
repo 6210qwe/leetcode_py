@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个二进制掩码来表示当前哪些组已经被处理过，然后使用记忆化搜索来优化重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个组的大小对 batchSize 取模，只保留余数。
+2. 使用一个二进制掩码来表示当前哪些组已经被处理过。
+3. 使用记忆化搜索来计算最大开心组数。
 
 关键点:
-- [TODO]
+- 通过取模操作减少状态空间。
+- 使用二进制掩码和记忆化搜索来优化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n)，其中 n 是 groups 的长度。因为我们需要遍历所有可能的状态，并且每个状态需要 O(n) 时间来处理。
+空间复杂度: O(2^n * n)，记忆化搜索需要存储每个状态的结果。
 """
 
 # ============================================================================
@@ -47,14 +49,30 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def max_happy_groups(batch_size: int, groups: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多有多少组人会感到开心
     """
-    # TODO: 实现最优解法
-    pass
+    # 将每个组的大小对 batchSize 取模
+    mod_groups = [g % batch_size for g in groups if g % batch_size != 0]
+    
+    # 使用记忆化搜索
+    @lru_cache(None)
+    def dp(mask, remaining):
+        if mask == (1 << len(mod_groups)) - 1:
+            return 0
+        
+        max_happy = 0
+        for i in range(len(mod_groups)):
+            if not (mask & (1 << i)):
+                new_remaining = (remaining + mod_groups[i]) % batch_size
+                happy = 1 if new_remaining == 0 else 0
+                max_happy = max(max_happy, happy + dp(mask | (1 << i), new_remaining))
+        
+        return max_happy
+    
+    return dp(0, 0) + groups.count(batch_size)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_happy_groups)

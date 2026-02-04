@@ -21,40 +21,70 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆（优先队列）来每次选择当前最大的数进行减半操作，直到数组和减少至少一半。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的初始和。
+2. 将数组中的每个元素加入最大堆。
+3. 初始化操作计数器和当前数组和。
+4. 进行以下操作直到当前数组和减少至少一半：
+   - 从堆中取出当前最大的数。
+   - 将该数减半，并将其减半后的值重新加入堆中。
+   - 更新当前数组和。
+   - 增加操作计数器。
+5. 返回操作计数器。
 
 关键点:
-- [TODO]
+- 使用最大堆可以高效地找到并处理当前最大的数。
+- 每次操作后更新当前数组和，确保减少至少一半。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。每次操作涉及堆的操作，时间复杂度为 O(log n)。
+空间复杂度: O(n)，使用了一个最大堆来存储数组中的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def halve_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将数组和减半的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组的初始和
+    total_sum = sum(nums)
+    target_sum = total_sum / 2
+    
+    # 将数组中的每个元素加入最大堆
+    max_heap = [-num for num in nums]
+    heapq.heapify(max_heap)
+    
+    # 初始化操作计数器和当前数组和
+    operations = 0
+    current_sum = total_sum
+    
+    # 进行以下操作直到当前数组和减少至少一半
+    while current_sum > target_sum:
+        # 从堆中取出当前最大的数
+        largest = -heapq.heappop(max_heap)
+        
+        # 将该数减半，并将其减半后的值重新加入堆中
+        half_largest = largest / 2
+        heapq.heappush(max_heap, -half_largest)
+        
+        # 更新当前数组和
+        current_sum -= half_largest
+        
+        # 增加操作计数器
+        operations += 1
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(halve_array)

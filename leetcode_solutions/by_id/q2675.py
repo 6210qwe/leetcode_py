@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历每一列，计算每一列中的最大字符串长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n 的结果数组 `ans`，用于存储每一列的最大字符串长度。
+2. 遍历每一列，对于每一列中的每个元素，计算其字符串长度，并更新该列的最大字符串长度。
+3. 返回结果数组 `ans`。
 
 关键点:
-- [TODO]
+- 使用 `str` 函数将整数转换为字符串，计算其长度。
+- 对于负数，需要额外加 1 来考虑负号。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。我们需要遍历整个矩阵来计算每一列的最大字符串长度。
+空间复杂度: O(n)，结果数组 `ans` 的大小与列数 n 相同。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_column_width(grid: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算网格中每一列的宽度。
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid:
+        return []
+
+    m, n = len(grid), len(grid[0])
+    ans = [0] * n
+
+    for j in range(n):
+        max_length = 0
+        for i in range(m):
+            length = len(str(grid[i][j]))
+            if grid[i][j] < 0:
+                length += 1
+            max_length = max(max_length, length)
+        ans[j] = max_length
+
+    return ans
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_column_width)

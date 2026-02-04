@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为将前 i 个元素分成若干子数组的最小代价。我们需要维护一个前缀和数组来快速计算子数组的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 pre_sum 和 pre_cost。
+2. 定义 dp 数组，dp[i] 表示将前 i 个元素分成若干子数组的最小代价。
+3. 使用双重循环遍历所有可能的分割点，更新 dp 数组。
+4. 返回 dp[n] 作为最终结果。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算子数组的和。
+- 动态规划的状态转移方程为 dp[j] = min(dp[j], dp[i-1] + (pre_sum[j] + k * subarray_count) * (pre_cost[j] - pre_cost[i-1]))。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。双重循环遍历所有可能的分割点。
+空间复杂度: O(n)，用于存储前缀和数组和 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_cost_to_divide_array(nums: List[int], cost: List[int], k: int) -> int:
+    n = len(nums)
+    pre_sum = [0] * (n + 1)
+    pre_cost = [0] * (n + 1)
+    
+    # 计算前缀和
+    for i in range(1, n + 1):
+        pre_sum[i] = pre_sum[i - 1] + nums[i - 1]
+        pre_cost[i] = pre_cost[i - 1] + cost[i - 1]
+    
+    # 初始化 dp 数组
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+    
+    # 动态规划求解
+    for j in range(1, n + 1):
+        for i in range(1, j + 1):
+            subarray_count = (j - i + 1)
+            dp[j] = min(dp[j], dp[i - 1] + (pre_sum[j] + k * subarray_count) * (pre_cost[j] - pre_cost[i - 1]))
+    
+    return dp[n]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_to_divide_array)

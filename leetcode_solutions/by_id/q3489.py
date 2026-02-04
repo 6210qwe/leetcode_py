@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示使用前 i 个数字达到和 j 的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，大小为 (n+1) x (target+1)，所有元素初始化为 0。
+2. 设置 dp[0][0] = 1，表示不使用任何数字时，和为 0 的方法数为 1。
+3. 遍历每个数字，对于每个数字，遍历从 target 到当前数字的每个可能的和，更新 dp 数组。
+4. 最终结果为 dp[n][target]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程为：dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]]，表示不使用当前数字和使用当前数字两种情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * target)，其中 n 是数字的数量，target 是目标和。
+空间复杂度: O(n * target)，用于存储动态规划数组。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算达到目标和的方法数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    dp = [[0] * (target + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # 不使用任何数字时，和为 0 的方法数为 1
+
+    for i in range(1, n + 1):
+        for j in range(target + 1):
+            dp[i][j] = dp[i - 1][j]
+            if j >= nums[i - 1]:
+                dp[i][j] += dp[i - 1][j - nums[i - 1]]
+
+    return dp[n][target]
 
 
 Solution = create_solution(solution_function_name)

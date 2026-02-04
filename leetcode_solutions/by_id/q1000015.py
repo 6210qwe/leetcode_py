@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法解决汉诺塔问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n-1 个盘子从 A 移动到 B，使用 C 作为辅助柱子。
+2. 将第 n 个盘子从 A 移动到 C。
+3. 将 n-1 个盘子从 B 移动到 C，使用 A 作为辅助柱子。
 
 关键点:
-- [TODO]
+- 递归调用自身来解决子问题。
+- 确保每次移动都是合法的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n) - 递归调用的次数是指数级的。
+空间复杂度: O(n) - 递归调用栈的深度。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def hanota(A: List[int], B: List[int], C: List[int]) -> None:
     """
-    函数式接口 - [TODO] 实现
+    将所有盘子从 A 移动到 C，使用 B 作为辅助柱子。
     """
-    # TODO: 实现最优解法
-    pass
+    def move_disks(n: int, source: List[int], target: List[int], auxiliary: List[int]) -> None:
+        if n == 1:
+            # 只有一个盘子时，直接移动
+            target.append(source.pop())
+        else:
+            # 将 n-1 个盘子从 source 移动到 auxiliary
+            move_disks(n - 1, source, auxiliary, target)
+            # 将第 n 个盘子从 source 移动到 target
+            target.append(source.pop())
+            # 将 n-1 个盘子从 auxiliary 移动到 target
+            move_disks(n - 1, auxiliary, target, source)
+
+    # 调用递归函数
+    move_disks(len(A), A, C, B)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(hanota)

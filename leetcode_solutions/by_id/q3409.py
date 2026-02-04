@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表和堆来统计每个话题标签的出现次数，并找出出现次数最多的话题标签。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `tag_count` 来记录每个话题标签的出现次数。
+2. 遍历所有帖子，更新 `tag_count` 中每个话题标签的计数。
+3. 使用一个最大堆 `max_heap` 来存储话题标签及其出现次数。
+4. 将 `tag_count` 中的所有条目加入 `max_heap`。
+5. 从 `max_heap` 中取出前 k 个出现次数最多的话题标签。
 
 关键点:
-- [TODO]
+- 使用哈希表进行计数，时间复杂度为 O(n)。
+- 使用最大堆来获取前 k 个出现次数最多的话题标签，时间复杂度为 O(n log k)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log n)，其中 n 是帖子的数量，k 是需要返回的热门话题标签数量。
+空间复杂度: O(n)，用于存储哈希表和堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
+from collections import defaultdict
 
-
-def solution_function_name(params):
+def find_trending_hashtags(posts: List[str], k: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出出现次数最多的 k 个话题标签
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表来记录每个话题标签的出现次数
+    tag_count = defaultdict(int)
+    
+    # 遍历所有帖子，更新哈希表中的计数
+    for post in posts:
+        hashtags = [tag[1:] for tag in post.split() if tag.startswith('#')]
+        for tag in hashtags:
+            tag_count[tag] += 1
+    
+    # 使用最大堆来存储话题标签及其出现次数
+    max_heap = []
+    for tag, count in tag_count.items():
+        heapq.heappush(max_heap, (-count, tag))
+    
+    # 从最大堆中取出前 k 个出现次数最多的话题标签
+    trending_tags = []
+    for _ in range(k):
+        if max_heap:
+            _, tag = heapq.heappop(max_heap)
+            trending_tags.append(tag)
+    
+    return trending_tags
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_trending_hashtags)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们需要维护两个状态：
+- `dp_keep` 表示不删除任何元素时的最大子数组和。
+- `dp_delete` 表示删除一个元素后的最大子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp_keep` 和 `dp_delete` 为第一个元素的值。
+2. 遍历数组，更新 `dp_keep` 和 `dp_delete`。
+3. 最终结果是 `max(dp_keep, dp_delete)` 的最大值。
 
 关键点:
-- [TODO]
+- `dp_keep` 可以通过 `max(dp_keep + arr[i], arr[i])` 更新。
+- `dp_delete` 可以通过 `max(dp_delete + arr[i], dp_keep)` 更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_subarray_sum_with_one_deletion(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回数组的一个非空子数组在执行一次可选的删除操作后，所能得到的最大元素总和。
     """
-    # TODO: 实现最优解法
-    pass
+    if not arr:
+        return 0
+
+    n = len(arr)
+    dp_keep = arr[0]
+    dp_delete = 0
+    max_sum = arr[0]
+
+    for i in range(1, n):
+        # 更新 dp_keep 和 dp_delete
+        dp_keep, dp_delete = max(dp_keep + arr[i], arr[i]), max(dp_delete + arr[i], dp_keep)
+        # 更新最大和
+        max_sum = max(max_sum, dp_keep, dp_delete)
+
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_subarray_sum_with_one_deletion)

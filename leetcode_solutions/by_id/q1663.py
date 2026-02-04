@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来检测环。我们使用一个访问标记数组 `visited` 来记录每个节点的状态：0 表示未访问，1 表示正在访问，2 表示已访问。如果在 DFS 过程中遇到正在访问的节点，则说明存在环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个与 `grid` 大小相同的 `visited` 数组，所有元素初始化为 0。
+2. 遍历 `grid` 中的每个节点，如果该节点未被访问过，则调用 DFS 函数进行深度优先搜索。
+3. 在 DFS 函数中，标记当前节点为正在访问（1），然后递归访问其四个方向的邻居节点。
+4. 如果在递归过程中遇到正在访问的节点，则说明存在环，返回 `True`。
+5. 如果递归结束后没有发现环，则将当前节点标记为已访问（2）。
+6. 如果遍历完所有节点后没有发现环，则返回 `False`。
 
 关键点:
-- [TODO]
+- 使用 `visited` 数组来避免重复访问和检测环。
+- 递归过程中需要传递前一个节点的位置，以避免回退到上一个节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 `grid` 的行数和列数。每个节点最多访问两次。
+空间复杂度: O(m * n)，最坏情况下递归栈的深度为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def contains_cycle(grid: List[List[str]]) -> bool:
+    def dfs(x: int, y: int, prev_x: int, prev_y: int) -> bool:
+        if visited[x][y] == 1:
+            return True
+        if visited[x][y] == 2:
+            return False
+        
+        visited[x][y] = 1
+        for dx, dy in directions:
+            next_x, next_y = x + dx, y + dy
+            if 0 <= next_x < m and 0 <= next_y < n and grid[next_x][next_y] == grid[x][y] and (next_x, next_y) != (prev_x, prev_y):
+                if dfs(next_x, next_y, x, y):
+                    return True
+        visited[x][y] = 2
+        return False
+    
+    m, n = len(grid), len(grid[0])
+    visited = [[0] * n for _ in range(m)]
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    for i in range(m):
+        for j in range(n):
+            if visited[i][j] == 0:
+                if dfs(i, j, -1, -1):
+                    return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(contains_cycle)

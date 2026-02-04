@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理嵌套的表达式，并使用集合来去重。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前处理的表达式。
+2. 遍历输入的表达式，根据不同的字符进行处理：
+   - 如果遇到字母，则将其添加到当前的子表达式中。
+   - 如果遇到左括号 `{`，则将当前的子表达式压入栈，并开始一个新的子表达式。
+   - 如果遇到右括号 `}`，则将当前的子表达式与栈顶的子表达式进行笛卡尔积运算，并将结果压入栈。
+   - 如果遇到逗号 `,`，则将当前的子表达式压入栈，并开始一个新的子表达式。
+3. 最终栈中的所有子表达式进行并集运算，并返回结果。
 
 关键点:
-- [TODO]
+- 使用栈来处理嵌套的表达式。
+- 使用集合来去重。
+- 使用笛卡尔积和并集运算来生成最终的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是表达式的长度。最坏情况下，每个字符都需要进行笛卡尔积运算。
+空间复杂度: O(n^2)，在最坏情况下，栈中存储的子表达式数量可能达到 n^2。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List, Set
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def brace_expansion_ii(expression: str) -> List[str]:
+    def cartesian_product(set1: Set[str], set2: Set[str]) -> Set[str]:
+        return {a + b for a in set1 for b in set2}
+
+    stack = [set()]
+    current_set = set()
+
+    i = 0
+    while i < len(expression):
+        if expression[i].isalpha():
+            current_set = {s + expression[i] for s in current_set or ['']}
+        elif expression[i] == '{':
+            stack.append(current_set)
+            current_set = set()
+        elif expression[i] == '}':
+            current_set = cartesian_product(stack.pop(), current_set)
+        elif expression[i] == ',':
+            stack[-1] |= current_set
+            current_set = set()
+        i += 1
+
+    stack[-1] |= current_set
+    return sorted(stack[-1])
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(brace_expansion_ii)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用海伦公式计算三角形面积，并通过三重循环枚举所有可能的三角形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数来计算三角形的面积。
+2. 使用三重循环枚举所有可能的三个点组合。
+3. 计算每个三角形的面积，并记录最大面积。
 
 关键点:
-- [TODO]
+- 使用海伦公式计算三角形面积。
+- 通过三重循环枚举所有可能的三角形。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是 points 的长度。因为我们需要枚举所有的三个点组合。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def largest_triangle_area(points: List[List[int]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大三角形面积
     """
-    # TODO: 实现最优解法
-    pass
+    def area(p1, p2, p3):
+        # 使用海伦公式计算三角形面积
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+        return 0.5 * abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2))
+
+    max_area = 0.0
+    n = len(points)
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                max_area = max(max_area, area(points[i], points[j], points[k]))
+    return max_area
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(largest_triangle_area)

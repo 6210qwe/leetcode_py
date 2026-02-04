@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历每个岛屿，并计算其总价值。如果总价值可以被 k 整除，则计数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 用于记录满足条件的岛屿数量。
+2. 遍历整个网格，对于每个未访问过的陆地单元格，启动一次 DFS。
+3. 在 DFS 中，累加当前岛屿的总价值，并标记已访问的单元格。
+4. 如果当前岛屿的总价值可以被 k 整除，则增加计数器 `count`。
+5. 返回计数器 `count`。
 
 关键点:
-- [TODO]
+- 使用一个辅助函数 `dfs` 来递归遍历岛屿。
+- 使用一个集合 `visited` 来记录已访问的单元格，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个单元格最多访问一次。
+空间复杂度: O(m * n)，最坏情况下，递归栈的深度可能达到 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_islands_with_total_value_divisible_by_k(grid: List[List[int]], k: int) -> int:
+    def dfs(x: int, y: int) -> int:
+        if (x, y) in visited or not (0 <= x < m and 0 <= y < n) or grid[x][y] == 0:
+            return 0
+        visited.add((x, y))
+        total_value = grid[x][y]
+        for dx, dy in directions:
+            total_value += dfs(x + dx, y + dy)
+        return total_value
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    visited = set()
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    count = 0
 
+    for i in range(m):
+        for j in range(n):
+            if (i, j) not in visited and grid[i][j] > 0:
+                island_value = dfs(i, j)
+                if island_value % k == 0:
+                    count += 1
 
-Solution = create_solution(solution_function_name)
+    return count
+
+Solution = create_solution(count_islands_with_total_value_divisible_by_k)

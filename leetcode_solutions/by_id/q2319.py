@@ -21,40 +21,76 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来维护每个区间的最长连续相同字符子串的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，构建初始字符串 s 的线段树。
+2. 对于每个查询，更新线段树中对应位置的字符，并重新计算受影响区间的最长连续相同字符子串的长度。
+3. 查询线段树以获取当前最长连续相同字符子串的长度。
 
 关键点:
-- [TODO]
+- 线段树的节点存储该区间内的最长连续相同字符子串的长度。
+- 更新操作时，需要递归地更新受影响的区间。
+- 查询操作时，需要合并左右子树的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log n)，其中 k 是查询的数量，n 是字符串 s 的长度。每次更新和查询的时间复杂度都是 O(log n)。
+空间复杂度: O(n)，线段树的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, s: str):
+        self.n = len(s)
+        self.tree = [0] * (4 * self.n)
+        self.build_tree(s, 0, 0, self.n - 1)
 
-def solution_function_name(params):
+    def build_tree(self, s: str, node: int, start: int, end: int):
+        if start == end:
+            self.tree[node] = 1
+            return
+        mid = (start + end) // 2
+        self.build_tree(s, 2 * node + 1, start, mid)
+        self.build_tree(s, 2 * node + 2, mid + 1, end)
+        self.tree[node] = self.merge(self.tree[2 * node + 1], self.tree[2 * node + 2], s, mid, mid + 1)
+
+    def update(self, s: str, node: int, start: int, end: int, idx: int, val: str):
+        if start == end:
+            s = s[:idx] + val + s[idx + 1:]
+            return
+        mid = (start + end) // 2
+        if idx <= mid:
+            self.update(s, 2 * node + 1, start, mid, idx, val)
+        else:
+            self.update(s, 2 * node + 2, mid + 1, end, idx, val)
+        self.tree[node] = self.merge(self.tree[2 * node + 1], self.tree[2 * node + 2], s, mid, mid + 1)
+
+    def merge(self, left: int, right: int, s: str, mid: int, next_mid: int) -> int:
+        if s[mid] == s[next_mid]:
+            return left + right
+        return max(left, right)
+
+def solution_function_name(s: str, query_characters: str, query_indices: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用线段树来解决最长连续相同字符子串的问题
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(s)
+    segment_tree = SegmentTree(s)
+    result = []
+    for i in range(len(query_characters)):
+        char = query_characters[i]
+        idx = query_indices[i]
+        segment_tree.update(s, 0, 0, n - 1, idx, char)
+        result.append(segment_tree.tree[0])
+    return result
 
 Solution = create_solution(solution_function_name)

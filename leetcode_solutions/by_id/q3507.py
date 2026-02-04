@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过筛选出平方数来确定特殊数字，然后计算非特殊数字的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算区间 [l, r] 内的平方数。
+2. 计算区间 [l, r] 内的所有数字数量。
+3. 用总数量减去平方数的数量，得到非特殊数字的数量。
 
 关键点:
-- [TODO]
+- 只有平方数才是特殊数字，因为它们只有两个真因数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(√r - √l)，因为我们需要计算区间内的平方数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_non_special_numbers(l: int, r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算区间 [l, r] 内不是特殊数字的数字数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算区间 [l, r] 内的平方数数量
+    def count_square_numbers(start: int, end: int) -> int:
+        return int(end**0.5) - int((start - 1)**0.5)
+    
+    # 计算区间 [l, r] 内的所有数字数量
+    total_numbers = r - l + 1
+    
+    # 计算区间 [l, r] 内的平方数数量
+    square_numbers = count_square_numbers(l, r)
+    
+    # 计算非特殊数字的数量
+    non_special_numbers = total_numbers - square_numbers
+    
+    return non_special_numbers
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_non_special_numbers)

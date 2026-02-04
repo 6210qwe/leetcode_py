@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表分别记录每个 x 坐标和 y 坐标对应的点，然后枚举所有可能的垂直和平行于 x 轴或 y 轴的边，计算最大面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用两个字典分别记录每个 x 坐标和 y 坐标对应的点。
+2. 枚举所有可能的垂直和平行于 x 轴或 y 轴的边，计算最大面积。
+3. 返回最大面积的两倍，如果没有找到符合条件的三角形，返回 -1。
 
 关键点:
-- [TODO]
+- 使用哈希表高效地记录和查找点。
+- 通过枚举所有可能的边来确保找到最大面积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,51 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_area_of_triangle(coords: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大三角形面积
     """
-    # TODO: 实现最优解法
-    pass
+    if len(coords) < 3:
+        return -1
+
+    # 记录每个 x 坐标和 y 坐标对应的点
+    x_coords = {}
+    y_coords = {}
+    for x, y in coords:
+        if x not in x_coords:
+            x_coords[x] = []
+        if y not in y_coords:
+            y_coords[y] = []
+        x_coords[x].append(y)
+        y_coords[y].append(x)
+
+    max_area = 0
+
+    # 枚举所有可能的垂直于 x 轴的边
+    for x, ys in x_coords.items():
+        for i in range(len(ys)):
+            for j in range(i + 1, len(ys)):
+                y1, y2 = ys[i], ys[j]
+                base = abs(y1 - y2)
+                for other_x in x_coords:
+                    if other_x != x:
+                        height = abs(other_x - x)
+                        area = base * height
+                        max_area = max(max_area, area)
+
+    # 枚举所有可能的垂直于 y 轴的边
+    for y, xs in y_coords.items():
+        for i in range(len(xs)):
+            for j in range(i + 1, len(xs)):
+                x1, x2 = xs[i], xs[j]
+                base = abs(x1 - x2)
+                for other_y in y_coords:
+                    if other_y != y:
+                        height = abs(other_y - y)
+                        area = base * height
+                        max_area = max(max_area, area)
+
+    return 2 * max_area if max_area > 0 else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_area_of_triangle)

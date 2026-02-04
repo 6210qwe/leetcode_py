@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个可能的分割点，并检查是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的总和。
+2. 初始化前缀和变量和计数器。
+3. 遍历数组，更新前缀和并检查是否满足分割条件，如果满足则增加计数器。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用前缀和可以在 O(1) 时间内计算出任意子数组的和。
+- 只需要遍历一次数组即可完成所有计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_ways_to_split_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组的合法分割方案数
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(nums)
+    prefix_sum = 0
+    count = 0
+    
+    for i in range(len(nums) - 1):
+        prefix_sum += nums[i]
+        if prefix_sum >= (total_sum - prefix_sum):
+            count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_ways_to_split_array)

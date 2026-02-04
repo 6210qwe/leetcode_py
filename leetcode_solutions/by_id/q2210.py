@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对数组进行排序，然后找到目标元素在排序后的数组中的所有下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针法找到目标元素在排序后的数组中的起始和结束位置。
+3. 返回目标元素的所有下标。
 
 关键点:
-- [TODO]
+- 使用双指针法可以高效地找到目标元素的所有下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_target_indices(nums: List[int], target: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组排序后的目标下标
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化双指针
+    left, right = 0, len(nums) - 1
+    
+    # 找到目标元素的起始位置
+    while left <= right and nums[left] < target:
+        left += 1
+    
+    # 找到目标元素的结束位置
+    while left <= right and nums[right] > target:
+        right -= 1
+    
+    # 如果没有找到目标元素，返回空列表
+    if left > right or nums[left] != target:
+        return []
+    
+    # 返回目标元素的所有下标
+    return list(range(left, right + 1))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_target_indices)

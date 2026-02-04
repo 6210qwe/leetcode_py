@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到第二高的薪水。如果不存在第二高的薪水，则返回 null。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到所有不同的薪水，并按降序排列。
+2. 从排序后的结果中选择第二个薪水。
+3. 如果没有第二高的薪水，则返回 null。
 
 关键点:
-- [TODO]
+- 使用 `IFNULL` 函数来处理可能的 null 值。
+- 使用 `LIMIT` 和 `OFFSET` 来获取第二高的薪水。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是薪水表中的行数。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，查询不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回第二高的薪水
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT
+        IFNULL(
+            (SELECT DISTINCT Salary
+             FROM Employee
+             ORDER BY Salary DESC
+             LIMIT 1 OFFSET 1),
+            NULL
+        ) AS SecondHighestSalary
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,40 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自定义排序函数，根据每个数的二进制表示中 1 的个数进行排序。如果 1 的个数相同，则按数值大小排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_ones`，用于计算一个数的二进制表示中 1 的个数。
+2. 使用 Python 的 `sorted` 函数，传入自定义的排序键，先按 1 的个数排序，再按数值大小排序。
 
 关键点:
-- [TODO]
+- 使用 `bin` 函数和 `count` 方法来计算二进制表示中 1 的个数。
+- 使用 `sorted` 函数的 `key` 参数来实现多级排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，`sorted` 函数会创建一个新的列表，占用 O(n) 的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_ones(num: int) -> int:
+    """计算一个数的二进制表示中 1 的个数"""
+    return bin(num).count('1')
 
-def solution_function_name(params):
+def solution(arr: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    根据数字二进制下 1 的数目排序
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 sorted 函数进行多级排序
+    return sorted(arr, key=lambda x: (count_ones(x), x))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和双指针来找到满足条件的最大总容量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将机器按成本从小到大排序。
+2. 使用双指针，一个从头开始，一个从尾开始，遍历所有可能的组合。
+3. 对于每一对机器，检查它们的总成本是否小于预算，并更新最大总容量。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以高效地找到满足条件的最大总容量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(costs: List[int], capacity: List[int], budget: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到预算下的最大总容量
     """
-    # TODO: 实现最优解法
-    pass
+    # 将机器按成本从小到大排序
+    machines = sorted(zip(costs, capacity), key=lambda x: x[0])
+    
+    max_capacity = 0
+    left, right = 0, len(machines) - 1
+    
+    while left <= right:
+        # 检查单个机器是否满足预算
+        if machines[left][0] < budget:
+            max_capacity = max(max_capacity, machines[left][1])
+        
+        # 检查两个机器的总成本是否满足预算
+        if machines[left][0] + machines[right][0] < budget:
+            max_capacity = max(max_capacity, machines[left][1] + machines[right][1])
+            left += 1
+        else:
+            right -= 1
+    
+    return max_capacity
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来维护子数组的频率，并计算最大频率分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，以及一个哈希表 freq 来记录当前窗口内元素的频率。
+2. 使用右指针扩展窗口，更新频率表并计算当前窗口的频率分数。
+3. 如果当前窗口的频率分数大于已知的最大频率分数，则更新最大频率分数。
+4. 如果当前窗口的频率分数小于等于目标分数，则移动左指针缩小窗口，同时更新频率表。
+5. 重复步骤 2-4 直到右指针遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术来维护子数组的频率。
+- 通过哈希表来快速更新和查询频率。
+- 通过调整窗口大小来找到最大频率分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储所有不同的元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxFrequencyScore(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算子数组的最大频率分数。
+    
+    :param nums: 整数数组
+    :param k: 目标频率分数
+    :return: 最大频率分数
     """
-    # TODO: 实现最优解法
-    pass
+    def calculate_score(freq):
+        score = 0
+        for count in freq.values():
+            score += count * count
+        return score
 
+    left = 0
+    max_score = 0
+    freq = {}
+    
+    for right in range(len(nums)):
+        if nums[right] in freq:
+            freq[nums[right]] += 1
+        else:
+            freq[nums[right]] = 1
+        
+        while calculate_score(freq) > k:
+            freq[nums[left]] -= 1
+            if freq[nums[left]] == 0:
+                del freq[nums[left]]
+            left += 1
+        
+        current_score = calculate_score(freq)
+        max_score = max(max_score, current_score)
+    
+    return max_score
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxFrequencyScore)

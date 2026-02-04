@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算每个位置作为峰值时的高度和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个位置作为峰值时，左侧和右侧的高度和。
+2. 使用单调栈来维护左侧和右侧的高度和。
+3. 遍历每个位置，计算其作为峰值时的高度和，并更新最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效计算每个位置作为峰值时的高度和。
+- 通过两次遍历分别计算左侧和右侧的高度和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def beautiful_towers_ii(max_heights: List[int]) -> int:
+    n = len(max_heights)
+    left_sum = [0] * n
+    right_sum = [0] * n
+    stack = []
+
+    # 计算左侧高度和
+    for i in range(n):
+        while stack and max_heights[stack[-1]] > max_heights[i]:
+            stack.pop()
+        if stack:
+            left_sum[i] = left_sum[stack[-1]] + (i - stack[-1]) * max_heights[i]
+        else:
+            left_sum[i] = (i + 1) * max_heights[i]
+        stack.append(i)
+
+    stack.clear()
+
+    # 计算右侧高度和
+    for i in range(n - 1, -1, -1):
+        while stack and max_heights[stack[-1]] > max_heights[i]:
+            stack.pop()
+        if stack:
+            right_sum[i] = right_sum[stack[-1]] + (stack[-1] - i) * max_heights[i]
+        else:
+            right_sum[i] = (n - i) * max_heights[i]
+        stack.append(i)
+
+    # 计算最大高度和
+    max_sum = 0
+    for i in range(n):
+        max_sum = max(max_sum, left_sum[i] + right_sum[i] - max_heights[i])
+
+    return max_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(beautiful_towers_ii)

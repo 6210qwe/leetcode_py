@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符的频率，然后分别找到元音和辅音的最大频率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表，一个用于记录元音频率，一个用于记录辅音频率。
+2. 遍历字符串，更新哈希表中的频率。
+3. 分别找到元音和辅音的最大频率。
+4. 返回元音和辅音的最大频率之和。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计字符频率。
+- 通过遍历字符串一次完成频率统计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串一次来统计频率。
+空间复杂度: O(1)，因为哈希表的大小是固定的（最多 26 个字母）。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_most_frequent_vowel_and_consonant(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到频率最高的元音和辅音，并返回它们的频率之和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义元音集合
+    vowels = set('aeiou')
+    
+    # 初始化元音和辅音的频率字典
+    vowel_count = {}
+    consonant_count = {}
+    
+    # 遍历字符串，更新频率字典
+    for char in s:
+        if char in vowels:
+            vowel_count[char] = vowel_count.get(char, 0) + 1
+        else:
+            consonant_count[char] = consonant_count.get(char, 0) + 1
+    
+    # 找到元音和辅音的最大频率
+    max_vowel_freq = max(vowel_count.values(), default=0)
+    max_consonant_freq = max(consonant_count.values(), default=0)
+    
+    # 返回最大频率之和
+    return max_vowel_freq + max_consonant_freq
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_most_frequent_vowel_and_consonant)

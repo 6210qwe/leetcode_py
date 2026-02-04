@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学方法找到最小的 k 使得 1 + 2 + ... + k >= |target|，然后根据奇偶性调整 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算最小的 k 使得 1 + 2 + ... + k >= |target|。
+2. 如果 (k * (k + 1) // 2 - |target|) 是偶数，则 k 就是答案。
+3. 否则，增加 k 直到 (k * (k + 1) // 2 - |target|) 是偶数。
 
 关键点:
-- [TODO]
+- 通过求和公式 1 + 2 + ... + k = k * (k + 1) // 2 来确定 k。
+- 根据奇偶性调整 k 以确保可以到达 target。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(|target|))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reach_number(target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回到达目标所需的最小移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    target = abs(target)
+    k = 0
+    while k * (k + 1) // 2 < target:
+        k += 1
+    
+    # Check if the difference is even
+    diff = k * (k + 1) // 2 - target
+    while diff % 2 != 0:
+        k += 1
+        diff = k * (k + 1) // 2 - target
+    
+    return k
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reach_number)

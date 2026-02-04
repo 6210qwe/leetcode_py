@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择尽可能多的不同类型的苹果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每种苹果的数量，并按数量从大到小排序。
+2. 依次选择最多 k 种不同类型的苹果，直到不能再选择为止。
 
 关键点:
-- [TODO]
+- 优先选择数量最多的苹果种类。
+- 使用贪心策略确保选择的苹果种类数最多。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maxNumberOfApples(arr: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以放入篮子中的苹果数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每种苹果的数量
+    apple_count = {}
+    for apple in arr:
+        if apple in apple_count:
+            apple_count[apple] += 1
+        else:
+            apple_count[apple] = 1
+    
+    # 按数量从大到小排序
+    sorted_apples = sorted(apple_count.items(), key=lambda x: x[1], reverse=True)
+    
+    total_apples = 0
+    selected_types = 0
+    
+    # 依次选择最多 k 种不同类型的苹果
+    for apple, count in sorted_apples:
+        if selected_types < k:
+            total_apples += count
+            selected_types += 1
+        else:
+            break
+    
+    return total_apples
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxNumberOfApples)

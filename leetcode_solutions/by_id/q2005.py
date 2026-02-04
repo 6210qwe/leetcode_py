@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个布尔数组来标记哪些整数被覆盖了。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 51 的布尔数组 `covered`，初始值为 False。
+2. 遍历 `ranges` 数组，将每个区间的整数在 `covered` 数组中标记为 True。
+3. 检查 `left` 到 `right` 范围内的所有整数是否都被标记为 True。
 
 关键点:
-- [TODO]
+- 使用布尔数组来高效地记录覆盖情况。
+- 通过遍历 `ranges` 数组来标记覆盖的整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `ranges` 的长度，m 是 `right - left + 1`。
+空间复杂度: O(1)，因为布尔数组的大小是固定的 51。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_covered(ranges: List[List[int]], left: int, right: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查是否区域内所有整数都被覆盖
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化一个长度为 51 的布尔数组
+    covered = [False] * 51
+    
+    # 遍历 ranges 数组，将每个区间的整数在 covered 数组中标记为 True
+    for start, end in ranges:
+        for i in range(start, end + 1):
+            covered[i] = True
+    
+    # 检查 left 到 right 范围内的所有整数是否都被标记为 True
+    for i in range(left, right + 1):
+        if not covered[i]:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_covered)

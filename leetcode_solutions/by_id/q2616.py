@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来维护当前数组中的最大值，每次取出最大值进行操作，并将新的值重新加入堆中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，并将所有元素加入堆中。
+2. 进行 k 次操作：
+   - 从堆中取出最大值，将其加入分数。
+   - 计算新的值（即 ceil(原值 / 3)），并将新值重新加入堆中。
+3. 返回最终的分数。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地获取和更新最大值。
+- 使用负数来实现 Python 的 heapq 模块作为最大堆。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k log n)，其中 n 是数组的长度，k 是操作次数。每次操作涉及堆的插入和删除操作，时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def maximal_score_after_k_operations(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 执行 K 次操作后的最大分数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将所有元素加入最大堆
+    max_heap = [-num for num in nums]
+    heapq.heapify(max_heap)
+    
+    score = 0
+    for _ in range(k):
+        # 取出最大值并加入分数
+        max_value = -heapq.heappop(max_heap)
+        score += max_value
+        
+        # 计算新的值并重新加入堆中
+        new_value = -(-max_value // 3)
+        heapq.heappush(max_heap, new_value)
+    
+    return score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximal_score_after_k_operations)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划解决这个问题。定义 dp(i, j) 表示从第 i 堵墙开始，剩余 j 单位时间的最小开销。状态转移方程为：
+- 如果选择付费油漆匠刷第 i 堵墙，则 dp(i, j) = cost[i] + dp(i+1, j + time[i])
+- 如果选择免费油漆匠刷第 i 堵墙，则 dp(i, j) = dp(i+1, j - 1)
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示从第 i 堵墙开始，剩余 j 单位时间的最小开销。
+2. 从后往前遍历每一堵墙，更新 dp 数组。
+3. 返回 dp[0][0]，即从第 0 堵墙开始，剩余 0 单位时间的最小开销。
 
 关键点:
-- [TODO]
+- 使用二维 DP 数组来存储中间结果，避免重复计算。
+- 注意边界条件，当 j < 0 时，表示没有足够的时间让免费油漆匠工作，此时 dp[i][j] 应该是无穷大。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * (n + max(time)))，其中 n 是墙的数量，max(time) 是时间的最大值。
+空间复杂度: O(n * (n + max(time)))，用于存储 DP 数组。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(cost: List[int], time: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用动态规划求解刷墙的最小开销
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(cost)
+    max_time = sum(time)
+    dp = [[float('inf')] * (max_time + 1) for _ in range(n + 1)]
+
+    # 初始化 dp 数组
+    for j in range(max_time + 1):
+        dp[n][j] = 0
+
+    # 动态规划
+    for i in range(n - 1, -1, -1):
+        for j in range(max_time + 1):
+            if j - 1 >= 0:
+                dp[i][j] = min(dp[i][j], dp[i + 1][j - 1])
+            dp[i][j] = min(dp[i][j], cost[i] + dp[i + 1][j + time[i]])
+
+    return dp[0][0]
 
 
 Solution = create_solution(solution_function_name)

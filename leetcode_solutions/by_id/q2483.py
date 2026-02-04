@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每个任务类型的上次完成时间，并在遍历时检查是否满足间隔要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `last_completed` 来记录每个任务类型的上次完成时间。
+2. 初始化一个变量 `current_day` 来记录当前天数。
+3. 遍历任务列表 `tasks`：
+   - 对于每个任务 `task`，检查其上次完成时间加上间隔 `space` 是否大于当前天数 `current_day`。
+   - 如果是，则将 `current_day` 更新为 `last_completed[task] + space + 1`。
+   - 更新 `last_completed[task]` 为当前天数 `current_day`。
+   - 增加 `current_day`。
+4. 返回 `current_day` 作为完成所有任务所需的最少天数。
 
 关键点:
-- [TODO]
+- 使用字典来记录每个任务类型的上次完成时间，确保在遍历时能够快速查找和更新。
+- 通过比较当前天数和任务的下次可完成时间来决定是否需要休息。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 tasks 的长度。我们只需要遍历一次任务列表。
+空间复杂度: O(m)，其中 m 是任务类型的数量。我们需要一个字典来存储每个任务类型的上次完成时间。
 """
 
 # ============================================================================
@@ -49,12 +56,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def task_scheduler(tasks: List[int], space: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算完成所有任务所需的最少天数
     """
-    # TODO: 实现最优解法
-    pass
+    last_completed = {}  # 记录每个任务类型的上次完成时间
+    current_day = 0  # 当前天数
+
+    for task in tasks:
+        if task in last_completed:
+            next_available_day = last_completed[task] + space + 1
+            if next_available_day > current_day:
+                current_day = next_available_day
+        last_completed[task] = current_day
+        current_day += 1
+
+    return current_day
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(task_scheduler)

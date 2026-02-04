@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过循环移位操作，检查矩阵是否在移位后与原矩阵相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每一行，根据其索引是奇数还是偶数，分别进行右移或左移操作。
+2. 将移位后的矩阵与原矩阵进行比较，如果相同则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用切片操作来实现循环移位。
+- 通过取模操作来处理移位次数超过行长度的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(mat: List[List[int]], k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查矩阵在循环移位后是否与原矩阵相同
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    
+    for i in range(m):
+        if i % 2 == 0:
+            # 偶数行左移 k 次
+            k_mod = k % n
+            mat[i] = mat[i][k_mod:] + mat[i][:k_mod]
+        else:
+            # 奇数行右移 k 次
+            k_mod = k % n
+            mat[i] = mat[i][-k_mod:] + mat[i][:-k_mod]
+    
+    # 检查移位后的矩阵是否与原矩阵相同
+    return all(mat[i] == mat[i][:] for i in range(m))
 
 
 Solution = create_solution(solution_function_name)

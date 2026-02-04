@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组（Fenwick Tree）来高效地查询和更新区间最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化树状数组，大小为 max(nums) + 1。
+2. 遍历 nums 数组，对于每个元素 num，查询 [num - k, num - 1] 区间的最大值，并更新当前元素的最大长度。
+3. 更新树状数组中 num 位置的值为当前元素的最大长度。
 
 关键点:
-- [TODO]
+- 使用树状数组来高效地进行区间查询和单点更新。
+- 通过离散化处理，将 nums 中的值映射到 [1, max(nums)] 范围内，以减少树状数组的大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。每次查询和更新操作的时间复杂度为 O(log n)。
+空间复杂度: O(n)，树状数组的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -48,13 +50,52 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class FenwickTree:
+    def __init__(self, size: int):
+        self.size = size
+        self.tree = [0] * (size + 1)
 
-def solution_function_name(params):
+    def update(self, index: int, value: int) -> None:
+        while index <= self.size:
+            self.tree[index] = max(self.tree[index], value)
+            index += index & -index
+
+    def query(self, index: int) -> int:
+        result = 0
+        while index > 0:
+            result = max(result, self.tree[index])
+            index -= index & -index
+        return result
+
+def longest_increasing_subsequence_ii(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足要求的最长子序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
 
+    # 离散化处理
+    unique_nums = sorted(set(nums))
+    rank = {num: i + 1 for i, num in enumerate(unique_nums)}
 
-Solution = create_solution(solution_function_name)
+    # 初始化树状数组
+    tree = FenwickTree(len(unique_nums))
+
+    # 动态规划
+    dp = [0] * len(nums)
+    max_length = 0
+
+    for i, num in enumerate(nums):
+        num_rank = rank[num]
+        left = bisect.bisect_left(unique_nums, num - k)
+        right = bisect.bisect_left(unique_nums, num)
+        if left < right:
+            dp[i] = tree.query(right) + 1
+        else:
+            dp[i] = 1
+        max_length = max(max_length, dp[i])
+        tree.update(num_rank, dp[i])
+
+    return max_length
+
+Solution = create_solution(longest_increasing_subsequence_ii)

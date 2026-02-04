@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最大的 k 个不同的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用集合去重并转换为列表。
+2. 对去重后的列表进行降序排序。
+3. 取前 k 个元素返回。
 
 关键点:
-- [TODO]
+- 使用集合去重确保元素互不相同。
+- 降序排序以获取最大的 k 个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度。主要由排序操作决定。
+空间复杂度: O(n)，用于存储去重后的元素。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 从 nums 中选择最多 k 个互不相同的元素，使它们的和最大化，并按严格递减顺序返回。
     """
-    # TODO: 实现最优解法
-    pass
+    # 去重
+    unique_nums = list(set(nums))
+    
+    # 降序排序
+    unique_nums.sort(reverse=True)
+    
+    # 取前 k 个元素
+    return unique_nums[:k]
 
 
 Solution = create_solution(solution_function_name)

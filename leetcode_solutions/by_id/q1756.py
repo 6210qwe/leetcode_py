@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算最小删除次数。我们需要维护两个计数器：一个用于记录到目前为止遇到的 'b' 的数量，另一个用于记录需要删除的字符数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`b_count` 用于记录当前遇到的 'b' 的数量，`min_deletions` 用于记录最小删除次数。
+2. 遍历字符串 `s`：
+   - 如果当前字符是 'b'，则增加 `b_count`。
+   - 如果当前字符是 'a'，则更新 `min_deletions` 为 `min(min_deletions + 1, b_count)`。
+3. 返回 `min_deletions` 作为结果。
 
 关键点:
-- [TODO]
+- 动态规划的思想在于通过维护 `b_count` 和 `min_deletions` 来逐步计算最小删除次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_deletions_to_make_string_balanced(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使字符串平衡的最少删除次数
     """
-    # TODO: 实现最优解法
-    pass
+    b_count = 0
+    min_deletions = 0
+    
+    for char in s:
+        if char == 'b':
+            b_count += 1
+        elif char == 'a':
+            min_deletions = min(min_deletions + 1, b_count)
+    
+    return min_deletions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_deletions_to_make_string_balanced)

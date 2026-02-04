@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合和最小堆来管理空闲服务器和忙碌服务器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个有序集合 `free_servers` 来存储当前空闲的服务器。
+2. 初始化一个最小堆 `busy_servers` 来存储正在处理请求的服务器及其结束时间。
+3. 遍历每个请求：
+   - 从 `busy_servers` 中移除所有已经完成处理的服务器，并将其添加回 `free_servers`。
+   - 如果 `free_servers` 为空，跳过当前请求。
+   - 否则，从 `free_servers` 中选择一个服务器来处理当前请求，并将其从 `free_servers` 中移除，然后将其添加到 `busy_servers` 中。
+4. 记录每个服务器处理的请求数。
+5. 找出处理请求数最多的服务器并返回。
 
 关键点:
-- [TODO]
+- 使用有序集合来快速找到下一个空闲服务器。
+- 使用最小堆来管理忙碌服务器及其结束时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是请求的数量，k 是服务器的数量。每个请求的处理时间复杂度为 O(log k)。
+空间复杂度: O(k)，用于存储空闲服务器和忙碌服务器的信息。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
+from sortedcontainers import SortedSet
 
+def busiest_servers(k: int, arrival: List[int], load: List[int]) -> List[int]:
+    free_servers = SortedSet(range(k))
+    busy_servers = []
+    request_count = [0] * k
+    
+    for i, (start, duration) in enumerate(zip(arrival, load)):
+        # 释放已完成处理的服务器
+        while busy_servers and busy_servers[0][0] <= start:
+            _, server_id = heapq.heappop(busy_servers)
+            free_servers.add(server_id)
+        
+        if not free_servers:
+            continue
+        
+        # 选择下一个空闲服务器
+        server_id = free_servers.bisect_left(i % k) % len(free_servers)
+        server_id = free_servers[server_id]
+        free_servers.remove(server_id)
+        
+        # 将服务器标记为忙碌
+        end_time = start + duration
+        heapq.heappush(busy_servers, (end_time, server_id))
+        
+        # 记录请求处理次数
+        request_count[server_id] += 1
+    
+    max_requests = max(request_count)
+    return [i for i, count in enumerate(request_count) if count == max_requests]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(busiest_servers)

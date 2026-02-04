@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算字符串中元音的数量来判断小红是否能赢。如果总元音数是奇数，小红总是能赢；否则，小红会输。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串中元音的数量。
+2. 判断元音数量的奇偶性。
+3. 根据奇偶性返回结果。
 
 关键点:
-- [TODO]
+- 总元音数为奇数时，小红总是能赢。
+- 总元音数为偶数时，小红会输。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要遍历字符串一次来计算元音数量。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_vowels_game(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断小红是否能在字符串元音游戏中获胜
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义元音集合
+    vowels = set('aeiou')
+    
+    # 计算字符串中元音的数量
+    vowel_count = sum(1 for char in s if char in vowels)
+    
+    # 判断元音数量的奇偶性
+    return vowel_count % 2 == 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution_vowels_game)

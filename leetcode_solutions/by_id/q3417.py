@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到排列的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入数组进行排序。
+2. 使用二分查找在原数组中找到排序后的数组的第一个元素的位置。
+3. 检查该位置是否满足排列条件，如果满足则返回该位置，否则继续查找。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度为 O(log n)，可以有效减少查找时间。
+- 排序的时间复杂度为 O(n log n)，但只需要进行一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找排列的下标
     """
-    # TODO: 实现最优解法
-    pass
+    # 对输入数组进行排序
+    sorted_nums = sorted(nums)
+    
+    # 使用二分查找在原数组中找到排序后的数组的第一个元素的位置
+    def binary_search(arr, target):
+        left, right = 0, len(arr) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] == target:
+                return mid
+            elif arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return -1
+    
+    # 找到排序后数组的第一个元素在原数组中的位置
+    index = binary_search(nums, sorted_nums[0])
+    
+    # 检查该位置是否满足排列条件
+    for i in range(len(nums)):
+        if nums[(index + i) % len(nums)] != sorted_nums[i]:
+            return -1
+    return index
 
 
 Solution = create_solution(solution_function_name)

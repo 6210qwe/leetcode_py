@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理同一行或同一列中相同值的连通性，并使用拓扑排序来确定每个元素的排名。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个二维数组 `values` 来存储每个位置的值及其坐标。
+2. 对 `values` 进行排序，按值从小到大排序。
+3. 使用并查集来处理同一行或同一列中相同值的连通性。
+4. 构建一个有向图，表示节点之间的相对大小关系。
+5. 使用拓扑排序来确定每个元素的排名。
 
 关键点:
-- [TODO]
+- 使用并查集来处理同一行或同一列中相同值的连通性。
+- 使用拓扑排序来确定每个元素的排名。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))，其中 m 和 n 分别是矩阵的行数和列数。排序操作的时间复杂度为 O(m * n * log(m * n))，并查集和拓扑排序的时间复杂度为 O(m * n)。
+空间复杂度: O(m * n)，用于存储并查集、图和队列等数据结构。
 """
 
 # ============================================================================
@@ -49,12 +53,86 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+
+def solution_function_name(matrix: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回矩阵转换后的排名
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(matrix), len(matrix[0])
+    values = [(val, i, j) for i, row in enumerate(matrix) for j, val in enumerate(row)]
+    values.sort()
+
+    uf = UnionFind(m * n)
+    graph = [[] for _ in range(m * n)]
+    in_degree = [0] * (m * n)
+
+    for k in range(len(values)):
+        val, i, j = values[k]
+        index = i * n + j
+        if k > 0 and val == values[k - 1][0]:
+            prev_val, prev_i, prev_j = values[k - 1]
+            prev_index = prev_i * n + prev_j
+            if i == prev_i or j == prev_j:
+                uf.union(index, prev_index)
+
+    for k in range(len(values)):
+        val, i, j = values[k]
+        index = i * n + j
+        if k > 0 and val != values[k - 1][0]:
+            for l in range(k):
+                prev_val, prev_i, prev_j = values[l]
+                prev_index = prev_i * n + prev_j
+                if i == prev_i or j == prev_j:
+                    root_index = uf.find(index)
+                    root_prev_index = uf.find(prev_index)
+                    if root_index != root_prev_index:
+                        graph[root_prev_index].append(root_index)
+                        in_degree[root_index] += 1
+
+    queue = [i for i in range(m * n) if in_degree[i] == 0]
+    ranks = [0] * (m * n)
+    rank = 1
+
+    while queue:
+        new_queue = []
+        for node in queue:
+            ranks[node] = rank
+            for neighbor in graph[node]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    new_queue.append(neighbor)
+        queue = new_queue
+        rank += 1
+
+    result = [[0] * n for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            index = i * n + j
+            result[i][j] = ranks[uf.find(index)]
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

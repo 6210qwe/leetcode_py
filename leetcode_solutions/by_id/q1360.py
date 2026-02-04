@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来生成所有可能的字符串组合，并使用位掩码来检查字符是否重复。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大长度为 0。
+2. 定义一个递归函数 `backtrack`，参数包括当前索引、当前字符串和当前字符集的位掩码。
+3. 在递归函数中，遍历从当前索引到数组末尾的所有字符串：
+   - 如果当前字符串与已选字符集没有重复字符，则更新最大长度，并继续递归。
+   - 否则，跳过当前字符串。
+4. 返回最大长度。
 
 关键点:
-- [TODO]
+- 使用位掩码来高效地检查字符是否重复。
+- 回溯法确保所有可能的组合都被考虑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是数组 arr 的长度。最坏情况下需要检查所有子集。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +54,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_length(arr: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回串联字符串的最大长度
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(index: int, current: str, bitmask: int) -> None:
+        nonlocal max_len
+        max_len = max(max_len, len(current))
+        
+        for i in range(index, len(arr)):
+            if (bitmask & bitmasks[i]) == 0:
+                backtrack(i + 1, current + arr[i], bitmask | bitmasks[i])
+    
+    max_len = 0
+    bitmasks = []
+    
+    for s in arr:
+        mask = 0
+        for c in s:
+            idx = ord(c) - ord('a')
+            if (mask >> idx) & 1:
+                mask = 0
+                break
+            mask |= 1 << idx
+        bitmasks.append(mask)
+    
+    backtrack(0, "", 0)
+    return max_len
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_length)

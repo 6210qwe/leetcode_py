@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Dijkstra算法来找到从起点到终点的最短时间路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列（最小堆），将起点(0, 0)和初始时间为0加入队列。
+2. 使用一个二维数组dist记录从起点到每个格子的最短时间，初始化为无穷大。
+3. 从优先队列中取出当前时间最小的格子，检查其四个方向的邻居格子。
+4. 对于每个邻居格子，计算从当前格子到达该邻居格子的时间，并更新dist数组。
+5. 如果更新后的到达时间小于dist数组中的值，则将该邻居格子及其时间加入优先队列。
+6. 重复上述过程，直到优先队列为空或到达终点。
+7. 如果到达终点，返回dist数组中终点的值；否则返回-1。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次处理的是当前时间最小的格子。
+- 更新邻居格子的时间时，需要考虑格子的访问时间和移动时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))，其中m和n分别是网格的行数和列数。优先队列的插入和删除操作的时间复杂度为O(log(m * n))，最多进行m * n次操作。
+空间复杂度: O(m * n)，用于存储dist数组和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def min_time_to_visit(grid: List[List[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    if m == 1 and n == 1:
+        return 0
+    
+    # 方向数组
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # 初始化距离数组
+    dist = [[float('inf')] * n for _ in range(m)]
+    dist[0][0] = 0
+    
+    # 优先队列
+    pq = [(0, 0, 0)]  # (时间, 行, 列)
+    
+    while pq:
+        time, row, col = heapq.heappop(pq)
+        
+        if row == m - 1 and col == n - 1:
+            return time
+        
+        for dr, dc in directions:
+            new_row, new_col = row + dr, col + dc
+            
+            if 0 <= new_row < m and 0 <= new_col < n:
+                wait_time = max(0, grid[new_row][new_col] - (time + 1))
+                new_time = time + 1 + wait_time
+                
+                if new_time < dist[new_row][new_col]:
+                    dist[new_row][new_col] = new_time
+                    heapq.heappush(pq, (new_time, new_row, new_col))
+    
+    return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_time_to_visit)

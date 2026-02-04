@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先选择成本最低的组合方式来满足需求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算需要同时购买的类型 3 物品的数量，即 min(need1, need2)。
+2. 计算剩余的需求量 need1' 和 need2'。
+3. 分别计算剩余需求量的成本，选择成本最低的方式购买。
 
 关键点:
-- [TODO]
+- 优先选择成本最低的组合方式来满足需求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_cost_to_acquire_required_items(cost1: int, cost2: int, cost_both: int, need1: int, need2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足需求的最小可能总花费
     """
-    # TODO: 实现最优解法
-    pass
+    # 优先选择成本最低的组合方式来满足需求
+    common_need = min(need1, need2)
+    total_cost = common_need * cost_both
+    remaining_need1 = need1 - common_need
+    remaining_need2 = need2 - common_need
+    
+    # 计算剩余需求量的成本
+    total_cost += remaining_need1 * cost1
+    total_cost += remaining_need2 * cost2
+    
+    return total_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_to_acquire_required_items)

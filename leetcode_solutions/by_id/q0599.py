@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符串在 list1 中的索引，然后遍历 list2，找到公共字符串并计算其索引和，记录最小索引和的公共字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个哈希表，记录 list1 中每个字符串及其索引。
+2. 初始化一个变量来记录当前最小的索引和，以及一个列表来存储结果。
+3. 遍历 list2，对于每个字符串，如果它在哈希表中存在，则计算其索引和。
+4. 如果当前索引和小于已记录的最小索引和，则更新最小索引和，并清空结果列表，将当前字符串加入结果列表。
+5. 如果当前索引和等于已记录的最小索引和，则将当前字符串加入结果列表。
+6. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用哈希表可以快速查找公共字符串及其索引。
+- 通过一次遍历 list2 即可找到所有具有最小索引和的公共字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 list1 的长度，m 是 list2 的长度。
+空间复杂度: O(n)，需要额外的空间来存储 list1 中每个字符串及其索引。
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_restaurant(list1: List[str], list2: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个列表中具有最小索引和的公共字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个哈希表，记录 list1 中每个字符串及其索引
+    index_map = {restaurant: i for i, restaurant in enumerate(list1)}
+    
+    # 初始化最小索引和为无穷大，结果列表为空
+    min_index_sum = float('inf')
+    result = []
+    
+    # 遍历 list2
+    for j, restaurant in enumerate(list2):
+        if restaurant in index_map:
+            # 计算当前字符串的索引和
+            index_sum = index_map[restaurant] + j
+            if index_sum < min_index_sum:
+                # 更新最小索引和，清空结果列表，添加当前字符串
+                min_index_sum = index_sum
+                result = [restaurant]
+            elif index_sum == min_index_sum:
+                # 如果当前索引和等于最小索引和，添加当前字符串到结果列表
+                result.append(restaurant)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_restaurant)

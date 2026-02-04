@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历树，并记录每一层的最左和最右节点的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点及其位置（设为 1）加入队列。
+2. 使用一个字典来记录每一层的第一个节点的位置。
+3. 开始层次遍历：
+   - 对于每个节点，计算其子节点的位置（左子节点为 2 * pos，右子节点为 2 * pos + 1）。
+   - 更新当前层的最大宽度。
+   - 将子节点及其位置加入队列。
+4. 返回最大宽度。
 
 关键点:
-- [TODO]
+- 使用位置编号来计算宽度。
+- 记录每一层的第一个节点的位置以便计算宽度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(n)，队列和字典的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def solution_function_name(root: Optional[TreeNode]) -> int:
+    if not root:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    max_width = 0
+    queue = [(root, 1)]
+    level_first_pos = {}
 
+    while queue:
+        level_size = len(queue)
+        for i in range(level_size):
+            node, pos = queue.pop(0)
+
+            # 记录每一层的第一个节点的位置
+            if i == 0:
+                level_first_pos[node.depth] = pos
+
+            # 计算当前层的宽度
+            if i == level_size - 1:
+                max_width = max(max_width, pos - level_first_pos[node.depth] + 1)
+
+            # 将子节点及其位置加入队列
+            if node.left:
+                node.left.depth = node.depth + 1
+                queue.append((node.left, 2 * pos))
+            if node.right:
+                node.right.depth = node.depth + 1
+                queue.append((node.right, 2 * pos + 1))
+
+    return max_width
 
 Solution = create_solution(solution_function_name)

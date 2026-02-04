@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来检查是否存在一条从根节点到叶子节点的路径，使得路径上的节点值与给定数组中的值一一对应。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，参数包括当前节点、当前数组索引。
+2. 如果当前节点为空，返回 False。
+3. 如果当前节点值不等于数组中对应索引的值，返回 False。
+4. 如果当前节点是叶子节点且数组索引指向最后一个元素，返回 True。
+5. 递归调用 `dfs` 检查左子节点和右子节点。
+6. 返回左子节点或右子节点的结果。
 
 关键点:
-- [TODO]
+- 递归终止条件：当前节点为空、当前节点值不匹配、叶子节点且数组索引指向最后一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点最多访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +48,19 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def is_valid_sequence(root: Optional[TreeNode], arr: List[int]) -> bool:
+    def dfs(node: Optional[TreeNode], index: int) -> bool:
+        if not node:
+            return False
+        if index == len(arr) or node.val != arr[index]:
+            return False
+        if not node.left and not node.right and index == len(arr) - 1:
+            return True
+        return dfs(node.left, index + 1) or dfs(node.right, index + 1)
+    
+    return dfs(root, 0)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_valid_sequence)

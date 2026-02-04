@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以定义一个数组 dp，其中 dp[i] 表示到达第 i 阶台阶的方法数。状态转移方程为 dp[i] = (dp[i-1] + dp[i-2] + dp[i-3]) % 1000000007。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 1, dp[1] = 1, dp[2] = 2。
+2. 从第 3 阶开始，使用状态转移方程计算 dp[i]。
+3. 返回 dp[n]。
 
 关键点:
-- [TODO]
+- 使用动态规划减少重复计算。
+- 对结果取模以防止溢出。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算小孩有多少种上楼梯的方式。
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 1
+    if n == 1:
+        return 1
+    if n == 2:
+        return 2
+
+    MOD = 1000000007
+    dp = [0] * (n + 1)
+    dp[0], dp[1], dp[2] = 1, 1, 2
+
+    for i in range(3, n + 1):
+        dp[i] = (dp[i - 1] + dp[i - 2] + dp[i - 3]) % MOD
+
+    return dp[n]
 
 
 Solution = create_solution(solution_function_name)

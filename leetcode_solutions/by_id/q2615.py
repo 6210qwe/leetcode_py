@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过交换一个字符来使两个字符串的不同字符数量相等。我们需要检查每个可能的交换，并计算交换后的不同字符数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始状态下 word1 和 word2 的不同字符数量。
+2. 遍历所有可能的字符对 (c1, c2)，其中 c1 来自 word1，c2 来自 word2。
+3. 对于每一对字符，模拟交换后的情况，更新不同字符的数量。
+4. 如果交换后的不同字符数量相等，则返回 True。
+5. 如果遍历完所有可能的交换后仍未找到符合条件的交换，则返回 False。
 
 关键点:
-- [TODO]
+- 使用 Counter 来高效地计算和更新不同字符的数量。
+- 通过模拟交换来避免实际修改字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 word1 和 word2 的长度。我们只需要遍历每个字符串一次来计算初始的不同字符数量，然后遍历所有可能的字符对。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间来存储不同字符的数量。
 """
 
 # ============================================================================
@@ -47,14 +51,26 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(word1: str, word2: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过一次交换使两个字符串的不同字符数量相等
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算初始的不同字符数量
+    counter1 = Counter(word1)
+    counter2 = Counter(word2)
+    distinct1 = len(counter1)
+    distinct2 = len(counter2)
+    
+    # 遍历所有可能的字符对
+    for c1 in counter1:
+        for c2 in counter2:
+            new_distinct1 = distinct1 - (counter1[c1] == 1) + (c2 not in counter1)
+            new_distinct2 = distinct2 - (counter2[c2] == 1) + (c1 not in counter2)
+            if new_distinct1 == new_distinct2:
+                return True
+    
+    return False
 
 Solution = create_solution(solution_function_name)

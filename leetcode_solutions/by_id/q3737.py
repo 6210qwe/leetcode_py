@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个三维数组 dp，其中 dp[i][j][k] 表示前 i 个房屋中，第 i 个房屋涂成颜色 j，且第 i-1 个房屋涂成颜色 k 的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][j][k] = cost[0][j]，因为第一个房屋不需要考虑前一个房屋的颜色。
+2. 对于每个房屋 i，计算 dp[i][j][k]，其中 j 和 k 分别是当前房屋和前一个房屋的颜色。
+3. 在计算 dp[i][j][k] 时，需要确保 j 和 k 不同，并且对于对称位置的房屋，颜色也不同。
+4. 最后，从 dp[n-1][j][k] 中找到最小值作为结果。
 
 关键点:
-- [TODO]
+- 使用三维 dp 数组来存储中间结果，避免重复计算。
+- 确保相邻房屋和对称位置的房屋颜色不同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost(n: int, cost: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使房屋看起来漂亮的最低涂色成本
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[[float('inf')] * 3 for _ in range(3)] for _ in range(n)]
+    
+    # 初始化第一个房屋的成本
+    for j in range(3):
+        dp[0][j][j] = cost[0][j]
+    
+    # 动态规划计算每个房屋的最小成本
+    for i in range(1, n):
+        for j in range(3):
+            for k in range(3):
+                if j != k and (i < n // 2 or j != (n - 1 - i) % 3):
+                    dp[i][j][k] = min(dp[i][j][k], dp[i-1][k][j] + cost[i][j])
+    
+    # 找到最后一个房屋的最小成本
+    return min(min(dp[n-1][j][k] for k in range(3)) for j in range(3))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost)

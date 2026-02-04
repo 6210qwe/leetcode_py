@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每个用户的在线状态，并使用一个列表来记录每个用户的提及次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化所有用户的在线状态为 True，并初始化提及次数为 0。
+2. 对事件按时间戳排序。
+3. 遍历事件：
+   - 如果是离线事件，更新用户的在线状态。
+   - 如果是消息事件，根据提及字符串更新用户的提及次数。
 
 关键点:
-- [TODO]
+- 使用字典来高效地管理用户的在线状态。
+- 使用列表来记录每个用户的提及次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 events 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作的时间复杂度为 O(n)。
+空间复杂度: O(n + m)，其中 n 是 events 的长度，m 是 numberOfUsers 的数量。需要额外的空间来存储用户的在线状态和提及次数。
 """
 
 # ============================================================================
@@ -49,12 +53,47 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_mentions_per_user(number_of_users: int, events: List[List[str]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    统计用户被提及情况
+    :param number_of_users: 用户总数
+    :param events: 事件列表
+    :return: 每个用户的提及次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化用户的在线状态和提及次数
+    online_status = {i: True for i in range(number_of_users)}
+    mentions = [0] * number_of_users
+    
+    # 对事件按时间戳排序
+    events.sort(key=lambda x: int(x[1]))
+    
+    # 遍历事件
+    for event in events:
+        event_type, timestamp, details = event
+        timestamp = int(timestamp)
+        
+        if event_type == "OFFLINE":
+            user_id = int(details)
+            online_status[user_id] = False
+            # 设置用户在 60 个单位时间后重新上线
+            events.append(["ONLINE", str(timestamp + 60), str(user_id)])
+            events.sort(key=lambda x: int(x[1]))  # 重新排序事件
+        
+        elif event_type == "MESSAGE":
+            if details == "ALL":
+                for user_id in range(number_of_users):
+                    mentions[user_id] += 1
+            elif details == "HERE":
+                for user_id, is_online in online_status.items():
+                    if is_online:
+                        mentions[user_id] += 1
+            else:
+                for mention in details.split():
+                    if mention.startswith("id"):
+                        user_id = int(mention[2:])
+                        mentions[user_id] += 1
+    
+    return mentions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_mentions_per_user)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来计算直方图中的水量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向数组的两端。
+2. 初始化两个变量 left_max 和 right_max 分别记录从左到右和从右到左的最大高度。
+3. 当 left 小于 right 时，进行以下操作：
+   - 如果 height[left] 小于 height[right]，则更新 left_max 并计算左侧的水量。
+   - 否则，更新 right_max 并计算右侧的水量。
+4. 返回总水量。
 
 关键点:
-- [TODO]
+- 使用双指针法可以避免重复计算，时间复杂度为 O(n)。
+- 通过维护左右两侧的最大高度，可以有效地计算每个位置的水量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +54,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(height: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算直方图中的水量
     """
-    # TODO: 实现最优解法
-    pass
+    if not height:
+        return 0
+
+    n = len(height)
+    left, right = 0, n - 1
+    left_max, right_max = height[left], height[right]
+    water = 0
+
+    while left < right:
+        if height[left] < height[right]:
+            left += 1
+            left_max = max(left_max, height[left])
+            water += left_max - height[left]
+        else:
+            right -= 1
+            right_max = max(right_max, height[right])
+            water += right_max - height[right]
+
+    return water
 
 
 Solution = create_solution(solution_function_name)

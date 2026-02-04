@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个数字的出现次数，然后根据每个数字的出现次数计算最少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个数字的出现次数。
+2. 对于每个数字的出现次数，计算最少操作次数：
+   - 如果出现次数是 1，则无法通过任何操作使其消失，返回 -1。
+   - 否则，优先使用删除三个相同元素的操作，如果剩余 1 或 2 个元素，则使用删除两个相同元素的操作。
 
 关键点:
-- [TODO]
+- 优先使用删除三个相同元素的操作，因为这样可以减少操作次数。
+- 如果某个数字的出现次数是 1，则无法通过任何操作使其消失。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组来统计每个数字的出现次数。
+空间复杂度: O(m)，其中 m 是数组中不同数字的数量。我们需要一个哈希表来存储每个数字的出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def min_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组为空的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数字的出现次数
+    count = Counter(nums)
+    
+    # 计算最少操作次数
+    operations = 0
+    for freq in count.values():
+        if freq == 1:
+            return -1
+        # 优先使用删除三个相同元素的操作
+        operations += freq // 3
+        # 如果剩余 1 或 2 个元素，则使用删除两个相同元素的操作
+        if freq % 3 != 0:
+            operations += 1
+    
+    return operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

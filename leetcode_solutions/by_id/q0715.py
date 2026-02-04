@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序集合 (SortedList) 来维护区间，通过二分查找和合并/分割区间来实现高效的操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的有序集合。
+2. 对于 `addRange` 操作，找到需要合并的区间，并进行合并。
+3. 对于 `queryRange` 操作，使用二分查找来判断区间是否完全包含在已有的区间内。
+4. 对于 `removeRange` 操作，找到需要分割的区间，并进行分割。
 
 关键点:
-- [TODO]
+- 使用 `SortedList` 来维护区间，保证区间的有序性。
+- 通过二分查找来快速定位区间。
+- 合并和分割区间时，注意边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) 对于每次操作，其中 n 是区间的数量。
+空间复杂度: O(n) 用于存储区间。
 """
 
 # ============================================================================
@@ -44,17 +48,46 @@
 # ============================================================================
 
 from typing import List, Optional
+from sortedcontainers import SortedList
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class RangeModule:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self):
+        self.intervals = SortedList()
 
+    def addRange(self, left: int, right: int) -> None:
+        # 找到需要合并的区间
+        i = self.intervals.bisect_left((left, right))
+        while i < len(self.intervals) and self.intervals[i][0] <= right:
+            left = min(left, self.intervals[i][0])
+            right = max(right, self.intervals[i][1])
+            self.intervals.pop(i)
+        
+        self.intervals.add((left, right))
 
-Solution = create_solution(solution_function_name)
+    def queryRange(self, left: int, right: int) -> bool:
+        # 使用二分查找来判断区间是否完全包含在已有的区间内
+        i = self.intervals.bisect_left((left, float('inf')))
+        if i == 0:
+            return False
+        return self.intervals[i-1][0] <= left and right <= self.intervals[i-1][1]
+
+    def removeRange(self, left: int, right: int) -> None:
+        # 找到需要分割的区间
+        i = self.intervals.bisect_left((left, right))
+        while i < len(self.intervals) and self.intervals[i][0] < right:
+            if self.intervals[i][1] <= left:
+                break
+            if self.intervals[i][0] >= left:
+                self.intervals[i] = (right, self.intervals[i][1])
+                break
+            else:
+                self.intervals.add((self.intervals[i][0], left))
+                if self.intervals[i][1] > right:
+                    self.intervals.add((right, self.intervals[i][1]))
+                self.intervals.remove(self.intervals[i])
+
+Solution = create_solution(RangeModule)

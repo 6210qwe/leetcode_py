@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 比较第 1 个人和第 2 个人到达第 3 个人所需步数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算第 1 个人到达第 3 个人所需的步数。
+2. 计算第 2 个人到达第 3 个人所需的步数。
+3. 比较两个步数，返回先到达的人的编号或同时到达的情况。
 
 关键点:
-- [TODO]
+- 使用绝对值计算步数。
+- 简单比较步数即可得出结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest_person(x: int, y: int, z: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最近的人
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算第 1 个人到达第 3 个人所需的步数
+    steps_x = abs(x - z)
+    
+    # 计算第 2 个人到达第 3 个人所需的步数
+    steps_y = abs(y - z)
+    
+    # 比较两个步数，返回先到达的人的编号或同时到达的情况
+    if steps_x < steps_y:
+        return 1
+    elif steps_x > steps_y:
+        return 2
+    else:
+        return 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_person)

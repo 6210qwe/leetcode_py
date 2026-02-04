@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来匹配和移除 k-平衡子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈和结果字符串。
+2. 遍历输入字符串 s，对于每个字符：
+   - 如果是 '('，将其压入栈中。
+   - 如果是 ')'，检查栈顶是否为 '('，如果是，则弹出栈顶元素，并记录连续的 '(' 数量。
+   - 如果连续的 '(' 数量达到 k，则移除这 k 个 '(' 和接下来的 k 个 ')'。
+3. 将剩余的字符拼接成最终结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来匹配和移除 k-平衡子字符串。
+- 记录连续的 '(' 数量，以便在数量达到 k 时进行移除。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次入栈，一次出栈）。
+空间复杂度: O(n)，最坏情况下栈的大小为 n/2。
 """
 
 # ============================================================================
@@ -49,12 +54,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_k_balanced_substrings(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除 k-平衡子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = []
+    open_count = 0
+
+    for char in s:
+        if char == '(':
+            stack.append(char)
+            open_count += 1
+        elif char == ')':
+            if stack and stack[-1] == '(':
+                stack.pop()
+                open_count -= 1
+                if open_count < 0:
+                    # Reset open_count if it goes negative
+                    open_count = 0
+                if open_count == 0:
+                    # Remove the last k balanced parentheses
+                    result.pop()
+            else:
+                result.append(char)
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_k_balanced_substrings)

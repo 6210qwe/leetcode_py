@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符的出现频次，然后分别找到出现奇数次和偶数次的最大频次，计算它们的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个字符的出现频次。
+2. 遍历字符串，更新哈希表中的频次。
+3. 分别找到出现奇数次和偶数次的最大频次。
+4. 计算并返回最大差值。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计字符频次。
+- 分别处理奇数次和偶数次的频次，确保找到最大差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，因为字母表的大小是固定的（26个小写字母）。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出字符串中两个字符 a1 和 a2 的出现频次之间的最大差值，其中 a1 出现奇数次，a2 出现偶数次。
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的出现频次
+    freq = {}
+    for char in s:
+        if char in freq:
+            freq[char] += 1
+        else:
+            freq[char] = 1
+
+    # 找到出现奇数次和偶数次的最大频次
+    max_odd_freq = 0
+    max_even_freq = 0
+    for count in freq.values():
+        if count % 2 == 1:
+            max_odd_freq = max(max_odd_freq, count)
+        else:
+            max_even_freq = max(max_even_freq, count)
+
+    # 计算并返回最大差值
+    return max_odd_freq - max_even_freq
 
 
 Solution = create_solution(solution_function_name)

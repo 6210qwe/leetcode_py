@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法尝试所有可能的拆分方式，并记录最大唯一子字符串的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合来存储当前已使用的子字符串。
+2. 使用回溯法从字符串的第一个字符开始尝试所有可能的拆分。
+3. 在每次递归调用中，检查当前子字符串是否已经存在于集合中。
+4. 如果不存在，则将其添加到集合中，并继续递归处理剩余的字符串。
+5. 在递归返回时，移除当前子字符串并尝试其他可能的拆分。
+6. 记录并返回最大唯一子字符串的数量。
 
 关键点:
-- [TODO]
+- 使用集合来存储和检查子字符串的唯一性。
+- 回溯法确保所有可能的拆分都被尝试。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是字符串的长度。最坏情况下，需要尝试所有可能的拆分方式。
+空间复杂度: O(n)，用于存储当前已使用的子字符串集合。
 """
 
 # ============================================================================
@@ -49,12 +54,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_unique_substrings(s: str) -> int:
+    def backtrack(start: int, seen: set) -> int:
+        if start == len(s):
+            return 0
+        
+        max_count = 0
+        for end in range(start + 1, len(s) + 1):
+            substring = s[start:end]
+            if substring not in seen:
+                seen.add(substring)
+                max_count = max(max_count, 1 + backtrack(end, seen))
+                seen.remove(substring)
+        
+        return max_count
+    
+    return backtrack(0, set())
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_unique_substrings)

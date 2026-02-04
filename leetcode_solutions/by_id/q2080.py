@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查八个方向（水平、垂直、对角线）来判断是否有好线段。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义八个方向的移动向量。
+2. 对于每个方向，从目标格子开始，沿着该方向移动，检查是否有连续的不同颜色的格子。
+3. 如果遇到相同颜色的格子，则说明找到了一个好线段，返回 True。
+4. 如果遍历完所有方向都没有找到好线段，返回 False。
 
 关键点:
-- [TODO]
+- 使用方向向量简化方向检查。
+- 通过循环和条件判断来检查好线段。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为棋盘大小固定为 8x8，所以时间复杂度是常数级。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_move(board: List[List[str]], r_move: int, c_move: int, color: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查操作是否合法
     """
-    # TODO: 实现最优解法
-    pass
+    directions = [
+        (0, 1), (1, 0), (0, -1), (-1, 0),
+        (1, 1), (1, -1), (-1, -1), (-1, 1)
+    ]
+    opposite_color = 'B' if color == 'W' else 'W'
+
+    def is_valid_line(r: int, c: int, dr: int, dc: int) -> bool:
+        r, c = r + dr, c + dc
+        count = 1
+        while 0 <= r < 8 and 0 <= c < 8 and board[r][c] == opposite_color:
+            r, c = r + dr, c + dc
+            count += 1
+        return 0 <= r < 8 and 0 <= c < 8 and board[r][c] == color and count >= 2
+
+    for dr, dc in directions:
+        if is_valid_line(r_move, c_move, dr, dc):
+            return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_move)

@@ -21,24 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 通过一次遍历数组，记录当前连续 1 的个数，并更新最大连续 1 的个数。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化两个变量 `current_count` 和 `max_count`，分别用于记录当前连续 1 的个数和最大连续 1 的个数。
+2. 遍历数组 `nums`：
+   - 如果当前元素为 1，则增加 `current_count`。
+   - 如果当前元素为 0，则重置 `current_count` 为 0。
+   - 每次更新 `max_count` 为 `max(max_count, current_count)`。
+3. 返回 `max_count`。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 注意边界条件，确保在遍历结束时更新 `max_count`。
+- 优化时间和空间复杂度，时间复杂度为 O(n)，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n) - 需要遍历整个数组一次
+空间复杂度: O(1) - 只使用了常数级的额外空间
 """
 
 # ============================================================================
@@ -51,25 +54,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def max_consecutive_ones(params):
+def max_consecutive_ones(nums: List[int]) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算二进制数组中最大连续 1 的个数
     
     实现思路:
-    [待实现] 简要说明实现思路
+    通过一次遍历数组，记录当前连续 1 的个数，并更新最大连续 1 的个数。
     
     Args:
-        params: [待实现] 参数说明
+        nums (List[int]): 二进制数组
         
     Returns:
-        [待实现] 返回值说明
+        int: 最大连续 1 的个数
         
     Example:
-        >>> max_consecutive_ones([待实现])
-        [待实现]
+        >>> max_consecutive_ones([1,1,0,1,1,1])
+        3
     """
-    # TODO: 实现最优解法
-    pass
+    current_count = 0
+    max_count = 0
+    
+    for num in nums:
+        if num == 1:
+            current_count += 1
+            max_count = max(max_count, current_count)
+        else:
+            current_count = 0
+    
+    return max_count
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先考虑满意度高的菜品，并且利用累积和来计算最大 like-time 系数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对满意度数组进行降序排序。
+2. 从满意度最高的菜品开始累加，同时维护当前的 like-time 系数和累积满意度。
+3. 如果当前累积满意度大于等于零，则继续累加；否则停止累加，返回当前的最大 like-time 系数。
 
 关键点:
-- [TODO]
+- 通过降序排序，确保高满意度的菜品优先被考虑。
+- 使用累积和来动态计算 like-time 系数，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 satisfaction 的长度，主要由排序操作决定。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_satisfaction(satisfaction: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大 like-time 系数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对满意度数组进行降序排序
+    satisfaction.sort(reverse=True)
+    
+    total_sum = 0  # 当前累积满意度
+    max_like_time = 0  # 最大 like-time 系数
+    
+    for s in satisfaction:
+        if total_sum + s > 0:
+            total_sum += s
+            max_like_time += total_sum
+        else:
+            break
+    
+    return max_like_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_satisfaction)

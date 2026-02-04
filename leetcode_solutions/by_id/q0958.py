@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，一个指针遍历偶数索引，另一个指针遍历奇数索引，确保每个位置上的元素符合要求。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针，分别指向偶数索引和奇数索引。
+2. 遍历数组，如果当前偶数索引位置的元素是奇数，则找到下一个奇数索引位置的偶数元素，交换它们。
+3. 如果当前奇数索引位置的元素是偶数，则找到下一个偶数索引位置的奇数元素，交换它们。
+4. 重复上述过程直到遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用双指针在一次遍历中完成排序，避免了额外的空间开销。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sort_array_by_parity_ii(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 按奇偶排序数组 II
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 1
+    n = len(nums)
+    
+    while j < n and i < n:
+        if nums[i] % 2 == 0:
+            i += 2
+        elif nums[j] % 2 == 1:
+            j += 2
+        else:
+            nums[i], nums[j] = nums[j], nums[i]
+            i += 2
+            j += 2
+    
+    return nums
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_array_by_parity_ii)

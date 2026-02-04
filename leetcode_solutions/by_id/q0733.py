@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来填充图像。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 获取初始像素的颜色。
+2. 如果初始像素的颜色与目标颜色相同，则直接返回图像。
+3. 使用 DFS 递归地将初始像素及其相邻像素的颜色更改为目标颜色。
 
 关键点:
-- [TODO]
+- 使用递归来实现深度优先搜索。
+- 递归过程中，检查边界条件和颜色是否匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是图像的行数和列数。每个像素最多访问一次。
+空间复杂度: O(m * n)，最坏情况下递归栈的深度为 m * n。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def floodFill(image: List[List[int]], sr: int, sc: int, newColor: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用深度优先搜索 (DFS) 来填充图像。
     """
-    # TODO: 实现最优解法
-    pass
+    original_color = image[sr][sc]
+    
+    if original_color == newColor:
+        return image
+    
+    def dfs(r: int, c: int):
+        if r < 0 or r >= len(image) or c < 0 or c >= len(image[0]) or image[r][c] != original_color:
+            return
+        image[r][c] = newColor
+        dfs(r + 1, c)
+        dfs(r - 1, c)
+        dfs(r, c + 1)
+        dfs(r, c - 1)
+    
+    dfs(sr, sc)
+    return image
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(floodFill)

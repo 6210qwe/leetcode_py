@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用状态机来处理不同类型的注释，并逐行处理源代码。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个状态变量 `in_block_comment` 为 False，表示当前是否在块注释中。
+2. 遍历每一行代码：
+   - 如果不在块注释中，检查是否有行注释 `//` 或块注释 `/*`。
+   - 如果在块注释中，检查是否有块注释结束 `*/`。
+3. 根据当前状态和找到的注释类型，更新状态并构建结果字符串。
+4. 如果当前行有非注释内容，添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用状态机来处理不同类型的注释。
+- 逐行处理源代码，确保注释的正确处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是源代码的总字符数。
+空间复杂度: O(n)，用于存储结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +54,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_comments(source: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 删除 C++ 程序中的注释
     """
-    # TODO: 实现最优解法
-    pass
+    in_block_comment = False
+    result = []
+    new_line = []
+
+    for line in source:
+        i = 0
+        while i < len(line):
+            if in_block_comment:
+                if line[i:i+2] == '*/':
+                    in_block_comment = False
+                    i += 1  # 跳过 '*' 和 '/'
+            else:
+                if line[i:i+2] == '/*':
+                    in_block_comment = True
+                    i += 1  # 跳过 '/' 和 '*'
+                elif line[i:i+2] == '//':
+                    break  # 忽略当前行剩余部分
+                else:
+                    new_line.append(line[i])
+            i += 1
+
+        if not in_block_comment and new_line:
+            result.append(''.join(new_line))
+            new_line = []
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_comments)

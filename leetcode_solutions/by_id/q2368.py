@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来找到每个元素作为最小值时的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组 `prefix_sum` 和前缀和的前缀和数组 `prefix_prefix_sum`。
+2. 使用单调栈找到每个元素作为最小值时的左右边界。
+3. 计算每个元素作为最小值时的贡献，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用单调栈来高效地找到每个元素作为最小值时的左右边界。
+- 使用前缀和数组和前缀和的前缀和数组来快速计算区间和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,58 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def total_strength(strength: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(strength)
+    
+    # 计算前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = (prefix_sum[i - 1] + strength[i - 1]) % MOD
+    
+    # 计算前缀和的前缀和数组
+    prefix_prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_prefix_sum[i] = (prefix_prefix_sum[i - 1] + prefix_sum[i]) % MOD
+    
+    # 单调栈
+    stack = []
+    left_bound = [0] * n
+    right_bound = [0] * n
+    
+    # 找到每个元素作为最小值时的左边界
+    for i in range(n):
+        while stack and strength[stack[-1]] >= strength[i]:
+            stack.pop()
+        left_bound[i] = stack[-1] if stack else -1
+        stack.append(i)
+    
+    stack = []
+    # 找到每个元素作为最小值时的右边界
+    for i in range(n - 1, -1, -1):
+        while stack and strength[stack[-1]] > strength[i]:
+            stack.pop()
+        right_bound[i] = stack[-1] if stack else n
+        stack.append(i)
+    
+    result = 0
+    for i in range(n):
+        left = left_bound[i]
+        right = right_bound[i]
+        
+        # 计算左侧区间和
+        left_sum = (prefix_prefix_sum[i] - prefix_prefix_sum[max(0, left + 1)] + MOD) % MOD
+        left_count = i - max(0, left)
+        
+        # 计算右侧区间和
+        right_sum = (prefix_prefix_sum[right] - prefix_prefix_sum[i + 1] + MOD) % MOD
+        right_count = right - (i + 1)
+        
+        # 计算贡献
+        result += (right_sum * left_count - left_sum * right_count) * strength[i]
+        result %= MOD
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(total_strength)

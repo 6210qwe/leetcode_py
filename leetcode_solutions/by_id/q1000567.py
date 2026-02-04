@@ -21,22 +21,25 @@ LCP 79. 提取咒文 - 随着兽群逐渐远去，一座大升降机缓缓的从
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点到每个字符的最短路径，并使用动态规划（DP）来记录每个字符在当前步骤下的最小操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 `dp`，其中 `dp[i][j]` 表示提取完 `mantra` 的前 `i` 个字符后，提取装置在位置 `(x, y)` 的最小操作次数。
+2. 使用 BFS 来计算从起点到每个字符的最短路径。
+3. 使用 DP 来更新每个字符在当前步骤下的最小操作次数。
+4. 返回 `dp` 数组中的最小值，如果没有找到则返回 `-1`。
 
 关键点:
-- [TODO]
+- 使用 BFS 来计算从起点到每个字符的最短路径。
+- 使用 DP 来记录每个字符在当前步骤下的最小操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)，其中 m 和 n 分别是矩阵的行数和列数，k 是 `mantra` 的长度。
+空间复杂度: O(m * n * k)，用于存储 DP 数组。
 """
 
 # ============================================================================
@@ -47,14 +50,43 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
-
-def solution_function_name(params):
+def solution_function_name(matrix: List[str], mantra: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 BFS 和 DP 来找到从起点到每个字符的最短路径，并记录每个字符在当前步骤下的最小操作次数。
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return -1
 
+    m, n = len(matrix), len(matrix[0])
+    k = len(mantra)
+    
+    # 初始化 DP 数组
+    dp = [[[float('inf')] * n for _ in range(m)] for _ in range(k + 1)]
+    dp[0][0][0] = 0
+    
+    # 定义方向数组
+    directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+    
+    for i in range(1, k + 1):
+        queue = deque([(0, 0)])
+        visited = set()
+        while queue:
+            x, y = queue.popleft()
+            if (x, y) in visited:
+                continue
+            visited.add((x, y))
+            
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < m and 0 <= ny < n:
+                    if matrix[nx][ny] == mantra[i - 1]:
+                        dp[i][nx][ny] = min(dp[i][nx][ny], dp[i - 1][x][y] + 1)
+                    dp[i][nx][ny] = min(dp[i][nx][ny], dp[i][x][y] + 1)
+                    queue.append((nx, ny))
+    
+    result = min([min(row) for row in dp[k]])
+    return result if result != float('inf') else -1
 
 Solution = create_solution(solution_function_name)

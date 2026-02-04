@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历整数流 [1, n]，在每次遇到 target 中的元素时执行 "Push" 操作，否则执行 "Push" 和 "Pop" 操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的操作列表 `operations`。
+2. 遍历整数流 [1, n]：
+   - 如果当前整数在 target 中，执行 "Push" 操作。
+   - 如果当前整数不在 target 中，执行 "Push" 和 "Pop" 操作。
+3. 返回操作列表 `operations`。
 
 关键点:
-- [TODO]
+- 通过遍历整数流 [1, n]，确保所有需要的 "Push" 和 "Pop" 操作都被正确记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是整数流的长度。
+空间复杂度: O(m)，其中 m 是操作列表的长度。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def build_array_with_stack_operations(target: List[int], n: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 用栈操作构建数组
     """
-    # TODO: 实现最优解法
-    pass
+    operations = []
+    current = 1
+    target_index = 0
+    
+    while target_index < len(target):
+        if current == target[target_index]:
+            operations.append("Push")
+            target_index += 1
+        else:
+            operations.append("Push")
+            operations.append("Pop")
+        current += 1
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(build_array_with_stack_operations)

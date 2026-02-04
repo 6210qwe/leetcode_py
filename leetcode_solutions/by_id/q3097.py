@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算总旅行距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 SUM 函数对 `distance` 列进行求和。
+2. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询来简化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是表中的行数。我们需要遍历整个表来计算总距离。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(trips: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算总旅行距离
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算总旅行距离
+    total_distance = sum(trip[2] for trip in trips)
+    return total_distance
 
 
 Solution = create_solution(solution_function_name)

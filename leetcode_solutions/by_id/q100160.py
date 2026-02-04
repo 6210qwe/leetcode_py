@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从后向前遍历字符串，将空格替换为%20。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串中空格的数量。
+2. 根据空格数量计算新字符串的长度。
+3. 从后向前遍历字符串，将非空格字符复制到新位置，将空格替换为%20。
 
 关键点:
-- [TODO]
+- 从后向前遍历可以避免覆盖未处理的字符。
+- 直接在原字符串上进行修改，减少额外空间的使用。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(text: str, length: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串中的空格全部替换为%20
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算空格数量
+    space_count = text[:length].count(' ')
+    
+    # 计算新字符串的长度
+    new_length = length + space_count * 2
+    
+    # 创建一个足够大的字符列表来存储结果
+    result = list(text)
+    result.extend([' '] * (new_length - length))
+    
+    # 从后向前遍历字符串
+    index = new_length - 1
+    for i in range(length - 1, -1, -1):
+        if result[i] == ' ':
+            result[index] = '0'
+            result[index - 1] = '2'
+            result[index - 2] = '%'
+            index -= 3
+        else:
+            result[index] = result[i]
+            index -= 1
+    
+    return ''.join(result)
 
 
 Solution = create_solution(solution_function_name)

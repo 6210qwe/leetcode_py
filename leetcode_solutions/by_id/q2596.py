@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查奇数度节点的数量来决定是否可以通过添加至多两条边使所有节点的度数变为偶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图。
+2. 统计每个节点的度数，并记录奇数度节点。
+3. 根据奇数度节点的数量和它们之间的连接情况，判断是否可以通过添加至多两条边使所有节点的度数变为偶数。
 
 关键点:
-- [TODO]
+- 奇数度节点的数量必须是 0 或 2 或 4。
+- 如果有 2 个奇数度节点，可以直接连接它们。
+- 如果有 4 个奇数度节点，需要检查是否存在两个未连接的节点对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。
+空间复杂度: O(n + m)，用于存储邻接表和度数统计。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_possible_to_make_even_degrees(n: int, edges: List[List[int]]) -> bool:
+    # 构建邻接表
+    adj_list = [[] for _ in range(n + 1)]
+    degrees = [0] * (n + 1)
+    
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+        degrees[u] += 1
+        degrees[v] += 1
+    
+    # 找出所有奇数度节点
+    odd_degree_nodes = [i for i in range(1, n + 1) if degrees[i] % 2 != 0]
+    
+    # 奇数度节点的数量必须是 0 或 2 或 4
+    if len(odd_degree_nodes) > 4 or len(odd_degree_nodes) % 2 != 0:
+        return False
+    
+    # 如果没有奇数度节点，直接返回 True
+    if len(odd_degree_nodes) == 0:
+        return True
+    
+    # 如果有两个奇数度节点，直接连接它们
+    if len(odd_degree_nodes) == 2:
+        u, v = odd_degree_nodes
+        return u not in adj_list[v]
+    
+    # 如果有四个奇数度节点，检查是否存在两个未连接的节点对
+    if len(odd_degree_nodes) == 4:
+        a, b, c, d = odd_degree_nodes
+        return (a not in adj_list[b] and c not in adj_list[d]) or \
+               (a not in adj_list[c] and b not in adj_list[d]) or \
+               (a not in adj_list[d] and b not in adj_list[c])
+    
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_possible_to_make_even_degrees)

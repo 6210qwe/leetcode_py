@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到一个最大的数，使得该数与给定数组中的所有数进行按位与操作的结果为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_num` 为 0。
+2. 遍历从最高位到最低位的每一位，检查是否可以将该位设置为 1，同时保持按位与结果为 0。
+3. 对于每一位，检查数组中是否有任何一个数在该位上是 1，如果有，则不能将该位设置为 1。
+4. 如果可以将该位设置为 1，则将其设置为 1，并更新 `max_num`。
+5. 返回 `max_num`。
 
 关键点:
-- [TODO]
+- 通过逐位检查，确保构造的数与数组中的所有数按位与结果为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))，其中 n 是数组的长度，log(max(nums)) 是数字的最大位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到一个最大的数，使得该数与给定数组中的所有数进行按位与操作的结果为 0。
     """
-    # TODO: 实现最优解法
-    pass
+    max_num = 0
+    for bit in range(31, -1, -1):
+        candidate = max_num | (1 << bit)
+        if all((num & candidate) == 0 for num in nums):
+            max_num = candidate
+    return max_num
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和双指针来找到第 k 个最小的质数分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_smaller_or_equal`，用于计算小于等于给定值的分数数量。
+2. 使用二分查找来确定第 k 个最小分数的值。
+3. 在每次二分查找中，使用双指针来计算小于等于当前中间值的分数数量。
+4. 根据计算结果调整二分查找的范围，直到找到第 k 个最小分数。
 
 关键点:
-- [TODO]
+- 使用二分查找和双指针结合，可以在 O(n log(max(arr))) 时间内解决问题。
+- 辅助函数 `count_smaller_or_equal` 通过双指针遍历数组，计算小于等于给定值的分数数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(arr)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def kth_smallest_prime_fraction(arr: List[int], k: int) -> List[int]:
+    def count_smaller_or_equal(x: float) -> int:
+        count = 0
+        max_fraction = (0, 1)
+        j = 1
+        for i in range(len(arr) - 1):
+            while j < len(arr) and arr[i] / arr[j] > x:
+                j += 1
+            if j < len(arr):
+                count += len(arr) - j
+                if arr[i] * max_fraction[1] > arr[j] * max_fraction[0]:
+                    max_fraction = (arr[i], arr[j])
+        return count, max_fraction
+
+    low, high = 0.0, 1.0
+    while low < high:
+        mid = (low + high) / 2
+        count, max_fraction = count_smaller_or_equal(mid)
+        if count < k:
+            low = mid
+        elif count > k:
+            high = mid
+        else:
+            return list(max_fraction)
+
+    return list(max_fraction)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kth_smallest_prime_fraction)

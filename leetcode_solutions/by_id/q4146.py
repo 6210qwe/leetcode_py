@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来优化计算每个房间的得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算damage的前缀和数组。
+2. 从后向前遍历每个房间，计算从该房间开始的得分。
+3. 使用一个变量来记录当前的生命值，并更新总得分。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算从某个房间开始后的生命值变化。
+- 从后向前遍历以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def total_score_of_dungeon_runs(hp: int, damage: List[int], requirement: List[int]) -> int:
+    n = len(damage)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算damage的前缀和
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + damage[i]
+    
+    total_score = 0
+    current_hp = hp
+    
+    # 从后向前遍历每个房间
+    for i in range(n - 1, -1, -1):
+        current_hp -= damage[i]
+        if current_hp >= requirement[i]:
+            total_score += 1
+    
+    return total_score
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(total_score_of_dungeon_runs)

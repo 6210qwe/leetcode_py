@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算将字符串转换为两种可能的交替字符串所需的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 `count_start_with_0` 和 `count_start_with_1`，分别表示以 '0' 和 '1' 开头的交替字符串所需的操作数。
+2. 遍历字符串，根据当前字符和期望字符（基于当前索引）更新计数器。
+3. 返回两个计数器中的最小值。
 
 关键点:
-- [TODO]
+- 交替字符串有两种形式：以 '0' 开头和以 '1' 开头。
+- 通过遍历一次字符串，可以同时计算出两种形式的交替字符串所需的操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_alternate(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将字符串转换为交替字符串所需的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    count_start_with_0 = 0
+    count_start_with_1 = 0
+    
+    for i in range(len(s)):
+        if i % 2 == 0:
+            if s[i] != '0':
+                count_start_with_0 += 1
+            if s[i] != '1':
+                count_start_with_1 += 1
+        else:
+            if s[i] != '1':
+                count_start_with_0 += 1
+            if s[i] != '0':
+                count_start_with_1 += 1
+    
+    return min(count_start_with_0, count_start_with_1)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_alternate)

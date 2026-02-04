@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算第 n 个泰波那契数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前三个泰波那契数 T0, T1, T2。
+2. 从第 3 个数开始，依次计算每个泰波那契数，直到第 n 个数。
+3. 返回第 n 个泰波那契数。
 
 关键点:
-- [TODO]
+- 使用常数空间存储当前和前两个泰波那契数，以节省空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def tribonacci(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算第 n 个泰波那契数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 0
+    elif n == 1 or n == 2:
+        return 1
+    
+    t0, t1, t2 = 0, 1, 1
+    for i in range(3, n + 1):
+        t0, t1, t2 = t1, t2, t0 + t1 + t2
+    
+    return t2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tribonacci)

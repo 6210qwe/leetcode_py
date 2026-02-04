@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas进行数据处理，通过分组和聚合计算每只股票的资本损益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数据按股票名称和操作类型分组。
+2. 对于每只股票，分别计算买入和卖出的总金额。
+3. 计算每只股票的资本损益，即卖出总金额减去买入总金额。
+4. 返回结果表。
 
 关键点:
-- [TODO]
+- 使用Pandas的groupby和agg函数进行高效的数据处理。
+- 确保每只股票的买入和卖出操作配对正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是数据表的行数。Pandas的groupby和agg操作的时间复杂度为O(n)。
+空间复杂度: O(m)，其中m是不同股票的数量。需要存储每只股票的买入和卖出总金额。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(stocks: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算每只股票的资本损益
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 按股票名称和操作类型分组，并计算每组的总金额
+    grouped = stocks.groupby(['stock_name', 'operation'])['price'].sum().reset_index()
+    
+    # 将买入和卖出的数据分开
+    buys = grouped[grouped['operation'] == 'Buy']
+    sells = grouped[grouped['operation'] == 'Sell']
+    
+    # 合并买入和卖出的数据
+    merged = pd.merge(buys, sells, on='stock_name', suffixes=('_buy', '_sell'))
+    
+    # 计算资本损益
+    merged['capital_gain_loss'] = merged['price_sell'] - merged['price_buy']
+    
+    # 选择需要的列
+    result = merged[['stock_name', 'capital_gain_loss']]
+    
+    return result
 
 Solution = create_solution(solution_function_name)

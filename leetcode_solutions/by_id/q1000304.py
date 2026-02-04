@@ -21,22 +21,27 @@ LCR 048. 二叉树的序列化与反序列化 - 序列化是将一个数据结�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前序遍历进行序列化和反序列化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 序列化：
+   - 使用前序遍历（根-左-右）将二叉树转换为字符串。
+   - 空节点用 'None' 表示，并用逗号分隔节点值。
+2. 反序列化：
+   - 将字符串分割成列表。
+   - 使用递归方法构建二叉树，根据列表中的值创建节点或空节点。
 
 关键点:
-- [TODO]
+- 前序遍历能够唯一确定一棵二叉树。
+- 使用 'None' 表示空节点，确保序列化后的字符串能够准确表示二叉树结构。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点都需要访问一次。
+空间复杂度: O(n)，递归调用栈的深度最多为 n，且需要存储序列化后的字符串。
 """
 
 # ============================================================================
@@ -44,17 +49,35 @@ LCR 048. 二叉树的序列化与反序列化 - 序列化是将一个数据结�
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class Codec:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string."""
+        if not root:
+            return "None"
+        return f"{root.val},{self.serialize(root.left)},{self.serialize(root.right)}"
 
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree."""
+        def build_tree(nodes: List[str]) -> Optional[TreeNode]:
+            if nodes[0] == "None":
+                nodes.pop(0)
+                return None
+            root = TreeNode(int(nodes[0]))
+            nodes.pop(0)
+            root.left = build_tree(nodes)
+            root.right = build_tree(nodes)
+            return root
 
-Solution = create_solution(solution_function_name)
+        nodes = data.split(',')
+        return build_tree(nodes)
+
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+
+Solution = create_solution(Codec)

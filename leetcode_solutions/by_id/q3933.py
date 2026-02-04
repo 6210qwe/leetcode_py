@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点到终点的最短路径。同时使用埃拉托斯特尼筛法预处理质数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列和访问标记。
+2. 预处理所有可能的质数，并存储每个质数可以到达的所有下标。
+3. 使用 BFS 进行搜索，每次从队列中取出一个节点，检查是否到达终点。
+4. 如果当前节点是质数，则跳转到所有可以到达的下标。
+5. 如果当前节点不是质数，则移动到相邻的下标。
+6. 更新最小跳跃次数并继续搜索，直到找到终点或队列为空。
 
 关键点:
-- [TODO]
+- 使用 BFS 确保找到最短路径。
+- 预处理质数及其可到达的下标，提高搜索效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log log n + n) - 埃拉托斯特尼筛法的时间复杂度为 O(n log log n)，BFS 的时间复杂度为 O(n)。
+空间复杂度: O(n) - 存储访问标记和质数映射。
 """
 
 # ============================================================================
@@ -47,14 +52,52 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(math.sqrt(num)) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(nums: List[int]) -> int:
+    n = len(nums)
+    if n == 1:
+        return 0
 
+    # 预处理质数及其可到达的下标
+    prime_map = {}
+    for i, num in enumerate(nums):
+        if is_prime(num):
+            if num not in prime_map:
+                prime_map[num] = []
+            prime_map[num].append(i)
+
+    # 初始化队列和访问标记
+    queue = [(0, 0)]  # (index, steps)
+    visited = [False] * n
+    visited[0] = True
+
+    while queue:
+        index, steps = queue.pop(0)
+        if index == n - 1:
+            return steps
+
+        # 检查相邻下标
+        for next_index in [index - 1, index + 1]:
+            if 0 <= next_index < n and not visited[next_index]:
+                visited[next_index] = True
+                queue.append((next_index, steps + 1))
+
+        # 检查质数传送
+        if nums[index] in prime_map:
+            for next_index in prime_map[nums[index]]:
+                if not visited[next_index]:
+                    visited[next_index] = True
+                    queue.append((next_index, steps + 1))
+
+    return -1
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针找到链表的中间节点，然后反转后半部分链表，最后遍历前半部分和反转后的后半部分链表，计算每对孪生节点的和，并记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用快慢指针找到链表的中间节点。
+2. 反转后半部分链表。
+3. 遍历前半部分和反转后的后半部分链表，计算每对孪生节点的和，并记录最大值。
 
 关键点:
-- [TODO]
+- 使用快慢指针找到链表的中间节点。
+- 反转后半部分链表。
+- 计算每对孪生节点的和，并记录最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def pair_sum(head: Optional[ListNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回链表的最大孪生和
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用快慢指针找到链表的中间节点
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    
+    # 反转后半部分链表
+    prev, curr = None, slow
+    while curr:
+        next_node = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_node
+    
+    # 计算每对孪生节点的和，并记录最大值
+    max_twin_sum = 0
+    first, second = head, prev
+    while second:
+        twin_sum = first.val + second.val
+        max_twin_sum = max(max_twin_sum, twin_sum)
+        first = first.next
+        second = second.next
+    
+    return max_twin_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pair_sum)

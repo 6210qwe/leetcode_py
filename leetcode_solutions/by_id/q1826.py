@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树 (Trie) 来存储 nums 数组中的元素，并在查询时通过 Trie 找到最大异或值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个 Trie 树来存储 nums 数组中的所有元素。
+2. 对每个查询，使用 Trie 树找到不超过 mi 的最大异或值。
+3. 如果没有找到符合条件的元素，返回 -1。
 
 关键点:
-- [TODO]
+- 使用 Trie 树可以高效地进行按位操作，从而快速找到最大异或值。
+- 在构建 Trie 时，需要将 nums 数组中的元素按位插入 Trie。
+- 在查询时，从最高位开始逐位比较，尽量选择与当前位不同的路径以最大化异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q * log(max_num))，其中 n 是 nums 的长度，q 是 queries 的长度，max_num 是 nums 中的最大值。
+空间复杂度: O(n * log(max_num))，用于存储 Trie 树。
 """
 
 # ============================================================================
@@ -48,13 +51,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.value = None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, num):
+        node = self.root
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            if bit not in node.children:
+                node.children[bit] = TrieNode()
+            node = node.children[bit]
+        node.value = num
+    
+    def find_max_xor(self, num, max_val):
+        node = self.root
+        xor_val = 0
+        for i in range(31, -1, -1):
+            bit = (num >> i) & 1
+            toggled_bit = 1 - bit
+            if toggled_bit in node.children and node.children[toggled_bit].value is not None and node.children[toggled_bit].value <= max_val:
+                xor_val |= (1 << i)
+                node = node.children[toggled_bit]
+            else:
+                node = node.children.get(bit, node)
+        return xor_val if node.value is not None and node.value <= max_val else -1
 
+def solution_function_name(nums: List[int], queries: List[List[int]]) -> List[int]:
+    """
+    函数式接口 - 实现
+    """
+    trie = Trie()
+    for num in nums:
+        trie.insert(num)
+    
+    result = []
+    for xi, mi in queries:
+        result.append(trie.find_max_xor(xi, mi))
+    
+    return result
 
 Solution = create_solution(solution_function_name)

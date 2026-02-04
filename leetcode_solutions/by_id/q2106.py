@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用欧几里得算法（辗转相除法）来计算最大公约数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中的最小值和最大值。
+2. 使用欧几里得算法计算这两个数的最大公约数。
 
 关键点:
-- [TODO]
+- 欧几里得算法的时间复杂度为 O(log(min(a, b)))，其中 a 和 b 是两个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + log(min(a, b)))，其中 n 是数组的长度，a 和 b 分别是数组中的最小值和最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +49,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_gcd(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算数组中最大数和最小数的最大公约数
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到数组中的最小值和最大值
+    min_num = min(nums)
+    max_num = max(nums)
+
+    # 使用欧几里得算法计算最大公约数
+    def gcd(a: int, b: int) -> int:
+        while b != 0:
+            a, b = b, a % b
+        return a
+
+    return gcd(min_num, max_num)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_gcd)

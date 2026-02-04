@@ -4,7 +4,7 @@
 # ============================================================================
 """
 题号: 1828
-标题: Count Ways to Distribute Candies
+标题: Count Ways to Distribate Candies
 难度: hard
 链接: https://leetcode.cn/problems/count-ways-to-distribute-candies/
 题目类型: 动态规划
@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将 i 个糖果分给 j 个人的方法数。通过递推关系可以得到最终结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1，表示没有糖果时只有一种方法（即不分配）。
+2. 对于每个 i 和 j，更新 dp[i][j]：
+   - 如果 j > i，则 dp[i][j] = dp[i][i]，因为最多只能有 i 个人。
+   - 否则，dp[i][j] = (dp[i-1][j-1] + j * dp[i-1][j]) % MOD，其中 dp[i-1][j-1] 表示第 i 个糖果单独分给一个人，j * dp[i-1][j] 表示第 i 个糖果和其他糖果一起分给已经有的 j 个人。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 由于结果可能非常大，需要对结果取模。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是糖果的数量。
+空间复杂度: O(n^2)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -48,13 +51,21 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_ways_to_distribute_candies(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 n 个糖果分给 k 个人的不同方法数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # 没有糖果时只有一种方法（即不分配）
 
+    # 填充 dp 数组
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            dp[i][j] = (dp[i - 1][j - 1] + j * dp[i - 1][j]) % MOD
 
-Solution = create_solution(solution_function_name)
+    return dp[n][k]
+
+Solution = create_solution(count_ways_to_distribute_candies)

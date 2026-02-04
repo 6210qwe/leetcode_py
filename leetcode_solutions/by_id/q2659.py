@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来统计偶数和奇数下标位上的1的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个计数器 even 和 odd 分别用于记录偶数和奇数下标位上的1的数量。
+2. 通过位运算逐位检查 n 的每一位，如果是1则根据其下标更新相应的计数器。
+3. 返回结果 [even, odd]。
 
 关键点:
-- [TODO]
+- 使用位运算高效地逐位检查 n 的每一位。
+- 通过 & 1 操作判断当前位是否为1。
+- 通过右移操作遍历每一位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 因为需要遍历 n 的每一位，而 n 的位数是 log n。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 的二进制表示中值为 1 的偶数和奇数下标的个数。
     """
-    # TODO: 实现最优解法
-    pass
-
+    even, odd = 0, 0
+    bit_index = 0
+    
+    while n > 0:
+        if n & 1:
+            if bit_index % 2 == 0:
+                even += 1
+            else:
+                odd += 1
+        n >>= 1
+        bit_index += 1
+    
+    return [even, odd]
 
 Solution = create_solution(solution_function_name)

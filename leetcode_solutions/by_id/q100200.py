@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的括号组合，并在过程中进行剪枝以确保合法性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `backtrack`，参数包括当前字符串 `path`，左括号数量 `left` 和右括号数量 `right`。
+2. 如果 `left` 和 `right` 都为 0，则将当前字符串 `path` 加入结果列表。
+3. 如果 `left` 大于 0，则可以添加一个左括号，并递归调用 `backtrack`。
+4. 如果 `right` 大于 `left`，则可以添加一个右括号，并递归调用 `backtrack`。
 
 关键点:
-- [TODO]
+- 通过控制左右括号的数量来确保生成的括号组合是合法的。
+- 使用回溯法避免生成非法的括号组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(4^n / sqrt(n))，其中 n 是括号对数。这是卡特兰数的时间复杂度。
+空间复杂度: O(n)，递归调用栈的深度最多为 2n。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def generate_parenthesis(n: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    生成 n 对括号的所有合法组合。
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(path: str, left: int, right: int):
+        if len(path) == 2 * n:
+            result.append(path)
+            return
+        if left < n:
+            backtrack(path + '(', left + 1, right)
+        if right < left:
+            backtrack(path + ')', left, right + 1)
+
+    result = []
+    backtrack("", 0, 0)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_parenthesis)

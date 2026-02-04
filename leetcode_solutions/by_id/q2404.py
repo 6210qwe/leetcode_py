@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来解决这个问题。我们定义一个递归函数 `dp(n, last, second_last)` 来表示当前长度为 n 的序列，最后一个数字是 last，倒数第二个数字是 second_last 的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个缓存来存储已经计算过的状态。
+2. 定义递归函数 `dp(n, last, second_last)`：
+   - 如果 n 为 0，返回 1，表示找到了一个有效的序列。
+   - 否则，遍历所有可能的下一个数字 next_val，检查是否满足条件（gcd(last, next_val) == 1 且 next_val != second_last）。
+   - 递归调用 `dp(n-1, next_val, last)` 并累加结果。
+3. 返回最终的结果。
 
 关键点:
-- [TODO]
+- 使用缓存来避免重复计算。
+- 通过递归和回溯来枚举所有可能的序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 6^2) = O(n)
+空间复杂度: O(n * 6^2) = O(n)
 """
 
 # ============================================================================
@@ -47,14 +52,32 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
+from functools import lru_cache
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+@lru_cache(None)
+def dp(n: int, last: int, second_last: int) -> int:
+    if n == 0:
+        return 1
+    count = 0
+    for next_val in range(1, 7):
+        if math.gcd(last, next_val) == 1 and next_val != second_last:
+            count += dp(n - 1, next_val, last)
+            count %= MOD
+    return count
+
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算不同骰子序列的数目
     """
-    # TODO: 实现最优解法
-    pass
-
+    total = 0
+    for last in range(1, 7):
+        for second_last in range(1, 7):
+            if last != second_last:
+                total += dp(n - 1, last, second_last)
+                total %= MOD
+    return total
 
 Solution = create_solution(solution_function_name)

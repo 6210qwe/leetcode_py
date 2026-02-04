@@ -21,22 +21,30 @@ LCP 48. 无限棋局 - 小力正在通过残局练习来备战「力扣挑战赛
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 检查当前棋盘是否有已经连成5个相同颜色的棋子。
+2. 模拟黑棋和白棋的下一步落子，检查是否能形成5个相同颜色的棋子。
+3. 如果黑棋能在两步内获胜，则返回 "Black"。
+4. 如果白棋能在一步内获胜，则返回 "White"。
+5. 如果以上条件都不满足，则返回 "None"。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用字典记录每行、每列、每条对角线上的棋子数量。
+2. 检查当前棋盘是否有已经连成5个相同颜色的棋子。
+3. 模拟黑棋和白棋的下一步落子，更新字典并检查是否能形成5个相同颜色的棋子。
+4. 根据模拟结果返回相应的结果。
 
 关键点:
-- [TODO]
+- 使用字典高效地记录和更新每行、每列、每条对角线上的棋子数量。
+- 通过模拟落子来判断胜负。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 pieces 的长度。最坏情况下需要遍历所有可能的落子位置。
+空间复杂度: O(n)，使用字典记录每行、每列、每条对角线上的棋子数量。
 """
 
 # ============================================================================
@@ -49,12 +57,60 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(pieces: List[List[int]]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    def check_winner(board, color):
+        for key, count in board.items():
+            if count[color] >= 5:
+                return True
+        return False
+
+    def update_board(board, x, y, color):
+        board[(x, 'r')][color] += 1
+        board[(y, 'c')][color] += 1
+        board[(x - y, 'd1')][color] += 1
+        board[(x + y, 'd2')][color] += 1
+
+    def remove_board(board, x, y, color):
+        board[(x, 'r')][color] -= 1
+        board[(y, 'c')][color] -= 1
+        board[(x - y, 'd1')][color] -= 1
+        board[(x + y, 'd2')][color] -= 1
+
+    board = {}
+    for x, y, color in pieces:
+        if (x, 'r') not in board:
+            board[(x, 'r')] = {0: 0, 1: 0}
+        if (y, 'c') not in board:
+            board[(y, 'c')] = {0: 0, 1: 0}
+        if (x - y, 'd1') not in board:
+            board[(x - y, 'd1')] = {0: 0, 1: 0}
+        if (x + y, 'd2') not in board:
+            board[(x + y, 'd2')] = {0: 0, 1: 0}
+        update_board(board, x, y, color)
+
+    if check_winner(board, 0):
+        return "Black"
+    if check_winner(board, 1):
+        return "White"
+
+    for x, y, _ in pieces:
+        for dx, dy in [(0, 1), (1, 0), (1, 1), (1, -1)]:
+            for i in range(1, 5):
+                nx, ny = x + dx * i, y + dy * i
+                if (nx, ny, 0) not in pieces and (nx, ny, 1) not in pieces:
+                    update_board(board, nx, ny, 0)
+                    if check_winner(board, 0):
+                        return "Black"
+                    remove_board(board, nx, ny, 0)
+                    update_board(board, nx, ny, 1)
+                    if check_winner(board, 1):
+                        return "White"
+                    remove_board(board, nx, ny, 1)
+
+    return "None"
 
 
 Solution = create_solution(solution_function_name)

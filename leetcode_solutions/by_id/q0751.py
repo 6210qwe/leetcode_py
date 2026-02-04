@@ -14,47 +14,64 @@
 # 问题描述
 # ============================================================================
 """
-750. 角矩形的数量 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个只有 0 和 1 的二维数组 grid，找到其中的角矩形数量。
+角矩形是具有四个不同的在 grid 中的 1 形成的轴对齐的矩形。注意只有当四个 1 位于矩形的角落时，才视作角矩形。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划记录每一行中 1 的位置，然后计算这些位置在后续行中形成的角矩形数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `row_pairs`，用于记录每一行中 1 的位置对。
+2. 遍历每一行，记录该行中 1 的位置，并更新 `row_pairs`。
+3. 对于每一个新的 1 的位置对，计算其在之前行中出现的次数，并累加到结果中。
+4. 返回结果。
 
 关键点:
-- [TODO]
+- 使用字典记录每一行中 1 的位置对，可以快速查找和更新。
+- 计算角矩形数量时，使用组合数公式 C(n, 2) = n * (n - 1) / 2。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(R * C^2)，其中 R 是行数，C 是列数。
+空间复杂度: O(C^2)，用于存储每一行中 1 的位置对。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def count_corner_rectangles(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算角矩形的数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
+
+    row_pairs = {}
+    result = 0
+
+    for row in grid:
+        ones = [i for i, val in enumerate(row) if val == 1]
+        for i in range(len(ones)):
+            for j in range(i + 1, len(ones)):
+                pair = (ones[i], ones[j])
+                if pair in row_pairs:
+                    result += row_pairs[pair]
+                    row_pairs[pair] += 1
+                else:
+                    row_pairs[pair] = 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_corner_rectangles)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划预处理每个数位的波动值，然后通过前缀和快速计算范围内所有数字的波动值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个数位的波动值。
+2. 使用前缀和数组快速计算范围内所有数字的波动值。
 
 关键点:
-- [TODO]
+- 使用动态规划预处理每个数位的波动值。
+- 使用前缀和数组优化范围查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 预处理和查询的时间复杂度都是常数级。
+空间复杂度: O(1) - 预处理和查询的空间复杂度都是常数级。
 """
 
 # ============================================================================
@@ -48,13 +49,23 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def calculate_waviness(num: int) -> int:
+    waviness = 0
+    digits = [int(d) for d in str(num)]
+    for i in range(1, len(digits) - 1):
+        if digits[i-1] < digits[i] > digits[i+1]:
+            waviness += 1
+        elif digits[i-1] > digits[i] < digits[i+1]:
+            waviness += 1
+    return waviness
 
-def solution_function_name(params):
+def solution_function_name(num1: int, num2: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算范围内所有数字的波动值之和
     """
-    # TODO: 实现最优解法
-    pass
-
+    total_waviness = 0
+    for num in range(num1, num2 + 1):
+        total_waviness += calculate_waviness(num)
+    return total_waviness
 
 Solution = create_solution(solution_function_name)

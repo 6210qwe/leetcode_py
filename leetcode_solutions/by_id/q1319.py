@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个数的出现次数，然后检查这些次数是否唯一。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表 `count_map` 统计每个数的出现次数。
+2. 使用另一个哈希表 `freq_map` 统计每个出现次数的频率。
+3. 如果 `freq_map` 中有任何频率大于 1 的值，则返回 False；否则返回 True。
 
 关键点:
-- [TODO]
+- 使用两个哈希表分别统计出现次数和频率。
+- 检查频率是否唯一。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def unique_occurrences(arr: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查数组中每个数的出现次数是否唯一
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数的出现次数
+    count_map = {}
+    for num in arr:
+        if num in count_map:
+            count_map[num] += 1
+        else:
+            count_map[num] = 1
+    
+    # 统计每个出现次数的频率
+    freq_map = {}
+    for count in count_map.values():
+        if count in freq_map:
+            return False
+        else:
+            freq_map[count] = 1
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(unique_occurrences)

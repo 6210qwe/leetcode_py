@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过位运算和贪心算法来计算最少的操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个数字需要多少次加1操作，即该数字的二进制表示中1的数量。
+2. 计算所有数字中最大的二进制位数，这决定了乘2操作的次数。
+3. 将所有加1操作和乘2操作的次数相加，得到总的操作次数。
 
 关键点:
-- [TODO]
+- 使用位运算来高效计算每个数字的1的数量。
+- 通过计算最大二进制位数来确定乘2操作的次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(nums)))，其中 n 是 nums 的长度，log(max(nums)) 是计算每个数字的二进制位数的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回将数组变成目标数组的最少函数调用次数。
     """
-    # TODO: 实现最优解法
-    pass
+    add_operations = 0
+    max_bit_length = 0
+    
+    for num in nums:
+        # 计算每个数字需要的加1操作次数
+        add_operations += bin(num).count('1')
+        # 计算当前数字的最大二进制位数
+        max_bit_length = max(max_bit_length, num.bit_length())
+    
+    # 乘2操作的次数等于最大二进制位数减1
+    multiply_operations = max_bit_length - 1 if max_bit_length > 0 else 0
+    
+    return add_operations + multiply_operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个组大小对应的人员列表，当某个组达到指定大小时，将其加入结果列表并清空该组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `groups` 来存储每个组大小对应的人员列表。
+2. 遍历 `groupSizes` 数组，将每个人按其组大小添加到相应的列表中。
+3. 当某个组的大小达到指定值时，将其加入结果列表并清空该组。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用哈希表来高效地管理和分组人员。
+- 一旦某个组达到指定大小，立即将其加入结果列表并清空该组，以避免重复处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def groupThePeople(groupSizes: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    将每个人按其组大小分组，返回一个组列表，使每个人都在一个大小为 groupSizes[i] 的组中。
     """
-    # TODO: 实现最优解法
-    pass
+    groups = {}
+    result = []
 
+    for i, size in enumerate(groupSizes):
+        if size not in groups:
+            groups[size] = []
+        groups[size].append(i)
+        
+        if len(groups[size]) == size:
+            result.append(groups[size])
+            groups[size] = []
 
-Solution = create_solution(solution_function_name)
+    return result
+
+Solution = create_solution(groupThePeople)

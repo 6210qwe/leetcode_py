@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）找到所有目标节点，并记录每个节点的父节点。然后从目标节点向上回溯，找到第一个共同的祖先。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 遍历树，记录每个节点的父节点。
+2. 从目标节点开始向上回溯，找到第一个共同的祖先。
 
 关键点:
-- [TODO]
+- 使用字典记录每个节点的父节点。
+- 从目标节点向上回溯，找到第一个共同的祖先。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。我们需要遍历整棵树来记录每个节点的父节点，并且在最坏情况下需要遍历所有节点来找到最近公共祖先。
+空间复杂度: O(n)，存储每个节点的父节点关系需要 O(n) 的空间。
 """
 
 # ============================================================================
@@ -44,17 +45,40 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_lowest_common_ancestor(root: 'TreeNode', nodes: 'List[TreeNode]') -> 'Optional[TreeNode]':
+    if not root or not nodes:
+        return None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个节点的父节点
+    parent = {root: None}
+    stack = [root]
+    target_nodes = set(nodes)
 
+    while stack:
+        node = stack.pop()
+        if node in target_nodes:
+            target_nodes.remove(node)
+        if node.left:
+            parent[node.left] = node
+            stack.append(node.left)
+        if node.right:
+            parent[node.right] = node
+            stack.append(node.right)
+        if not target_nodes:
+            break
 
-Solution = create_solution(solution_function_name)
+    # 从目标节点开始向上回溯，找到第一个共同的祖先
+    ancestors = set()
+    for node in nodes:
+        while node:
+            if node in ancestors:
+                return node
+            ancestors.add(node)
+            node = parent[node]
+
+    return None
+
+Solution = create_solution(find_lowest_common_ancestor)

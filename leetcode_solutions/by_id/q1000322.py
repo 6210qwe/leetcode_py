@@ -21,22 +21,25 @@ LCR 058. 我的日程安排表 I - 请实现一个 MyCalendar 类来存放你的
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序列表来存储日程安排，并通过二分查找来检查新日程是否与已有日程冲突。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的有序列表 `events` 来存储日程安排。
+2. 在 `book` 方法中，使用二分查找找到插入位置。
+3. 检查插入位置前后的日程是否有重叠，如果有则返回 `False`。
+4. 如果没有重叠，则将新日程插入有序列表并返回 `True`。
 
 关键点:
-- [TODO]
+- 使用 `bisect_left` 和 `bisect_right` 来确定插入位置和检查重叠。
+- 有序列表 `events` 保持日程按开始时间排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 二分查找的时间复杂度。
+空间复杂度: O(n) - 存储所有日程安排的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,31 @@ LCR 058. 我的日程安排表 I - 请实现一个 MyCalendar 类来存放你的
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import bisect
+
+class MyCalendar:
+
+    def __init__(self):
+        self.events = []
+
+    def book(self, start: int, end: int) -> bool:
+        # 找到 start 应该插入的位置
+        i = bisect.bisect_right(self.events, (start, end))
+        
+        # 检查插入位置前后的日程是否有重叠
+        if i > 0 and self.events[i-1][1] > start:
+            return False
+        if i < len(self.events) and self.events[i][0] < end:
+            return False
+        
+        # 插入新日程
+        self.events.insert(i, (start, end))
+        return True
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+# 测试
+if __name__ == "__main__":
+    calendar = MyCalendar()
+    print(calendar.book(10, 20))  # True
+    print(calendar.book(15, 25))  # False
+    print(calendar.book(20, 30))  # True

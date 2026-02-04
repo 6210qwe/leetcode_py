@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个产品的平均数量，并找出数量高于平均值的订单。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个产品的平均数量。
+2. 找出数量高于平均值的订单。
+3. 返回这些订单的信息。
 
 关键点:
-- [TODO]
+- 使用子查询来计算平均数量。
+- 使用 JOIN 来连接表并筛选出符合条件的订单。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是订单的数量，m 是产品的数量。我们需要遍历订单表和产品表来计算平均数量和筛选订单。
+空间复杂度: O(1)，SQL 查询的空间复杂度通常是常数级别的。
 """
 
 # ============================================================================
@@ -51,10 +53,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT o.product_id, o.order_id, o.quantity
+    FROM Orders o
+    JOIN (
+        SELECT product_id, AVG(quantity) AS avg_quantity
+        FROM Orders
+        GROUP BY product_id
+    ) AS avg_orders ON o.product_id = avg_orders.product_id
+    WHERE o.quantity > avg_orders.avg_quantity;
+    """
+    # 执行查询并返回结果
+    return query
 
 
 Solution = create_solution(solution_function_name)

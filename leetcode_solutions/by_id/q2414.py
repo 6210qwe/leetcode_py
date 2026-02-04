@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针分别遍历 start 和 target，确保所有 'L' 和 'R' 的相对顺序和位置正确。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 start 和 target 的起始位置。
+2. 遍历 start 和 target，跳过所有的 '_'。
+3. 检查当前字符是否匹配：
+   - 如果不匹配，返回 False。
+   - 如果 start 中的 'L' 在 target 中出现的位置在其右边，或者 start 中的 'R' 在 target 中出现的位置在其左边，返回 False。
+4. 如果遍历完所有字符且没有冲突，返回 True。
 
 关键点:
-- [TODO]
+- 忽略 '_'，只关注 'L' 和 'R' 的相对位置。
+- 'L' 只能向左移动，'R' 只能向右移动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_transform(start: str, target: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否可以通过移动片段将 start 转换为 target
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    n = len(start)
+    
+    while i < n or j < n:
+        # 跳过 start 中的 '_'
+        while i < n and start[i] == '_':
+            i += 1
+        # 跳过 target 中的 '_'
+        while j < n and target[j] == '_':
+            j += 1
+        
+        # 如果其中一个指针已经到达末尾，另一个未到达，返回 False
+        if (i == n and j < n) or (j == n and i < n):
+            return False
+        
+        # 检查当前字符是否匹配
+        if start[i] != target[j]:
+            return False
+        
+        # 检查 'L' 和 'R' 的相对位置
+        if start[i] == 'L' and i < j:
+            return False
+        if start[i] == 'R' and i > j:
+            return False
+        
+        i += 1
+        j += 1
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_transform)

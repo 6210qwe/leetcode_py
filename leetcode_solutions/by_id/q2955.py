@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算最接近的 10 的倍数来确定实际支出金额，并从初始余额中减去该金额。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 purchaseAmount 向下取整到最近的 10 的倍数。
+2. 计算 purchaseAmount 向上取整到最近的 10 的倍数。
+3. 比较两个值，选择更接近的那个，如果距离相同则选择较大的那个。
+4. 从初始余额 100 中减去实际支出金额，得到剩余余额。
 
 关键点:
-- [TODO]
+- 使用简单的数学运算来确定最接近的 10 的倍数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(purchase_amount: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算购买后的账户余额
     """
-    # TODO: 实现最优解法
-    pass
+    # 向下取整到最近的 10 的倍数
+    lower_rounded = (purchase_amount // 10) * 10
+    # 向上取整到最近的 10 的倍数
+    upper_rounded = (purchase_amount + 9) // 10 * 10
+
+    # 选择更接近的那个，如果距离相同则选择较大的那个
+    if (purchase_amount - lower_rounded) <= (upper_rounded - purchase_amount):
+        rounded_amount = lower_rounded
+    else:
+        rounded_amount = upper_rounded
+
+    # 从初始余额 100 中减去实际支出金额
+    remaining_balance = 100 - rounded_amount
+    return remaining_balance
 
 
 Solution = create_solution(solution_function_name)

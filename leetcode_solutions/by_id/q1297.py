@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算给定字符串中每个字符的出现次数，然后根据 "balloon" 中每个字符的出现次数来确定最多可以拼凑出多少个 "balloon"。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计字符串 text 中每个字符的出现次数。
+2. 统计 "balloon" 中每个字符的出现次数。
+3. 计算每个字符在 text 中的出现次数与 "balloon" 中的出现次数的最小倍数。
 
 关键点:
-- [TODO]
+- 使用字典来统计字符出现次数。
+- 特别处理 "l" 和 "o" 这两个字符，因为它们在 "balloon" 中出现两次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 text 的长度。我们需要遍历整个字符串来统计字符出现次数。
+空间复杂度: O(1)，因为字符集是固定的（只有 26 个小写字母），所以字典的大小是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_number_of_balloons(text: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以拼凑出多少个 "balloon"
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计 "balloon" 中每个字符的出现次数
+    balloon_count = {"b": 1, "a": 1, "l": 2, "o": 2, "n": 1}
+    
+    # 统计 text 中每个字符的出现次数
+    text_count = {}
+    for char in text:
+        if char in balloon_count:
+            text_count[char] = text_count.get(char, 0) + 1
+    
+    # 计算最多可以拼凑出多少个 "balloon"
+    min_count = float('inf')
+    for char, count in balloon_count.items():
+        if char not in text_count or text_count[char] < count:
+            return 0
+        min_count = min(min_count, text_count[char] // count)
+    
+    return min_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_number_of_balloons)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历员工及其下属，计算总重要度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将员工列表转换为以ID为键的字典，以便快速查找。
+2. 定义一个递归函数 `dfs` 来计算某个员工及其所有下属的总重要度。
+3. 在 `dfs` 函数中，累加当前员工的重要度，并递归地处理其所有下属。
+4. 返回给定ID员工的总重要度。
 
 关键点:
-- [TODO]
+- 使用字典存储员工信息，以便快速查找。
+- 通过递归DFS遍历所有下属，确保每个员工的重要度都被计算一次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工的数量。每个员工及其下属只被访问一次。
+空间复杂度: O(n)，用于存储员工字典和递归调用栈。
 """
 
 # ============================================================================
@@ -44,17 +47,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class Employee:
+    def __init__(self, id: int, importance: int, subordinates: List[int]):
+        self.id = id
+        self.importance = importance
+        self.subordinates = subordinates
 
-def solution_function_name(params):
+def get_total_importance(employees: List[Employee], id: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算给定ID员工及其所有下属的总重要度。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将员工列表转换为以ID为键的字典
+    employee_dict = {emp.id: emp for emp in employees}
+    
+    def dfs(emp_id: int) -> int:
+        """
+        递归函数，计算某个员工及其所有下属的总重要度。
+        """
+        emp = employee_dict[emp_id]
+        total_importance = emp.importance
+        for subordinate in emp.subordinates:
+            total_importance += dfs(subordinate)
+        return total_importance
+    
+    return dfs(id)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_total_importance)

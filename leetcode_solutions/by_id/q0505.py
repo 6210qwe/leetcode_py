@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个距离数组 `dist`，将所有节点的距离设为无穷大，起点距离设为 0。
+2. 使用优先队列（最小堆）存储当前节点和距离。
+3. 从起点开始，使用 BFS 进行遍历，更新每个节点的最短距离。
+4. 如果到达终点，返回最短距离；如果无法到达终点，返回 -1。
 
 关键点:
-- [TODO]
+- 使用优先队列确保每次处理的都是当前已知最短距离的节点。
+- 在更新距离时，如果新的距离更短，则更新距离并继续扩展。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))，其中 m 和 n 分别是迷宫的行数和列数。每个节点最多会被处理一次，每次处理的时间复杂度为 O(log(m * n))。
+空间复杂度: O(m * n)，用于存储距离数组和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(maze: List[List[int]], start: List[int], destination: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Dijkstra 算法找到从起点到终点的最短路径
     """
-    # TODO: 实现最优解法
-    pass
+    if not maze or not maze[0]:
+        return -1
 
+    rows, cols = len(maze), len(maze[0])
+    dist = [[float('inf')] * cols for _ in range(rows)]
+    dist[start[0]][start[1]] = 0
+    pq = [(0, start[0], start[1])]
+    
+    while pq:
+        d, x, y = heapq.heappop(pq)
+        if [x, y] == destination:
+            return d
+        
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny, nd = x, y, d
+            while 0 <= nx + dx < rows and 0 <= ny + dy < cols and maze[nx + dx][ny + dy] == 0:
+                nx += dx
+                ny += dy
+                nd += 1
+            if dist[nx][ny] > nd:
+                dist[nx][ny] = nd
+                heapq.heappush(pq, (nd, nx, ny))
+    
+    return -1
 
 Solution = create_solution(solution_function_name)

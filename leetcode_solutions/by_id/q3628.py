@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）进行Dijkstra算法的变种实现。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将起点 (0, 0) 和初始时间 0 加入队列。
+2. 使用一个二维数组 `dist` 来记录到达每个房间的最小时间。
+3. 从优先队列中取出当前时间最小的节点，检查是否到达终点 (n-1, m-1)。
+4. 对于当前节点的四个相邻节点，计算到达这些节点的时间，并更新 `dist` 数组。
+5. 将新的时间和节点加入优先队列。
+6. 重复步骤3-5，直到到达终点或队列为空。
 
 关键点:
-- [TODO]
+- 使用优先队列来确保每次处理的是当前时间最小的节点。
+- 计算到达相邻节点的时间时，考虑移动次数的奇偶性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log(n * m))
+空间复杂度: O(n * m)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def find_min_time_to_reach_last_room(moveTime: List[List[int]]) -> int:
+    n, m = len(moveTime), len(moveTime[0])
+    dist = [[float('inf')] * m for _ in range(n)]
+    dist[0][0] = 0
+    pq = [(0, 0, 0)]  # (time, x, y)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    while pq:
+        time, x, y = heapq.heappop(pq)
+        if x == n - 1 and y == m - 1:
+            return time
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < n and 0 <= ny < m:
+                next_time = max(time + (1 if (time % 2 == 0) else 2), moveTime[nx][ny])
+                if next_time < dist[nx][ny]:
+                    dist[nx][ny] = next_time
+                    heapq.heappush(pq, (next_time, nx, ny))
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_min_time_to_reach_last_room)

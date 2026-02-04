@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来检测图中的环，并记录最长的环。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个访问数组 `visited` 和一个递归栈数组 `rec_stack`。
+2. 遍历每个节点，如果该节点未被访问过，则进行 DFS。
+3. 在 DFS 中，标记当前节点为已访问，并将其加入递归栈。
+4. 如果当前节点的下一个节点已经存在于递归栈中，则找到了一个环，更新最长环的长度。
+5. 如果当前节点的下一个节点未被访问过，则继续进行 DFS。
+6. 递归返回时，将当前节点从递归栈中移除。
+7. 返回最长环的长度。
 
 关键点:
-- [TODO]
+- 使用递归栈来检测环。
+- 记录并更新最长环的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每个节点最多访问一次。
+空间复杂度: O(n) - 用于存储访问数组和递归栈。
 """
 
 # ============================================================================
@@ -49,12 +55,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def longest_cycle(edges: List[int]) -> int:
+    def dfs(node: int, visited: List[bool], rec_stack: List[bool], length: int) -> None:
+        if visited[node]:
+            return
+        visited[node] = True
+        rec_stack[node] = True
+        next_node = edges[node]
+        if next_node != -1:
+            if rec_stack[next_node]:
+                nonlocal max_length
+                max_length = max(max_length, length)
+            elif not visited[next_node]:
+                dfs(next_node, visited, rec_stack, length + 1)
+        rec_stack[node] = False
+
+    n = len(edges)
+    visited = [False] * n
+    rec_stack = [False] * n
+    max_length = -1
+
+    for i in range(n):
+        if not visited[i]:
+            dfs(i, visited, rec_stack, 1)
+
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_cycle)

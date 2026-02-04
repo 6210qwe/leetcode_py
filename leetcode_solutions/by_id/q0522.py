@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典记录每个字符串出现的次数，并检查每个字符串是否是其他字符串的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 记录每个字符串出现的次数。
+2. 按字符串长度从大到小排序。
+3. 对于每个字符串，如果它不是其他字符串的子序列且出现次数为1，则返回其长度。
+4. 如果没有找到符合条件的字符串，返回-1。
 
 关键点:
-- [TODO]
+- 使用双重循环检查每个字符串是否是其他字符串的子序列。
+- 通过排序优先处理较长的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中n是strs的长度，m是字符串的最大长度。
+空间复杂度: O(n * m)，用于存储字符串及其出现次数。
 """
 
 # ============================================================================
@@ -49,12 +52,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_subsequence(s: str, t: str) -> bool:
+    """检查s是否是t的子序列"""
+    t_iter = iter(t)
+    return all(char in t_iter for char in s)
+
+
+def solution_function_name(strs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长的特殊序列的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个字符串出现的次数
+    count = {}
+    for s in strs:
+        if s in count:
+            count[s] += 1
+        else:
+            count[s] = 1
+    
+    # 按字符串长度从大到小排序
+    strs.sort(key=len, reverse=True)
+    
+    # 检查每个字符串是否是其他字符串的子序列
+    for s in strs:
+        if count[s] == 1 and not any(is_subsequence(s, t) for t in strs if t != s):
+            return len(s)
+    
+    return -1
 
 
 Solution = create_solution(solution_function_name)

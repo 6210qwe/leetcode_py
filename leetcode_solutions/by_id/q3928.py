@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示将 nums1 的前 i 个元素转换为 nums2 的前 j 个元素所需的最少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示将 nums1 的前 i 个元素转换为 nums2 的前 j 个元素所需的最少操作次数。
+2. 如果 nums1 的前 i 个元素与 nums2 的前 j 个元素完全相同，则 dp[i][j] = 0。
+3. 否则，遍历所有可能的分割点 k，计算 dp[i][j] 的值。
+4. 最终结果保存在 dp[n][n] 中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3)，其中 n 是数组的长度。因为我们需要遍历所有可能的分割点。
+空间复杂度: O(n^2)，因为我们使用了一个二维数组来存储中间结果。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_transform(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 nums1 转换为 nums2 所需的最少拆分合并操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    dp = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # 初始化边界条件
+    for i in range(n + 1):
+        dp[i][0] = i
+        dp[0][i] = i
+    
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if nums1[i - 1] == nums2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                for k in range(i):
+                    dp[i][j] = min(dp[i][j], dp[k][j - 1] + 1)
+                for k in range(j):
+                    dp[i][j] = min(dp[i][j], dp[i - 1][k] + 1)
+    
+    return dp[n][n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_transform)

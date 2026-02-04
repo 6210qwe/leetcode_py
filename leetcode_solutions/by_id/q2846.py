@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理碰撞情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将机器人按照位置从小到大排序。
+2. 初始化一个栈，用于存储向右移动的机器人。
+3. 遍历每个机器人：
+   - 如果机器人向右移动，将其压入栈中。
+   - 如果机器人向左移动，检查栈顶是否有向右移动的机器人，如果有则进行碰撞处理。
+4. 最后，栈中剩下的机器人和已经处理完碰撞的机器人即为幸存的机器人。
 
 关键点:
-- [TODO]
+- 使用栈来处理碰撞情况，确保时间复杂度最优。
+- 通过排序和栈操作，可以高效地处理碰撞情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(n) - 栈的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +54,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def robot_collisions(positions: List[int], healths: List[int], directions: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 处理机器人碰撞
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(positions)
+    robots = sorted(zip(positions, healths, directions, range(n)))
+    
+    stack = []
+    survivors = [False] * n
+    
+    for pos, health, direction, index in robots:
+        if direction == 'R':
+            stack.append((pos, health, index))
+        else:
+            while stack and stack[-1][1] < health:
+                stack.pop()
+            if stack and stack[-1][1] == health:
+                stack.pop()
+                continue
+            if not stack:
+                survivors[index] = True
+            else:
+                stack[-1] = (stack[-1][0], stack[-1][1] - 1, stack[-1][2])
+    
+    result = []
+    for i in range(n):
+        if survivors[i]:
+            result.append(robots[i][1])
+        elif stack and stack[-1][2] == i:
+            result.append(stack.pop()[1])
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(robot_collisions)

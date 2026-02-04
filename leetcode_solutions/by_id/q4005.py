@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择具有最大差值的子数组，并重复选择以达到最大总值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中的最大值和最小值。
+2. 计算最大差值 `max_diff`。
+3. 选择 `k` 个子数组，每个子数组的值都是 `max_diff`，从而最大化总值。
 
 关键点:
-- [TODO]
+- 通过选择包含最大值和最小值的子数组来最大化每个子数组的值。
+- 重复选择这些子数组以达到最大的总值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 需要遍历数组来找到最大值和最小值。
+空间复杂度: O(1) - 只需要常数级别的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not nums or k == 0:
+        return 0
+    
+    # 找到数组中的最大值和最小值
+    max_val = max(nums)
+    min_val = min(nums)
+    
+    # 计算最大差值
+    max_diff = max_val - min_val
+    
+    # 计算最大总值
+    max_total_value = max_diff * k
+    
+    return max_total_value
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历链表来计算房屋数量
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为 0。
+2. 从头节点开始遍历链表，每访问一个节点，计数器加一。
+3. 当回到头节点时，停止遍历。
+4. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用一个指针遍历链表，并记录访问过的节点数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表中的节点数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(head: Optional[ListNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算环形街道上的房屋数量
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return 0
+
+    count = 0
+    current = head
+    while True:
+        count += 1
+        current = current.next
+        if current == head:
+            break
+
+    return count
 
 
 Solution = create_solution(solution_function_name)

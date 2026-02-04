@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用除基取余法将十进制数转换为七进制数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 判断输入的整数是否为负数，如果是则记录符号并取绝对值。
+2. 初始化一个空列表来存储每次取余的结果。
+3. 使用循环不断将整数除以7，并将余数添加到列表中。
+4. 将列表中的数字反转并拼接成字符串。
+5. 如果原始整数是负数，则在结果前加上负号。
 
 关键点:
-- [TODO]
+- 使用除基取余法进行进制转换。
+- 处理负数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log₇(n))，其中 n 是输入整数的绝对值。因为每次除以7，所以最多需要 log₇(n) 次操作。
+空间复杂度: O(log₇(n))，存储余数的列表长度最多为 log₇(n)。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将给定的整数 num 转换为 7 进制，并以字符串形式输出。
     """
-    # TODO: 实现最优解法
-    pass
+    if num == 0:
+        return "0"
+    
+    is_negative = num < 0
+    num = abs(num)
+    
+    result = []
+    while num > 0:
+        result.append(str(num % 7))
+        num //= 7
+    
+    if is_negative:
+        result.append('-')
+    
+    return ''.join(reversed(result))
 
 
 Solution = create_solution(solution_function_name)

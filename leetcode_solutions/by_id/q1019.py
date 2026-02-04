@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间遍历数组，比较两端元素的平方值，并将较大的平方值放入结果数组的末尾。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向数组的起始和末尾。
+2. 初始化一个结果数组 res，长度与输入数组相同。
+3. 从结果数组的末尾开始填充，比较 nums[left] 和 nums[right] 的平方值，将较大的平方值放入 res 中，并移动相应的指针。
+4. 重复步骤 3 直到所有元素都被处理完。
 
 关键点:
-- [TODO]
+- 使用双指针从两端向中间遍历，确保每次都能找到当前最大的平方值。
+- 结果数组从末尾开始填充，避免了额外的空间开销。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为每个元素只被处理一次。
+空间复杂度: O(1)，除了输出数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sorted_squares(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回每个数字的平方组成的新数组，并按非递减顺序排序。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    res = [0] * n
+    left, right = 0, n - 1
+    pos = n - 1
+    
+    while left <= right:
+        if abs(nums[left]) > abs(nums[right]):
+            res[pos] = nums[left] ** 2
+            left += 1
+        else:
+            res[pos] = nums[right] ** 2
+            right -= 1
+        pos -= 1
+    
+    return res
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sorted_squares)

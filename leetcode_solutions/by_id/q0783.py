@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用二叉搜索树的性质，通过递归或迭代的方式查找目标节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从根节点开始，比较当前节点的值与目标值。
+2. 如果当前节点的值等于目标值，返回当前节点。
+3. 如果当前节点的值大于目标值，递归或迭代地在左子树中查找。
+4. 如果当前节点的值小于目标值，递归或迭代地在右子树中查找。
+5. 如果遍历完整棵树仍未找到目标节点，返回 None。
 
 关键点:
-- [TODO]
+- 利用二叉搜索树的性质，每次可以排除一半的节点，从而实现高效的查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(h)，其中 h 是树的高度。在最坏情况下，树的高度为 n（退化成链表），平均情况下高度为 log(n)。
+空间复杂度: O(h)，递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def search_bst(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    在二叉搜索树中查找值为 val 的节点，并返回以该节点为根的子树。如果节点不存在，则返回 None。
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+    
+    if root.val == val:
+        return root
+    elif root.val > val:
+        return search_bst(root.left, val)
+    else:
+        return search_bst(root.right, val)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(search_bst)

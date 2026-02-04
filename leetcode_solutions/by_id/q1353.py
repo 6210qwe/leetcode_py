@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个列表来存储结果，并通过比较相邻字符串的排序形式来判断它们是否是字母异位词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `result` 用于存储最终结果。
+2. 遍历输入的字符串数组 `words`，对于每个字符串：
+   - 如果 `result` 为空或者当前字符串与 `result` 中最后一个字符串不是字母异位词，则将当前字符串添加到 `result` 中。
+   - 否则，跳过当前字符串。
+3. 返回 `result` 作为最终结果。
 
 关键点:
-- [TODO]
+- 使用 `sorted` 函数对字符串进行排序，以判断两个字符串是否是字母异位词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m log m)，其中 n 是 words 的长度，m 是每个字符串的最大长度。因为我们需要对每个字符串进行排序。
+空间复杂度: O(n * m)，最坏情况下，结果列表 `result` 会包含所有的字符串。
 """
 
 # ============================================================================
@@ -49,12 +52,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_anagrams(words: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除字母异位词后的结果数组
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for word in words:
+        if not result or sorted(word) != sorted(result[-1]):
+            result.append(word)
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_anagrams)

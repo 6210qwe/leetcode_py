@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来记录每个字符的频次，并通过排序和调整频次来确保每个字符的频次唯一。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符的频次并存储在哈希表中。
+2. 将频次按降序排序。
+3. 遍历排序后的频次列表，如果当前频次大于或等于前一个频次，则将当前频次减一，并增加删除计数。
+4. 重复步骤3直到所有频次都唯一。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符频次。
+- 通过排序和调整频次来确保每个字符的频次唯一。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k log k)，其中 n 是字符串长度，k 是字符种类数（最多26个字母）。
+空间复杂度: O(k)，用于存储字符频次。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_deletions(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回使字符串成为优质字符串需要删除的最小字符数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个字符的频次
+    freq = [0] * 26
+    for char in s:
+        freq[ord(char) - ord('a')] += 1
+    
+    # 去除频次为0的项
+    freq = [f for f in freq if f > 0]
+    
+    # 按降序排序
+    freq.sort(reverse=True)
+    
+    deletions = 0
+    max_allowed = len(s)
+    
+    for i in range(1, len(freq)):
+        if freq[i] >= freq[i - 1]:
+            target = max(0, freq[i - 1] - 1)
+            deletions += (freq[i] - target)
+            freq[i] = target
+    
+    return deletions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletions)

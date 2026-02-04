@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和有序集合来维护子矩阵中的元素，并计算最小绝对差。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果矩阵 `ans`。
+2. 使用滑动窗口遍历每一行，维护当前窗口内的元素。
+3. 对于每一行的窗口，使用有序集合来维护当前窗口内的元素，并计算最小绝对差。
+4. 更新结果矩阵 `ans`。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地维护窗口内的元素及其顺序。
+- 滑动窗口技术可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(k))
+空间复杂度: O(k^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
+def min_abs_diff_in_sliding_submatrix(grid: List[List[int]], k: int) -> List[List[int]]:
+    m, n = len(grid), len(grid[0])
+    ans = [[float('inf')] * (n - k + 1) for _ in range(m - k + 1)]
+    
+    def get_min_diff(window):
+        min_diff = float('inf')
+        for i in range(1, len(window)):
+            min_diff = min(min_diff, window[i] - window[i - 1])
+        return min_diff if min_diff != float('inf') else 0
+    
+    for i in range(m - k + 1):
+        window = [SortedList() for _ in range(n)]
+        for j in range(i, i + k):
+            for col in range(n):
+                window[col].add(grid[j][col])
+        
+        for j in range(n - k + 1):
+            current_window = SortedList()
+            for col in range(j, j + k):
+                current_window.update(window[col])
+            ans[i][j] = get_min_diff(current_window)
+            
+            if j < n - k:
+                for col in range(j, j + k):
+                    window[col].remove(grid[i][col])
+                    window[col].add(grid[i + k][col])
+    
+    return ans
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_abs_diff_in_sliding_submatrix)

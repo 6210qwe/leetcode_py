@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数位动态规划 (DP) 来计算满足条件的强大整数的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 `start` 和 `finish` 转换为字符串形式，方便逐位处理。
+2. 定义一个 DP 函数，用于计算在给定限制条件下，从当前位开始的有效数字数量。
+3. 通过递归和记忆化搜索来计算有效数字的数量。
+4. 处理边界情况，确保 `start` 和 `finish` 之间的所有数字都被考虑。
 
 关键点:
-- [TODO]
+- 使用递归和记忆化搜索来避免重复计算。
+- 逐位处理数字，确保每个数位不超过 `limit`。
+- 处理前缀和后缀的匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * 10 * d) = O(d^2)，其中 d 是 `finish` 的位数。
+空间复杂度: O(d * 10 * d) = O(d^2)，由于使用了记忆化搜索。
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_powerful_integers(start: int, finish: int, limit: int, s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算区间 [start, finish] 内的强大整数的数量。
     """
-    # TODO: 实现最优解法
-    pass
+    def dp(pos: int, is_limit: bool, is_prefix: bool, is_suffix: bool) -> int:
+        if pos == len(finish_str):
+            return 1 if is_suffix else 0
+        if not is_limit and not is_prefix and (pos, is_suffix) in memo:
+            return memo[(pos, is_suffix)]
+        
+        res = 0
+        up = int(finish_str[pos]) if is_limit else 9
+        for digit in range(0, up + 1):
+            if digit > limit:
+                continue
+            next_is_limit = is_limit and digit == up
+            next_is_prefix = is_prefix and digit == int(start_str[pos])
+            next_is_suffix = is_suffix or (pos >= len(s) and s[-len(finish_str) + pos] == str(digit))
+            res += dp(pos + 1, next_is_limit, next_is_prefix, next_is_suffix)
+        
+        if not is_limit and not is_prefix:
+            memo[(pos, is_suffix)] = res
+        return res
+    
+    start_str = str(start - 1)
+    finish_str = str(finish)
+    memo = {}
+    return dp(0, True, True, False)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_powerful_integers)

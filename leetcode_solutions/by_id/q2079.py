@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树 (Trie) 来构建文件系统的层次结构，并使用哈希表来记录每个子树的唯一标识。通过遍历 Trie 来找到并标记重复的子树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建 Trie 树，同时记录每个节点的子树的序列化形式。
+2. 使用哈希表记录每个子树的序列化形式及其出现次数。
+3. 再次遍历 Trie 树，标记出现次数大于 1 的子树。
+4. 最后，收集未被标记的路径。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来表示文件系统的层次结构。
+- 使用哈希表记录每个子树的序列化形式及其出现次数。
+- 通过遍历 Trie 树来标记和删除重复的子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N * M)，其中 N 是 paths 的长度，M 是每个路径的最大长度。
+空间复杂度: O(N * M)，用于存储 Trie 树和哈希表。
 """
 
 # ============================================================================
@@ -48,13 +52,68 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_deleted = False
+        self.subtree_hash = None
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def build_trie(paths: List[List[str]]) -> TrieNode:
+    root = TrieNode()
+    for path in paths:
+        node = root
+        for folder in path:
+            if folder not in node.children:
+                node.children[folder] = TrieNode()
+            node = node.children[folder]
+    return root
 
+def serialize_subtree(node: TrieNode) -> str:
+    if not node.children:
+        return ""
+    subtree_hashes = []
+    for key in sorted(node.children.keys()):
+        subtree_hashes.append(f"{key}({serialize_subtree(node.children[key])})")
+    return "".join(subtree_hashes)
 
-Solution = create_solution(solution_function_name)
+def mark_duplicates(root: TrieNode, subtree_counts: dict):
+    if not root.children:
+        return
+    for key in root.children:
+        child = root.children[key]
+        child.subtree_hash = serialize_subtree(child)
+        subtree_counts[child.subtree_hash] = subtree_counts.get(child.subtree_hash, 0) + 1
+        mark_duplicates(child, subtree_counts)
+
+def collect_paths(node: TrieNode, current_path: List[str], result: List[List[str]]):
+    if node.is_deleted:
+        return
+    if current_path:
+        result.append(current_path[:])
+    for key in node.children:
+        current_path.append(key)
+        collect_paths(node.children[key], current_path, result)
+        current_path.pop()
+
+def delete_duplicate_folders(paths: List[List[str]]) -> List[List[str]]:
+    root = build_trie(paths)
+    subtree_counts = {}
+    mark_duplicates(root, subtree_counts)
+    
+    # Mark nodes with duplicate subtrees as deleted
+    def mark_deleted_nodes(node: TrieNode):
+        if not node.children:
+            return
+        for key in node.children:
+            child = node.children[key]
+            if subtree_counts[child.subtree_hash] > 1:
+                child.is_deleted = True
+            mark_deleted_nodes(child)
+    
+    mark_deleted_nodes(root)
+    
+    result = []
+    collect_paths(root, [], result)
+    return result
+
+Solution = create_solution(delete_duplicate_folders)

@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从叶子节点向上调整，使得每一对兄弟节点的路径值相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从最后一个非叶子节点开始，逐层向上调整。
+2. 对于每个非叶子节点，计算其左右子节点的路径值差，并将较小的路径值增加到较大的路径值。
+3. 累加所有需要的增加操作次数。
 
 关键点:
-- [TODO]
+- 从叶子节点向上调整，确保每一对兄弟节点的路径值相等。
+- 使用贪心策略，每次只调整当前节点的子节点，确保总的操作次数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_increments_to_equal_paths(n: int, cost: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使二叉树所有路径值相等的最小代价
     """
-    # TODO: 实现最优解法
-    pass
+    total_operations = 0
+    for i in range(n // 2 - 1, -1, -1):
+        left_child = 2 * i + 1
+        right_child = 2 * i + 2
+        max_cost = max(cost[left_child], cost[right_child])
+        total_operations += 2 * max_cost - (cost[left_child] + cost[right_child])
+        cost[i] += max_cost
+    return total_operations
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_increments_to_equal_paths)

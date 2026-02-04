@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储长 URL 和短 URL 之间的映射关系，并使用一个计数器生成唯一的短 URL。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表用于存储长 URL 和短 URL 之间的映射关系。
+2. 使用一个计数器生成唯一的短 URL 标识符。
+3. 在 `encode` 方法中，生成一个唯一的短 URL 标识符，并将其与长 URL 存储在哈希表中。
+4. 在 `decode` 方法中，通过短 URL 标识符从哈希表中查找并返回对应的长 URL。
 
 关键点:
-- [TODO]
+- 使用哈希表存储长 URL 和短 URL 之间的映射关系，确保快速查找。
+- 使用计数器生成唯一的短 URL 标识符，确保每个长 URL 有一个唯一的短 URL。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 生成和查找短 URL 的操作都是常数时间。
+空间复杂度: O(n) - 需要存储 n 个长 URL 和短 URL 的映射关系。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict
 
+class Codec:
+    def __init__(self):
+        self.url_map: Dict[str, str] = {}
+        self.counter: int = 0
+        self.base_url: str = "http://tinyurl.com/"
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def encode(self, longUrl: str) -> str:
+        """Encodes a URL to a shortened URL."""
+        short_id = self._generate_short_id()
+        self.url_map[short_id] = longUrl
+        return f"{self.base_url}{short_id}"
 
+    def decode(self, shortUrl: str) -> str:
+        """Decodes a shortened URL to its original URL."""
+        short_id = shortUrl.split('/')[-1]
+        return self.url_map[short_id]
 
-Solution = create_solution(solution_function_name)
+    def _generate_short_id(self) -> str:
+        """Generates a unique short ID using the counter."""
+        self.counter += 1
+        return str(self.counter)
+
+# Your Codec object will be instantiated and called as such:
+# codec = Codec()
+# codec.decode(codec.encode(url))

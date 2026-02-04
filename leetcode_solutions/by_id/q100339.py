@@ -21,40 +21,67 @@ LCR 185. 统计结果概率 - 你选择掷出 num 个色子，请返回所有点
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个点数总和的概率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示前 i 个骰子掷出点数 j 的次数。
+2. 初始化第一个骰子的情况，dp[1][j] = 1 (1 <= j <= 6)。
+3. 对于每个后续的骰子，更新 dp 数组，使用前一个骰子的结果来计算当前骰子的结果。
+4. 计算总的可能性数量，即 6^num。
+5. 将 dp 数组中的次数转换为概率，并返回结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 只保留前一个骰子的结果以节省空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是骰子的数量，m 是每个骰子的面数（固定为 6）。
+空间复杂度: O(n * (n * m))，简化后为 O(n^2)，因为需要存储每个点数总和的可能性。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(num: int) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 num 个骰子掷出的所有点数总和的概率
     """
-    # TODO: 实现最优解法
-    pass
+    if num < 1:
+        return []
 
+    # 初始化 dp 数组
+    dp = [[0] * (num * 6 + 1) for _ in range(2)]
+    total_faces = 6
+    old, now = 0, 0
+
+    # 初始化第一个骰子的情况
+    for i in range(1, total_faces + 1):
+        dp[now][i] = 1
+
+    # 动态规划计算每个点数总和的可能性
+    for i in range(2, num + 1):
+        old = now
+        now = 1 - now
+        for j in range(i):
+            dp[now][j] = 0
+        for j in range(i, i * total_faces + 1):
+            dp[now][j] = 0
+            for k in range(1, min(total_faces, j) + 1):
+                dp[now][j] += dp[old][j - k]
+
+    # 计算总的可能性数量
+    total = 6 ** num
+
+    # 将 dp 数组中的次数转换为概率
+    result = [dp[now][i] / total for i in range(num, num * total_faces + 1)]
+
+    return result
 
 Solution = create_solution(solution_function_name)

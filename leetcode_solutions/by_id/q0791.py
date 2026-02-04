@@ -14,47 +14,52 @@
 # 问题描述
 # ============================================================================
 """
-776. 拆分二叉搜索树 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个二叉搜索树（BST）的根节点 root 和一个整数值 V，将树拆分为两个子树，其中一个子树的所有节点值都小于等于 V，另一个子树的所有节点值都大于 V。保证 V 不会与树中的任何节点值相等。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 递归地将树拆分成两个子树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点为空，返回两个空子树。
+2. 如果当前节点的值小于等于 V，将当前节点保留在左子树中，并递归处理右子树。
+3. 如果当前节点的值大于 V，将当前节点保留在右子树中，并递归处理左子树。
+4. 返回两个子树的根节点。
 
 关键点:
-- [TODO]
+- 递归处理左右子树时，更新当前节点的左右子树指针。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量，因为每个节点最多访问一次。
+空间复杂度: O(h)，其中 h 是树的高度，这是由于递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def split_bst(root: Optional[TreeNode], V: int) -> List[Optional[TreeNode]]:
+    if not root:
+        return [None, None]
+    
+    if root.val <= V:
+        left, right = split_bst(root.right, V)
+        root.right = left
+        return [root, right]
+    else:
+        left, right = split_bst(root.left, V)
+        root.left = right
+        return [left, root]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_bst)

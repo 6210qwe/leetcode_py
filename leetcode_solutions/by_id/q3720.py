@@ -21,40 +21,77 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和广度优先搜索来找到满足条件的最大边权的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对边按权重排序，并使用二分查找来确定最大边权的最小值。
+2. 在每次二分查找的过程中，使用广度优先搜索来检查是否所有节点都能到达节点 0。
+3. 如果可以到达，则尝试减小最大边权；否则，增加最大边权。
 
 关键点:
-- [TODO]
+- 二分查找用于确定最大边权的最小值。
+- 广度优先搜索用于检查连通性。
+- 确保每个节点的出边不超过 threshold。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log W + E log V)，其中 E 是边的数量，W 是边权的最大值，V 是节点数量。
+空间复杂度: O(V + E)，用于存储图和队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def can_reach_all_nodes(n: int, edges: List[List[int]], max_weight: int, threshold: int) -> bool:
+    # 构建图
+    graph = defaultdict(list)
+    out_degree = [0] * n
+    for u, v, w in edges:
+        if w <= max_weight:
+            graph[u].append(v)
+            out_degree[u] += 1
+    
+    # 检查每个节点的出度
+    for i in range(n):
+        if out_degree[i] > threshold:
+            return False
+    
+    # 使用 BFS 检查连通性
+    visited = [False] * n
+    queue = deque([0])
+    visited[0] = True
+    
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                visited[neighbor] = True
+                queue.append(neighbor)
+    
+    return all(visited)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def minimize_max_edge_weight(n: int, edges: List[List[int]], threshold: int) -> int:
+    # 按边权排序
+    edges.sort(key=lambda x: x[2])
+    
+    left, right = 0, edges[-1][2]
+    result = -1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if can_reach_all_nodes(n, edges, mid, threshold):
+            result = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_max_edge_weight)

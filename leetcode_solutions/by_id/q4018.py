@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到使每个元素非负的最小移动次数。首先计算整个数组的总和，如果总和小于0，则无法使所有元素非负。否则，我们可以通过遍历数组来找到最小的移动次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组的总和，如果总和小于0，返回-1。
+2. 初始化两个变量 `left_sum` 和 `min_moves`，分别用于记录左侧元素的和和最小移动次数。
+3. 遍历数组两次（模拟环形数组），更新 `left_sum` 和 `min_moves`。
+4. 返回 `min_moves`。
 
 关键点:
-- [TODO]
+- 通过遍历数组两次来模拟环形数组。
+- 使用贪心算法找到最小的移动次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_moves_to_balance_circular_array(balance: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使循环数组余额非负的最少移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(balance)
+    if total_sum < 0:
+        return -1
+    
+    n = len(balance)
+    left_sum = 0
+    min_moves = float('inf')
+    
+    for i in range(2 * n):
+        if i < n:
+            left_sum += balance[i]
+        
+        if i >= n:
+            left_sum -= balance[i - n]
+        
+        right_sum = total_sum - left_sum
+        min_moves = min(min_moves, max(0, left_sum - right_sum))
+    
+    return min_moves
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_moves_to_balance_circular_array)

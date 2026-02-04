@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 KMP 算法来找到最长的既是前缀也是后缀的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串 s 的前缀函数。
+2. 通过前缀函数找到最长的既是前缀也是后缀的字符串。
 
 关键点:
-- [TODO]
+- 前缀函数的计算。
+- 通过前缀函数找到最长的既是前缀也是后缀的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 KMP 算法找到最长的既是前缀也是后缀的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def compute_prefix_function(pattern: str) -> List[int]:
+        n = len(pattern)
+        pi = [0] * n
+        j = 0
+        for i in range(1, n):
+            while j > 0 and pattern[i] != pattern[j]:
+                j = pi[j - 1]
+            if pattern[i] == pattern[j]:
+                j += 1
+            pi[i] = j
+        return pi
+
+    prefix_function = compute_prefix_function(s)
+    return s[:prefix_function[-1]]
 
 
 Solution = create_solution(solution_function_name)

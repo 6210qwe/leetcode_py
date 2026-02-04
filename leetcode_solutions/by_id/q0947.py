@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个字典来记录每个候选人的得票数，并在每次投票后更新当前领先的候选人。使用一个列表来记录每个时间点的领先候选人。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，遍历 persons 和 times 数组，记录每个候选人的得票数，并在每次投票后更新当前领先的候选人。
+2. 查询时，使用二分查找找到小于等于 t 的最大时间点，并返回该时间点的领先候选人。
 
 关键点:
-- [TODO]
+- 使用字典记录每个候选人的得票数。
+- 使用列表记录每个时间点的领先候选人。
+- 使用二分查找优化查询时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + log n) - 初始化时遍历 persons 和 times 数组的时间复杂度为 O(n)，查询时使用二分查找的时间复杂度为 O(log n)。
+空间复杂度: O(n) - 需要额外的空间来存储每个候选人的得票数和每个时间点的领先候选人。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class TopVotedCandidate:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self, persons: List[int], times: List[int]):
+        self.times = times
+        self.leaders = []
+        vote_counts = {}
+        max_votes = 0
+        current_leader = None
+        
+        for person, time in zip(persons, times):
+            vote_counts[person] = vote_counts.get(person, 0) + 1
+            if vote_counts[person] >= max_votes:
+                max_votes = vote_counts[person]
+                current_leader = person
+            self.leaders.append(current_leader)
 
+    def q(self, t: int) -> int:
+        left, right = 0, len(self.times) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if self.times[mid] <= t:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return self.leaders[right]
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    top_voted_candidate = TopVotedCandidate([0, 1, 1, 0, 0, 1, 0], [0, 5, 10, 15, 20, 25, 30])
+    print(top_voted_candidate.q(3))   # 输出: 0
+    print(top_voted_candidate.q(12))  # 输出: 1
+    print(top_voted_candidate.q(25))  # 输出: 1
+    print(top_voted_candidate.q(15))  # 输出: 0
+    print(top_voted_candidate.q(24))  # 输出: 0
+    print(top_voted_candidate.q(8))   # 输出: 1

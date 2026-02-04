@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，找到第一个满足 i % 10 == nums[i] 的下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，对于每个下标 i，检查 i % 10 是否等于 nums[i]。
+2. 如果找到满足条件的下标，立即返回该下标。
+3. 如果遍历完数组没有找到满足条件的下标，返回 -1。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到满足条件的最小下标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历整个数组一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_equal(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中满足 i % 10 == nums[i] 的最小下标 i ；如果不存在这样的下标，返回 -1 。
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(nums)):
+        if i % 10 == nums[i]:
+            return i
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_equal)

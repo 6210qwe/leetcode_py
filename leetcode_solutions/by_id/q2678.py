@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,40 +22,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来计算最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化图时，构建邻接表表示图。
+2. 在 `addEdge` 方法中，更新邻接表。
+3. 在 `shortestPath` 方法中，使用 Dijkstra 算法计算从 `node1` 到 `node2` 的最短路径。
 
 关键点:
-- [TODO]
+- 使用优先队列（最小堆）来优化 Dijkstra 算法的时间复杂度。
+- 通过邻接表来存储图的结构，便于快速查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是节点的数量。Dijkstra 算法的时间复杂度主要由优先队列的操作决定。
+空间复杂度: O(E + V)，用于存储邻接表和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+class Graph:
+    def __init__(self, n: int, edges: List[List[int]]):
+        self.n = n
+        self.adj_list = [[] for _ in range(n)]
+        for u, v, cost in edges:
+            self.adj_list[u].append((v, cost))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def addEdge(self, edge: List[int]) -> None:
+        u, v, cost = edge
+        self.adj_list[u].append((v, cost))
 
+    def shortestPath(self, node1: int, node2: int) -> int:
+        if node1 == node2:
+            return 0
 
-Solution = create_solution(solution_function_name)
+        # Dijkstra's algorithm
+        dist = [float('inf')] * self.n
+        dist[node1] = 0
+        pq = [(0, node1)]  # (distance, node)
+
+        while pq:
+            d, u = heapq.heappop(pq)
+            if d > dist[u]:
+                continue
+            for v, cost in self.adj_list[u]:
+                if dist[u] + cost < dist[v]:
+                    dist[v] = dist[u] + cost
+                    heapq.heappush(pq, (dist[v], v))
+
+        return dist[node2] if dist[node2] != float('inf') else -1
+
+# Example usage
+if __name__ == "__main__":
+    g = Graph(4, [[0, 2, 5], [0, 1, 2], [1, 2, 1], [3, 0, 3]])
+    print(g.shortestPath(3, 2))  # Output: 6
+    print(g.shortestPath(0, 3))  # Output: -1
+    g.addEdge([1, 3, 4])
+    print(g.shortestPath(0, 3))  # Output: 6
+```
+
+这个实现使用了 Dijkstra 算法来计算最短路径，并且在初始化和添加边时使用邻接表来存储图的结构。时间复杂度和空间复杂度都符合题目要求。

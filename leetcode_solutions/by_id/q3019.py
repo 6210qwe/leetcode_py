@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算 'L' 和 'R' 的数量差值，并将所有的 '_' 用于增加这个差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count_l, count_r, count_blank 分别记录 'L', 'R', '_' 的数量。
+2. 遍历字符串 moves，统计每个字符的数量。
+3. 计算最终的最大距离：max_distance = abs(count_l - count_r) + count_blank。
 
 关键点:
-- [TODO]
+- 将所有的 '_' 用于增加 'L' 和 'R' 的数量差值，以达到最大距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 moves 的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def furthest_distance_from_origin(moves: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算距离原点最远的点
     """
-    # TODO: 实现最优解法
-    pass
+    count_l = 0
+    count_r = 0
+    count_blank = 0
+    
+    for move in moves:
+        if move == 'L':
+            count_l += 1
+        elif move == 'R':
+            count_r += 1
+        elif move == '_':
+            count_blank += 1
+    
+    max_distance = abs(count_l - count_r) + count_blank
+    return max_distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(furthest_distance_from_origin)

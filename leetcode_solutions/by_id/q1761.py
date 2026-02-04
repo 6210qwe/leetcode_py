@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们可以定义一个二维数组 dp，其中 dp[i][j] 表示长度为 i 且以第 j 个元音结尾的字符串的数量。通过状态转移方程可以计算出最终结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，dp[0][j] 表示长度为 1 且以第 j 个元音结尾的字符串数量。
+2. 通过状态转移方程 dp[i][j] = sum(dp[i-1][k] for k in range(j+1)) 来更新 dp 数组。
+3. 最终结果是 dp[n-1] 的总和。
 
 关键点:
-- [TODO]
+- 使用动态规划减少重复计算。
+- 状态转移方程确保了字符串按字典序排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串的长度，m 是元音的数量（固定为 5）。
+空间复杂度: O(n * m)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowel_strings(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 且由元音组成的字典序字符串的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0] * 5 for _ in range(n)]
+    
+    # 初始化第一行
+    for j in range(5):
+        dp[0][j] = 1
+    
+    # 填充 dp 数组
+    for i in range(1, n):
+        for j in range(5):
+            dp[i][j] = sum(dp[i-1][k] for k in range(j+1))
+    
+    # 返回最终结果
+    return sum(dp[n-1])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowel_strings)

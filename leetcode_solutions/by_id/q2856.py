@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到所有包含数组中所有不同元素的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的不同元素数目。
+2. 使用滑动窗口遍历数组，维护当前窗口内的不同元素数目。
+3. 当窗口内的不同元素数目等于整个数组的不同元素数目时，记录符合条件的子数组数量。
+4. 移动窗口右边界，直到窗口内的不同元素数目不再满足条件，然后移动左边界缩小窗口。
 
 关键点:
-- [TODO]
+- 使用两个指针（left 和 right）来表示滑动窗口的左右边界。
+- 使用一个字典来记录当前窗口内的元素及其出现次数。
+- 每次右边界扩展时，更新字典并检查是否满足条件。
+- 每次左边界收缩时，更新字典并继续检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)，其中 k 是数组中不同元素的数目。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_complete_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计完全子数组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算整个数组的不同元素数目
+    total_unique_elements = len(set(nums))
+    
+    # 初始化滑动窗口的左右指针和结果计数器
+    left, right = 0, 0
+    current_unique_count = 0
+    result = 0
+    element_count = {}
+    
+    while right < len(nums):
+        # 扩展右边界
+        if nums[right] not in element_count:
+            element_count[nums[right]] = 0
+            current_unique_count += 1
+        element_count[nums[right]] += 1
+        
+        # 当窗口内的不同元素数目等于整个数组的不同元素数目时
+        while current_unique_count == total_unique_elements:
+            # 记录符合条件的子数组数量
+            result += len(nums) - right
+            
+            # 收缩左边界
+            element_count[nums[left]] -= 1
+            if element_count[nums[left]] == 0:
+                del element_count[nums[left]]
+                current_unique_count -= 1
+            left += 1
+        
+        right += 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_complete_subarrays)

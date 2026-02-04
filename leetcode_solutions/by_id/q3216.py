@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp[i][j] 表示前 i 个糖果分配给 j 个小朋友的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1，表示没有糖果时只有一种分配方式（即不分配）。
+2. 遍历每个糖果和每个小朋友，更新 dp 数组。
+3. 最终结果为 dp[n][k]，其中 n 是糖果总数，k 是小朋友数量。
 
 关键点:
-- [TODO]
+- 使用模运算防止整数溢出。
+- 优化空间复杂度，使用一维数组进行状态转移。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_candies(candies: int, num_people: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分配糖果给小朋友
     """
-    # TODO: 实现最优解法
-    pass
+    # 动态规划数组，dp[j] 表示当前糖果数下第 j 个小朋友的糖果数
+    dp = [0] * (num_people + 1)
+    dp[0] = 1  # 初始化，没有糖果时只有一种分配方式
+
+    for i in range(1, candies + 1):
+        new_dp = [0] * (num_people + 1)
+        for j in range(1, min(i, num_people) + 1):
+            new_dp[j] = (new_dp[j - 1] + dp[j]) % (10**9 + 7)
+        dp = new_dp
+
+    return dp[1:num_people + 1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_candies)

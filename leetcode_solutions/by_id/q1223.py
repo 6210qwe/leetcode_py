@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来处理连通性问题。对于每个大于阈值的因数，将所有能被该因数整除的城市合并到同一个集合中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 对于每个大于阈值的因数，将所有能被该因数整除的城市合并到同一个集合中。
+3. 处理每个查询，检查两个城市是否在同一个集合中。
 
 关键点:
-- [TODO]
+- 使用并查集来高效处理连通性问题。
+- 通过遍历大于阈值的因数来合并城市。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + q log n)，其中 n 是城市的数量，q 是查询的数量。初始化并查集的时间复杂度为 O(n)，合并操作的时间复杂度为 O(log n)，查询操作的时间复杂度也为 O(log n)。
+空间复杂度: O(n)，并查集需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, p):
+        if self.parent[p] != p:
+            self.parent[p] = self.find(self.parent[p])
+        return self.parent[p]
 
+    def union(self, p, q):
+        root_p = self.find(p)
+        root_q = self.find(q)
+        if root_p == root_q:
+            return
+        if self.rank[root_p] > self.rank[root_q]:
+            self.parent[root_q] = root_p
+        elif self.rank[root_p] < self.rank[root_q]:
+            self.parent[root_p] = root_q
+        else:
+            self.parent[root_q] = root_p
+            self.rank[root_p] += 1
 
-Solution = create_solution(solution_function_name)
+def are_connected(n: int, threshold: int, queries: List[List[int]]) -> List[bool]:
+    uf = UnionFind(n + 1)
+    
+    for z in range(threshold + 1, n + 1):
+        for x in range(z, n + 1, z):
+            uf.union(x, z)
+    
+    result = []
+    for a, b in queries:
+        result.append(uf.find(a) == uf.find(b))
+    
+    return result
+
+Solution = create_solution(are_connected)

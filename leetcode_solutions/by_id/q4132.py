@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义 dp[i][j] 表示前 i 张纸，使用 j 种颜色的方案数。
+2. 初始化 dp[0][0] = 1，表示没有纸张时只有一种方案。
+3. 对于每一张纸，可以选择一种新的颜色或者重复使用之前的颜色。
+4. 使用动态规划方程进行状态转移：
+   - dp[i][j] = dp[i-1][j-1] * (k - (j-1)) + dp[i-1][j] * j
+5. 最终结果为 dp[n][k]。
 
 关键点:
-- [TODO]
+- 动态规划的状态定义和状态转移方程。
+- 注意边界条件的处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -48,13 +53,19 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算给 n 张纸涂 k 种颜色的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # 没有纸张时只有一种方案
 
+    # 动态规划状态转移
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            dp[i][j] = dp[i-1][j-1] * (k - (j-1)) + dp[i-1][j] * j
+
+    return dp[n][k]
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个朋友的配对情况和偏好顺序，然后检查每个朋友是否不开心。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典 `pair_dict` 存储每个朋友的配对情况。
+2. 构建一个字典 `pref_dict` 存储每个朋友的偏好顺序。
+3. 遍历每个朋友，检查其是否不开心：
+   - 如果当前朋友的配对对象不是其最亲近的朋友，则继续检查。
+   - 对于每个更亲近的朋友，检查该朋友是否也更亲近当前朋友。
+   - 如果满足条件，则当前朋友不开心。
 
 关键点:
-- [TODO]
+- 使用哈希表高效存储和查找配对情况和偏好顺序。
+- 只有当当前朋友的配对对象不是其最亲近的朋友时，才需要进一步检查。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 需要遍历每个朋友及其偏好列表。
+空间复杂度: O(n) - 使用了两个哈希表来存储配对情况和偏好顺序。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_unhappy_friends(n: int, preferences: List[List[int]], pairs: List[List[int]]) -> int:
+    pair_dict = {}
+    pref_dict = {}
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 构建配对情况字典
+    for x, y in pairs:
+        pair_dict[x] = y
+        pair_dict[y] = x
 
+    # 构建偏好顺序字典
+    for i in range(n):
+        pref_dict[i] = {friend: rank for rank, friend in enumerate(preferences[i])}
 
-Solution = create_solution(solution_function_name)
+    unhappy_count = 0
+
+    # 检查每个朋友是否不开心
+    for x in range(n):
+        y = pair_dict[x]
+        if pref_dict[x][y] == 0:
+            continue
+
+        for u in preferences[x][:pref_dict[x][y]]:
+            v = pair_dict[u]
+            if pref_dict[u][x] < pref_dict[u][v]:
+                unhappy_count += 1
+                break
+
+    return unhappy_count
+
+Solution = create_solution(count_unhappy_friends)

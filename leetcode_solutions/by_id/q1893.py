@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护两个状态：
+- `dp_max`：表示以当前元素结尾的最大子数组和。
+- `dp_min`：表示以当前元素结尾的最小子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 `dp_max` 和 `dp_min` 为第一个元素的值。
+2. 遍历数组，对于每个元素，更新 `dp_max` 和 `dp_min`。
+3. 计算当前元素变为负数后的最大子数组和，并更新全局最大值。
 
 关键点:
-- [TODO]
+- 通过维护 `dp_max` 和 `dp_min`，我们可以有效地计算出经过一次操作后的最大子数组和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为我们需要遍历整个数组一次。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    n = len(nums)
+    if n == 1:
+        return -nums[0]
+
+    dp_max = dp_min = res = nums[0]
+
+    for i in range(1, n):
+        # 更新 dp_max 和 dp_min
+        dp_max = max(nums[i], dp_max + nums[i])
+        dp_min = min(nums[i], dp_min + nums[i])
+
+        # 计算当前元素变为负数后的最大子数组和
+        res = max(res, dp_max, -dp_min + 2 * nums[i])
+
+    return res
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和字典序最小化策略来构建结果字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果字符串 `result`。
+2. 遍历 `str1`，对于每个字符：
+   - 如果是 'T'，则将 `str2` 添加到 `result` 中。
+   - 如果是 'F'，则找到字典序最小且不等于 `str2` 的字符串，并将其添加到 `result` 中。
+3. 检查生成的 `result` 是否满足所有条件，如果不满足则返回空字符串。
 
 关键点:
-- [TODO]
+- 使用贪心策略，每次选择字典序最小的字符串。
+- 确保生成的字符串满足所有条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 `str1` 的长度，m 是 `str2` 的长度。
+空间复杂度: O(n * m)，存储结果字符串的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_lexicographically_smallest_string(str1: str, str2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    找到由 str1 和 str2 生成的字典序最小的字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(str1), len(str2)
+    result = []
+
+    for i in range(n):
+        if str1[i] == 'T':
+            result.append(str2)
+        else:
+            # 找到字典序最小且不等于 str2 的字符串
+            for j in range(m):
+                if str2[j] != 'a':
+                    smallest_diff_str = str2[:j] + chr(ord(str2[j]) - 1) + str2[j+1:]
+                    break
+            else:
+                smallest_diff_str = str2[:-1] + chr(ord(str2[-1]) + 1)
+            result.append(smallest_diff_str)
+
+    # 检查生成的字符串是否满足所有条件
+    for i in range(n):
+        if str1[i] == 'T' and result[i:i+m] != str2:
+            return ""
+        if str1[i] == 'F' and result[i:i+m] == str2:
+            return ""
+
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_lexicographically_smallest_string)

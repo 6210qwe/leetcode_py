@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快速幂算法计算结果
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算偶数位和奇数位的数量。
+2. 使用快速幂算法计算 (5^偶数位) * (4^奇数位) % (10^9 + 7)。
 
 关键点:
-- [TODO]
+- 快速幂算法可以高效地计算大指数的幂次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_good_numbers(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 的好数字的总数
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+
+    def power(x: int, y: int) -> int:
+        result = 1
+        while y > 0:
+            if y % 2 == 1:
+                result = (result * x) % MOD
+            x = (x * x) % MOD
+            y //= 2
+        return result
+
+    even_count = (n + 1) // 2
+    odd_count = n // 2
+    return (power(5, even_count) * power(4, odd_count)) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_good_numbers)

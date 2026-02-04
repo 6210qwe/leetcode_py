@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每年的人口变化，并通过前缀和计算每年人口数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 101 的数组 `population_changes`，用于记录从 1950 到 2050 每年的出生和死亡人数变化。
+2. 遍历 `logs` 数组，对于每个 `[birth, death]`，在 `population_changes` 中将 `birth` 年份增加 1，`death` 年份减少 1。
+3. 计算前缀和数组 `population`，表示每年人口数量。
+4. 遍历 `population` 数组，找到人口最多且最早的年份。
 
 关键点:
-- [TODO]
+- 使用差分数组记录每年的人口变化。
+- 通过前缀和计算每年人口数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 logs 的长度，m 是年份范围（101）。
+空间复杂度: O(m)，用于存储差分数组和前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximum_population_year(logs: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回人口最多且最早的年份
     """
-    # TODO: 实现最优解法
-    pass
+    population_changes = [0] * 101  # 1950 到 2050 年共 101 年
+    for birth, death in logs:
+        population_changes[birth - 1950] += 1
+        population_changes[death - 1950] -= 1
+    
+    max_population = 0
+    current_population = 0
+    max_year = 1950
+    for year, change in enumerate(population_changes):
+        current_population += change
+        if current_population > max_population:
+            max_population = current_population
+            max_year = year + 1950
+    
+    return max_year
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_population_year)

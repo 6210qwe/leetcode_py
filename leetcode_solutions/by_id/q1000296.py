@@ -21,40 +21,57 @@ LCR 107. 01 矩阵 - 给定一个由 0 和 1 组成的矩阵 mat ，请输出一
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）从所有的 0 开始同时进行搜索，这样可以确保每个 1 到最近的 0 的距离被正确计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有 0 的位置加入队列，并将 1 的位置标记为未访问。
+2. 使用 BFS 从所有 0 的位置开始扩散，每次扩散一层，更新当前层的所有 1 的距离。
+3. 当队列为空时，BFS 结束，返回结果矩阵。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以确保每个 1 到最近的 0 的距离被正确计算。
+- 通过从所有 0 同时开始搜索，可以避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个元素最多入队一次，出队一次。
+空间复杂度: O(m * n)，队列的最大空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
+def solution_function_name(mat: List[List[int]]) -> List[List[int]]:
+    if not mat or not mat[0]:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(mat), len(mat[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    queue = deque()
+    result = [[0 if mat[i][j] == 0 else float('inf') for j in range(n)] for i in range(m)]
 
+    # 将所有 0 的位置加入队列
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 0:
+                queue.append((i, j))
+
+    # BFS 从所有 0 的位置开始扩散
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and result[nx][ny] > result[x][y] + 1:
+                result[nx][ny] = result[x][y] + 1
+                queue.append((nx, ny))
+
+    return result
 
 Solution = create_solution(solution_function_name)

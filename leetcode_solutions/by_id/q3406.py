@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j][k] 表示当前已经使用了 i 个 0 和 j 个 1，并且最后一个连续段的长度为 k 时的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组。
+2. 通过状态转移方程更新 dp 数组。
+3. 计算最终结果并取模。
 
 关键点:
-- [TODO]
+- 使用三维 DP 数组来记录状态。
+- 状态转移方程需要考虑当前字符是 0 还是 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(zero * one * (limit + 1))
+空间复杂度: O(zero * one * (limit + 1))
 """
 
 # ============================================================================
@@ -48,13 +50,27 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def find_stable_arrays(zero: int, one: int, limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回稳定二进制数组的总数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 dp 数组
+    dp = [[[0] * (limit + 1) for _ in range(one + 1)] for _ in range(zero + 1)]
+    dp[0][0][0] = 1
+    
+    # 状态转移
+    for i in range(zero + 1):
+        for j in range(one + 1):
+            for k in range(limit + 1):
+                if i > 0:
+                    dp[i][j][1] = (dp[i][j][1] + dp[i - 1][j][min(k + 1, limit)]) % MOD
+                if j > 0:
+                    dp[i][j][1] = (dp[i][j][1] + dp[i][j - 1][min(k + 1, limit)]) % MOD
+    
+    # 计算最终结果
+    result = sum(dp[zero][one]) % MOD
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_stable_arrays)

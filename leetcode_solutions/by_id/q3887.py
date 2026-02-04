@@ -21,40 +21,64 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来解决这个问题。我们需要维护两个状态：当前节点和是否已经使用了开关。通过优先队列来选择当前最小成本的路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化优先队列，将起点 (0, 0, False) 加入队列，表示从节点 0 出发，成本为 0，尚未使用开关。
+3. 使用 Dijkstra 算法，每次从优先队列中取出当前成本最小的节点，并更新其邻居节点的成本。
+4. 如果到达终点 n-1，则返回最小成本；如果无法到达，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用优先队列来选择当前最小成本的路径。
+- 维护两个状态：当前节点和是否已经使用了开关。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((E + V) log V)，其中 E 是边的数量，V 是节点的数量。Dijkstra 算法的时间复杂度是 O((E + V) log V)。
+空间复杂度: O(E + V)，存储图的邻接表和优先队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+import heapq
 
+def minimum_cost_path(n: int, edges: List[List[int]]) -> int:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v, w in edges:
+        graph[u].append((v, w))
+    
+    # 优先队列，存储 (cost, node, used_switch)
+    pq = [(0, 0, False)]
+    # 记录访问过的状态
+    visited = set()
+    
+    while pq:
+        cost, node, used_switch = heapq.heappop(pq)
+        
+        if (node, used_switch) in visited:
+            continue
+        visited.add((node, used_switch))
+        
+        if node == n - 1:
+            return cost
+        
+        for neighbor, weight in graph[node]:
+            if (neighbor, used_switch) not in visited:
+                heapq.heappush(pq, (cost + weight, neighbor, used_switch))
+        
+        if not used_switch:
+            for neighbor, weight in graph:
+                if (node, True) not in visited and (neighbor, node, weight) in edges:
+                    heapq.heappush(pq, (cost + 2 * weight, neighbor, True))
+    
+    return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_path)

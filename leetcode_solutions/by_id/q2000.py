@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的时速。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_arrive_on_time`，用于判断在给定时速下是否能在规定时间内到达。
+2. 初始化二分查找的左右边界，左边界为 1，右边界为 10^7。
+3. 在二分查找过程中，计算中间值 `mid`，并使用 `can_arrive_on_time` 判断是否可以在 `mid` 时速下准时到达。
+4. 如果可以准时到达，则更新右边界；否则，更新左边界。
+5. 最终返回左边界作为最小的时速。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化搜索过程。
+- 辅助函数 `can_arrive_on_time` 用于判断是否可以在给定时速下准时到达。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_dist))，其中 n 是 dist 的长度，max_dist 是 dist 中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_arrive_on_time(dist: List[int], speed: int, hour: float) -> bool:
+    total_time = 0.0
+    for i in range(len(dist) - 1):
+        total_time += (dist[i] + speed - 1) // speed  # 向上取整
+    total_time += dist[-1] / speed
+    return total_time <= hour
+
+
+def solution_function_name(dist: List[int], hour: float) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小的时速以确保在规定时间内到达
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 1, 10**7
+    while left < right:
+        mid = (left + right) // 2
+        if can_arrive_on_time(dist, mid, hour):
+            right = mid
+        else:
+            left = mid + 1
+    return left if can_arrive_on_time(dist, left, hour) else -1
 
 
 Solution = create_solution(solution_function_name)

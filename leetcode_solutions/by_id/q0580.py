@@ -21,40 +21,42 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个专业的学生人数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个子查询来获取每个学生的 ID 和对应的专业名称。
+2. 使用 GROUP BY 子句按专业名称分组，并使用 COUNT 函数统计每个专业的学生人数。
+3. 使用 ORDER BY 子句按专业名称排序。
 
 关键点:
-- [TODO]
+- 使用 INNER JOIN 将学生表和专业表连接起来。
+- 使用 GROUP BY 和 COUNT 函数进行分组和计数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是学生表的行数，m 是专业表的行数。
+空间复杂度: O(1)，查询结果的空间复杂度是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询来统计每个专业的学生人数
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    SELECT d.dept_name, COUNT(s.student_id) AS student_number
+    FROM student s
+    INNER JOIN department d ON s.dept_id = d.dept_id
+    GROUP BY d.dept_name
+    ORDER BY d.dept_name;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

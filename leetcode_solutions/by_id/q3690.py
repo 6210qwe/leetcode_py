@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最小的可能的最长相同子字符串长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_split` 来检查是否可以通过至多 numOps 次翻转将字符串分割成长度不超过 k 的相同子字符串。
+2. 使用二分查找来确定最小的 k 值，使得可以将字符串分割成长度不超过 k 的相同子字符串。
 
 关键点:
-- [TODO]
+- 通过二分查找来优化时间复杂度。
+- 辅助函数 `can_split` 用于验证当前假设的 k 值是否可行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -48,13 +49,35 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def can_split(s: str, k: int, numOps: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查是否可以通过至多 numOps 次翻转将字符串分割成长度不超过 k 的相同子字符串。
     """
-    # TODO: 实现最优解法
-    pass
+    ops_needed = 0
+    i = 0
+    while i < len(s):
+        j = i
+        while j < len(s) and s[j] == s[i]:
+            j += 1
+        segment_length = j - i
+        if segment_length > k:
+            ops_needed += (segment_length + k - 1) // k - 1
+        if ops_needed > numOps:
+            return False
+        i = j
+    return True
 
+def solution_function_name(s: str, numOps: int) -> int:
+    """
+    函数式接口 - 通过二分查找找到最小的 k 值，使得可以将字符串分割成长度不超过 k 的相同子字符串。
+    """
+    left, right = 1, len(s)
+    while left < right:
+        mid = (left + right) // 2
+        if can_split(s, mid, numOps):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 Solution = create_solution(solution_function_name)

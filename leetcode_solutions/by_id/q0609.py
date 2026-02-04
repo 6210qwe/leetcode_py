@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储文件内容及其对应的文件路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `content_to_paths`，键为文件内容，值为包含该内容的文件路径列表。
+2. 遍历每个路径字符串，解析出目录路径和文件信息。
+3. 对于每个文件，提取文件名和文件内容，并将文件路径添加到 `content_to_paths` 中对应的内容键下。
+4. 最后，从 `content_to_paths` 中筛选出包含多个路径的条目，即为重复文件。
 
 关键点:
-- [TODO]
+- 使用正则表达式解析路径字符串，提取文件名和文件内容。
+- 使用哈希表存储文件内容及其对应的文件路径，便于快速查找和合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是路径的数量，m 是每个路径字符串的平均长度。
+空间复杂度: O(n * m)，用于存储文件内容及其对应的文件路径。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import re
 
+def find_duplicate(paths: List[str]) -> List[List[str]]:
+    content_to_paths = {}
+    
+    for path in paths:
+        parts = path.split()
+        dir_path = parts[0]
+        
+        for file_info in parts[1:]:
+            match = re.match(r'(\w+\.txt)\((\w+)\)', file_info)
+            if match:
+                file_name, file_content = match.groups()
+                file_path = f"{dir_path}/{file_name}"
+                
+                if file_content not in content_to_paths:
+                    content_to_paths[file_content] = []
+                content_to_paths[file_content].append(file_path)
+    
+    return [paths for paths in content_to_paths.values() if len(paths) > 1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_duplicate)

@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并在每个节点上计算两种情况的最大值：反转当前节点或不反转当前节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 定义一个递归函数 dfs(node, parent, depth)，用于计算以 node 为根的子树在不同反转情况下的最大值。
+3. 在递归函数中，对于每个节点，计算两种情况的最大值：反转当前节点或不反转当前节点。
+4. 返回最终结果。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树。
+- 在每个节点上计算两种情况的最大值。
+- 通过传递父节点和深度来确保反转操作符合距离限制。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+def max_sum_after_operations(edges: List[List[int]], nums: List[int], k: int) -> int:
+    # 构建树的邻接表表示
+    tree = defaultdict(list)
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, parent: int, depth: int) -> (int, int):
+        # 不反转当前节点的情况
+        not_flip = nums[node]
+        # 反转当前节点的情况
+        flip = -nums[node]
 
+        for neighbor in tree[node]:
+            if neighbor == parent:
+                continue
+            child_not_flip, child_flip = dfs(neighbor, node, depth + 1)
+            not_flip += max(child_not_flip, child_flip)
+            if depth >= k:
+                flip += max(child_not_flip, child_flip)
+            else:
+                flip += child_not_flip
 
-Solution = create_solution(solution_function_name)
+        return not_flip, flip
+
+    # 从根节点开始 DFS
+    root_not_flip, root_flip = dfs(0, -1, 0)
+    return max(root_not_flip, root_flip)
+
+Solution = create_solution(max_sum_after_operations)

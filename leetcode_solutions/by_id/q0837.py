@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个单词的出现频率，并过滤掉禁用词，找到出现频率最高的非禁用词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将段落中的所有字符转换为小写。
+2. 使用正则表达式提取所有单词。
+3. 使用哈希表统计每个单词的出现频率。
+4. 过滤掉禁用词。
+5. 找到出现频率最高的非禁用词。
 
 关键点:
-- [TODO]
+- 使用正则表达式处理标点符号。
+- 使用哈希表进行频率统计。
+- 过滤禁用词并找到最大频率的单词。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 paragraph 的长度，m 是 banned 的长度。
+空间复杂度: O(n + m)，用于存储单词频率和禁用词集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+import re
+from collections import Counter
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def most_common_word(paragraph: str, banned: List[str]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回出现频率最高的非禁用词。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将段落中的所有字符转换为小写
+    paragraph = paragraph.lower()
+    
+    # 使用正则表达式提取所有单词
+    words = re.findall(r'\b\w+\b', paragraph)
+    
+    # 使用哈希表统计每个单词的出现频率
+    word_count = Counter(words)
+    
+    # 过滤掉禁用词
+    for ban in banned:
+        if ban in word_count:
+            del word_count[ban]
+    
+    # 找到出现频率最高的非禁用词
+    return max(word_count, key=word_count.get)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(most_common_word)

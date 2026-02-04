@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符出现的位置，然后通过组合计数公式计算符合条件的子串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串，使用哈希表记录每个字符出现的位置。
+2. 对于每个字符，如果它出现了 k 次，则可以形成 k * (k - 1) / 2 个以该字符开头和结尾的子串。
+3. 累加所有字符的子串数量，得到最终结果。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符位置，避免重复计算。
+- 通过组合计数公式快速计算子串数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为字符集大小是固定的，最多为 26 个字母）
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算以相同字母开头和结尾的子串总数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用哈希表记录每个字符出现的位置
+    char_count = {}
+    for char in s:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # 计算符合条件的子串数量
+    result = 0
+    for count in char_count.values():
+        result += count * (count - 1) // 2
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

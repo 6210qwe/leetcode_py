@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用有序数组的特性，通过遍历数组来找到出现次数超过25%的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 和一个候选元素 `candidate`。
+2. 遍历数组，对于每个元素：
+   - 如果当前元素与 `candidate` 相同，则增加计数器 `count`。
+   - 如果当前元素与 `candidate` 不同，则重置计数器 `count` 并更新 `candidate`。
+3. 当计数器 `count` 超过数组长度的25%时，返回 `candidate`。
 
 关键点:
-- [TODO]
+- 由于数组是有序的，相同的元素会连续出现，因此可以利用这一点来高效地找到目标元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到有序数组中出现次数超过25%的元素
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(arr)
+    candidate = arr[0]
+    count = 1
+    
+    for i in range(1, n):
+        if arr[i] == candidate:
+            count += 1
+        else:
+            candidate = arr[i]
+            count = 1
+        
+        if count > n // 4:
+            return candidate
 
 Solution = create_solution(solution_function_name)

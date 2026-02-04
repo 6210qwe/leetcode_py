@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从右到左遍历数组，检查是否存在一个分割点使得左侧子数组和右侧子数组都满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右到左遍历数组，计算当前子数组的和。
+2. 如果当前子数组的和大于或等于 m，则继续向前遍历。
+3. 如果找到一个分割点使得左侧子数组和右侧子数组都满足条件，则返回 True。
+4. 如果遍历完数组仍未找到符合条件的分割点，则返回 False。
 
 关键点:
-- [TODO]
+- 从右到左遍历可以确保每次分割时右侧子数组总是满足条件。
+- 只需要一次遍历即可完成判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def can_split_array(nums: List[int], m: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断是否能拆分数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n <= 2:
+        return True
+    
+    right_sum = 0
+    for i in range(n - 1, -1, -1):
+        right_sum += nums[i]
+        if right_sum >= m:
+            left_sum = sum(nums[:i])
+            if left_sum >= m or i == 0:
+                return True
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_split_array)

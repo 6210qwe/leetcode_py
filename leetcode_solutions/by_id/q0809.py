@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到满足 f(x) = k 的 x 的范围。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `count_trailing_zeros` 来计算 n! 末尾的 0 的数量。
+2. 使用二分查找来找到最小的 x 使得 f(x) >= k。
+3. 如果找不到这样的 x，返回 0。
+4. 检查 f(x) 是否等于 k，如果不等，返回 0。
+5. 返回 5，因为如果 f(x) = k，则 x, x+1, x+2, x+3, x+4 都满足 f(x) = k。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地找到满足条件的 x。
+- 辅助函数 `count_trailing_zeros` 用于计算 n! 末尾的 0 的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n) * log(n))，其中 n 是 k 的值。二分查找的时间复杂度是 O(log(n))，每次计算末尾 0 的数量的时间复杂度是 O(log(n))。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_trailing_zeros(n: int) -> int:
+    """计算 n! 末尾的 0 的数量"""
+    count = 0
+    while n >= 5:
+        n //= 5
+        count += n
+    return count
 
 
-Solution = create_solution(solution_function_name)
+def preimage_size_of_factorial_zeroes_function(k: int) -> int:
+    """
+    函数式接口 - 找出返回能满足 f(x) = k 的非负整数 x 的数量。
+    """
+    left, right = 0, 5 * (k + 1)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if count_trailing_zeros(mid) < k:
+            left = mid + 1
+        else:
+            right = mid
+    
+    if count_trailing_zeros(left) != k:
+        return 0
+    return 5
+
+
+Solution = create_solution(preimage_size_of_factorial_zeroes_function)

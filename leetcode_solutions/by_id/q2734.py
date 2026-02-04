@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接检查数组长度，如果为空则返回 -1，否则返回最后一个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查数组是否为空。
+2. 如果数组为空，返回 -1。
+3. 否则，返回数组的最后一个元素。
 
 关键点:
-- [TODO]
+- 使用数组的长度来判断数组是否为空。
+- 直接访问数组的最后一个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 只需要常数时间来检查数组长度并访问最后一个元素。
+空间复杂度: O(1) - 不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[Optional[object]]) -> Optional[object]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现数组的 last 方法
     """
-    # TODO: 实现最优解法
-    pass
+    if not arr:
+        return -1
+    return arr[-1]
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式匹配有效的序列号模式，并筛选出符合条件的产品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用正则表达式 `r'SN\d{4}-\d{4}'` 来匹配有效的序列号模式。
+2. 筛选出描述中包含有效序列号的产品。
+3. 按照 product_id 升序排序返回结果。
 
 关键点:
-- [TODO]
+- 使用正则表达式进行高效匹配。
+- 确保只筛选出符合条件的产品。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是产品的数量，m 是每个产品描述的平均长度。
+空间复杂度: O(1)，除了输入和输出外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(products: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找具有有效序列号的产品
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 定义正则表达式模式
+    pattern = r'SN\d{4}-\d{4}'
+    
+    # 筛选出描述中包含有效序列号的产品
+    valid_products = products[products['description'].str.contains(pattern, regex=True)]
+    
+    # 按照 product_id 升序排序
+    result = valid_products.sort_values(by='product_id')
+    
+    return result
 
 Solution = create_solution(solution_function_name)

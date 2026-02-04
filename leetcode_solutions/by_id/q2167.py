@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来记录有流量的账户，然后遍历所有账户，统计没有流量的账户。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个集合来存储有流量的账户。
+2. 遍历流表，将有流量的账户加入集合。
+3. 遍历账户表，统计不在集合中的账户数量。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找有流量的账户。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是流表的长度，m 是账户表的长度。
+空间复杂度: O(n)，用于存储有流量的账户集合。
 """
 
 # ============================================================================
@@ -49,12 +50,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(accounts: List[str], streams: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计无流量的账户数
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个集合来存储有流量的账户
+    streamed_accounts = set(streams)
+    
+    # 统计没有流量的账户数量
+    no_stream_count = sum(1 for account in accounts if account not in streamed_accounts)
+    
+    return no_stream_count
 
 
 Solution = create_solution(solution_function_name)

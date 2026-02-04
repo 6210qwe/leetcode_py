@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的字母大小写全排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表。
+2. 定义一个递归函数，该函数接受当前索引和当前构建的字符串作为参数。
+3. 在递归函数中，如果当前索引等于字符串长度，则将当前构建的字符串添加到结果列表中。
+4. 否则，检查当前字符是否为字母：
+   - 如果是字母，则递归调用两次：一次将当前字符转换为小写，另一次转换为大写。
+   - 如果不是字母，则直接递归调用，不改变当前字符。
+5. 从索引 0 开始调用递归函数。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的组合。
+- 递归函数处理每个字符，根据其是否为字母进行不同的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是字符串中字母的数量。每个字母都有两种选择（大写或小写），因此总共有 2^n 种组合。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -49,12 +55,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def letter_case_permutation(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成给定字符串的所有字母大小写全排列。
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(index: int, path: str):
+        if index == len(s):
+            result.append(path)
+            return
+        if s[index].isalpha():
+            backtrack(index + 1, path + s[index].lower())
+            backtrack(index + 1, path + s[index].upper())
+        else:
+            backtrack(index + 1, path + s[index])
+
+    result = []
+    backtrack(0, "")
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(letter_case_permutation)

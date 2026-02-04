@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，检查每个索引是否是数组长度的因数，如果是，则将该位置的元素平方并累加到结果中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `result` 用于存储平方和。
+2. 遍历数组 `nums`，对于每个索引 `i`（从 1 开始），检查 `n % (i + 1) == 0` 是否成立。
+3. 如果成立，将 `nums[i]` 的平方累加到 `result` 中。
+4. 返回 `result`。
 
 关键点:
-- [TODO]
+- 索引从 1 开始，因此在遍历时需要将 `i` 加 1。
+- 使用 `n % (i + 1) == 0` 来判断当前索引是否是数组长度的因数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_squares_of_special_elements(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中所有特殊元素的平方和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    result = 0
+    for i in range(n):
+        if n % (i + 1) == 0:
+            result += nums[i] ** 2
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_squares_of_special_elements)

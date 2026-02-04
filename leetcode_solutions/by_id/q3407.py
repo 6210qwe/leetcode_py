@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j][k] 表示当前用了 i 个 0，j 个 1，且以 k 结尾（k=0 或 1）的稳定数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0][0] = 1，表示空数组是一种合法的情况。
+2. 遍历所有可能的 0 和 1 的数量，更新 dp 数组。
+3. 对于每个状态，根据 limit 的限制，更新 dp 数组。
+4. 最终结果是 dp[zero][one][0] + dp[zero][one][1]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑 limit 的限制。
+- 通过前缀和优化，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(zero * one * min(zero, one))
+空间复杂度: O(zero * one * 2)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_stable_binary_arrays(zero: int, one: int, limit: int) -> int:
+    MOD = 10**9 + 7
+    max_val = max(zero, one)
+    dp = [[[0 for _ in range(2)] for _ in range(max_val + 1)] for _ in range(max_val + 1)]
+    dp[0][0][0] = 1
+
+    for i in range(zero + 1):
+        for j in range(one + 1):
+            for k in range(2):
+                if i > 0:
+                    dp[i][j][0] = (dp[i][j][0] + dp[i - 1][j][1]) % MOD
+                if j > 0:
+                    dp[i][j][1] = (dp[i][j][1] + dp[i][j - 1][0]) % MOD
+                if i > limit:
+                    dp[i][j][0] = (dp[i][j][0] - dp[i - limit - 1][j][1] + MOD) % MOD
+                if j > limit:
+                    dp[i][j][1] = (dp[i][j][1] - dp[i][j - limit - 1][0] + MOD) % MOD
+
+    return (dp[zero][one][0] + dp[zero][one][1]) % MOD
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_stable_binary_arrays)

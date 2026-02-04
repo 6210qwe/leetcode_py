@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，计算从根节点到每个有苹果的节点的路径长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 从根节点 (0) 开始进行 DFS 遍历。
+3. 对于每个节点，如果它或其子节点有苹果，则计算从该节点到根节点的路径长度。
+4. 返回总路径长度。
 
 关键点:
-- [TODO]
+- 使用邻接表来表示树结构。
+- 通过 DFS 递归地遍历树，并计算路径长度。
+- 只有当节点或其子节点有苹果时，才计入路径长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边都只访问一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
@@ -44,17 +48,23 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+def minTime(n: int, edges: List[List[int]], hasApple: List[bool]) -> int:
+    # 构建邻接表
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, parent: int) -> int:
+        total_time = 0
+        for child in tree[node]:
+            if child != parent:
+                child_time = dfs(child, node)
+                if child_time > 0 or hasApple[child]:
+                    total_time += child_time + 2
+        return total_time
 
+    return dfs(0, -1)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minTime)

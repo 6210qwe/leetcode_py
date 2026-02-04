@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来计算每行的军人数量，并使用最小堆来找到战斗力最弱的 k 行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历每一行，使用二分查找计算每行的军人数量。
+2. 将每行的军人数量和行索引存入一个列表。
+3. 对该列表按军人数量进行排序，如果军人数量相同则按行索引排序。
+4. 返回排序后的前 k 个行索引。
 
 关键点:
-- [TODO]
+- 使用二分查找优化计算每行的军人数量的时间复杂度。
+- 使用最小堆来高效地找到最弱的 k 行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log n + m log m)，其中 m 是矩阵的行数，n 是矩阵的列数。二分查找的时间复杂度是 O(log n)，排序的时间复杂度是 O(m log m)。
+空间复杂度: O(m)，用于存储每行的军人数量和行索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def k_weakest_rows(mat: List[List[int]], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回矩阵中战斗力最弱的 k 行的索引，按从最弱到最强排序。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每行的军人数量
+    def count_soldiers(row: List[int]) -> int:
+        left, right = 0, len(row)
+        while left < right:
+            mid = (left + right) // 2
+            if row[mid] == 1:
+                left = mid + 1
+            else:
+                right = mid
+        return left
 
+    # 构建 (军人数量, 行索引) 的列表
+    soldiers_count = [(count_soldiers(row), i) for i, row in enumerate(mat)]
+    
+    # 找出最弱的 k 行
+    weakest_rows = heapq.nsmallest(k, soldiers_count)
+    
+    # 返回行索引
+    return [index for _, index in weakest_rows]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(k_weakest_rows)

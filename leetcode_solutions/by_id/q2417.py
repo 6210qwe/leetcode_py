@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对 buses 和 passengers 进行排序，然后使用双指针模拟乘客上车过程，找到可以搭乘公交车的最晚到达时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 buses 和 passengers 进行排序。
+2. 使用双指针遍历 buses 和 passengers，模拟乘客上车过程。
+3. 记录每辆公交车上的乘客，并检查是否还有空位。
+4. 如果最后一辆公交车还有空位，找到可以搭乘的最晚时间。
 
 关键点:
-- [TODO]
+- 排序后使用双指针模拟乘客上车过程。
+- 处理最后一辆公交车时，找到可以搭乘的最晚时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 是 buses 的长度，m 是 passengers 的长度。排序操作的时间复杂度是 O(n log n) 和 O(m log m)，双指针遍历的时间复杂度是 O(n + m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def latest_time_to_catch_bus(buses: List[int], passengers: List[int], capacity: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回你可以搭乘公交车的最晚到达公交站时间。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对 buses 和 passengers 进行排序
+    buses.sort()
+    passengers.sort()
+
+    # 初始化指针
+    bus_index = 0
+    passenger_index = 0
+
+    # 用于记录已经上车的乘客
+    on_bus = set()
+
+    while bus_index < len(buses):
+        count = 0
+        while count < capacity and passenger_index < len(passengers) and passengers[passenger_index] <= buses[bus_index]:
+            if passengers[passenger_index] not in on_bus:
+                on_bus.add(passengers[passenger_index])
+                count += 1
+            passenger_index += 1
+
+        bus_index += 1
+
+    # 找到可以搭乘的最晚时间
+    last_time = buses[-1]
+    while last_time in on_bus or last_time in passengers:
+        last_time -= 1
+
+    return last_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(latest_time_to_catch_bus)

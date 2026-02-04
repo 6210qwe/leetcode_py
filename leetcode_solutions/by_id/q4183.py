@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来存储每个字符串的标准化形式，然后计算每种标准化形式的组合数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `normalize`，将字符串转换为其标准化形式（即所有字符减去第一个字符的偏移量后的结果）。
+2. 使用一个哈希表 `count` 来记录每种标准化形式出现的次数。
+3. 遍历 `words` 数组，将每个字符串转换为标准化形式并更新哈希表。
+4. 计算每种标准化形式的组合数，并累加到结果中。
 
 关键点:
-- [TODO]
+- 标准化形式可以唯一标识一组相似的字符串。
+- 使用组合公式计算每种标准化形式的组合数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)
+空间复杂度: O(n * m)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
+def count_caesar_cipher_pairs(words: List[str]) -> int:
+    def normalize(s: str) -> str:
+        offset = ord(s[0]) - ord('a')
+        return ''.join(chr((ord(c) - ord('a') - offset) % 26 + ord('a')) for c in s)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    count = Counter(normalize(word) for word in words)
+    result = sum(v * (v - 1) // 2 for v in count.values())
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_caesar_cipher_pairs)

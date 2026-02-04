@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算滚动平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列来存储当前窗口内的步数。
+2. 遍历每一天的步数，将步数加入队列。
+3. 如果队列的大小超过窗口大小，则移除最旧的步数。
+4. 计算当前窗口内步数的平均值并存储结果。
 
 关键点:
-- [TODO]
+- 使用队列来维护滑动窗口。
+- 动态更新队列以保持窗口大小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是天数。每个元素只被处理一次。
+空间复杂度: O(k)，其中 k 是窗口大小。队列最多存储 k 个元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def rolling_average_steps(steps: List[int], window_size: int) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    计算滚动平均步数。
+
+    :param steps: 每天的步数列表
+    :param window_size: 滑动窗口的大小
+    :return: 每天的滚动平均步数列表
     """
-    # TODO: 实现最优解法
-    pass
+    if not steps or window_size <= 0:
+        return []
 
+    n = len(steps)
+    if n < window_size:
+        return [sum(steps) / n] * n
 
-Solution = create_solution(solution_function_name)
+    result = []
+    window = deque()
+    current_sum = 0
+
+    for i in range(n):
+        # 将当前步数加入窗口
+        window.append(steps[i])
+        current_sum += steps[i]
+
+        # 如果窗口大小超过 window_size，移除最旧的步数
+        if len(window) > window_size:
+            removed_step = window.popleft()
+            current_sum -= removed_step
+
+        # 计算当前窗口的平均值
+        if len(window) == window_size:
+            result.append(current_sum / window_size)
+
+    return result
+
+Solution = create_solution(rolling_average_steps)

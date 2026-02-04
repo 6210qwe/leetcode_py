@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录 `nums2` 中每个元素的出现次数，以便在 `count` 操作中快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用一个哈希表 `num2_count` 记录 `nums2` 中每个元素的出现次数。
+2. 在 `add` 操作中，更新 `nums2` 中指定下标的元素，并相应地更新 `num2_count`。
+3. 在 `count` 操作中，遍历 `nums1` 中的每个元素，计算其与 `tot` 的差值，并在 `num2_count` 中查找该差值的出现次数，累加结果。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储 `nums2` 中每个元素的出现次数，以实现高效的 `count` 操作。
+- 在 `add` 操作中，需要同时更新 `nums2` 和 `num2_count`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 `nums1` 的长度，m 是 `nums2` 的长度。初始化和 `add` 操作的时间复杂度为 O(1)，`count` 操作的时间复杂度为 O(n)。
+空间复杂度: O(m)，其中 m 是 `nums2` 的长度。需要额外的空间来存储 `nums2` 中每个元素的出现次数。
 """
 
 # ============================================================================
@@ -49,6 +51,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
+class FindSumPairs:
+    def __init__(self, nums1: List[int], nums2: List[int]):
+        self.nums1 = nums1
+        self.nums2 = nums2
+        self.num2_count = {}
+        for num in nums2:
+            self.num2_count[num] = self.num2_count.get(num, 0) + 1
+
+    def add(self, index: int, val: int) -> None:
+        old_val = self.nums2[index]
+        new_val = old_val + val
+        self.nums2[index] = new_val
+        self.num2_count[old_val] -= 1
+        if self.num2_count[old_val] == 0:
+            del self.num2_count[old_val]
+        self.num2_count[new_val] = self.num2_count.get(new_val, 0) + 1
+
+    def count(self, tot: int) -> int:
+        result = 0
+        for num in self.nums1:
+            complement = tot - num
+            if complement in self.num2_count:
+                result += self.num2_count[complement]
+        return result
+
+
 def solution_function_name(params):
     """
     函数式接口 - [TODO] 实现
@@ -57,4 +85,4 @@ def solution_function_name(params):
     pass
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(FindSumPairs)

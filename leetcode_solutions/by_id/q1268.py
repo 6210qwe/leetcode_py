@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来实现需求
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 过滤出 2019 年的订单。
+2. 将过滤后的订单与用户表进行左连接，以获取每个用户的 2019 年订单数量。
+3. 使用 COALESCE 函数将 NULL 订单数量转换为 0。
 
 关键点:
-- [TODO]
+- 使用 LEFT JOIN 确保所有用户都出现在结果中，即使他们在 2019 年没有订单。
+- 使用 COALESCE 处理 NULL 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 Orders 表的行数，m 是 Users 表的行数。
+空间复杂度: O(1)，不考虑输出结果的空间。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(users, orders):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现市场分析 I
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出 2019 年的订单
+    orders_2019 = orders[orders['order_date'].dt.year == 2019]
+    
+    # 计算每个用户的 2019 年订单数量
+    orders_count = orders_2019.groupby('buyer_id')['order_id'].count().reset_index()
+    orders_count.columns = ['user_id', 'orders_in_2019']
+    
+    # 将订单数量与用户表进行左连接
+    result = users.merge(orders_count, on='user_id', how='left')
+    
+    # 处理 NULL 值
+    result['orders_in_2019'] = result['orders_in_2019'].fillna(0).astype(int)
+    
+    # 重命名列
+    result = result.rename(columns={'user_id': 'buyer_id'})
+    
+    return result[['buyer_id', 'join_date', 'orders_in_2019']]
 
 
 Solution = create_solution(solution_function_name)

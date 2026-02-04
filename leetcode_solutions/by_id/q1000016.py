@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从矩阵的右上角开始搜索，利用矩阵的排序特性进行优化。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从矩阵的右上角开始。
+2. 如果当前元素等于目标值，返回 True。
+3. 如果当前元素大于目标值，向左移动一列。
+4. 如果当前元素小于目标值，向下移动一行。
+5. 重复上述步骤直到找到目标值或越界。
 
 关键点:
-- [TODO]
+- 从右上角开始搜索可以有效地利用矩阵的排序特性。
+- 每次移动都可以排除一行或一列，从而减少搜索范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m + n)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def search_matrix(matrix: List[List[int]], target: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    从矩阵的右上角开始搜索，利用矩阵的排序特性进行优化。
     """
-    # TODO: 实现最优解法
-    pass
+    if not matrix or not matrix[0]:
+        return False
+    
+    rows, cols = len(matrix), len(matrix[0])
+    row, col = 0, cols - 1
+    
+    while row < rows and col >= 0:
+        if matrix[row][col] == target:
+            return True
+        elif matrix[row][col] > target:
+            col -= 1
+        else:
+            row += 1
+    
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(search_matrix)

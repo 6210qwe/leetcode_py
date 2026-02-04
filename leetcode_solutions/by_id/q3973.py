@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法垂直翻转子矩阵的行顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `top` 和 `bottom`，分别指向子矩阵的顶部和底部。
+2. 交换 `top` 和 `bottom` 指针所指向的行，并逐步向中间移动指针，直到 `top` 不再小于 `bottom`。
+3. 更新原矩阵并返回结果。
 
 关键点:
-- [TODO]
+- 通过双指针法，可以高效地进行垂直翻转操作。
+- 仅对子矩阵进行操作，避免不必要的开销。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)，其中 k 是子矩阵的边长。每次交换操作的时间复杂度为 O(n)，但由于我们只交换 k/2 次，总时间复杂度为 O(k)。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def flip_square_submatrix_vertically(grid: List[List[int]], x: int, y: int, k: int) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 垂直翻转子矩阵的行顺序
     """
-    # TODO: 实现最优解法
-    pass
+    top, bottom = x, x + k - 1
+    while top < bottom:
+        # 交换 top 和 bottom 指针所指向的行
+        for j in range(y, y + k):
+            grid[top][j], grid[bottom][j] = grid[bottom][j], grid[top][j]
+        top += 1
+        bottom -= 1
+    return grid
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(flip_square_submatrix_vertically)

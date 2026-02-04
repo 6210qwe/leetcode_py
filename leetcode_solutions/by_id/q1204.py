@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每天的新用户数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 选择需要的列：注册日期和用户 ID。
+2. 使用 GROUP BY 和 COUNT 函数按注册日期分组并计算每个日期的新用户数量。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 对注册日期进行分组。
+- 使用 COUNT 函数计算每个日期的新用户数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是用户表的行数。我们需要遍历整个表来计算每天的新用户数量。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +52,21 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来统计每天的新用户数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        DATE_FORMAT(register_date, '%Y-%m-%d') AS register_date,
+        COUNT(user_id) AS user_count
+    FROM 
+        users
+    GROUP BY 
+        register_date
+    ORDER BY 
+        register_date;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理乘法、除法、加法和减法操作，确保正确的运算顺序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，将第一个数字压入栈。
+2. 遍历从 N 到 1 的每个数字，根据当前操作符进行相应的运算：
+   - 如果是乘法或除法，直接与栈顶元素进行运算并将结果压入栈。
+   - 如果是加法或减法，将当前数字压入栈。
+3. 最后，将栈中的所有元素相加得到最终结果。
 
 关键点:
-- [TODO]
+- 使用栈来处理运算顺序，确保乘法和除法优先于加法和减法。
+- 减法操作可以通过将负数压入栈来实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N)
+空间复杂度: O(N)
 """
 
 # ============================================================================
@@ -49,12 +53,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def clumsy(n: int) -> int:
+    if n == 1:
+        return 1
+    if n == 2:
+        return 2
+    if n == 3:
+        return 6
+    if n == 4:
+        return 7
+
+    stack = [n]
+    n -= 1
+    op = 0  # 0: 乘法, 1: 除法, 2: 加法, 3: 减法
+
+    while n > 0:
+        if op == 0:
+            stack.append(stack.pop() * n)
+        elif op == 1:
+            stack.append(int(stack.pop() / n))
+        elif op == 2:
+            stack.append(n)
+        elif op == 3:
+            stack.append(-n)
+        n -= 1
+        op = (op + 1) % 4
+
+    return sum(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(clumsy)

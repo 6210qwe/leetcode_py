@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过两次深度优先搜索 (DFS) 来计算每个节点的高度和贡献，然后根据这些信息快速回答每个查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 第一次 DFS 计算每个节点的高度。
+2. 第二次 DFS 计算每个节点的贡献，即如果移除该节点，树的最大高度。
+3. 对于每个查询，直接返回预先计算好的贡献值。
 
 关键点:
-- [TODO]
+- 使用两个字典分别存储每个节点的高度和贡献。
+- 在第二次 DFS 中，维护一个当前最大高度，以便在移除节点时快速找到新的最大高度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是树中节点的数量，m 是查询的数量。两次 DFS 各自遍历所有节点一次，处理每个查询的时间复杂度为 O(1)。
+空间复杂度: O(n)，用于存储每个节点的高度和贡献。
 """
 
 # ============================================================================
@@ -44,17 +46,46 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def tree_queries(root: Optional[TreeNode], queries: List[int]) -> List[int]:
+    # 存储每个节点的高度
+    heights = {}
+    # 存储每个节点的贡献
+    contributions = {}
+
+    def dfs_height(node: Optional[TreeNode]) -> int:
+        if not node:
+            return -1
+        left_height = dfs_height(node.left)
+        right_height = dfs_height(node.right)
+        heights[node.val] = max(left_height, right_height) + 1
+        return heights[node.val]
+
+    def dfs_contribution(node: Optional[TreeNode], current_max: int):
+        if not node:
+            return
+        # 当前节点的贡献
+        contributions[node.val] = current_max
+        # 更新当前最大高度
+        new_current_max = max(current_max, heights[node.val])
+        # 递归处理左子树
+        dfs_contribution(node.left, max(new_current_max, heights.get(node.right.val, -1)))
+        # 递归处理右子树
+        dfs_contribution(node.right, max(new_current_max, heights.get(node.left.val, -1)))
+
+    # 第一次 DFS 计算每个节点的高度
+    dfs_height(root)
+    # 第二次 DFS 计算每个节点的贡献
+    dfs_contribution(root, -1)
+
+    # 处理每个查询
+    result = []
+    for query in queries:
+        result.append(contributions[query])
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(tree_queries)

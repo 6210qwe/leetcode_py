@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法逐列检查是否需要删除。如果某列使得当前字符串不满足字典序，则该列必须删除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个布尔列表 `keep`，表示每列是否保留。
+2. 遍历每一列，检查当前列是否需要删除。
+3. 如果当前列需要删除，则更新 `keep` 列表。
+4. 返回需要删除的列数。
 
 关键点:
-- [TODO]
+- 使用布尔列表 `keep` 来记录每列是否保留。
+- 逐列检查并更新 `keep` 列表。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是字符串的长度，n 是字符串的数量。
+空间复杂度: O(m)，用于存储布尔列表 `keep`。
 """
 
 # ============================================================================
@@ -49,12 +52,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_deletion_size(strs: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算需要删除的最小列数以使字符串数组按字典序排列
     """
-    # TODO: 实现最优解法
-    pass
+    if not strs:
+        return 0
+
+    m, n = len(strs), len(strs[0])
+    keep = [True] * n
+
+    for j in range(n):
+        if not keep[j]:
+            continue
+        for i in range(1, m):
+            if strs[i][j] < strs[i - 1][j]:
+                keep[j] = False
+                break
+        if not keep[j]:
+            for k in range(j + 1, n):
+                if keep[k]:
+                    for i in range(1, m):
+                        if strs[i][k] < strs[i - 1][k]:
+                            keep[k] = False
+                            break
+
+    return n - sum(keep)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletion_size)

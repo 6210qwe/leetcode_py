@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法尝试所有可能的分割方式，并检查是否满足斐波那契条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果列表和当前路径。
+2. 从索引 0 开始，尝试将字符串分割成两个数 a 和 b。
+3. 递归地尝试将剩余字符串分割成满足斐波那契条件的数。
+4. 如果找到一个满足条件的分割方式，返回结果；否则继续尝试其他分割方式。
+5. 如果所有分割方式都不满足条件，返回空列表。
 
 关键点:
-- [TODO]
+- 使用回溯法尝试所有可能的分割方式。
+- 每个数不能以 0 开头，除非该数是 0 本身。
+- 每个数必须在 32 位有符号整数范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中 n 是字符串的长度。最坏情况下，需要尝试所有可能的分割方式。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def split_into_fibonacci(num: str) -> List[int]:
+    def backtrack(start, path):
+        if start == len(num) and len(path) >= 3:
+            result.append(path[:])
+            return True
+        
+        for end in range(start + 1, len(num) + 1):
+            s = num[start:end]
+            if s.startswith('0') and len(s) > 1:
+                break
+            if int(s) > 2**31 - 1:
+                break
+            
+            if len(path) >= 2 and int(s) > path[-1] + path[-2]:
+                break
+            
+            if len(path) < 2 or int(s) == path[-1] + path[-2]:
+                path.append(int(s))
+                if backtrack(end, path):
+                    return True
+                path.pop()
+        
+        return False
+    
+    result = []
+    backtrack(0, [])
+    return result[0] if result else []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_into_fibonacci)

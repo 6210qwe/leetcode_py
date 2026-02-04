@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法来找到两个有序数组的最小公共值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 nums1 和 nums2 的起始位置。
+2. 比较 nums1[i] 和 nums2[j]：
+   - 如果 nums1[i] < nums2[j]，则将 i 向右移动一位。
+   - 如果 nums1[i] > nums2[j]，则将 j 向右移动一位。
+   - 如果 nums1[i] == nums2[j]，则找到了最小公共值，返回该值。
+3. 如果遍历完其中一个数组仍未找到公共值，则返回 -1。
 
 关键点:
-- [TODO]
+- 双指针方法可以有效地找到两个有序数组的最小公共值，时间复杂度为 O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用双指针方法找到两个有序数组的最小公共值
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i] < nums2[j]:
+            i += 1
+        elif nums1[i] > nums2[j]:
+            j += 1
+        else:
+            return nums1[i]
+    return -1
 
 
 Solution = create_solution(solution_function_name)

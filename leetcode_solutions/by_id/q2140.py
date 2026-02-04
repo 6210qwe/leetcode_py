@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和回溯法来找到最长的重复 k 次的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个字符在字符串 s 中出现的次数。
+2. 构建一个可能的候选字符列表，这些字符在 s 中出现的次数至少为 k。
+3. 使用回溯法生成所有可能的子序列，并检查它们是否可以在 s 中重复 k 次。
+4. 选择最长且字典序最大的子序列。
 
 关键点:
-- [TODO]
+- 通过贪心算法优先选择出现次数最多的字符。
+- 使用回溯法生成所有可能的子序列。
+- 检查生成的子序列是否可以在 s 中重复 k 次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(26^m)，其中 m 是 s 中不同字符的数量。
+空间复杂度: O(m)，用于存储候选字符列表和递归调用栈。
 """
 
 # ============================================================================
@@ -49,12 +53,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_subsequence(s: str, sub: str, k: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查 sub 是否可以重复 k 次作为 s 的子序列。
     """
-    # TODO: 实现最优解法
-    pass
+    it = iter(s)
+    return all(char in it for char in sub * k)
+
+
+def backtrack(s: str, k: int, path: List[str], result: List[str]):
+    if len(path) > len(result):
+        if is_subsequence(s, ''.join(path), k):
+            result[:] = path[:]
+    
+    for i in range(len(path) + 1):
+        new_path = path[:i] + [path[-1]] + path[i:]
+        if is_subsequence(s, ''.join(new_path), k):
+            backtrack(s, k, new_path, result)
+
+
+def solution_function_name(s: str, k: int) -> str:
+    """
+    函数式接口 - 找到字符串 s 中重复 k 次的最长子序列。
+    """
+    from collections import Counter
+    
+    # 计算每个字符的出现次数
+    char_count = Counter(s)
+    
+    # 构建候选字符列表
+    candidates = [char for char, count in char_count.items() if count >= k]
+    
+    # 初始化结果
+    result = []
+    
+    # 回溯法生成所有可能的子序列
+    for char in candidates:
+        backtrack(s, k, [char], result)
+    
+    # 返回最长且字典序最大的子序列
+    return ''.join(sorted(result, reverse=True))
 
 
 Solution = create_solution(solution_function_name)

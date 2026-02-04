@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定每台机器可以制造的最大合金数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_make` 来判断在给定的预算和库存下，能否制造出 `mid` 个合金。
+2. 对于每台机器，使用二分查找来确定可以制造的最大合金数。
+3. 返回所有机器中可以制造的最大合金数。
 
 关键点:
-- [TODO]
+- 使用二分查找来高效地找到最大合金数。
+- 辅助函数 `can_make` 用于判断在当前预算和库存下能否制造出指定数量的合金。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k * n * log(max_stock))，其中 k 是机器数量，n 是金属种类数，max_stock 是最大的库存量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_make(composition: List[int], stock: List[int], cost: List[int], mid: int, budget: int) -> bool:
+    total_cost = 0
+    for i in range(len(composition)):
+        needed = max(0, composition[i] * mid - stock[i])
+        total_cost += needed * cost[i]
+        if total_cost > budget:
+            return False
+    return True
 
 
-Solution = create_solution(solution_function_name)
+def max_number_of_alloys(n: int, k: int, budget: int, composition: List[List[int]], stock: List[int], cost: List[int]) -> int:
+    max_alloys = 0
+    for i in range(k):
+        left, right = 0, 10**9  # 二分查找的范围
+        while left < right:
+            mid = (left + right + 1) // 2
+            if can_make(composition[i], stock, cost, mid, budget):
+                left = mid
+            else:
+                right = mid - 1
+        max_alloys = max(max_alloys, left)
+    return max_alloys
+
+
+Solution = create_solution(max_number_of_alloys)

@@ -21,40 +21,56 @@ LCP 08. 剧情触发时间 - 在战略游戏中，玩家往往需要发展自己
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和 + 二分查找
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每天的累计增加量，得到前缀和数组。
+2. 对于每个剧情要求，使用二分查找找到满足条件的最小天数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来快速计算任意一天的属性值。
+- 使用二分查找来高效地找到满足条件的最小天数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log n)，其中 n 是 increase 的长度，m 是 requirements 的长度。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def get_trigger_time(increase: List[List[int]], requirements: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算每个剧情的触发时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算前缀和数组
+    prefix_sum = [[0, 0, 0]]
+    for inc in increase:
+        prefix_sum.append([prefix_sum[-1][i] + inc[i] for i in range(3)])
+    
+    def binary_search(target):
+        left, right = 0, len(prefix_sum) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if all(prefix_sum[mid][i] >= target[i] for i in range(3)):
+                right = mid
+            else:
+                left = mid + 1
+        return left if all(prefix_sum[left][i] >= target[i] for i in range(3)) else -1
+    
+    # 计算每个剧情的触发时间
+    result = []
+    for req in requirements:
+        day = binary_search(req)
+        result.append(day if day != -1 else -1)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_trigger_time)

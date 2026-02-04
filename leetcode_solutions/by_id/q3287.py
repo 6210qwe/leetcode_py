@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计不同类型的贷款数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `Loans` 表中选择 `type` 列。
+2. 使用 `GROUP BY` 子句按 `type` 分组。
+3. 使用 `COUNT` 函数计算每种类型的贷款数量。
+4. 返回结果集。
 
 关键点:
-- [TODO]
+- 使用 `GROUP BY` 和 `COUNT` 来统计每种类型的贷款数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `Loans` 表中的行数。因为我们需要遍历整个表来计算每种类型的贷款数量。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询来统计不同类型的贷款数量
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    SELECT type, COUNT(*) as count
+    FROM Loans
+    GROUP BY type;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

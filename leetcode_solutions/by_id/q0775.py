@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈进行迭代前序遍历
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，并将根节点压入栈中。
+2. 当栈不为空时，弹出栈顶节点并访问其值。
+3. 将当前节点的子节点从右到左依次压入栈中（这样出栈时会按照从左到右的顺序）。
 
 关键点:
-- [TODO]
+- 使用栈来模拟递归调用的过程。
+- 子节点从右到左压入栈中，以保证出栈时的顺序正确。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点都被访问一次。
+空间复杂度: O(n)，最坏情况下，栈中可能会包含所有的节点。
 """
 
 # ============================================================================
@@ -44,17 +46,26 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from leetcode_solutions.utils.tree import Node
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def solution_function_name(root: 'Node') -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用栈进行迭代前序遍历
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not root:
+        return []
+    
+    stack = [root]
+    result = []
+    
+    while stack:
+        node = stack.pop()
+        result.append(node.val)
+        # 将子节点从右到左压入栈中
+        for child in reversed(node.children):
+            stack.append(child)
+    
+    return result
 
 Solution = create_solution(solution_function_name)

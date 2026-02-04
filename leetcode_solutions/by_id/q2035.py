@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历 grid2 中的每个岛屿，并检查这些岛屿是否完全包含在 grid1 中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历 grid2 中的每个单元格，如果遇到 1，则开始 DFS。
+2. 在 DFS 过程中，标记访问过的单元格，并检查这些单元格在 grid1 中是否也是 1。
+3. 如果所有访问过的单元格在 grid1 中都是 1，则该岛屿是一个子岛屿。
+4. 重复上述步骤直到遍历完 grid2。
 
 关键点:
-- [TODO]
+- 使用 DFS 来遍历岛屿。
+- 通过标记访问过的单元格来避免重复访问。
+- 检查 grid2 中的岛屿是否完全包含在 grid1 中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是 grid1 和 grid2 的行数和列数。每个单元格最多访问一次。
+空间复杂度: O(m * n)，递归调用栈的深度最坏情况下为 m * n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_sub_islands(grid1: List[List[int]], grid2: List[List[int]]) -> int:
+    def dfs(r: int, c: int) -> bool:
+        if r < 0 or r >= len(grid2) or c < 0 or c >= len(grid2[0]) or grid2[r][c] == 0:
+            return True
+        grid2[r][c] = 0  # Mark as visited
+        is_sub_island = grid1[r][c] == 1
+        for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+            is_sub_island &= dfs(r + dr, c + dc)
+        return is_sub_island
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    sub_islands = 0
+    for r in range(len(grid2)):
+        for c in range(len(grid2[0])):
+            if grid2[r][c] == 1 and dfs(r, c):
+                sub_islands += 1
+    return sub_islands
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_sub_islands)

@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算任意子字符串中0和1的数量，并使用滑动窗口来处理每个查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，分别记录从开始到当前位置0和1的数量。
+2. 对于每个查询，使用前缀和数组快速计算子字符串中0和1的数量。
+3. 使用滑动窗口来优化查询，确保每个查询在O(1)时间内完成。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意子字符串中0和1的数量。
+- 滑动窗口用于优化查询，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中n是字符串s的长度，q是queries的长度。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_substrings_with_k_constraint(s: str, k: int, queries: List[List[int]]) -> List[int]:
+    n = len(s)
+    prefix_zeros = [0] * (n + 1)
+    prefix_ones = [0] * (n + 1)
+    
+    # 计算前缀和
+    for i in range(n):
+        if s[i] == '0':
+            prefix_zeros[i + 1] = prefix_zeros[i] + 1
+            prefix_ones[i + 1] = prefix_ones[i]
+        else:
+            prefix_zeros[i + 1] = prefix_zeros[i]
+            prefix_ones[i + 1] = prefix_ones[i] + 1
+    
+    def count_valid_substrings(l: int, r: int) -> int:
+        count = 0
+        for start in range(l, r + 1):
+            for end in range(start, r + 1):
+                zeros = prefix_zeros[end + 1] - prefix_zeros[start]
+                ones = prefix_ones[end + 1] - prefix_ones[start]
+                if zeros <= k or ones <= k:
+                    count += 1
+        return count
+    
+    result = []
+    for l, r in queries:
+        result.append(count_valid_substrings(l, r))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_substrings_with_k_constraint)

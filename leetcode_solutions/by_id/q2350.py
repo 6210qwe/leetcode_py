@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 一次遍历数组，找到绝对值最小且最大的数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量 `closest` 和 `min_distance`，分别用于存储当前最接近 0 的数和其距离。
+2. 遍历数组，对于每个数，计算其绝对值。
+3. 如果当前数的绝对值小于 `min_distance`，或者等于 `min_distance` 但当前数大于 `closest`，则更新 `closest` 和 `min_distance`。
+4. 返回 `closest`。
 
 关键点:
-- [TODO]
+- 通过一次遍历数组，可以在 O(n) 时间内找到最接近 0 的数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_closest_number(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最接近 0 的数字
     """
-    # TODO: 实现最优解法
-    pass
+    closest = None
+    min_distance = float('inf')
+    
+    for num in nums:
+        distance = abs(num)
+        if distance < min_distance or (distance == min_distance and num > closest):
+            closest = num
+            min_distance = distance
+    
+    return closest
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_number)

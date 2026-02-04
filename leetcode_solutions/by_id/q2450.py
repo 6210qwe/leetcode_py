@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从后向前遍历数组，确保每个元素不超过其前一个元素。如果当前元素大于前一个元素，则将其拆分成尽可能多的小部分，使得每一部分都不超过前一个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化操作次数为 0。
+2. 从数组的倒数第二个元素开始向前遍历。
+3. 对于每个元素，如果它大于前一个元素，则计算需要将其拆分成多少个部分，使得每一部分都不超过前一个元素。
+4. 更新操作次数，并更新当前元素为前一个元素。
+5. 返回总的操作次数。
 
 关键点:
-- [TODO]
+- 通过贪心策略，从后向前遍历数组，确保每个元素不超过其前一个元素。
+- 计算拆分次数时，使用除法和取模运算来确定最小的操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def minimum_replacement(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将数组变成非递减顺序所需的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    operations = 0
+    prev_bound = nums[-1]
+    
+    for i in range(len(nums) - 2, -1, -1):
+        if nums[i] > prev_bound:
+            # 计算需要拆分成多少个部分
+            parts = (nums[i] + prev_bound - 1) // prev_bound
+            operations += parts - 1
+            # 更新前一个元素的边界
+            prev_bound = nums[i] // parts
+        else:
+            prev_bound = nums[i]
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_replacement)

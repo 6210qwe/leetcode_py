@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录每个前缀的状态，并利用数学性质快速判断美丽子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和数组 `prefix_sum` 和哈希表 `count`。
+2. 遍历字符串 `s`，更新前缀和数组 `prefix_sum`，并计算当前前缀的状态 `state`。
+3. 使用哈希表 `count` 记录每个状态出现的次数。
+4. 对于每个状态，计算满足条件的美丽子字符串的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用前缀和和哈希表来快速查找满足条件的子字符串。
+- 利用数学性质 `(vowels * consonants) % k == 0` 来判断美丽子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_beautiful_substrings(s: str, k: int) -> int:
+    n = len(s)
+    prefix_sum = [0] * (n + 1)
+    count = {}
+    result = 0
+    vowels_set = set('aeiou')
+    
+    for i in range(1, n + 1):
+        if s[i - 1] in vowels_set:
+            prefix_sum[i] = prefix_sum[i - 1] + 1
+        else:
+            prefix_sum[i] = prefix_sum[i - 1] - 1
+        
+        state = (prefix_sum[i], i % (2 * k))
+        
+        if state in count:
+            result += count[state]
+        
+        for j in range(1, k + 1):
+            if (prefix_sum[i] - j, (i - 2 * j) % (2 * k)) in count:
+                result += count[(prefix_sum[i] - j, (i - 2 * j) % (2 * k))]
+        
+        count[state] = count.get(state, 0) + 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_beautiful_substrings)

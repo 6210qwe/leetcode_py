@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法遍历字符串，记录每个平衡子字符串的长度，并更新最大长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，分别指向当前子字符串的起始和结束位置。
+2. 遍历字符串，当遇到 '0' 时，继续向前移动 `i` 指针，直到遇到 '1' 或到达字符串末尾。
+3. 当遇到 '1' 时，继续向前移动 `j` 指针，直到遇到 '0' 或到达字符串末尾。
+4. 计算当前平衡子字符串的长度，并更新最大长度。
+5. 重复上述步骤，直到遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用双指针法可以有效地找到所有可能的平衡子字符串。
+- 在每次找到平衡子字符串后，更新最大长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要一次遍历字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_longest_balanced_substring(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的平衡子字符串长度
     """
-    # TODO: 实现最优解法
-    pass
+    max_length = 0
+    i = 0
+    
+    while i < len(s):
+        # 跳过所有的 '0'
+        zeros = 0
+        while i < len(s) and s[i] == '0':
+            zeros += 1
+            i += 1
+        
+        # 跳过所有的 '1'
+        ones = 0
+        while i < len(s) and s[i] == '1':
+            ones += 1
+            i += 1
+        
+        # 更新最大长度
+        balanced_length = min(zeros, ones) * 2
+        max_length = max(max_length, balanced_length)
+    
+    return max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_longest_balanced_substring)

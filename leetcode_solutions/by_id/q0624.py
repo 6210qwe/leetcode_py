@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历每个数组的最小值和最大值来找到最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化全局最小值和最大值及其对应的数组索引。
+2. 遍历每个数组，更新全局最小值和最大值。
+3. 计算当前数组的最大值与全局最小值的差值，以及当前数组的最小值与全局最大值的差值，取两者中的最大值作为当前最大距离。
+4. 更新全局最小值和最大值。
+5. 返回最大距离。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到最大距离，避免了两两比较的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是数组的数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_distance(arrays: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现数组列表中的最大距离
     """
-    # TODO: 实现最优解法
-    pass
+    if not arrays or len(arrays) < 2:
+        return 0
+
+    # 初始化全局最小值和最大值及其对应的数组索引
+    min_val, max_val = arrays[0][0], arrays[0][-1]
+    max_distance = 0
+
+    # 遍历每个数组
+    for i in range(1, len(arrays)):
+        current_min, current_max = arrays[i][0], arrays[i][-1]
+
+        # 计算当前数组的最大值与全局最小值的差值，以及当前数组的最小值与全局最大值的差值
+        max_distance = max(max_distance, abs(current_max - min_val), abs(max_val - current_min))
+
+        # 更新全局最小值和最大值
+        min_val = min(min_val, current_min)
+        max_val = max(max_val, current_max)
+
+    return max_distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_distance)

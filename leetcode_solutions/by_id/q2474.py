@@ -14,47 +14,64 @@
 # 问题描述
 # ============================================================================
 """
-2340. 生成有效数组的最少交换次数 - 备战技术面试？力扣提供海量技术面试资源，帮助你高效提升编程技能,轻松拿下世界 IT 名企 Dream Offer。
+给定一个整数数组 nums，你需要通过交换相邻元素来使数组变成非递减的。返回最少需要的交换次数。
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，通过维护一个索引映射来找到每个元素应该在的位置，并计算最小交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个索引映射，记录每个元素的原始位置。
+2. 对数组进行排序，得到目标数组。
+3. 遍历目标数组，对于每个元素，找到其在原数组中的位置，并计算将其移动到目标位置所需的交换次数。
+4. 更新索引映射，继续处理下一个元素。
 
 关键点:
-- [TODO]
+- 使用索引映射来快速找到元素的原始位置。
+- 通过贪心策略，每次选择当前最优的交换操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度，排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储索引映射和排序后的数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_swaps(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算使数组变为非递减所需的最少交换次数。
+    
+    :param nums: List[int] - 输入的整数数组
+    :return: int - 最少交换次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    # 创建索引映射
+    index_map = {num: i for i, num in enumerate(nums)}
+    sorted_nums = sorted(nums)
+    swaps = 0
+    
+    for i in range(n):
+        if nums[i] != sorted_nums[i]:
+            # 找到当前元素在原数组中的位置
+            correct_idx = index_map[sorted_nums[i]]
+            # 交换元素
+            nums[i], nums[correct_idx] = nums[correct_idx], nums[i]
+            # 更新索引映射
+            index_map[nums[correct_idx]] = correct_idx
+            index_map[nums[i]] = i
+            swaps += 1
+    
+    return swaps
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swaps)

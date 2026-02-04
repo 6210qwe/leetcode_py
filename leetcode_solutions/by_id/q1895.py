@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来计算每个盒子的操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算初始状态下所有小球移动到第一个盒子的操作数。
+2. 使用两个变量分别记录左侧和右侧的小球数量。
+3. 从左到右遍历盒子，更新左侧和右侧的小球数量，并计算每个盒子的操作数。
+4. 从右到左遍历盒子，更新左侧和右侧的小球数量，并计算每个盒子的操作数。
 
 关键点:
-- [TODO]
+- 使用前缀和的思想，避免重复计算。
+- 通过两次遍历，分别从左到右和从右到左，计算每个盒子的操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations(boxes: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将所有小球移动到每个盒子所需的最小操作数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(boxes)
+    answer = [0] * n
+    left_count, right_count = 0, 0
+    left_ops, right_ops = 0, 0
+    
+    # 计算初始状态下所有小球移动到第一个盒子的操作数
+    for i in range(n):
+        if boxes[i] == '1':
+            left_count += 1
+            left_ops += i
+    
+    # 从左到右遍历盒子，更新左侧和右侧的小球数量，并计算每个盒子的操作数
+    for i in range(n):
+        answer[i] = left_ops
+        if boxes[i] == '1':
+            left_count -= 1
+        left_ops -= left_count
+        
+        if boxes[n - 1 - i] == '1':
+            right_count += 1
+        right_ops += right_count
+    
+    # 从右到左遍历盒子，更新左侧和右侧的小球数量，并计算每个盒子的操作数
+    for i in range(n - 2, -1, -1):
+        answer[i] += right_ops
+        if boxes[i + 1] == '1':
+            right_count -= 1
+        right_ops -= right_count
+    
+    return answer
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations)

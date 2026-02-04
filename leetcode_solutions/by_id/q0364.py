@@ -21,24 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 逐层 BFS 统计每一层的整数和，最后从外到内用权重累加。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 使用队列按层遍历嵌套列表 `nestedList`，初始将最外层所有 `NestedInteger` 入队。
+2. 对于每一层：遍历当前队列中的元素，若是整数则加入当前层和 `s`，若是列表则将其内部元素加入下一层队列；然后将这一层的和 `s` 记录到数组 `level_sums` 中。
+3. 遍历完所有层后，最外层在 `level_sums[0]`，最内层在 `level_sums[-1]`。设权重从最外层开始为 `len(level_sums)` 递减到 1，累加 `sum_i level_sums[i] * weight_i` 即为答案。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 通过自外向内层序遍历获得每一层的和，再自外向内赋予权重，避免显式计算最大深度。
+- 避免递归深度过深，BFS 更稳健。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(N)，N 为所有整数和列表节点总数，每个元素仅访问一次。
+空间复杂度: O(D)，D 为最大宽度，需要队列和 `level_sums` 存储每一层的信息。
 """
 
 # ============================================================================
@@ -51,25 +51,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def nested_list_weight_sum_ii(params):
+def nested_list_weight_sum_ii(nestedList) -> int:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> nested_list_weight_sum_ii([待实现])
-        [待实现]
+    计算嵌套列表的加权和 II：越外层权重越大。
+
+    使用层序遍历，记录每一层的整数和，最后从外层到内层累加。
+    nestedList 元素需符合 LeetCode 的 NestedInteger 接口。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import deque
+
+    if not nestedList:
+        return 0
+
+    level_sums: list[int] = []
+    q = deque(nestedList)
+
+    while q:
+        size = len(q)
+        s = 0
+        for _ in range(size):
+            ni = q.popleft()
+            if ni.isInteger():
+                s += ni.getInteger()
+            else:
+                q.extend(ni.getList())
+        level_sums.append(s)
+
+    # 最外层权重最大
+    total = 0
+    weight = len(level_sums)
+    for s in level_sums:
+        total += s * weight
+        weight -= 1
+    return total
 
 
 # 自动生成Solution类（无需手动编写）

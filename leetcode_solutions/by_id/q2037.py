@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 枚举所有可能的 a, b, c 组合，并检查是否满足 a^2 + b^2 = c^2。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用三重循环枚举所有可能的 a, b, c 组合。
+3. 对于每组 a, b, c，检查是否满足 a^2 + b^2 = c^2。
+4. 如果满足条件，增加计数器 count。
+5. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 通过三重循环枚举所有可能的组合。
+- 优化内层循环，减少不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计平方和三元组的数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for a in range(1, n + 1):
+        for b in range(a, n + 1):  # 从 a 开始，避免重复计数
+            c_square = a * a + b * b
+            c = int(c_square ** 0.5)
+            if c <= n and c * c == c_square:
+                count += 2 if a != b else 1  # (a, b, c) 和 (b, a, c) 是两个不同的三元组
+    return count
 
 
 Solution = create_solution(solution_function_name)

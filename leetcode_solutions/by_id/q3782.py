@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式来匹配合法的邮箱地址。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个正则表达式来匹配合法的邮箱地址。
+2. 使用 pandas 库读取数据并应用正则表达式过滤合法的邮箱地址。
+3. 对结果按 user_id 升序排序。
 
 关键点:
-- [TODO]
+- 正则表达式的使用可以高效地进行字符串匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
+import re
 
-
-def solution_function_name(params):
+def solution(users: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找所有合法邮箱地址
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义正则表达式
+    pattern = r'^[a-zA-Z0-9_]+@[a-zA-Z]+\.[a-zA-Z]{3}$'
+    
+    # 过滤合法的邮箱地址
+    valid_emails = users[users['email'].str.match(pattern)]
+    
+    # 按 user_id 升序排序
+    result = valid_emails.sort_values(by='user_id')
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

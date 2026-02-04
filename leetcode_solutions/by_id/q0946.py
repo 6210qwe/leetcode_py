@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到最优解。首先对数组进行排序，然后遍历数组，尝试将前半部分元素减去 k，后半部分元素加上 k，计算每种情况下的最大值和最小值的差值，取最小的差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 初始化最小差值为原数组的最大值和最小值之差。
+3. 遍历数组，对于每个位置 i，假设前 i 个元素都减去 k，后 (n-i) 个元素都加上 k，计算当前的最大值和最小值，并更新最小差值。
 
 关键点:
-- [TODO]
+- 通过排序和贪心策略，可以有效地找到最小的差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。主要的时间开销在于排序操作。
+空间复杂度: O(1)，只需要常数级别的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_range_ii(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最小差值 II
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 初始化最小差值为原数组的最大值和最小值之差
+    min_diff = nums[-1] - nums[0]
+    
+    # 遍历数组，尝试将前半部分元素减去 k，后半部分元素加上 k
+    for i in range(len(nums) - 1):
+        # 计算当前的最大值和最小值
+        max_val = max(nums[-1] - k, nums[i] + k)
+        min_val = min(nums[0] + k, nums[i + 1] - k)
+        
+        # 更新最小差值
+        min_diff = min(min_diff, max_val - min_val)
+    
+    return min_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_range_ii)

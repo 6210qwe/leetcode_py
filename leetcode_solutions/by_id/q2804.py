@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归遍历对象或数组，并移除所有假值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `compact` 来处理对象或数组。
+2. 如果当前元素是字典，创建一个新的字典，并递归处理每个键值对。
+3. 如果当前元素是列表，创建一个新的列表，并递归处理每个元素。
+4. 如果当前元素是真值，直接保留。
+5. 返回处理后的对象或数组。
 
 关键点:
-- [TODO]
+- 使用递归来处理嵌套结构。
+- 通过布尔值判断来移除假值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是对象中所有元素的数量。
+空间复杂度: O(n)，最坏情况下需要存储所有真值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Any, Dict, List, Union
 
 
-def solution_function_name(params):
+def compact_object(obj: Union[Dict, List]) -> Union[Dict, List]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除对象或数组中的所有假值
     """
-    # TODO: 实现最优解法
-    pass
+    if isinstance(obj, dict):
+        return {k: compact_object(v) for k, v in obj.items() if v or isinstance(v, (dict, list))}
+    elif isinstance(obj, list):
+        return [compact_object(x) for x in obj if x or isinstance(x, (dict, list))]
+    else:
+        return obj
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(compact_object)

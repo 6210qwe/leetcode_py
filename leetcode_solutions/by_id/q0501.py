@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历（Inorder Traversal）来遍历二叉搜索树，并记录每个节点值的频率。由于二叉搜索树的中序遍历结果是有序的，因此可以轻松地找到众数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `inorder_traversal` 来进行中序遍历。
+2. 在遍历过程中，使用两个变量 `current_val` 和 `current_count` 来记录当前节点值及其出现次数。
+3. 使用 `max_count` 来记录当前最大出现次数，并使用 `modes` 列表来存储所有出现次数为 `max_count` 的节点值。
+4. 更新 `current_val` 和 `current_count`，并在需要时更新 `max_count` 和 `modes`。
 
 关键点:
-- [TODO]
+- 通过中序遍历，我们可以确保节点值是按升序访问的。
+- 通过比较相邻节点值，可以高效地统计每个节点值的频率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点恰好被访问一次。
+空间复杂度: O(1)，假设由递归产生的隐式调用栈的开销不被计算在内。
 """
 
 # ============================================================================
@@ -44,17 +47,40 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_mode(root: Optional[TreeNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出二叉搜索树中的众数
     """
-    # TODO: 实现最优解法
-    pass
+    def inorder_traversal(node: Optional[TreeNode]):
+        nonlocal current_val, current_count, max_count, modes
+        if not node:
+            return
+        inorder_traversal(node.left)
+        
+        # Update the current value and count
+        if node.val == current_val:
+            current_count += 1
+        else:
+            current_val = node.val
+            current_count = 1
+        
+        # Update the modes list
+        if current_count > max_count:
+            max_count = current_count
+            modes = [current_val]
+        elif current_count == max_count:
+            modes.append(current_val)
+        
+        inorder_traversal(node.right)
 
+    current_val = None
+    current_count = 0
+    max_count = 0
+    modes = []
+    inorder_traversal(root)
+    return modes
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_mode)

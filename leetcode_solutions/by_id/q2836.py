@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到数组中的任意一个既不是最小值也不是最大值的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果数组长度小于等于2，直接返回-1，因为没有既不是最小值也不是最大值的元素。
+2. 找到数组中的最小值和最大值。
+3. 遍历数组，找到第一个既不是最小值也不是最大值的元素并返回。
 
 关键点:
-- [TODO]
+- 通过一次遍历找到最小值和最大值。
+- 再次遍历数组找到符合条件的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要两次遍历数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组中既不是最小值也不是最大值的任意一个元素。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) <= 2:
+        return -1
+
+    min_val = min(nums)
+    max_val = max(nums)
+
+    for num in nums:
+        if num != min_val and num != max_val:
+            return num
+
+    return -1
 
 
 Solution = create_solution(solution_function_name)

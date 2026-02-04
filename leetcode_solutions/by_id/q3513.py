@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护一个递增的子序列，并计算跳跃得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个单调栈和一个结果列表。
+2. 遍历数组，对于每个元素：
+   - 如果当前元素大于栈顶元素，则将栈顶元素出栈，并计算跳跃得分。
+   - 将当前元素入栈。
+3. 返回结果列表中的最大值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护递增子序列。
+- 计算跳跃得分时，需要考虑当前元素与栈顶元素之间的距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，最坏情况下栈中会存储所有元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_hopping_score(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大数组跳跃得分
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    max_score = 0
+    
+    for i, num in enumerate(nums):
+        while stack and nums[stack[-1]] < num:
+            j = stack.pop()
+            score = (i - j) * nums[j]
+            max_score = max(max_score, score)
+        stack.append(i)
+    
+    return max_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_hopping_score)

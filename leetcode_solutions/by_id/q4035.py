@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大的划分因子。对于每个可能的划分因子，使用并查集来检查是否可以将点分成两个组，使得每组内的点对之间的曼哈顿距离大于等于该划分因子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `manhattan_distance` 来计算两个点之间的曼哈顿距离。
+2. 定义一个函数 `can_partition` 来检查是否可以将点分成两个组，使得每组内的点对之间的曼哈顿距离大于等于给定的划分因子。
+3. 使用二分查找来确定最大的划分因子。初始范围是从 0 到点对之间的最大曼哈顿距离。
+4. 在每次二分查找中，调用 `can_partition` 函数来检查当前划分因子是否可行。如果可行，则更新下界；否则，更新上界。
+5. 最终返回下界作为最大划分因子。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地检查点的划分。
+- 二分查找的时间复杂度较低，适合处理较大的数据范围。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log D)，其中 n 是点的数量，D 是点对之间的最大曼哈顿距离。
+空间复杂度: O(n)，用于存储并查集的数据结构。
 """
 
 # ============================================================================
@@ -49,12 +53,70 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def manhattan_distance(p1, p2):
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+
+def find(parent, i):
+    if parent[i] == i:
+        return i
+    return find(parent, parent[i])
+
+
+def union(parent, rank, x, y):
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        if rank[root_x] < rank[root_y]:
+            parent[root_x] = root_y
+        elif rank[root_x] > rank[root_y]:
+            parent[root_y] = root_x
+        else:
+            parent[root_y] = root_x
+            rank[root_x] += 1
+
+
+def can_partition(points, mid):
+    n = len(points)
+    parent = list(range(n))
+    rank = [0] * n
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if manhattan_distance(points[i], points[j]) < mid:
+                union(parent, rank, i, j)
+
+    # Check if all points are in the same group
+    root = find(parent, 0)
+    for i in range(1, n):
+        if find(parent, i) != root:
+            return True
+    return False
+
+
+def solution_function_name(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(points)
+    if n == 2:
+        return 0
+
+    # Find the maximum possible Manhattan distance
+    max_dist = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            max_dist = max(max_dist, manhattan_distance(points[i], points[j]))
+
+    low, high = 0, max_dist
+    while low < high:
+        mid = (low + high + 1) // 2
+        if can_partition(points, mid):
+            low = mid
+        else:
+            high = mid - 1
+
+    return low
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法最大化任务分配的利润。首先对任务进行排序，然后每次选择当前能获得最大利润的任务。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对任务按利润从大到小排序。
+2. 使用两个指针，一个指向任务列表的起始位置，另一个指向任务列表的末尾。
+3. 每次选择当前能获得最大利润的任务，即选择利润最大的任务和剩余时间最多的工人。
+4. 更新指针，继续选择下一个任务，直到所有任务都被分配完毕。
 
 关键点:
-- [TODO]
+- 通过对任务进行排序，确保每次都能选择当前最优的任务。
+- 使用双指针方法，同时考虑任务的利润和工人的剩余时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是任务的数量，因为排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maxProfitAssignment(profit: List[int], group: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化任务分配的利润
     """
-    # TODO: 实现最优解法
-    pass
+    # 将任务按利润从大到小排序
+    tasks = sorted(zip(profit, group), key=lambda x: -x[0])
+    
+    # 初始化变量
+    max_profit = 0
+    workers = [0] * 10001  # 假设最多有10000个工人
+    
+    # 统计每个工人数量
+    for g in group:
+        workers[g] += 1
+    
+    # 双指针遍历任务
+    i = 0
+    j = len(workers) - 1
+    for p, g in tasks:
+        while j >= g and workers[j] == 0:
+            j -= 1
+        if j < g:
+            continue
+        max_profit += p
+        workers[j] -= 1
+    
+    return max_profit
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxProfitAssignment)

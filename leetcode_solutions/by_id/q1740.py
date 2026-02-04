@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用状态压缩动态规划来解决这个问题。我们使用一个整数来表示子树的状态，每一位表示一个城市是否在子树中。对于每个状态，计算其最大距离，并统计不同最大距离的子树数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示图。
+2. 使用深度优先搜索（DFS）来计算每个子树的最大距离。
+3. 使用动态规划来遍历所有可能的子树状态，并计算其最大距离。
+4. 统计不同最大距离的子树数量。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示子树。
+- 使用DFS来计算子树的最大距离。
+- 使用动态规划来遍历所有可能的子树状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n^2)，其中 n 是城市的数量。我们需要遍历所有可能的子树状态（2^n），并且对于每个状态，我们需要计算其最大距离（O(n^2)）。
+空间复杂度: O(2^n * n)，用于存储每个子树状态的最大距离。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_subtrees_with_max_distance(n: int, edges: List[List[int]]) -> List[int]:
+    # 构建邻接表
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u - 1].append(v - 1)
+        graph[v - 1].append(u - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 计算子树的最大距离
+    def dfs(node: int, parent: int, state: int) -> int:
+        max_dist = 0
+        for neighbor in graph[node]:
+            if neighbor != parent and (state & (1 << neighbor)):
+                max_dist = max(max_dist, 1 + dfs(neighbor, node, state))
+        return max_dist
 
+    # 动态规划计算每个子树状态的最大距离
+    dp = [-1] * (1 << n)
+    for state in range(1, 1 << n):
+        for i in range(n):
+            if state & (1 << i):
+                dp[state] = max(dp[state], dfs(i, -1, state))
 
-Solution = create_solution(solution_function_name)
+    # 统计不同最大距离的子树数量
+    result = [0] * (n - 1)
+    for state in range(1, 1 << n):
+        if dp[state] > 0:
+            result[dp[state] - 1] += 1
+
+    return result
+
+Solution = create_solution(count_subtrees_with_max_distance)

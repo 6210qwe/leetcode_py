@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来存储每个节点的值，并通过深度优先搜索（DFS）遍历树，计算路径和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `node_values` 来存储每个节点的值。
+2. 定义一个递归函数 `dfs`，参数为当前节点编号 `node` 和当前路径和 `path_sum`。
+3. 在 `dfs` 函数中：
+   - 如果当前节点是叶子节点（即没有子节点），将当前路径和加到结果中。
+   - 否则，递归调用左子节点和右子节点。
+4. 遍历输入数组 `nums`，填充 `node_values` 字典。
+5. 从根节点开始调用 `dfs` 函数，计算路径和。
 
 关键点:
-- [TODO]
+- 使用字典存储节点值，便于快速访问。
+- 通过递归实现深度优先搜索，计算路径和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入数组 `nums` 的长度。每个节点只会被访问一次。
+空间复杂度: O(n)，字典 `node_values` 和递归调用栈的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def path_sum_iv(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算所有从根到叶子节点路径的和。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化字典存储节点值
+    node_values = {}
+    
+    # 填充字典
+    for num in nums:
+        depth, pos, val = num // 100, (num % 100) // 10, num % 10
+        node_values[(depth, pos)] = val
+    
+    def dfs(node: int, path_sum: int) -> int:
+        if node not in node_values:
+            return 0
+        
+        depth, pos = divmod(node, 10)
+        current_val = node_values[(depth, pos)]
+        
+        # 计算当前路径和
+        path_sum += current_val
+        
+        # 如果是叶子节点，返回路径和
+        if (depth + 1, pos * 2 - 1) not in node_values and (depth + 1, pos * 2) not in node_values:
+            return path_sum
+        
+        # 递归计算左右子节点
+        left_sum = dfs((depth + 1) * 10 + (pos * 2 - 1), path_sum)
+        right_sum = dfs((depth + 1) * 10 + (pos * 2), path_sum)
+        
+        return left_sum + right_sum
+    
+    # 从根节点开始计算路径和
+    return dfs(11, 0)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(path_sum_iv)

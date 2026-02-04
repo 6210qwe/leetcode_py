@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和计算间隔来确定最小和最大移动次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入的三个位置进行排序。
+2. 计算最小移动次数：
+   - 如果两个石子之间的间隔小于等于2，则最小移动次数为1。
+   - 否则，检查是否存在一个石子可以一步移动到其他两个石子之间。
+3. 计算最大移动次数：
+   - 最大移动次数为两个最远石子之间的间隔减去1。
 
 关键点:
-- [TODO]
+- 通过排序简化了位置关系的处理。
+- 通过计算间隔来确定最小和最大移动次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为只涉及常数次操作。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def moving_stones_until_consecutive(a: int, b: int, c: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使石子连续所需的最小和最大移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对输入的三个位置进行排序
+    stones = sorted([a, b, c])
+    
+    # 计算最小移动次数
+    if stones[1] - stones[0] == 1 and stones[2] - stones[1] == 1:
+        min_moves = 0
+    elif stones[1] - stones[0] <= 2 or stones[2] - stones[1] <= 2:
+        min_moves = 1
+    else:
+        min_moves = 2
+    
+    # 计算最大移动次数
+    max_moves = stones[2] - stones[0] - 2
+    
+    return [min_moves, max_moves]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(moving_stones_until_consecutive)

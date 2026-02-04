@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算相邻字符的 ASCII 码差值绝对值的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `score` 用于存储总分数。
+2. 遍历字符串，从第二个字符开始，计算当前字符与前一个字符的 ASCII 码差值绝对值，并累加到 `score`。
+3. 返回 `score`。
 
 关键点:
-- [TODO]
+- 使用 Python 内置函数 `ord` 获取字符的 ASCII 码。
+- 使用 `abs` 函数计算绝对值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历一次字符串。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串的分数
     """
-    # TODO: 实现最优解法
-    pass
+    score = 0
+    for i in range(1, len(s)):
+        score += abs(ord(s[i]) - ord(s[i - 1]))
+    return score
 
 
 Solution = create_solution(solution_function_name)

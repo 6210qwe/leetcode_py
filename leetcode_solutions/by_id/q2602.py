@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法遍历数组，找到所有可能的移动路径，并计算每个路径上可以摧毁的敌人城堡数目。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `i` 和 `j`，以及一个变量 `max_destroyed` 来记录最多可以摧毁的敌人城堡数目。
+2. 遍历数组 `forts`，使用 `i` 指针找到第一个非零元素。
+3. 使用 `j` 指针从 `i` 开始向后遍历，直到找到下一个非零元素。
+4. 如果 `forts[i]` 和 `forts[j]` 一个是 1 一个是 -1，则计算 `i` 和 `j` 之间的敌人城堡数目，并更新 `max_destroyed`。
+5. 更新 `i` 为 `j`，继续遍历直到结束。
 
 关键点:
-- [TODO]
+- 使用双指针方法可以在 O(n) 时间复杂度内完成遍历。
+- 通过一次遍历即可找到所有可能的移动路径，并计算最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(forts: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以摧毁的敌人城堡数目
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(forts)
+    max_destroyed = 0
+    i = 0
+    
+    while i < n:
+        if forts[i] == 0:
+            i += 1
+            continue
+        
+        j = i + 1
+        while j < n and forts[j] == 0:
+            j += 1
+        
+        if j < n and forts[i] + forts[j] == 0:
+            max_destroyed = max(max_destroyed, j - i - 1)
+        
+        i = j
+    
+    return max_destroyed
 
 
 Solution = create_solution(solution_function_name)

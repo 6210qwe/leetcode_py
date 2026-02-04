@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将字符串 s 按照长度 k 进行分组，如果最后一组不足 k 个字符，则用填充字符 fill 补全。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串 s 的总长度 n。
+2. 初始化结果列表 res。
+3. 使用一个循环从 0 到 n，每次增加 k 个字符，将这些字符添加到结果列表 res 中。
+4. 如果最后一组不足 k 个字符，则用填充字符 fill 补全。
+5. 返回结果列表 res。
 
 关键点:
-- [TODO]
+- 使用切片操作来获取每组的字符。
+- 使用 `+` 操作符来补全最后一组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是字符串 s 的长度。我们只需要遍历一次字符串。
+空间复杂度: O(n) - 结果列表 res 的大小最多为 n/k 个字符串，每个字符串的最大长度为 k。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def divide_string(s: str, k: int, fill: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    将字符串 s 按照长度 k 进行分组，如果最后一组不足 k 个字符，则用填充字符 fill 补全。
+    
+    :param s: 输入字符串
+    :param k: 每组的长度
+    :param fill: 用于填充的字符
+    :return: 分组后的字符串数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    res = []
+    
+    for i in range(0, n, k):
+        group = s[i:i + k]
+        if len(group) < k:
+            group += fill * (k - len(group))
+        res.append(group)
+    
+    return res
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(divide_string)

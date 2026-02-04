@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来筛选出所有发生在周五的交易记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `purchases` 表中选择所有列。
+2. 使用 `WHERE` 子句和 `DAYNAME` 函数来筛选出日期为周五的记录。
 
 关键点:
-- [TODO]
+- 使用 `DAYNAME` 函数来获取日期的星期几名称。
+- 确保查询结果只包含周五的交易记录。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `purchases` 表中的行数。需要遍历整个表来筛选出符合条件的记录。
+空间复杂度: O(1)，查询本身不使用额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    query = """
+    SELECT *
+    FROM purchases
+    WHERE DAYNAME(purchase_date) = 'Friday';
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

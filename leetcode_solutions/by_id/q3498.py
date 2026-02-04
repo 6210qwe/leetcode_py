@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和贪心算法来找到最小的修改次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向数组的开头和结尾。
+2. 对于每个 i 和 j，计算它们之间的差值 diff，并记录在哈希表中。
+3. 对于每个可能的差值 diff，计算需要的修改次数。
+4. 返回最小的修改次数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个差值出现的次数。
+- 贪心地选择最小的修改次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(k)
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_array_changes(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使差值相等的最少数组改动次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    diff_count = [0] * (k + 1)
+
+    for i in range(n // 2):
+        diff = abs(nums[i] - nums[n - 1 - i])
+        diff_count[min(diff, k - diff)] += 1
+
+    min_changes = float('inf')
+    for diff, count in enumerate(diff_count):
+        changes = n // 2 - count
+        if changes < min_changes:
+            min_changes = changes
+
+    return min_changes
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_array_changes)

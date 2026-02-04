@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来找到最长上升路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将坐标按照 x 坐标排序，如果 x 相同则按 y 坐标排序。
+2. 使用动态规划数组 dp 来记录以每个点结尾的最长上升路径长度。
+3. 使用二分查找来找到当前点之前的最后一个 y 坐标小于当前点 y 坐标的点，并更新 dp 数组。
+4. 返回 dp 数组中对应 coordinates[k] 的值。
 
 关键点:
-- [TODO]
+- 排序后使用二分查找来优化查找过程。
+- 动态规划数组 dp 用于记录以每个点结尾的最长上升路径长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 coordinates 的长度。排序操作的时间复杂度是 O(n log n)，二分查找和动态规划更新的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，需要额外的空间来存储排序后的坐标和动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def length_of_longest_increasing_path(coordinates: List[List[int]], k: int) -> int:
+    # 按 x 坐标排序，如果 x 相同则按 y 坐标排序
+    sorted_coords = sorted(enumerate(coordinates), key=lambda x: (x[1][0], x[1][1]))
+    
+    # 初始化动态规划数组
+    dp = [1] * len(coordinates)
+    
+    # 二分查找函数
+    def binary_search(y: int, end: int) -> int:
+        left, right = 0, end
+        while left < right:
+            mid = (left + right) // 2
+            if sorted_coords[mid][1][1] < y:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+    
+    # 更新动态规划数组
+    for i in range(len(sorted_coords)):
+        idx, (x, y) = sorted_coords[i]
+        if i > 0:
+            prev_idx = binary_search(y, i)
+            if prev_idx < i and sorted_coords[prev_idx][1][1] < y:
+                dp[idx] = max(dp[idx], dp[sorted_coords[prev_idx][0]] + 1)
+    
+    # 返回 dp 数组中对应 coordinates[k] 的值
+    return dp[k]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(length_of_longest_increasing_path)

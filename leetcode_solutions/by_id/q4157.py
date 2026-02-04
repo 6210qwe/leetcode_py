@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串来计算每个单词的元音数量，并根据第一个单词的元音数量来决定是否反转后续单词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `count_vowels` 来计算一个单词中的元音数量。
+2. 将输入字符串 `s` 按空格分割成单词列表。
+3. 计算第一个单词的元音数量 `first_word_vowel_count`。
+4. 遍历单词列表，对于每个单词，如果其元音数量等于 `first_word_vowel_count`，则将其反转。
+5. 将处理后的单词列表重新拼接成一个字符串并返回。
 
 关键点:
-- [TODO]
+- 使用 `split` 方法将字符串分割成单词列表。
+- 使用 `join` 方法将处理后的单词列表重新拼接成一个字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历整个字符串来计算元音数量和进行反转操作。
+空间复杂度: O(n)，需要存储分割后的单词列表。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_vowels(word: str) -> int:
+    """计算单词中的元音数量"""
+    vowels = set('aeiou')
+    return sum(1 for char in word if char in vowels)
+
+
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据元音数量反转单词
     """
-    # TODO: 实现最优解法
-    pass
+    # 将字符串按空格分割成单词列表
+    words = s.split()
+    
+    # 计算第一个单词的元音数量
+    first_word_vowel_count = count_vowels(words[0])
+    
+    # 遍历单词列表，根据元音数量决定是否反转
+    for i in range(1, len(words)):
+        if count_vowels(words[i]) == first_word_vowel_count:
+            words[i] = words[i][::-1]
+    
+    # 将处理后的单词列表重新拼接成一个字符串
+    return ' '.join(words)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来查找目标字符串，并跳过空字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 进行二分查找：
+   - 计算中间位置 mid。
+   - 如果 mid 位置为空字符串，向右移动 mid 直到找到非空字符串或超出范围。
+   - 比较非空字符串与目标字符串：
+     - 如果相等，返回 mid。
+     - 如果小于目标字符串，移动左指针。
+     - 如果大于目标字符串，移动右指针。
+3. 如果未找到目标字符串，返回 -1。
 
 关键点:
-- [TODO]
+- 跳过空字符串以确保二分查找的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 二分查找的时间复杂度。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +56,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str], s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 在稀疏数组中查找给定字符串的位置。
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(words) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        # 跳过空字符串
+        while mid <= right and words[mid] == "":
+            mid += 1
+        
+        if mid > right:
+            break
+        
+        if words[mid] == s:
+            return mid
+        elif words[mid] < s:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return -1
 
 
 Solution = create_solution(solution_function_name)

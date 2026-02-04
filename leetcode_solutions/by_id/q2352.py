@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先使用大面值钞票进行取款。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 ATM 对象时，创建一个列表来存储每种面值钞票的数量。
+2. 在 deposit 方法中，将存入的钞票数量加到相应的面值上。
+3. 在 withdraw 方法中，从大面值到小面值依次尝试取出钞票，直到取完所需金额或无法继续取款。
+4. 如果成功取出所需金额，更新 ATM 中的钞票数量并返回取出的钞票数量；否则返回 [-1]。
 
 关键点:
-- [TODO]
+- 优先使用大面值钞票进行取款。
+- 在取款过程中，如果无法满足剩余金额的需求，则回滚已取出的钞票。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 取款和存款操作的时间复杂度都是常数级。
+空间复杂度: O(1) - 使用固定大小的数组存储钞票数量。
 """
 
 # ============================================================================
@@ -44,17 +47,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class ATM:
+    def __init__(self):
+        self.bills = [20, 50, 100, 200, 500]
+        self.counts = [0] * 5
+
+    def deposit(self, banknotes_count: List[int]) -> None:
+        for i in range(5):
+            self.counts[i] += banknotes_count[i]
+
+    def withdraw(self, amount: int) -> List[int]:
+        result = [0] * 5
+        for i in range(4, -1, -1):
+            if self.counts[i] > 0:
+                bill = self.bills[i]
+                count = min(amount // bill, self.counts[i])
+                result[i] = count
+                amount -= count * bill
+        if amount == 0:
+            for i in range(5):
+                self.counts[i] -= result[i]
+            return result
+        return [-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(ATM)

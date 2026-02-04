@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算两个数组的初始和，并考虑将 0 替换为 1 后的和。如果一个数组的和加上其 0 的数量小于另一个数组的和，则无法使两个数组的和相等。否则，返回两个数组中较大的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 和 nums2 的初始和 sum1 和 sum2。
+2. 计算 nums1 和 nums2 中 0 的数量 zero_count1 和 zero_count2。
+3. 如果 sum1 + zero_count1 < sum2 或 sum2 + zero_count2 < sum1，则返回 -1。
+4. 否则，返回 max(sum1 + zero_count1, sum2 + zero_count2)。
 
 关键点:
-- [TODO]
+- 将 0 替换为 1 是最优选择，因为 1 是最小的正整数。
+- 只需比较两个数组在替换 0 为 1 后的和，取较大值即可。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_equal_sum(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个数组的最小相等和
     """
-    # TODO: 实现最优解法
-    pass
+    sum1 = sum(nums1)
+    sum2 = sum(nums2)
+    
+    zero_count1 = nums1.count(0)
+    zero_count2 = nums2.count(0)
+    
+    if sum1 + zero_count1 < sum2 or sum2 + zero_count2 < sum1:
+        return -1
+    
+    return max(sum1 + zero_count1, sum2 + zero_count2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_equal_sum)

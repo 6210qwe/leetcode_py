@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找找到山脉数组的峰值，然后分别在上升和下降部分进行二分查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找找到山脉数组的峰值。
+2. 在上升部分进行二分查找，寻找目标值。
+3. 如果在上升部分未找到目标值，在下降部分进行二分查找。
 
 关键点:
-- [TODO]
+- 通过二分查找减少调用 MountainArray.get 的次数。
+- 分别处理上升和下降部分的二分查找逻辑。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,64 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class MountainArray:
+    def __init__(self, arr):
+        self.arr = arr
+
+    def get(self, index: int) -> int:
+        return self.arr[index]
+
+    def length(self) -> int:
+        return len(self.arr)
+
+
+def find_peak(mountain_arr: MountainArray) -> int:
+    left, right = 0, mountain_arr.length() - 1
+    while left < right:
+        mid = (left + right) // 2
+        if mountain_arr.get(mid) < mountain_arr.get(mid + 1):
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+
+def binary_search_asc(mountain_arr: MountainArray, target: int, left: int, right: int) -> int:
+    while left <= right:
+        mid = (left + right) // 2
+        mid_val = mountain_arr.get(mid)
+        if mid_val == target:
+            return mid
+        elif mid_val < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+
+def binary_search_desc(mountain_arr: MountainArray, target: int, left: int, right: int) -> int:
+    while left <= right:
+        mid = (left + right) // 2
+        mid_val = mountain_arr.get(mid)
+        if mid_val == target:
+            return mid
+        elif mid_val < target:
+            right = mid - 1
+        else:
+            left = mid + 1
+    return -1
+
+
+def solution_function_name(mountain_arr: MountainArray, target: int) -> int:
+    peak_index = find_peak(mountain_arr)
+
+    # 在上升部分进行二分查找
+    result = binary_search_asc(mountain_arr, target, 0, peak_index)
+    if result != -1:
+        return result
+
+    # 在下降部分进行二分查找
+    return binary_search_desc(mountain_arr, target, peak_index + 1, mountain_arr.length() - 1)
 
 
 Solution = create_solution(solution_function_name)

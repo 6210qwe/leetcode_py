@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）遍历二叉树，逐层计算每层节点的平均值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 进行层次遍历：
+   - 对于当前层的所有节点，计算它们的总和和节点数。
+   - 将当前层的平均值加入结果列表。
+   - 将当前层所有节点的子节点加入队列，准备处理下一层。
+3. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每层计算节点的总和和节点数，然后计算平均值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只访问一次。
+空间复杂度: O(n)，队列的最大空间消耗为树的一层节点数，最坏情况下为 O(n)。
 """
 
 # ============================================================================
@@ -44,17 +49,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def averageOfLevels(root: Optional[TreeNode]) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算二叉树每层的平均值
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return []
+
+    result = []
+    queue = [root]
+
+    while queue:
+        level_sum = 0
+        level_count = len(queue)
+        for _ in range(level_count):
+            node = queue.pop(0)
+            level_sum += node.val
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        result.append(level_sum / level_count)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(averageOfLevels)

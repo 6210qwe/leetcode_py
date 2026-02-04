@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定最大化的最小值，并通过贪心算法验证是否可以在给定的操作次数内达到这个最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界。
+2. 在每次迭代中，计算中间值 mid。
+3. 使用贪心算法验证是否可以在给定的操作次数内使所有元素的最小值至少为 mid。
+4. 根据验证结果调整二分查找的边界。
+5. 返回最终的左边界值。
 
 关键点:
-- [TODO]
+- 使用二分查找来确定最大化的最小值。
+- 通过贪心算法验证是否可以在给定的操作次数内达到这个最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(points)))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def can_achieve(points: List[int], target: int, m: int) -> bool:
+    operations = 0
+    for point in points:
+        if point < target:
+            return False
+        operations += (point - target + 1) // 2
+        if operations > m:
+            return False
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def maximize_min_game_score(points: List[int], m: int) -> int:
+    left, right = 1, max(points)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_achieve(points, mid, m):
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_min_game_score)

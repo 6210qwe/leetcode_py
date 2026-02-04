@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先使用大单位的时间增量（60, 15, 5, 1）来减少操作次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 current 和 correct 转换为分钟数。
+2. 计算两者之间的分钟差。
+3. 依次尝试使用 60, 15, 5, 1 分钟的增量，计算所需的操作次数。
 
 关键点:
-- [TODO]
+- 优先使用大单位的时间增量可以确保操作次数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(current: str, correct: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 将时间转换为分钟数
+    def time_to_minutes(time: str) -> int:
+        hours, minutes = map(int, time.split(':'))
+        return hours * 60 + minutes
+
+    # 计算当前时间和正确时间之间的分钟差
+    diff = time_to_minutes(correct) - time_to_minutes(current)
+
+    # 优先使用大单位的时间增量
+    operations = 0
+    for increment in [60, 15, 5, 1]:
+        operations += diff // increment
+        diff %= increment
+
+    return operations
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和深度优先搜索 (DFS) 来找到最后一天。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化矩阵为全陆地状态。
+2. 使用二分查找来确定最后一天。
+3. 在每次二分查找的过程中，使用 DFS 检查是否可以从最上面一行到达最下面一行。
+4. 如果可以，则更新左边界；否则，更新右边界。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度较低，适合处理大规模数据。
+- DFS 用于检查连通性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(row * col * log(row * col)) - 二分查找的时间复杂度为 O(log(row * col))，每次检查的时间复杂度为 O(row * col)。
+空间复杂度: O(row * col) - 存储矩阵和递归栈的空间。
 """
 
 # ============================================================================
@@ -48,13 +51,43 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def can_cross(matrix: List[List[int]], start_row: int, start_col: int, visited: List[List[bool]]) -> bool:
+    if start_row < 0 or start_row >= len(matrix) or start_col < 0 or start_col >= len(matrix[0]):
+        return False
+    if matrix[start_row][start_col] == 1 or visited[start_row][start_col]:
+        return False
+    if start_row == len(matrix) - 1:
+        return True
+    visited[start_row][start_col] = True
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    for dr, dc in directions:
+        if can_cross(matrix, start_row + dr, start_col + dc, visited):
+            return True
+    return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_cross_from_top_to_bottom(matrix: List[List[int]]) -> bool:
+    rows, cols = len(matrix), len(matrix[0])
+    visited = [[False] * cols for _ in range(rows)]
+    for col in range(cols):
+        if can_cross(matrix, 0, col, visited):
+            return True
+    return False
 
+def solution_function_name(row: int, col: int, cells: List[List[int]]) -> int:
+    """
+    函数式接口 - 找到可以从最上面一行走到最下面一行的最后一天
+    """
+    left, right = 0, len(cells)
+    while left < right:
+        mid = (left + right) // 2
+        matrix = [[0] * col for _ in range(row)]
+        for i in range(mid):
+            r, c = cells[i]
+            matrix[r - 1][c - 1] = 1
+        if can_cross_from_top_to_bottom(matrix):
+            left = mid + 1
+        else:
+            right = mid
+    return left - 1
 
 Solution = create_solution(solution_function_name)

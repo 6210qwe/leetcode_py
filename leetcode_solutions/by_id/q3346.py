@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，尽量将每个字符改为尽可能小的字符，同时保证距离不超过 k。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历字符串 s 的每个字符。
+2. 对于每个字符，尝试将其改为从 'a' 到当前字符的前一个字符，选择使距离最小且总距离不超过 k 的字符。
+3. 如果当前字符已经是最小字符，则跳过该字符。
+4. 更新剩余的 k 值。
+5. 返回最终的字符串。
 
 关键点:
-- [TODO]
+- 使用循环字符距离计算。
+- 确保每次操作后的总距离不超过 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 26)，其中 n 是字符串 s 的长度。最坏情况下，每个字符都需要遍历 26 个可能的字符。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_string_with_distance(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回满足距离约束且字典序最小的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def char_distance(c1: str, c2: str) -> int:
+        """计算两个字符之间的循环距离"""
+        return min(abs(ord(c1) - ord(c2)), 26 - abs(ord(c1) - ord(c2)))
+
+    result = list(s)
+    for i in range(len(s)):
+        for new_char in 'abcdefghijklmnopqrstuvwxyz':
+            if new_char >= s[i]:
+                break
+            dist = char_distance(s[i], new_char)
+            if dist <= k:
+                result[i] = new_char
+                k -= dist
+                break
+    return ''.join(result)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_string_with_distance)

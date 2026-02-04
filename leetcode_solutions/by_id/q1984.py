@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来找到最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j，分别指向 nums1 和 nums2 的起始位置。
+2. 遍历 nums1 和 nums2：
+   - 如果 nums1[i] <= nums2[j]，则更新最大距离，并将 j 向右移动。
+   - 否则，将 i 向右移动。
+3. 返回最大距离。
 
 关键点:
-- [TODO]
+- 由于 nums1 和 nums2 是非递增数组，可以利用这一点来优化搜索过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums1 的长度，m 是 nums2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_distance(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个非递增数组中有效下标对的最大距离
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    max_dist = 0
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i] <= nums2[j]:
+            max_dist = max(max_dist, j - i)
+            j += 1
+        else:
+            i += 1
+    return max_dist
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_distance)

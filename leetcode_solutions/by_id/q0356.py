@@ -54,25 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def line_reflection(params):
+def line_reflection(points: List[List[int]]) -> bool:
     """
-    函数式接口 - [待实现]
-    
-    实现思路:
-    [待实现] 简要说明实现思路
-    
-    Args:
-        params: [待实现] 参数说明
-        
-    Returns:
-        [待实现] 返回值说明
-        
-    Example:
-        >>> line_reflection([待实现])
-        [待实现]
+    判断给定点集是否关于某条垂直直线对称。
+
+    对称轴必为 minX 和 maxX 的中点，检查每个点的镜像是否都在集合中。
     """
-    # TODO: 实现最优解法
-    pass
+    if not points:
+        return True
+
+    min_x = min(x for x, _ in points)
+    max_x = max(x for x, _ in points)
+    s = {(x, y) for x, y in points}
+    s2 = min_x + max_x  # 对称点横坐标之和
+
+    for x, y in points:
+        if (s2 - x, y) not in s:
+            return False
+    return True
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历两个有序数组，同时维护一个哈希表来存储每个 id 的总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向 nums1 和 nums2 的起始位置。
+2. 初始化一个字典 result 来存储每个 id 的总和。
+3. 使用双指针遍历两个数组：
+   - 如果 nums1[i][0] < nums2[j][0]，将 nums1[i] 加入 result 并移动 i。
+   - 如果 nums1[i][0] > nums2[j][0]，将 nums2[j] 加入 result 并移动 j。
+   - 如果 nums1[i][0] == nums2[j][0]，将两者相加的结果加入 result 并移动 i 和 j。
+4. 将剩余的元素加入 result。
+5. 将 result 转换为列表并按 id 排序。
 
 关键点:
-- [TODO]
+- 使用双指针可以高效地遍历两个有序数组。
+- 使用字典来存储每个 id 的总和，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。
+空间复杂度: O(n + m)，用于存储结果字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def merge_arrays(nums1: List[List[int]], nums2: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    合并两个二维数组 - 求和法
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    result = {}
+    
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i][0] < nums2[j][0]:
+            result[nums1[i][0]] = nums1[i][1]
+            i += 1
+        elif nums1[i][0] > nums2[j][0]:
+            result[nums2[j][0]] = nums2[j][1]
+            j += 1
+        else:
+            result[nums1[i][0]] = nums1[i][1] + nums2[j][1]
+            i += 1
+            j += 1
+    
+    # Add remaining elements from nums1
+    while i < len(nums1):
+        result[nums1[i][0]] = nums1[i][1]
+        i += 1
+    
+    # Add remaining elements from nums2
+    while j < len(nums2):
+        result[nums2[j][0]] = nums2[j][1]
+        j += 1
+    
+    # Convert the result dictionary to a sorted list
+    return sorted(result.items())
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(merge_arrays)

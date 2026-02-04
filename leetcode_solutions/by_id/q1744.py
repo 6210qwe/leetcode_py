@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示使用前 i 个字符构造 target 前 j 个字符的方法数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1，表示空字符串可以构造空字符串。
+2. 遍历每个字符位置 i，计算每个字符在该位置出现的次数。
+3. 更新 dp 数组，dp[i+1][j+1] = dp[i][j+1] + dp[i][j] * count[target[j]]，其中 count 是当前字符位置的字符计数。
+4. 最终结果是 dp[len(words[0])][len(target)]。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 优化空间复杂度，只使用一维数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 中每个字符串的长度，m 是 target 的长度。
+空间复杂度: O(m)，使用一维数组进行状态压缩。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str], target: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使用 words 构造 target 的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    n, m = len(words[0]), len(target)
+    dp = [0] * (m + 1)
+    dp[0] = 1
+
+    for i in range(n):
+        count = [0] * 26
+        for word in words:
+            count[ord(word[i]) - ord('a')] += 1
+        for j in range(m - 1, -1, -1):
+            dp[j + 1] += dp[j] * count[ord(target[j]) - ord('a')]
+            dp[j + 1] %= mod
+
+    return dp[m]
 
 
 Solution = create_solution(solution_function_name)

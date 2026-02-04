@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和栈来构建字典序最小的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的出现次数。
+2. 使用一个栈来构建结果字符串。
+3. 遍历字符串，对于每个字符，如果它在栈中已经存在并且剩余次数大于1，则跳过该字符。
+4. 否则，将字符压入栈中，并减少其剩余次数。
+5. 最后，将栈中的字符拼接成结果字符串。
 
 关键点:
-- [TODO]
+- 使用栈来维护当前构建的字符串。
+- 通过统计字符出现次数来决定是否跳过某个字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们遍历字符串一次，并在栈中进行常数时间的操作。
+空间复杂度: O(1)，因为字符集大小固定为 26 个小写字母，额外空间使用有限。
 """
 
 # ============================================================================
@@ -49,12 +53,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的出现次数
+    char_count = [0] * 26
+    for char in s:
+        char_count[ord(char) - ord('a')] += 1
+    
+    # 使用栈来构建结果字符串
+    stack = []
+    in_stack = [False] * 26
+    
+    for char in s:
+        index = ord(char) - ord('a')
+        char_count[index] -= 1
+        
+        if in_stack[index]:
+            continue
+        
+        # 弹出栈顶元素，直到栈顶元素的剩余次数大于0
+        while stack and char < stack[-1] and char_count[ord(stack[-1]) - ord('a')] > 0:
+            in_stack[ord(stack[-1]) - ord('a')] = False
+            stack.pop()
+        
+        stack.append(char)
+        in_stack[index] = True
+    
+    return ''.join(stack)
 
 
 Solution = create_solution(solution_function_name)

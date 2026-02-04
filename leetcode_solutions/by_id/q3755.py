@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和贪心算法来找到首尾元素乘积最大的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 考虑两种情况：
+   - 取前 m 个最大的正数。
+   - 取前 m-2 个最小的负数和最后两个最大的正数。
+3. 计算这两种情况下的乘积，并返回最大值。
 
 关键点:
-- [TODO]
+- 通过排序和双指针方法，可以高效地找到满足条件的子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums 的长度，因为排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_product_of_subsequence(nums: List[int], m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回任意大小为 m 的子序列中首尾元素乘积的最大值。
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    nums.sort()
+    
+    # 情况1: 取前 m 个最大的正数
+    product1 = nums[-m] * nums[-1]
+    
+    # 情况2: 取前 m-2 个最小的负数和最后两个最大的正数
+    if m > 2:
+        product2 = nums[0] * nums[m-2]
+    else:
+        product2 = float('-inf')
+    
+    # 返回两种情况下的最大值
+    return max(product1, product2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product_of_subsequence)

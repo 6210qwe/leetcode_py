@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护一个当前子字符串的最大开销，并在遍历过程中更新最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个字典来存储每个字符的价值。
+2. 初始化两个变量：`current_cost` 用于记录当前子字符串的开销，`max_cost` 用于记录最大开销。
+3. 遍历字符串 `s`，对于每个字符：
+   - 更新 `current_cost`。
+   - 如果 `current_cost` 小于 0，则重置 `current_cost` 为 0。
+   - 更新 `max_cost`。
+4. 返回 `max_cost`。
 
 关键点:
-- [TODO]
+- 使用动态规划的思想，通过维护当前子字符串的开销来找到最大开销。
+- 通过重置 `current_cost` 来处理负开销的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +55,36 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_max_cost_substring(s: str, chars: str, vals: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大开销的子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建字符价值字典
+    value_dict = {char: val for char, val in zip(chars, vals)}
+    
+    # 初始化变量
+    current_cost = 0
+    max_cost = 0
+    
+    # 遍历字符串 s
+    for char in s:
+        # 计算当前字符的价值
+        if char in value_dict:
+            char_value = value_dict[char]
+        else:
+            char_value = ord(char) - ord('a') + 1
+        
+        # 更新当前子字符串的开销
+        current_cost += char_value
+        
+        # 如果当前子字符串的开销小于 0，则重置为 0
+        if current_cost < 0:
+            current_cost = 0
+        
+        # 更新最大开销
+        max_cost = max(max_cost, current_cost)
+    
+    return max_cost
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_cost_substring)

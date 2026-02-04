@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，遍历数组并尽量保留符合条件的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`deletions` 用于记录删除的元素数量，`prev` 用于记录上一个保留的元素。
+2. 遍历数组，对于每个元素：
+   - 如果当前元素与 `prev` 相同且索引为偶数，则删除该元素。
+   - 否则，更新 `prev` 为当前元素。
+3. 返回 `deletions`。
 
 关键点:
-- [TODO]
+- 通过贪心策略，尽量保留符合条件的元素，从而最小化删除的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度，因为只需要一次遍历。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_deletions_to_make_array_beautiful(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使数组变为美丽数组所需的最少删除数
     """
-    # TODO: 实现最优解法
-    pass
+    deletions = 0
+    prev = None
+    for i, num in enumerate(nums):
+        if i % 2 == 0:
+            if num == prev:
+                deletions += 1
+            else:
+                prev = num
+        else:
+            if num == prev:
+                deletions += 1
+            else:
+                prev = None
+    return deletions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_deletions_to_make_array_beautiful)

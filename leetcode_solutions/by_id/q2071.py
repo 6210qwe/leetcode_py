@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法来找到两个排序数组的最长公共子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 i 和 j 分别指向两个数组的起始位置。
+2. 遍历两个数组，比较当前指针所指向的元素：
+   - 如果相等，则将该元素加入结果列表，并移动两个指针。
+   - 如果不相等，则移动指向较小元素的指针。
+3. 最终结果列表即为最长公共子序列。
 
 关键点:
-- [TODO]
+- 由于数组是排序的，可以利用这一点通过双指针法高效地找到最长公共子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两个数组的长度。
+空间复杂度: O(1)，除了结果列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_common_subsequence(nums1: List[int], nums2: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到两个排序数组的最长公共子序列
     """
-    # TODO: 实现最优解法
-    pass
+    i, j = 0, 0
+    result = []
+    
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i] == nums2[j]:
+            result.append(nums1[i])
+            i += 1
+            j += 1
+        elif nums1[i] < nums2[j]:
+            i += 1
+        else:
+            j += 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_common_subsequence)

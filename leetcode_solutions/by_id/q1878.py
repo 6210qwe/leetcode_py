@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查数组是否可以通过一次旋转得到非递减排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到数组中第一个降序的位置。
+2. 如果没有找到降序位置，说明数组已经是非递减排列，返回 True。
+3. 如果找到降序位置，将数组分成两部分并拼接，检查拼接后的数组是否是非递减排列。
+4. 如果拼接后的数组是非递减排列，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 通过找到第一个降序位置来确定旋转点。
+- 拼接数组后检查是否是非递减排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组一次来找到降序位置，并再次遍历拼接后的数组来检查是否是非递减排列。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_array_is_sorted_and_rotated(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查数组是否可以通过一次旋转得到非递减排列
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 1:
+        return True
+    
+    # 找到第一个降序位置
+    rotation_index = -1
+    for i in range(1, n):
+        if nums[i] < nums[i - 1]:
+            rotation_index = i
+            break
+    
+    # 如果没有找到降序位置，说明数组已经是非递减排列
+    if rotation_index == -1:
+        return True
+    
+    # 将数组分成两部分并拼接
+    rotated_nums = nums[rotation_index:] + nums[:rotation_index]
+    
+    # 检查拼接后的数组是否是非递减排列
+    for i in range(1, n):
+        if rotated_nums[i] < rotated_nums[i - 1]:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_array_is_sorted_and_rotated)

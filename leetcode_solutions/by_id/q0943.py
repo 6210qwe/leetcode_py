@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算每个元素作为子数组最小值的贡献。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 left 和 right，分别记录每个元素左边和右边第一个小于它的元素的位置。
+2. 使用单调栈从左到右遍历数组，填充 left 数组。
+3. 使用单调栈从右到左遍历数组，填充 right 数组。
+4. 计算每个元素作为子数组最小值的贡献，并累加结果。
 
 关键点:
-- [TODO]
+- 单调栈用于高效地找到每个元素左边和右边第一个小于它的元素。
+- 通过 left 和 right 数组可以快速计算每个元素作为子数组最小值的贡献。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被压入和弹出栈一次。
+空间复杂度: O(n)，需要额外的 left 和 right 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_subarray_mins(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算子数组最小值之和
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    n = len(arr)
+    left, right = [0] * n, [0] * n
+    stack = []
+    
+    # 填充 left 数组
+    for i in range(n):
+        while stack and arr[stack[-1]] > arr[i]:
+            stack.pop()
+        left[i] = i - (stack[-1] if stack else -1)
+        stack.append(i)
+    
+    stack.clear()
+    
+    # 填充 right 数组
+    for i in range(n - 1, -1, -1):
+        while stack and arr[stack[-1]] >= arr[i]:
+            stack.pop()
+        right[i] = (stack[-1] if stack else n) - i
+        stack.append(i)
+    
+    # 计算结果
+    result = 0
+    for i in range(n):
+        result = (result + arr[i] * left[i] * right[i]) % MOD
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_subarray_mins)

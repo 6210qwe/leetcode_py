@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最大点数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前 k 个元素的总和作为初始值。
+2. 使用滑动窗口技术，逐步减少左边的元素并增加右边的元素，更新总和。
+3. 在每次更新总和时，记录最大值。
 
 关键点:
-- [TODO]
+- 初始窗口包含前 k 个元素。
+- 滑动窗口逐步向右移动，直到窗口包含最后 k 个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_score(card_points: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回可以获得的最大点数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(card_points)
+    # 初始窗口包含前 k 个元素
+    window_sum = sum(card_points[:k])
+    max_points = window_sum
+
+    # 滑动窗口逐步向右移动
+    for i in range(1, k + 1):
+        window_sum += card_points[n - i] - card_points[k - i]
+        max_points = max(max_points, window_sum)
+
+    return max_points
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_score)

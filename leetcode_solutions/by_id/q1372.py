@@ -21,40 +21,38 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 来判断是否存在一个子集的线性组合可以得到 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的最大公约数。
+2. 如果最大公约数为 1，则存在一个子集的线性组合可以得到 1，返回 True。
+3. 否则，返回 False。
 
 关键点:
-- [TODO]
+- 利用 GCD 的性质来简化问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组长度，max(nums) 是数组中的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
+from functools import reduce
 
-
-def solution_function_name(params):
+def is_good_array(nums: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断数组是否为「好数组」
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算整个数组的最大公约数
+    return reduce(gcd, nums) == 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_good_array)

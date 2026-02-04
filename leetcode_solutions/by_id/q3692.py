@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和滑动窗口来找到最短匹配子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到模式字符串 p 中的两个 '*' 的位置。
+2. 使用双指针和滑动窗口在字符串 s 中找到匹配的子字符串。
+3. 记录并更新最短匹配子字符串的长度。
 
 关键点:
-- [TODO]
+- 使用双指针和滑动窗口来高效地找到匹配的子字符串。
+- 处理 '*' 时，需要考虑它可以匹配零个或多个字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是字符串 s 的长度，m 是模式字符串 p 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_matching_substring(s: str, p: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 s 中与 p 匹配的最短子字符串的长度。
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到模式字符串 p 中的两个 '*' 的位置
+    star_indices = [i for i, char in enumerate(p) if char == '*']
+    if len(star_indices) != 2:
+        return -1
+
+    first_star, second_star = star_indices[0], star_indices[1]
+
+    # 提取模式字符串 p 中的固定部分
+    prefix = p[:first_star]
+    suffix = p[second_star + 1:]
+
+    def is_match(subs: str) -> bool:
+        """检查子字符串 subs 是否匹配模式字符串 p"""
+        if not subs.startswith(prefix):
+            return False
+        if not subs.endswith(suffix):
+            return False
+        return True
+
+    min_length = float('inf')
+    left, right = 0, len(s) - 1
+
+    while right < len(s):
+        # 检查当前窗口是否匹配
+        if is_match(s[left:right + 1]):
+            min_length = min(min_length, right - left + 1)
+            left += 1  # 尝试缩小窗口
+        else:
+            right += 1  # 扩大窗口
+
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_matching_substring)

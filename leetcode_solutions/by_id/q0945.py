@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从起点到终点的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将棋盘转换为一维数组表示，方便计算。
+2. 使用队列进行 BFS，从起点开始，每次可以移动 1 到 6 步。
+3. 如果移动到的格子上有蛇或梯子，直接跳到对应的格子。
+4. 记录已经访问过的格子，避免重复访问。
+5. 如果到达终点，返回步数；如果遍历完所有可能的路径仍未到达终点，返回 -1。
 
 关键点:
-- [TODO]
+- 将二维棋盘转换为一维数组，简化坐标计算。
+- 使用 BFS 保证找到的路径是最短的。
+- 使用集合记录已访问的格子，避免重复访问。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +54,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def snakes_and_ladders(board: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用广度优先搜索 (BFS) 找到从起点到终点的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(board)
+    target = n * n
+    # 将二维棋盘转换为一维数组
+    def get(s: int) -> int:
+        quot, rem = divmod(s - 1, n)
+        row = n - 1 - quot
+        col = rem if row % 2 != n % 2 else n - 1 - rem
+        return board[row][col]
+
+    # 初始化队列和访问集合
+    queue = [(1, 0)]
+    visited = set([1])
+
+    while queue:
+        s, step = queue.pop(0)
+        for s2 in range(s + 1, min(s + 6, target) + 1):
+            dest = get(s2) if get(s2) != -1 else s2
+            if dest == target:
+                return step + 1
+            if dest not in visited:
+                visited.add(dest)
+                queue.append((dest, step + 1))
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(snakes_and_ladders)

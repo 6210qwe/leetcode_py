@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来过滤出低质量的问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 `problems` 表中选择所有字段。
+2. 使用 WHERE 子句过滤出评分小于 3 的问题。
 
 关键点:
-- [TODO]
+- 使用 SQL 查询语句来实现过滤。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `problems` 表中的行数。
+空间复杂度: O(1)，查询本身不使用额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +49,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回一个 SQL 查询语句，用于过滤出评分小于 3 的问题。
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT *
+    FROM problems
+    WHERE score < 3;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

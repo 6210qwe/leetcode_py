@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算最高欺诈百分位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个用户的欺诈分数。
+2. 对欺诈分数进行排序。
+3. 找到指定百分位的欺诈分数。
 
 关键点:
-- [TODO]
+- 使用窗口函数和子查询来计算百分位。
+- 确保查询的性能优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是用户数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入输出外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现
+    query = """
+    WITH FraudScores AS (
+        SELECT user_id, SUM(fraud_score) AS total_fraud_score
+        FROM transactions
+        GROUP BY user_id
+    ),
+    RankedFraudScores AS (
+        SELECT user_id, total_fraud_score,
+               PERCENT_RANK() OVER (ORDER BY total_fraud_score DESC) AS fraud_percentile
+        FROM FraudScores
+    )
+    SELECT user_id, total_fraud_score, fraud_percentile
+    FROM RankedFraudScores
+    WHERE fraud_percentile <= :percentile
+    ORDER BY fraud_percentile DESC
+    LIMIT 1;
+    """
+    # 执行查询并返回结果
+    result = execute_sql_query(query, params)
+    return result
 
 
 Solution = create_solution(solution_function_name)

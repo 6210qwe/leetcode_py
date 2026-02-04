@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法和数学方法找到最大的 3 的倍数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有数字的总和，并统计每个数字出现的次数。
+2. 根据总和对 3 取模的结果，决定是否需要移除一些数字以使总和变为 3 的倍数。
+3. 将剩余的数字从大到小排序，构建结果字符串。
+4. 去除前导零并返回结果。
 
 关键点:
-- [TODO]
+- 使用计数数组来统计每个数字的出现次数。
+- 根据总和对 3 取模的结果，决定移除哪些数字。
+- 从大到小排序并构建结果字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + klogk)，其中 n 是 digits 的长度，k 是不同数字的数量（最多为 10）。
+空间复杂度: O(1)，因为计数数组的大小是固定的。
 """
 
 # ============================================================================
@@ -49,12 +53,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(digits: List[int]) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最大的 3 的倍数
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数字的出现次数
+    count = [0] * 10
+    total_sum = 0
+    for digit in digits:
+        count[digit] += 1
+        total_sum += digit
+    
+    # 计算总和对 3 取模的结果
+    remainder = total_sum % 3
+    
+    if remainder != 0:
+        # 需要移除一些数字以使总和变为 3 的倍数
+        for i in range(remainder, 10, 3):
+            if count[i] > 0:
+                count[i] -= 1
+                break
+        else:
+            for i in range(3 - remainder, 10, 3):
+                if count[i] > 1:
+                    count[i] -= 2
+                    break
+            else:
+                return ""
+    
+    # 构建结果字符串
+    result = []
+    for digit in range(9, -1, -1):
+        result.extend([str(digit)] * count[digit])
+    
+    # 去除前导零
+    if result and result[0] == '0':
+        return "0"
+    
+    return ''.join(result)
 
 
 Solution = create_solution(solution_function_name)

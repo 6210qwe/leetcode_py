@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到所有包含 a, b, c 的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器来记录当前窗口内 a, b, c 的数量。
+2. 使用两个指针 left 和 right 来表示滑动窗口的左右边界。
+3. 移动右指针扩展窗口，直到窗口内包含 a, b, c。
+4. 当窗口内包含 a, b, c 时，移动左指针收缩窗口，并计算以当前右指针结尾的所有有效子字符串的数量。
+5. 重复步骤 3 和 4 直到右指针到达字符串末尾。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以高效地找到所有满足条件的子字符串。
+- 通过移动左指针来计算以当前右指针结尾的所有有效子字符串的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被访问两次（一次由右指针，一次由左指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回包含 a, b, c 各至少一次的子字符串数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = {'a': 0, 'b': 0, 'c': 0}
+    left = 0
+    result = 0
+    
+    for right in range(len(s)):
+        count[s[right]] += 1
+        
+        while all(count[char] > 0 for char in 'abc'):
+            result += len(s) - right
+            count[s[left]] -= 1
+            left += 1
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个产品的最新销售记录。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到每个产品的最大销售日期。
+2. 通过连接原表和子查询结果，获取每个产品的最新销售记录。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 MAX 函数来找到每个产品的最大销售日期。
+- 使用 INNER JOIN 来连接原表和子查询结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 sales 表的行数，m 是 product 表的行数。
+空间复杂度: O(1)，不考虑输出结果的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    query = """
+    SELECT p.product_id, p.product_name, s.sale_date, s.total_sales
+    FROM product p
+    JOIN (
+        SELECT product_id, MAX(sale_date) AS max_sale_date
+        FROM sales
+        GROUP BY product_id
+    ) t ON p.product_id = t.product_id
+    JOIN sales s ON s.product_id = p.product_id AND s.sale_date = t.max_sale_date
+    ORDER BY p.product_id, s.sale_date DESC;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

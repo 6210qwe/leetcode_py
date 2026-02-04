@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索计算每个整数的权重，并使用优先队列进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用记忆化搜索计算每个整数的权重。
+2. 将区间 [lo, hi] 之间的整数及其权重存储在一个列表中。
+3. 使用 Python 的 `sorted` 函数对列表进行排序，先按权重升序排序，再按数值升序排序。
+4. 返回排序后的第 k 个整数。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索避免重复计算权重。
+- 使用 `sorted` 函数进行多条件排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n = hi - lo + 1。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，存储区间内所有整数及其权重的空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_power_value(x: int, memo: dict) -> int:
+    if x in memo:
+        return memo[x]
+    if x == 1:
+        return 0
+    if x % 2 == 0:
+        next_x = x // 2
+    else:
+        next_x = 3 * x + 1
+    memo[x] = 1 + get_power_value(next_x, memo)
+    return memo[x]
 
-def solution_function_name(params):
+def solution_function_name(lo: int, hi: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    memo = {}
+    numbers = [(i, get_power_value(i, memo)) for i in range(lo, hi + 1)]
+    sorted_numbers = sorted(numbers, key=lambda x: (x[1], x[0]))
+    return sorted_numbers[k - 1][0]
 
 Solution = create_solution(solution_function_name)

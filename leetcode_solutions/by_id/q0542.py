@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）从所有 0 出发，逐步扩展到 1，并记录每个 1 到最近 0 的距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有 0 的位置加入队列。
+2. 初始化一个距离矩阵 `dist`，初始值为 -1，表示未访问过。
+3. 对于队列中的每个 0，将其在 `dist` 中的距离设为 0。
+4. 进行 BFS，每次从队列中取出一个位置，检查其四个方向的邻居：
+   - 如果邻居未访问过且为 1，则将其距离设为当前距离 + 1，并将其加入队列。
+5. 最终 `dist` 矩阵即为结果。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以确保找到最短路径。
+- 从所有 0 同时开始扩展，可以减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是矩阵的行数和列数。每个元素最多被访问一次。
+空间复杂度: O(m * n)，用于存储队列和距离矩阵。
 """
 
 # ============================================================================
@@ -49,12 +54,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def update_matrix(mat: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 更新矩阵，使得每个 1 到最近 0 的距离。
     """
-    # TODO: 实现最优解法
-    pass
+    if not mat or not mat[0]:
+        return mat
+
+    m, n = len(mat), len(mat[0])
+    dist = [[-1] * n for _ in range(m)]
+    queue = []
+
+    # 将所有 0 的位置加入队列，并初始化距离矩阵
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 0:
+                dist[i][j] = 0
+                queue.append((i, j))
+
+    # 定义四个方向
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    # 进行 BFS
+    while queue:
+        x, y = queue.pop(0)
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n and dist[nx][ny] == -1:
+                dist[nx][ny] = dist[x][y] + 1
+                queue.append((nx, ny))
+
+    return dist
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(update_matrix)

@@ -21,40 +21,46 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找和双指针来找到最接近 x 的 k 个元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找找到一个起始位置，使得从该位置开始的 k 个元素是最接近 x 的。
+2. 使用双指针从起始位置向两边扩展，比较左右指针指向的元素与 x 的距离，选择更接近 x 的元素。
+3. 最后返回结果。
 
 关键点:
-- [TODO]
+- 二分查找用于快速定位起始位置。
+- 双指针用于逐步扩展并选择最接近 x 的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n + k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def find_k_closest_elements(arr: List[int], k: int, x: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最接近 x 的 k 个元素
     """
-    # TODO: 实现最优解法
-    pass
+    # 二分查找找到起始位置
+    left, right = 0, len(arr) - k
+    while left < right:
+        mid = (left + right) // 2
+        if x - arr[mid] > arr[mid + k] - x:
+            left = mid + 1
+        else:
+            right = mid
+    
+    # 返回结果
+    return arr[left:left + k]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_k_closest_elements)

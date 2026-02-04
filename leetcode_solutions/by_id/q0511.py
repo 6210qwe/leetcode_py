@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 检查从起点到终点的所有路径是否都通向终点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 `visited` 数组来记录节点的访问状态（0: 未访问, 1: 正在访问, 2: 已访问）。
+2. 从起点开始进行 DFS。
+3. 在 DFS 过程中：
+   - 如果当前节点是终点，返回 True。
+   - 如果当前节点正在访问，说明存在环，返回 False。
+   - 将当前节点标记为正在访问。
+   - 递归访问所有相邻节点。
+   - 如果所有相邻节点都通向终点，将当前节点标记为已访问并返回 True。
+4. 如果所有路径都通向终点，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 `visited` 数组来避免重复访问和检测环。
+- 通过递归检查所有路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。每个节点和每条边最多访问一次。
+空间复杂度: O(V)，用于存储 `visited` 数组和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def leadsToDestination(n: int, edges: List[List[int]], source: int, destination: int) -> bool:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+    
+    # 初始化 visited 数组
+    visited = [0] * n
+    
+    def dfs(node: int) -> bool:
+        if visited[node] == 1:
+            return False
+        if visited[node] == 2:
+            return True
+        
+        if not graph[node]:
+            return node == destination
+        
+        visited[node] = 1
+        for neighbor in graph[node]:
+            if not dfs(neighbor):
+                return False
+        visited[node] = 2
+        return True
+    
+    return dfs(source)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(leadsToDestination)

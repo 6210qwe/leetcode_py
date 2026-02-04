@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）来维护当前子数组和的最小值，并逐步生成所有子数组和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，将每个元素作为单个子数组的和加入堆。
+2. 每次从堆中取出最小值，将其加入结果数组，并将该子数组的下一个元素加入堆。
+3. 重复上述过程，直到找到第 `right` 个最小的子数组和。
+4. 计算结果数组中从 `left-1` 到 `right-1` 的和，并对 10^9 + 7 取模。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取当前最小的子数组和。
+- 通过逐步扩展子数组来生成所有可能的子数组和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是数组的长度。每次从堆中取出元素的时间复杂度是 O(log n)，总共需要取出 n * (n + 1) / 2 个元素。
+空间复杂度: O(n^2)，因为我们需要存储所有可能的子数组和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def range_sum(nums: List[int], n: int, left: int, right: int) -> int:
+    MOD = 10**9 + 7
+    min_heap = []
+    
+    # 将每个元素作为单个子数组的和加入堆
+    for i in range(n):
+        heapq.heappush(min_heap, (nums[i], i))
+    
+    result = 0
+    current_sum = 0
+    
+    # 从堆中取出最小值，直到找到第 `right` 个最小的子数组和
+    for k in range(1, right + 1):
+        val, idx = heapq.heappop(min_heap)
+        if k >= left:
+            current_sum += val
+            current_sum %= MOD
+        if idx < n - 1:
+            heapq.heappush(min_heap, (val + nums[idx + 1], idx + 1))
+    
+    return current_sum
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(range_sum)

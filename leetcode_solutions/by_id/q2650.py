@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将 num 的各个数位从小到大排序，然后交替分配给 num1 和 num2，使得 num1 和 num2 的和最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 num 转换为字符串并拆分成字符列表。
+2. 对字符列表进行排序。
+3. 初始化 num1 和 num2 为 0。
+4. 交替将排序后的字符分配给 num1 和 num2。
+5. 返回 num1 和 num2 的和。
 
 关键点:
-- [TODO]
+- 通过排序和交替分配，确保 num1 和 num2 的和最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d log d)，其中 d 是 num 的位数。排序操作的时间复杂度为 O(d log d)。
+空间复杂度: O(d)，需要存储 num 的各个数位。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def split_with_minimum_sum(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将 num 分割成两个非负整数 num1 和 num2，使得它们的和最小。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 num 转换为字符串并拆分成字符列表
+    digits = list(str(num))
+    
+    # 对字符列表进行排序
+    digits.sort()
+    
+    # 初始化 num1 和 num2
+    num1, num2 = 0, 0
+    
+    # 交替将排序后的字符分配给 num1 和 num2
+    for i, digit in enumerate(digits):
+        if i % 2 == 0:
+            num1 = num1 * 10 + int(digit)
+        else:
+            num2 = num2 * 10 + int(digit)
+    
+    # 返回 num1 和 num2 的和
+    return num1 + num2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(split_with_minimum_sum)

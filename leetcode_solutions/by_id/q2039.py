@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算前一半和后一半的已知数字之和以及未知位置的数量，判断 Alice 是否有必胜策略。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前一半和后一半的已知数字之和以及未知位置的数量。
+2. 遍历字符串，分别计算前一半和后一半的已知数字之和以及未知位置的数量。
+3. 根据已知数字之和和未知位置的数量，判断 Alice 是否有必胜策略。
 
 关键点:
-- [TODO]
+- 如果前一半和后一半的未知位置数量相同，且已知数字之和也相同，则 Bob 赢。
+- 如果前一半和后一半的未知位置数量不同，Alice 可以通过选择合适的数字来确保获胜。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(num)
+    half = n // 2
+    sum_first_half = 0
+    sum_second_half = 0
+    question_marks_first_half = 0
+    question_marks_second_half = 0
+
+    for i in range(half):
+        if num[i] == '?':
+            question_marks_first_half += 1
+        else:
+            sum_first_half += int(num[i])
+
+        if num[i + half] == '?':
+            question_marks_second_half += 1
+        else:
+            sum_second_half += int(num[i + half])
+
+    diff = sum_first_half - sum_second_half
+    diff_question_marks = question_marks_first_half - question_marks_second_half
+
+    # If the difference in question marks is even, Bob can always make the sums equal.
+    if diff_question_marks == 0:
+        return diff != 0
+
+    # If the difference in question marks is odd, Alice can always win by choosing the right numbers.
+    return (diff * 9 + diff_question_marks * 9 // 2) % 9 != 0
 
 
 Solution = create_solution(solution_function_name)

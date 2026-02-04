@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算有效分割方案数。我们维护两个数组 dp1 和 dp2，分别表示以 target1 和 target2 结尾的有效分割方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp1 和 dp2 数组，长度为 n+1，初始值为 0。
+2. dp1[0] = 1，表示空数组有一种分割方案。
+3. 遍历数组 nums，计算当前前缀异或值。
+4. 更新 dp1 和 dp2 数组，根据当前前缀异或值是否等于 target1 或 target2。
+5. 最终结果为 dp1[n]，即以 target1 结尾的有效分割方案数。
 
 关键点:
-- [TODO]
+- 使用前缀异或来快速计算子数组的异或值。
+- 动态规划的状态转移方程：dp1[i] = dp2[j] (prefix_xor[j:i] == target1)，dp2[i] = dp1[j] (prefix_xor[j:i] == target2)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +52,24 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(nums: List[int], target1: int, target2: int) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    prefix_xor = [0] * (n + 1)
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ nums[i]
+    
+    dp1 = [0] * (n + 1)
+    dp2 = [0] * (n + 1)
+    dp1[0] = 1
+    
+    for i in range(1, n + 1):
+        for j in range(i):
+            if prefix_xor[i] ^ prefix_xor[j] == target1:
+                dp1[i] = (dp1[i] + dp2[j]) % MOD
+            elif prefix_xor[i] ^ prefix_xor[j] == target2:
+                dp2[i] = (dp2[i] + dp1[j]) % MOD
+    
+    return dp1[n]
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和有序集合来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有单元格按值从小到大排序。
+2. 使用两个数组 `row_max` 和 `col_max` 来记录每行和每列的最大路径长度。
+3. 遍历排序后的单元格，更新每个单元格的最大路径长度，并更新 `row_max` 和 `col_max`。
+4. 最后返回 `row_max` 和 `col_max` 中的最大值。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地找到每个单元格的前驱单元格。
+- 动态规划的状态转移方程为 `dp[i][j] = max(row_max[i], col_max[j]) + 1`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n)) - 排序的时间复杂度为 O(m * n * log(m * n))，遍历的时间复杂度为 O(m * n)。
+空间复杂度: O(m * n) - 使用了额外的数组来存储每行和每列的最大路径长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from sortedcontainers import SortedList
 
+def max_increasing_cells(mat: List[List[int]]) -> int:
+    m, n = len(mat), len(mat[0])
+    cells = [(val, i, j) for i, row in enumerate(mat) for j, val in enumerate(row)]
+    cells.sort()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    row_max = [0] * m
+    col_max = [0] * n
+    dp = [[0] * n for _ in range(m)]
 
+    for val, i, j in cells:
+        dp[i][j] = max(row_max[i], col_max[j]) + 1
+        row_max[i] = max(row_max[i], dp[i][j])
+        col_max[j] = max(col_max[j], dp[i][j])
 
-Solution = create_solution(solution_function_name)
+    return max(max(row_max), max(col_max))
+
+Solution = create_solution(max_increasing_cells)

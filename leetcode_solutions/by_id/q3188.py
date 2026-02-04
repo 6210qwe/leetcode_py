@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历矩阵找到没有其他队伍比它强的队伍。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `champion` 为 0。
+2. 遍历每一行，检查是否有其他队伍比当前队伍强。
+3. 如果没有其他队伍比当前队伍强，则更新 `champion` 为当前队伍编号。
+4. 返回 `champion`。
 
 关键点:
-- [TODO]
+- 只需要找到一个没有其他队伍比它强的队伍即可。
+- 通过遍历矩阵可以实现 O(n^2) 的时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是矩阵的维度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_champion(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到冠军队伍
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    champion = 0
+    
+    for i in range(n):
+        if all(grid[j][i] == 0 for j in range(n) if j != i):
+            champion = i
+            break
+    
+    return champion
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_champion)

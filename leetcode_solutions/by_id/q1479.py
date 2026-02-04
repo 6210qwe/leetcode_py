@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来模拟每次选择最大元素进行更新的过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆，并将目标数组中的所有元素加入堆中。
+2. 计算初始的总和。
+3. 从堆中取出最大元素，假设它是由之前的某个元素加上剩余元素的和得到的。
+4. 更新最大元素为 (当前最大元素 - 剩余元素的和) % 剩余元素的和 + 剩余元素的和。
+5. 将更新后的最大元素重新加入堆中，并更新总和。
+6. 重复上述过程，直到堆中的最大元素为1，或者无法继续更新。
 
 关键点:
-- [TODO]
+- 使用最大堆来高效地获取和更新最大元素。
+- 通过模运算和加法来逆向还原数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 target 的长度。每次堆操作的时间复杂度是 O(log n)，最坏情况下需要进行 n 次堆操作。
+空间复杂度: O(n)，用于存储堆。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
+def isPossible(target: List[int]) -> bool:
+    if len(target) == 1:
+        return target[0] == 1
+    
+    # 转换为最大堆
+    max_heap = [-x for x in target]
+    heapq.heapify(max_heap)
+    
+    total_sum = sum(target)
+    
+    while -max_heap[0] > 1:
+        largest = -heapq.heappop(max_heap)
+        rest_sum = total_sum - largest
+        
+        if rest_sum == 1:
+            return True
+        if rest_sum >= largest or rest_sum == 0 or largest % rest_sum == 0:
+            return False
+        
+        new_largest = largest % rest_sum
+        total_sum = rest_sum + new_largest
+        heapq.heappush(max_heap, -new_largest)
+    
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(isPossible)

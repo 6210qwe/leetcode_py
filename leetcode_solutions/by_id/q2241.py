@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和双指针来找到合适的 k 值，并通过哈希表验证是否可以构建出原数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对输入数组进行排序。
+2. 使用双指针遍历数组，尝试找到合适的 k 值。
+3. 使用哈希表记录 lower 和 higher 数组中的元素。
+4. 验证哈希表中的元素是否可以构建出原数组。
 
 关键点:
-- [TODO]
+- 通过排序和双指针找到合适的 k 值。
+- 使用哈希表记录和验证 lower 和 higher 数组中的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(n) - 哈希表的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +52,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    nums.sort()
+    n = len(nums) // 2
+    for i in range(n):
+        k = (nums[i + n] - nums[i]) // 2
+        if k > 0 and all((x + k) in nums for x in nums[:n]):
+            return [(x + k) for x in nums[:n]]
+    return []
 
 Solution = create_solution(solution_function_name)

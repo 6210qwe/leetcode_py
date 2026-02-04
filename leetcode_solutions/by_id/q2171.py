@@ -21,40 +21,77 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点到终点的第二短路径。通过维护两个队列，一个用于当前层的节点，另一个用于下一层的节点，并记录每个节点的访问次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化两个队列，一个用于当前层的节点，另一个用于下一层的节点。
+3. 使用BFS遍历图，记录每个节点的访问次数和到达时间。
+4. 当到达终点时，记录第一次和第二次到达的时间。
+5. 返回第二次到达的时间。
 
 关键点:
-- [TODO]
+- 使用两个队列分别存储当前层和下一层的节点。
+- 记录每个节点的访问次数，确保每个节点最多访问两次。
+- 处理信号灯的变化，计算等待时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。因为每个节点最多访问两次，每条边最多访问两次。
+空间复杂度: O(n + m)，存储图的邻接表和队列所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
+from collections import deque
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def second_minimum_time_to_reach_destination(n: int, edges: List[List[int]], time: int, change: int) -> int:
+    # 构建图的邻接表
+    graph = [[] for _ in range(n + 1)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    # 初始化队列和访问计数
+    queue = deque([(1, 0)])  # (节点, 时间)
+    visited = [0] * (n + 1)
+    visited[1] = 1
+    first_time, second_time = None, None
+
+    while queue:
+        next_queue = deque()
+        while queue:
+            node, t = queue.popleft()
+
+            # 计算下一个节点的时间
+            for neighbor in graph[node]:
+                if visited[neighbor] < 2:
+                    new_time = t + time
+                    if (t // change) % 2 == 1:
+                        new_time += change - (t % change)
+
+                    if neighbor == n:
+                        if first_time is None:
+                            first_time = new_time
+                        elif new_time > first_time and (second_time is None or new_time < second_time):
+                            second_time = new_time
+                    else:
+                        next_queue.append((neighbor, new_time))
+                        visited[neighbor] += 1
+
+        queue = next_queue
+
+    return second_time
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(second_minimum_time_to_reach_destination)

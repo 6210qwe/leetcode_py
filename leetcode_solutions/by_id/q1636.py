@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历字符串，统计连续 '1' 的长度，并计算这些连续 '1' 子串的所有子串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为 0，用于记录结果。
+2. 初始化变量 `current_length` 为 0，用于记录当前连续 '1' 的长度。
+3. 遍历字符串 `s`：
+   - 如果当前字符是 '1'，则增加 `current_length`。
+   - 如果当前字符是 '0'，则根据 `current_length` 计算当前连续 '1' 子串的所有子串数量，并将其加到 `count` 中，然后重置 `current_length` 为 0。
+4. 遍历结束后，再处理一次 `current_length`，以确保最后一个连续 '1' 子串也被计算在内。
+5. 返回 `count` 对 10^9 + 7 取模的结果。
 
 关键点:
-- [TODO]
+- 使用公式 `(n * (n + 1)) // 2` 来计算长度为 `n` 的连续 '1' 子串的所有子串数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们只需要遍历字符串一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有字符都为 1 的子字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+    count = 0
+    current_length = 0
+
+    for char in s:
+        if char == '1':
+            current_length += 1
+        else:
+            count += (current_length * (current_length + 1)) // 2
+            current_length = 0
+
+    # 处理最后一个连续 '1' 子串
+    count += (current_length * (current_length + 1)) // 2
+
+    return count % MOD
 
 
 Solution = create_solution(solution_function_name)

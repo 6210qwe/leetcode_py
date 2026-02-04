@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到满足条件的最小多重集大小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 num 为 0，直接返回 0。
+2. 遍历从 1 到 num 的所有可能的多重集大小，检查是否存在一个大小使得所有元素的和为 num 且每个元素的个位数字为 k。
+3. 如果找到满足条件的多重集大小，返回该大小；否则返回 -1。
 
 关键点:
-- [TODO]
+- 通过遍历多重集大小来找到最小的满足条件的多重集。
+- 检查每个可能的多重集大小时，确保每个元素的个位数字为 k。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(num)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_numbers_with_units_digit_k(num: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到满足条件的最小多重集大小
     """
-    # TODO: 实现最优解法
-    pass
+    if num == 0:
+        return 0
+
+    for size in range(1, num + 1):
+        if (k * size) % 10 == num % 10 and (k * size) <= num:
+            if (num - k * size) % 10 == 0:
+                return size
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_numbers_with_units_digit_k)

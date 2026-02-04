@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们需要维护两个状态：当前行的最小操作数和前一行的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 DP 表，dp[i][j] 表示将第 i 行的所有元素变为 j 所需的最小操作数。
+2. 遍历每一行，更新 DP 表。
+3. 对于每一行，计算将当前行的所有元素变为某个值所需的最小操作数，并更新 DP 表。
+4. 返回最后一行的最小操作数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：dp[i][j] = min(dp[i][j], dp[i-1][k] + cost) 其中 k != j。
+- 使用滚动数组优化空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 10) - 其中 m 是行数，n 是列数，10 是可能的值的数量。
+空间复杂度: O(n * 10) - 使用滚动数组优化后的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations_to_satisfy_conditions(grid: List[List[int]]) -> int:
+    if not grid or not grid[0]:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    prev_row = [0] * 10
+    cur_row = [0] * 10
 
+    for i in range(m):
+        for j in range(10):
+            cur_row[j] = float('inf')
+            for k in range(10):
+                if j != k:
+                    cur_row[j] = min(cur_row[j], prev_row[k] + sum(1 for cell in grid[i] if cell != j))
+        
+        prev_row, cur_row = cur_row, prev_row
 
-Solution = create_solution(solution_function_name)
+    return min(prev_row)
+
+Solution = create_solution(min_operations_to_satisfy_conditions)

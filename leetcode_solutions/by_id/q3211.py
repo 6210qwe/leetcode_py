@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示以 nums[i] 结尾的最长非递减子数组的长度。我们需要维护一个单调递增的栈来帮助我们找到最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i] = 1，表示每个元素本身可以作为一个非递减子数组。
+2. 使用一个单调递增栈来存储 (num, index) 对，其中 num 是当前元素，index 是其在原数组中的索引。
+3. 遍历数组，对于每个元素 nums[i]：
+   - 如果栈顶元素小于等于 nums[i]，则直接将 (nums[i], i) 压入栈。
+   - 否则，弹出栈顶元素直到栈顶元素小于等于 nums[i]，并更新 dp[i] 为 dp[stack[-1][1]] + 1。
+4. 返回 dp 数组中的最大值。
 
 关键点:
-- [TODO]
+- 使用单调递增栈来维护非递减子数组的长度。
+- 动态规划数组 dp 用于记录以每个元素结尾的最长非递减子数组的长度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，用于存储 dp 数组和单调递增栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_max_non_decreasing_length(nums: List[int]) -> int:
+    n = len(nums)
+    if n == 1:
+        return 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    dp = [1] * n
+    stack = []
 
+    for i in range(n):
+        while stack and stack[-1][0] > nums[i]:
+            stack.pop()
+        if stack:
+            dp[i] = dp[stack[-1][1]] + 1
+        stack.append((nums[i], i))
 
-Solution = create_solution(solution_function_name)
+    return max(dp)
+
+Solution = create_solution(find_max_non_decreasing_length)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择每次跳跃的最大卡路里收益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个跳跃的起始位置和结束位置分别存储在两个列表中，并按起始位置排序。
+2. 使用一个优先队列（最大堆）来存储当前可以跳跃的位置及其对应的卡路里。
+3. 遍历所有跳跃，对于每个跳跃：
+   - 将其结束位置和卡路里加入优先队列。
+   - 移除优先队列中已经不能跳跃的位置。
+   - 从优先队列中取出当前可以跳跃的最大卡路里位置进行跳跃。
+4. 累加每次跳跃的最大卡路里，得到最终结果。
 
 关键点:
-- [TODO]
+- 通过优先队列确保每次选择的都是当前可以跳跃的最大卡路里位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是跳跃的数量。排序操作的时间复杂度为 O(n log n)，优先队列的操作总时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储跳跃的起始位置和结束位置，以及优先队列。
 """
 
 # ============================================================================
@@ -44,17 +49,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def max_calories_burnt(jumps: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算跳跃燃烧的最大卡路里
     """
-    # TODO: 实现最优解法
-    pass
+    # 按起始位置排序
+    jumps.sort(key=lambda x: x[0])
+    
+    # 优先队列（最大堆）
+    max_heap = []
+    max_calories = 0
+    current_pos = 0
+    
+    for start, end, calories in jumps:
+        # 将当前跳跃的结束位置和卡路里加入优先队列
+        heapq.heappush(max_heap, (-calories, end))
+        
+        # 移除优先队列中已经不能跳跃的位置
+        while max_heap and max_heap[0][1] < current_pos:
+            heapq.heappop(max_heap)
+        
+        # 如果优先队列不为空，选择当前可以跳跃的最大卡路里位置
+        if max_heap:
+            max_calories += -max_heap[0][0]
+            current_pos = max_heap[0][1]
+    
+    return max_calories
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_calories_burnt)

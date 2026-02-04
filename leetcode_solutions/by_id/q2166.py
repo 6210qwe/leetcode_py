@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的移动组合，并检查每个组合是否有效。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义每种棋子的移动方向。
+2. 使用回溯法生成所有可能的移动组合。
+3. 对于每个组合，检查是否有两个或更多棋子在同一时间占据同一格子。
+4. 统计有效组合的数量。
 
 关键点:
-- [TODO]
+- 使用回溯法生成所有可能的移动组合。
+- 检查每个组合的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(8^n) - 每个棋子有 8 个可能的移动方向。
+空间复杂度: O(n) - 递归调用栈的深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_valid_combinations(pieces: List[str], positions: List[List[int]]) -> int:
+    # 定义每种棋子的移动方向
+    directions = {
+        "rook": [(1, 0), (-1, 0), (0, 1), (0, -1)],
+        "queen": [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)],
+        "bishop": [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    }
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def is_valid_move(positions):
+        seen = set()
+        for pos in positions:
+            if pos in seen or not (1 <= pos[0] <= 8 and 1 <= pos[1] <= 8):
+                return False
+            seen.add(pos)
+        return True
 
+    def backtrack(index, current_positions):
+        if index == len(pieces):
+            if is_valid_move(current_positions):
+                return 1
+            return 0
 
-Solution = create_solution(solution_function_name)
+        count = 0
+        piece = pieces[index]
+        start = positions[index]
+        for dx, dy in directions[piece]:
+            for steps in range(9):
+                new_pos = (start[0] + dx * steps, start[1] + dy * steps)
+                if is_valid_move(current_positions + [new_pos]):
+                    count += backtrack(index + 1, current_positions + [new_pos])
+        return count
+
+    return backtrack(0, [])
+
+Solution = create_solution(count_valid_combinations)

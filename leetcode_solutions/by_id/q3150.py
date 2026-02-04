@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来找到最短且字典序最小的美丽子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 `left` 和 `right`，分别表示滑动窗口的左右边界。
+2. 使用一个计数器 `count` 来记录当前窗口内 '1' 的数量。
+3. 移动右指针扩展窗口，直到窗口内的 '1' 的数量达到 `k`。
+4. 当窗口内的 '1' 的数量达到 `k` 时，移动左指针收缩窗口，直到窗口内的 '1' 的数量小于 `k`。
+5. 在每次找到满足条件的窗口时，更新最短且字典序最小的美丽子字符串。
+6. 重复上述过程，直到遍历完整个字符串。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来找到最短的美丽子字符串。
+- 在找到多个最短美丽子字符串时，选择字典序最小的那个。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次由左指针，一次由右指针）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最短且字典序最小的美丽子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    left = 0
+    count = 0
+    min_length = float('inf')
+    result = ""
+
+    for right in range(n):
+        if s[right] == '1':
+            count += 1
+
+        while count == k:
+            current_length = right - left + 1
+            if current_length < min_length or (current_length == min_length and s[left:right+1] < result):
+                min_length = current_length
+                result = s[left:right+1]
+
+            if s[left] == '1':
+                count -= 1
+            left += 1
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

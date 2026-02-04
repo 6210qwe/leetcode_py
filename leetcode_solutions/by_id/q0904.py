@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 获取两棵树的叶值序列，并比较这两个序列是否相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `get_leaf_values` 来获取树的叶值序列。
+2. 对于每棵树，使用 `get_leaf_values` 获取其叶值序列。
+3. 比较两个叶值序列是否相同。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历树，确保叶值序列是从左到右的顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def get_leaf_values(root: Optional[TreeNode]) -> List[int]:
+    """获取树的叶值序列"""
+    if not root:
+        return []
+    if not root.left and not root.right:
+        return [root.val]
+    return get_leaf_values(root.left) + get_leaf_values(root.right)
 
-def solution_function_name(params):
+def leaf_similar(root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两棵树是否叶相似
     """
-    # TODO: 实现最优解法
-    pass
+    return get_leaf_values(root1) == get_leaf_values(root2)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(leaf_similar)

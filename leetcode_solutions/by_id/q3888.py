@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和预处理来计算子数组的最大 GCD，并结合二分查找来优化计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个子数组的最大 GCD。
+2. 使用动态规划来记录每个子数组的最大 GCD。
+3. 对于每个元素，尝试将其翻倍，并计算新的子数组的最大 GCD 分数。
+4. 返回最大可能的分数。
 
 关键点:
-- [TODO]
+- 预处理子数组的最大 GCD 以减少重复计算。
+- 使用动态规划来优化子数组的最大 GCD 计算。
+- 结合二分查找来优化计算过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -47,14 +51,43 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+def max_subarray_gcd_score(nums: List[int], k: int) -> int:
+    n = len(nums)
+    gcd_table = [[0] * n for _ in range(n)]
+    
+    # 预处理每个子数组的最大 GCD
+    for i in range(n):
+        gcd_table[i][i] = nums[i]
+        for j in range(i + 1, n):
+            gcd_table[i][j] = math.gcd(gcd_table[i][j - 1], nums[j])
+    
+    # 动态规划记录每个子数组的最大 GCD
+    dp = [[0] * n for _ in range(n)]
+    for length in range(1, n + 1):
+        for start in range(n - length + 1):
+            end = start + length - 1
+            dp[start][end] = gcd_table[start][end] * length
+    
+    # 尝试翻倍每个元素，并计算新的子数组的最大 GCD 分数
+    max_score = 0
+    for i in range(n):
+        new_nums = nums[:]
+        new_nums[i] *= 2
+        new_gcd_table = [[0] * n for _ in range(n)]
+        
+        for j in range(n):
+            new_gcd_table[j][j] = new_nums[j]
+            for l in range(j + 1, n):
+                new_gcd_table[j][l] = math.gcd(new_gcd_table[j][l - 1], new_nums[l])
+        
+        for length in range(1, n + 1):
+            for start in range(n - length + 1):
+                end = start + length - 1
+                new_dp = new_gcd_table[start][end] * length
+                max_score = max(max_score, new_dp)
+    
+    return max_score
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_subarray_gcd_score)

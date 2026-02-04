@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个哈希表分别记录每行和每列中 'B' 的数量，然后遍历矩阵找到满足条件的 'B'。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表，分别记录每行和每列中 'B' 的数量。
+2. 遍历矩阵，更新哈希表中的计数。
+3. 再次遍历矩阵，检查每个 'B' 是否是唯一的 'B'（即所在行和所在列中只有这一个 'B'）。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每行和每列中 'B' 的数量，可以快速判断某个 'B' 是否是唯一的 'B'。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 是矩阵的行数，n 是矩阵的列数。需要遍历矩阵两次。
+空间复杂度: O(m + n)，使用了两个哈希表来记录每行和每列中 'B' 的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findLonelyPixel(picture: List[List[str]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找孤独像素
     """
-    # TODO: 实现最优解法
-    pass
+    if not picture or not picture[0]:
+        return 0
 
+    m, n = len(picture), len(picture[0])
+    row_count = [0] * m
+    col_count = [0] * n
 
-Solution = create_solution(solution_function_name)
+    # 统计每行和每列中 'B' 的数量
+    for i in range(m):
+        for j in range(n):
+            if picture[i][j] == 'B':
+                row_count[i] += 1
+                col_count[j] += 1
+
+    # 检查每个 'B' 是否是唯一的 'B'
+    lonely_pixel_count = 0
+    for i in range(m):
+        for j in range(n):
+            if picture[i][j] == 'B' and row_count[i] == 1 and col_count[j] == 1:
+                lonely_pixel_count += 1
+
+    return lonely_pixel_count
+
+Solution = create_solution(findLonelyPixel)

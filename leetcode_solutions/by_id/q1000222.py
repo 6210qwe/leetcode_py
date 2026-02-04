@@ -21,40 +21,62 @@ LCP 36. 最多牌组数 - 麻将的游戏规则中，共有两种方式凑成「
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。首先对数组进行排序，然后使用一个计数器来记录每个数字的出现次数。接下来，我们使用一个二维动态规划数组 dp，其中 dp[i][j] 表示前 i 个数字中，剩余 j 个数字时的最大牌组数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用 Counter 记录每个数字的出现次数。
+3. 初始化动态规划数组 dp，其中 dp[i][j] 表示前 i 个数字中，剩余 j 个数字时的最大牌组数。
+4. 遍历每个数字，更新 dp 数组。
+5. 返回 dp 数组的最终结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理顺子和刻子的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 tiles 的长度，排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(n)，用于存储计数器和动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import Counter
 
-
-def solution_function_name(params):
+def maxGroupNumber(tiles: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回所给 tiles 最多可组成的牌组数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    tiles.sort()
+    
+    # 使用 Counter 记录每个数字的出现次数
+    count = Counter(tiles)
+    
+    # 初始化动态规划数组 dp
+    dp = [0] * (len(tiles) + 1)
+    
+    # 遍历每个数字，更新 dp 数组
+    for num in count:
+        new_dp = [0] * (len(tiles) + 1)
+        for j in range(len(tiles) + 1):
+            if j < count[num]:
+                new_dp[j] = dp[j]
+            else:
+                # 更新 dp 数组
+                new_dp[j] = max(dp[j], 
+                                dp[j - count[num]] + (count[num] // 3),  # 刻子
+                                dp[j - count[num] - 1] + (count[num] - 1) // 3 if num + 1 in count and count[num + 1] >= 1 else 0,  # 顺子
+                                dp[j - count[num] - 2] + (count[num] - 2) // 3 if num + 1 in count and count[num + 1] >= 1 and num + 2 in count and count[num + 2] >= 1 else 0)  # 顺子
+        dp = new_dp
+    
+    return dp[len(tiles)]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxGroupNumber)

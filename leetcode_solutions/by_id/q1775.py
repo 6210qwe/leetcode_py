@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用一个字典来存储 (id, value) 对。
+- 维护一个指针 ptr，指向下一个需要返回的 id。
+- 在每次插入时，检查是否有连续的 id 可以返回。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个字典来存储 (id, value) 对，并初始化指针 ptr 为 1。
+2. 在 insert 方法中，将 (id, value) 对存入字典。
+3. 从 ptr 开始，检查是否存在连续的 id，如果存在则将其对应的 value 加入结果列表，并更新 ptr。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用字典来存储 (id, value) 对，可以快速查找。
+- 维护一个指针 ptr 来跟踪下一个需要返回的 id。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 在最坏情况下，每次插入都需要遍历所有已插入的元素。
+空间复杂度: O(n) - 需要存储所有的 (id, value) 对。
 """
 
 # ============================================================================
@@ -49,12 +55,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class OrderedStream:
+
+    def __init__(self, n: int):
+        self.stream = {}  # 存储 (id, value) 对
+        self.ptr = 1  # 当前指针
+
+    def insert(self, id: int, value: str) -> List[str]:
+        self.stream[id] = value  # 将 (id, value) 对存入字典
+        result = []
+        
+        while self.ptr in self.stream:
+            result.append(self.stream[self.ptr])  # 添加连续的 value
+            self.ptr += 1  # 更新指针
+        
+        return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(OrderedStream)

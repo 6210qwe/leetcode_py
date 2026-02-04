@@ -21,40 +21,94 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用多层链表来实现跳表，每一层链表的节点数大约是上一层的一半。
+- 每个节点包含指向下一节点和下一层节点的指针。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化跳表时，创建头节点和尾节点。
+2. 在插入操作时，从最高层开始向下查找，找到合适的位置后插入新节点。
+3. 在删除操作时，从最高层开始向下查找，找到目标节点后删除。
+4. 在搜索操作时，从最高层开始向下查找，直到找到目标节点或到达最底层。
 
 关键点:
-- [TODO]
+- 使用随机化方法决定新节点的层数，以保持跳表的平衡。
+- 通过多层链表实现高效的插入、删除和搜索操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(n)) - 平均情况下，每个操作的时间复杂度为 O(log(n))。
+空间复杂度: O(n) - 每个节点的平均层数为 O(log(n))，因此总的空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import random
 
+class Node:
+    def __init__(self, val, level):
+        self.val = val
+        self.next = [None] * level
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Skiplist:
+    def __init__(self, p=0.5, max_level=32):
+        self.p = p
+        self.max_level = max_level
+        self.head = Node(-1, self.max_level)
+        self.level = 0
 
+    def _random_level(self):
+        level = 1
+        while random.random() < self.p and level < self.max_level:
+            level += 1
+        return level
 
-Solution = create_solution(solution_function_name)
+    def _update(self, target):
+        update = [None] * self.max_level
+        current = self.head
+        for i in range(self.level - 1, -1, -1):
+            while current.next[i] and current.next[i].val < target:
+                current = current.next[i]
+            update[i] = current
+        return update
+
+    def search(self, target):
+        current = self.head
+        for i in range(self.level - 1, -1, -1):
+            while current.next[i] and current.next[i].val < target:
+                current = current.next[i]
+            if current.next[i] and current.next[i].val == target:
+                return True
+        return False
+
+    def add(self, num):
+        level = self._random_level()
+        new_node = Node(num, level)
+        if level > self.level:
+            for i in range(self.level, level):
+                self.head.next[i] = new_node
+            self.level = level
+        update = self._update(num)
+        for i in range(level):
+            new_node.next[i] = update[i].next[i]
+            update[i].next[i] = new_node
+
+    def erase(self, num):
+        update = self._update(num)
+        current = update[0].next[0]
+        if not current or current.val != num:
+            return False
+        for i in range(self.level):
+            if update[i].next[i] != current:
+                break
+            update[i].next[i] = current.next[i]
+        while self.level > 1 and self.head.next[self.level - 1] is None:
+            self.level -= 1
+        return True
+
+Solution = create_solution(Skiplist)

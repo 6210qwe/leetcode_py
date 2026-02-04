@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法将一个数组从小到大排序，另一个数组从大到小排序，然后逐个元素相乘并累加，从而最小化乘积和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将第一个数组 nums1 按升序排序。
+2. 将第二个数组 nums2 按降序排序。
+3. 计算两数组对应位置元素的乘积，并累加结果。
 
 关键点:
-- [TODO]
+- 通过排序使较小的数与较大的数相乘，以最小化乘积和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，不需要额外的空间。
 """
 
 # ============================================================================
@@ -49,12 +50,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimize_product_sum(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将 nums1 升序排序
+    nums1.sort()
+    
+    # 将 nums2 降序排序
+    nums2.sort(reverse=True)
+    
+    # 计算乘积和
+    product_sum = sum(a * b for a, b in zip(nums1, nums2))
+    
+    return product_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimize_product_sum)

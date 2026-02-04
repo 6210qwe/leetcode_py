@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学公式求解中枢整数。根据题目条件，我们需要找到一个整数 x 使得 1 到 x 的和等于 x 到 n 的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算从 1 到 n 的总和 total_sum。
+2. 遍历 1 到 n，计算当前前缀和 prefix_sum。
+3. 如果 2 * prefix_sum == total_sum + x，则 x 是中枢整数。
+4. 如果遍历完没有找到符合条件的 x，则返回 -1。
 
 关键点:
-- [TODO]
+- 使用数学公式简化计算。
+- 通过一次遍历找到中枢整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出中枢整数
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = n * (n + 1) // 2  # 计算从 1 到 n 的总和
+    prefix_sum = 0  # 初始化前缀和
+
+    for x in range(1, n + 1):
+        prefix_sum += x  # 更新前缀和
+        if 2 * prefix_sum == total_sum + x:
+            return x  # 找到中枢整数
+
+    return -1  # 未找到中枢整数
 
 
 Solution = create_solution(solution_function_name)

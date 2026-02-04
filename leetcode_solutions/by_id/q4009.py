@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历数组，找到所有偶数并进行按位或运算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `result` 为 0，用于存储按位或运算的结果。
+2. 遍历数组 `nums`，对于每个元素，如果它是偶数，则将其与 `result` 进行按位或运算，并更新 `result`。
+3. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用按位或运算符 `|` 来合并所有偶数。
+- 只遍历一次数组，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def bitwise_or_of_even_numbers(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中所有偶数的按位或运算结果
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    for num in nums:
+        if num % 2 == 0:
+            result |= num
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(bitwise_or_of_even_numbers)

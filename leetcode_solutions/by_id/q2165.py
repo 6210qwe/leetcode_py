@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和二分查找来高效地解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有蜡烛的位置。
+2. 计算前缀和数组，记录每个位置之前有多少个盘子。
+3. 对于每个查询，使用二分查找找到最近的左侧和右侧蜡烛位置。
+4. 通过前缀和数组计算在两支蜡烛之间的盘子数量。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意区间内的盘子数量。
+- 二分查找可以快速找到最近的蜡烛位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q log n)，其中 n 是字符串 s 的长度，q 是查询的数量。
+空间复杂度: O(n)，用于存储前缀和数组和蜡烛位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+def plates_between_candles(s: str, queries: List[List[int]]) -> List[int]:
+    n = len(s)
+    prefix_sum = [0] * (n + 1)
+    candles = []
+    
+    # 计算前缀和数组和蜡烛位置
+    for i in range(n):
+        if s[i] == '*':
+            prefix_sum[i + 1] = prefix_sum[i] + 1
+        else:
+            prefix_sum[i + 1] = prefix_sum[i]
+            candles.append(i)
+    
+    result = []
+    for left, right in queries:
+        # 使用二分查找找到最近的左侧和右侧蜡烛位置
+        left_candle = bisect.bisect_left(candles, left)
+        right_candle = bisect.bisect_right(candles, right) - 1
+        
+        if left_candle < len(candles) and right_candle >= 0 and left_candle <= right_candle:
+            # 计算在两支蜡烛之间的盘子数量
+            result.append(prefix_sum[candles[right_candle] + 1] - prefix_sum[candles[left_candle]])
+        else:
+            result.append(0)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(plates_between_candles)

@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和轮转法来生成赛程，确保每支队伍与其他队伍恰好比赛两次，并且没有队伍在连续两天内比赛。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的赛程列表。
+2. 使用轮转法生成赛程，确保每支队伍与其他队伍比赛两次。
+3. 检查生成的赛程是否满足没有队伍在连续两天内比赛的条件。
+4. 如果满足条件，返回赛程；否则返回空列表。
 
 关键点:
-- [TODO]
+- 使用轮转法生成赛程，确保每支队伍与其他队伍比赛两次。
+- 检查生成的赛程是否满足没有队伍在连续两天内比赛的条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def generate_schedule(n: int) -> List[List[int]]:
+    if n % 2 == 0:
+        teams = list(range(n))
+        schedule = []
+        for _ in range(n - 1):
+            for i in range(n // 2):
+                schedule.append([teams[i], teams[n - 1 - i]])
+            teams.insert(1, teams.pop())
+        return schedule
+    else:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = generate_schedule

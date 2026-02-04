@@ -21,22 +21,26 @@ LCR 123. 图书整理 I - 书店店员有一张链表形式的书单，每个节
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来存储链表中的所有节点值，然后依次弹出栈中的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历链表，将每个节点的值压入栈中。
+3. 初始化一个空列表，用于存储结果。
+4. 依次从栈中弹出元素，并将其添加到结果列表中。
+5. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用栈来实现倒序。
+- 时间复杂度和空间复杂度均为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(head: Optional[ListNode]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用栈来存储链表中的所有节点值
+    stack = []
+    while head:
+        stack.append(head.val)
+        head = head.next
+    
+    # 依次从栈中弹出元素，并将其添加到结果列表中
+    result = []
+    while stack:
+        result.append(stack.pop())
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

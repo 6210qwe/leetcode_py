@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 利用按位运算的性质，将问题转化为线性时间复杂度的解决方案。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 arr1 中所有元素的按位与结果的异或和。
+2. 计算 arr2 中所有元素的按位与结果的异或和。
+3. 返回两个异或和的按位与结果。
 
 关键点:
-- [TODO]
+- 利用按位运算的结合律和分配律，可以将问题简化为线性时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 arr1 的长度，m 是 arr2 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_xor_sum_of_all_pairs_bitwise_and(arr1: List[int], arr2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算所有数对按位与结果的异或和
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 arr1 中所有元素的按位与结果的异或和
+    xor_sum_arr1 = 0
+    for num in arr1:
+        xor_sum_arr1 ^= num
+    
+    # 计算 arr2 中所有元素的按位与结果的异或和
+    xor_sum_arr2 = 0
+    for num in arr2:
+        xor_sum_arr2 ^= num
+    
+    # 返回两个异或和的按位与结果
+    return xor_sum_arr1 & xor_sum_arr2
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_xor_sum_of_all_pairs_bitwise_and)

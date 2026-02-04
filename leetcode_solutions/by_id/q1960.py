@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来检查句子中是否包含所有26个英文字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子转换为集合，去除重复字符。
+2. 检查集合的大小是否为26，如果是则说明句子是全字母句。
 
 关键点:
-- [TODO]
+- 使用集合可以高效地去重并检查字母的存在性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是句子的长度。因为我们需要遍历整个句子来构建集合。
+空间复杂度: O(1)，因为集合的最大大小为26（即字母表的大小），与输入大小无关。
 """
 
 # ============================================================================
@@ -49,12 +49,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def check_if_pangram(sentence: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查句子是否为全字母句
     """
-    # TODO: 实现最优解法
-    pass
+    # 将句子转换为集合，去除重复字符
+    unique_chars = set(sentence)
+    
+    # 检查集合的大小是否为26
+    return len(unique_chars) == 26
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_if_pangram)

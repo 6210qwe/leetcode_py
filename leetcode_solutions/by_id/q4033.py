@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 如果数组中所有元素的异或结果为0，则最长子序列长度为n-1；否则，最长子序列长度为n。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中所有元素的异或结果。
+2. 如果异或结果为0，则返回n-1；否则，返回n。
 
 关键点:
-- [TODO]
+- 通过计算整个数组的异或结果来判断是否存在非零的子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longest_subsequence_with_non_zero_bitwise_xor(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 nums 中 按位异或（XOR）计算结果 非零 的 最长子序列 的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组中所有元素的异或结果
+    xor_result = 0
+    for num in nums:
+        xor_result ^= num
+    
+    # 如果异或结果为0，则返回n-1；否则，返回n
+    if xor_result == 0:
+        return len(nums) - 1
+    else:
+        return len(nums)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_subsequence_with_non_zero_bitwise_xor)

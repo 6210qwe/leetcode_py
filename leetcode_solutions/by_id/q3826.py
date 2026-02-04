@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们使用一个整数来表示当前的状态，每一位表示一个节点是否已经被处理。对于每个状态，我们尝试处理每一个可以处理的节点，并更新最大利润。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 DP 数组 dp，其中 dp[mask] 表示状态 mask 下的最大利润。
+2. 枚举所有可能的状态 mask。
+3. 对于每个状态 mask，枚举每一个可以处理的节点 i。
+4. 更新 dp[mask] 为 dp[mask ^ (1 << i)] + (score[i] * (popcount(mask) + 1)) 的最大值。
+5. 返回 dp[(1 << n) - 1]，即所有节点都被处理后的最大利润。
 
 关键点:
-- [TODO]
+- 使用状态压缩来表示当前的状态。
+- 使用 popcount 函数来计算当前状态中已经处理的节点数量。
+- 动态规划转移方程为 dp[mask] = max(dp[mask], dp[mask ^ (1 << i)] + (score[i] * (popcount(mask) + 1)))。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n * n)，其中 n 是节点的数量。我们需要枚举所有可能的状态（2^n 个），并且对于每个状态需要枚举所有的节点（n 个）。
+空间复杂度: O(2^n)，用于存储 DP 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import functools
 
-
-def solution_function_name(params):
+def solution_function_name(n: int, edges: List[List[int]], score: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有向无环图中合法拓扑排序的最大利润
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建入度数组
+    indegree = [0] * n
+    for u, v in edges:
+        indegree[v] += 1
 
+    @functools.lru_cache(None)
+    def dp(mask: int, k: int) -> int:
+        if k == 0:
+            return 0
+        max_profit = 0
+        for i in range(n):
+            if (mask & (1 << i)) == 0 and indegree[i] == 0:
+                new_mask = mask | (1 << i)
+                profit = score[i] * k + dp(new_mask, k - 1)
+                max_profit = max(max_profit, profit)
+        return max_profit
+
+    all_nodes = (1 << n) - 1
+    return dp(all_nodes, n)
 
 Solution = create_solution(solution_function_name)

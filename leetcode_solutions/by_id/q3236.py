@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到最长的顺序前缀，并计算其和，然后找到第一个不在数组中的大于等于该和的整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历数组，找到最长的顺序前缀。
+2. 计算最长顺序前缀的和。
+3. 从该和开始，逐个检查是否存在数组中，直到找到第一个不存在的整数。
 
 关键点:
-- [TODO]
+- 使用集合来快速查找数组中的元素。
+- 通过遍历数组找到最长的顺序前缀。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_missing_integer(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到大于等于顺序前缀和的最小缺失整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数组转换为集合以进行快速查找
+    num_set = set(nums)
+    
+    # 找到最长的顺序前缀
+    prefix_sum = 0
+    for i in range(len(nums)):
+        if i == 0 or nums[i] == nums[i - 1] + 1:
+            prefix_sum += nums[i]
+        else:
+            break
+    
+    # 从最长顺序前缀的和开始，找到第一个不在数组中的整数
+    while prefix_sum in num_set:
+        prefix_sum += 1
+    
+    return prefix_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_missing_integer)

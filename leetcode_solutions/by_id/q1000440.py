@@ -21,40 +21,59 @@ LCP 57. 打地鼠 - 欢迎各位勇者来到力扣城，本次试炼主题为「
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划 + 二分查找
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将地鼠出现的时间按升序排序。
+2. 使用动态规划数组 dp 来记录在每个时间点能敲击的最大地鼠数。
+3. 对于每个地鼠，使用二分查找找到它之前最近的一个可以到达的位置。
+4. 更新 dp 数组，记录当前时间点能敲击的最大地鼠数。
 
 关键点:
-- [TODO]
+- 使用二分查找优化查找最近可到达位置的时间复杂度。
+- 动态规划状态转移方程：dp[i] = max(dp[i], dp[j] + 1)，其中 j 是 i 之前最近的一个可以到达的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是地鼠的数量。排序操作的时间复杂度是 O(n log n)，二分查找的时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储动态规划数组 dp。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from bisect import bisect_left
 
+def can_reach(prev, curr):
+    t1, x1, y1 = prev
+    t2, x2, y2 = curr
+    return abs(x1 - x2) + abs(y1 - y2) <= t2 - t1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(moles: List[List[int]]) -> int:
+    moles.sort()
+    n = len(moles)
+    dp = [0] * n
+    dp[0] = 1 if can_reach([0, 1, 1], moles[0]) else 0
 
+    for i in range(1, n):
+        dp[i] = dp[i - 1]
+        left, right = 0, i - 1
+        while left < right:
+            mid = (left + right) // 2
+            if can_reach(moles[mid], moles[i]):
+                right = mid
+            else:
+                left = mid + 1
+        if can_reach(moles[left], moles[i]):
+            dp[i] = max(dp[i], dp[left] + 1)
+        else:
+            dp[i] = max(dp[i], 1)
+
+    return dp[-1]
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）结合位运算来记录已收集的钥匙状态。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 BFS 队列，将起点位置及其初始状态（无钥匙）加入队列。
+2. 使用一个集合来记录已访问过的状态（位置和钥匙状态）。
+3. 开始 BFS 遍历：
+   - 从队列中取出当前节点。
+   - 检查是否已经收集到所有钥匙，如果是则返回步数。
+   - 否则，尝试向四个方向移动，更新位置和钥匙状态。
+   - 如果新位置合法且未被访问过，则将其加入队列。
+4. 如果 BFS 结束仍未找到所有钥匙，返回 -1。
 
 关键点:
-- [TODO]
+- 使用位运算来记录钥匙状态，节省空间。
+- 使用集合来记录已访问的状态，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * 2^k)，其中 m 和 n 分别是网格的行数和列数，k 是钥匙的数量。每个状态最多会被访问一次。
+空间复杂度: O(m * n * 2^k)，用于存储 BFS 队列和已访问状态集合。
 """
 
 # ============================================================================
@@ -49,12 +56,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortestPathAllKeys(grid: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回获取所有钥匙所需的最少移动次数
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    start = None
+    keys = set()
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == '@':
+                start = (i, j)
+            elif grid[i][j].islower():
+                keys.add(grid[i][j])
 
+    all_keys = (1 << len(keys)) - 1
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    queue = [(start[0], start[1], 0, 0)]  # (x, y, keys, steps)
+    visited = set([(start[0], start[1], 0)])
 
-Solution = create_solution(solution_function_name)
+    while queue:
+        x, y, state, steps = queue.pop(0)
+        if state == all_keys:
+            return steps
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < m and 0 <= ny < n:
+                cell = grid[nx][ny]
+                if cell == '#' or (cell.isupper() and not (state & (1 << (ord(cell) - ord('A'))))):
+                    continue
+                new_state = state | (1 << (ord(cell) - ord('a'))) if cell.islower() else state
+                if (nx, ny, new_state) not in visited:
+                    visited.add((nx, ny, new_state))
+                    queue.append((nx, ny, new_state, steps + 1))
+
+    return -1
+
+Solution = create_solution(shortestPathAllKeys)

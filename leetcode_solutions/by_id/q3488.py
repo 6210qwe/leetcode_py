@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来查找得分最高的学生。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用子查询找到最高分。
+2. 使用主查询筛选出得分为最高分的学生。
 
 关键点:
-- [TODO]
+- 子查询用于找到最高分。
+- 主查询用于筛选出得分为最高分的学生。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是学生的数量，m 是成绩的数量。
+空间复杂度: O(1)，因为只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -51,10 +52,19 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 SQL 查询来查找得分最高的学生
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询语句
+    query = """
+    SELECT student_id, score
+    FROM (
+        SELECT student_id, score,
+               RANK() OVER (ORDER BY score DESC) as rank
+        FROM scores
+    ) ranked_scores
+    WHERE rank = 1
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

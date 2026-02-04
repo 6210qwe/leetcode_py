@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将十进制数 n 转换为 k 进制，并计算其各位数字之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0。
+2. 使用循环将 n 不断除以 k，每次取余数并加到 `result` 中，然后更新 n 为 n 除以 k 的商。
+3. 当 n 为 0 时，结束循环，返回 `result`。
 
 关键点:
-- [TODO]
+- 通过取模运算获取当前位的值，并累加到结果中。
+- 通过整除运算更新 n，直到 n 为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log_k(n)) - 每次迭代 n 减少一个数量级。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_digits_in_base_k(n: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    将十进制数 n 转换为 k 进制，并计算其各位数字之和。
     """
-    # TODO: 实现最优解法
-    pass
+    result = 0
+    while n > 0:
+        result += n % k  # 取当前位的值并累加到结果中
+        n //= k  # 更新 n 为 n 除以 k 的商
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_digits_in_base_k)

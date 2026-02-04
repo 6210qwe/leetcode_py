@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录平衡因子（大于k的元素个数减去小于k的元素个数）。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找到k在数组中的位置。
+2. 计算前缀和，并使用哈希表记录每个平衡因子出现的次数。
+3. 遍历数组，计算当前的平衡因子，并根据哈希表中的记录更新结果。
 
 关键点:
-- [TODO]
+- 平衡因子的概念：大于k的元素个数减去小于k的元素个数。
+- 使用哈希表记录平衡因子出现的次数，以便快速查找。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_subarrays_with_median_k(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    统计中位数为K的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    k_index = nums.index(k)
+    prefix_sum = [0] * (n + 1)
+    balance_factor_count = {0: 1}
+    result = 0
+    
+    for i in range(1, n + 1):
+        if nums[i - 1] > k:
+            prefix_sum[i] = prefix_sum[i - 1] + 1
+        elif nums[i - 1] < k:
+            prefix_sum[i] = prefix_sum[i - 1] - 1
+        else:
+            prefix_sum[i] = prefix_sum[i - 1]
+        
+        if i > k_index:
+            result += balance_factor_count.get(prefix_sum[i] - 1, 0)
+            result += balance_factor_count.get(prefix_sum[i], 0)
+        
+        balance_factor_count[prefix_sum[i]] = balance_factor_count.get(prefix_sum[i], 0) + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = count_subarrays_with_median_k

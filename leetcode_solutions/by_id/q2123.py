@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用排序和单调栈来找到所有弱角色。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按照攻击力降序排序，如果攻击力相同，则按防御力升序排序。
+2. 从左到右遍历排序后的数组，维护一个单调递减的栈，存储当前遇到的最大防御力。
+3. 对于每个角色，如果其防御力小于栈顶元素，则该角色为弱角色。
 
 关键点:
-- [TODO]
+- 排序时，确保攻击力相同的角色按防御力升序排列，这样可以避免重复计算。
+- 使用单调栈来维护当前的最大防御力。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 properties 的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_weak_characters(properties: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算弱角色的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 按攻击力降序排序，如果攻击力相同，则按防御力升序排序
+    properties.sort(key=lambda x: (-x[0], x[1]))
+    
+    max_defense = 0
+    weak_count = 0
+    
+    for _, defense in properties:
+        if defense < max_defense:
+            weak_count += 1
+        else:
+            max_defense = defense
+    
+    return weak_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_weak_characters)

@@ -21,40 +21,58 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀异或和来快速计算区间异或值，并通过维护一个反转标记来处理子数组反转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀异或和数组 prefix_xor。
+2. 对于每个查询，根据反转标记决定是否需要反转区间。
+3. 使用前缀异或和数组快速计算区间异或值。
 
 关键点:
-- [TODO]
+- 使用前缀异或和可以将区间异或查询的时间复杂度降到 O(1)。
+- 通过反转标记来处理子数组反转，避免多次实际反转操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + q)，其中 n 是数组长度，q 是查询数量。
+空间复杂度: O(n)，用于存储前缀异或和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(arr: List[int], queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现范围异或查询与子数组反转
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(arr)
+    prefix_xor = [0] * (n + 1)
+    
+    # 计算前缀异或和
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ arr[i]
+    
+    def get_xor(l: int, r: int) -> int:
+        return prefix_xor[r + 1] ^ prefix_xor[l]
+    
+    result = []
+    flip = False
+    
+    for query in queries:
+        if len(query) == 2:
+            l, r = query
+            if flip:
+                l, r = n - 1 - l, n - 1 - r
+            result.append(get_xor(l, r))
+        else:
+            flip = not flip
+    
+    return result
 
 Solution = create_solution(solution_function_name)

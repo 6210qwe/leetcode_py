@@ -21,22 +21,28 @@ LCR 044. 在每个树行中找最大值 - 给定一棵二叉树的根节点 root
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来遍历每一层，并记录每一层的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将根节点加入队列。
+2. 开始层次遍历：
+   - 对于每一层，初始化一个变量来记录当前层的最大值。
+   - 遍历当前层的所有节点，更新当前层的最大值。
+   - 将当前层的所有子节点加入队列。
+3. 将每一层的最大值加入结果列表。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用队列进行层次遍历。
+- 每一层遍历时记录最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只会被访问一次。
+空间复杂度: O(n)，在最坏情况下，队列中会包含所有的叶子节点。
 """
 
 # ============================================================================
@@ -44,17 +50,30 @@ LCR 044. 在每个树行中找最大值 - 给定一棵二叉树的根节点 root
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_largest_values(root: Optional[TreeNode]) -> List[int]:
+    if not root:
+        return []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    queue = [root]
 
+    while queue:
+        level_max = float('-inf')
+        next_level = []
 
-Solution = create_solution(solution_function_name)
+        for node in queue:
+            level_max = max(level_max, node.val)
+            if node.left:
+                next_level.append(node.left)
+            if node.right:
+                next_level.append(node.right)
+
+        result.append(level_max)
+        queue = next_level
+
+    return result
+
+Solution = create_solution(find_largest_values)

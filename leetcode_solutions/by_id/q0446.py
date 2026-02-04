@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用动态规划来记录每个差值的子序列数量
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 初始化一个字典 `dp`，其中 `dp[i]` 是一个字典，记录以 `i` 结尾的等差子序列的数量。
+2. 遍历数组 `nums`，对于每一对 `(i, j)`，计算差值 `diff = nums[j] - nums[i]`。
+3. 更新 `dp[j][diff]`，将 `dp[i][diff]` 的值加到 `dp[j][diff]` 上，并将结果累加到总和 `total` 中。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用字典来存储每个差值的子序列数量，避免重复计算。
+- 动态规划的状态转移方程为 `dp[j][diff] += dp[i][diff] + 1`。
+- 注意边界条件，初始时 `dp[i]` 为空字典。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n^2) - 需要遍历每一对 (i, j)
+空间复杂度: O(n^2) - `dp` 字典的大小最多为 n^2
 """
 
 # ============================================================================
@@ -51,25 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def arithmetic_slices_ii_subsequence(params):
+def arithmetic_slices_ii_subsequence(nums: List[int]) -> int:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 计算等差子序列的数量
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用动态规划来记录每个差值的子序列数量。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 整数数组
         
     Returns:
-        [待实现] 返回值说明
+        等差子序列的数量
         
     Example:
-        >>> arithmetic_slices_ii_subsequence([待实现])
-        [待实现]
+        >>> arithmetic_slices_ii_subsequence([2,4,6,8,10])
+        7
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return 0
+
+    total = 0
+    dp = [{} for _ in range(n)]
+
+    for i in range(n):
+        for j in range(i):
+            diff = nums[i] - nums[j]
+            count = dp[j].get(diff, 0)
+            dp[i][diff] = dp[i].get(diff, 0) + count + 1
+            total += count
+
+    return total
 
 
 # 自动生成Solution类（无需手动编写）

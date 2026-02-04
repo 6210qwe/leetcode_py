@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示在前 i 个路标中进行 j 次合并后的最小旅行时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][0] 表示不进行任何合并时的旅行时间。
+2. 对于每个可能的合并次数 j，计算 dp[i][j]。
+3. 通过遍历所有可能的合并位置，更新 dp[i][j]。
+4. 最终结果保存在 dp[n-1][k] 中。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算合并后的旅行时间。
+- 动态规划的状态转移方程为 dp[i][j] = min(dp[i][j], dp[m][j-1] + cost(m+1, i))，其中 cost(m+1, i) 表示从 m+1 到 i 的合并成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(l: int, n: int, k: int, position: List[int], time: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算恰好 k 次合并后的最小总旅行时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 前缀和数组
+    prefix_sum = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix_sum[i] = prefix_sum[i - 1] + (position[i] - position[i - 1]) * time[i - 1]
+
+    # 动态规划数组
+    dp = [[float('inf')] * (k + 1) for _ in range(n)]
+    for i in range(n):
+        dp[i][0] = prefix_sum[i + 1]
+
+    for j in range(1, k + 1):
+        for i in range(j, n):
+            for m in range(i):
+                cost = (position[i] - position[m]) * (time[m] + time[i])
+                dp[i][j] = min(dp[i][j], dp[m][j - 1] + prefix_sum[i + 1] - prefix_sum[m + 1] - cost)
+
+    return dp[n - 1][k]
 
 
 Solution = create_solution(solution_function_name)

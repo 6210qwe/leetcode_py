@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来检查是否有环，并确保只有一个根节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历每个节点的左右子节点，如果子节点已经被访问过，则说明存在环，返回 False。
+3. 如果当前节点已经有父节点，也说明存在环，返回 False。
+4. 合并当前节点和其子节点。
+5. 最后检查是否只有一个根节点，如果有多个根节点则返回 False。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地检查环。
+- 确保只有一个根节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +52,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.parent[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.parent[rootX] = rootY
+            else:
+                self.parent[rootY] = rootX
+                self.rank[rootX] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def validate_binary_tree_nodes(n: int, left_child: List[int], right_child: List[int]) -> bool:
+    uf = UnionFind(n)
+    in_degree = [0] * n
+    
+    for i in range(n):
+        left, right = left_child[i], right_child[i]
+        if left != -1:
+            if in_degree[left] == 1:
+                return False
+            in_degree[left] += 1
+            if uf.find(i) == uf.find(left):
+                return False
+            uf.union(i, left)
+        if right != -1:
+            if in_degree[right] == 1:
+                return False
+            in_degree[right] += 1
+            if uf.find(i) == uf.find(right):
+                return False
+            uf.union(i, right)
+    
+    return sum(1 for i in range(n) if uf.find(i) == i and in_degree[i] == 0) == 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(validate_binary_tree_nodes)

@@ -21,40 +21,77 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从后往前逐步替换 target 中的字符，直到所有字符都被替换为 '?'。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `can_replace`，用于判断是否可以在某个位置替换印章。
+2. 初始化一个列表 `res` 用于存储每次替换的位置。
+3. 使用一个循环，不断尝试替换 target 中的字符，直到无法再替换为止。
+4. 如果最终 target 全部变为 '?'，则返回结果 `res` 的逆序，否则返回空列表。
 
 关键点:
-- [TODO]
+- 从后往前替换，确保每次替换都是最优的。
+- 使用贪心策略，尽可能多地替换字符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 target 的长度，m 是 stamp 的长度。每次替换操作的时间复杂度是 O(m)，最多进行 10 * n 次替换。
+空间复杂度: O(n)，用于存储结果和中间状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def can_replace(target: str, stamp: str, start: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以在 target 的 start 位置替换 stamp。
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(len(stamp)):
+        if target[start + i] != '?' and target[start + i] != stamp[i]:
+            return False
+    return True
+
+
+def move_stamp(target: str, stamp: str, res: List[int]) -> str:
+    """
+    尝试在 target 中找到可以替换 stamp 的位置，并进行替换。
+    """
+    new_target = list(target)
+    found = False
+    for i in range(len(target) - len(stamp) + 1):
+        if can_replace(target, stamp, i):
+            found = True
+            res.append(i)
+            for j in range(len(stamp)):
+                new_target[i + j] = '?'
+    return ''.join(new_target), found
+
+
+def solution_function_name(stamp: str, target: str) -> List[int]:
+    """
+    函数式接口 - 实现戳印序列
+    """
+    res = []
+    max_turns = 10 * len(target)
+    turns = 0
+    
+    while turns < max_turns:
+        target, found = move_stamp(target, stamp, res)
+        if not found:
+            break
+        turns += 1
+    
+    if target == '?' * len(target):
+        return res[::-1]
+    else:
+        return []
 
 
 Solution = create_solution(solution_function_name)

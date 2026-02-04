@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定吃掉所有谷子的最短时间。通过二分查找的时间复杂度为 O(log(max_time))，其中 max_time 是所有谷子中最大的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化二分查找的左右边界 left 和 right，left 为 0，right 为谷子中最大时间。
+2. 在每次迭代中，计算中间值 mid，并检查在 mid 时间内是否可以吃掉所有谷子。
+3. 如果可以，则将右边界 right 移动到 mid；否则，将左边界 left 移动到 mid + 1。
+4. 最终，左边界 left 即为吃掉所有谷子的最短时间。
 
 关键点:
-- [TODO]
+- 使用二分查找来缩小时间范围。
+- 检查在给定时间内是否可以吃掉所有谷子。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max_time))
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def can_eat_all_grains(grains: List[int], time: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    检查在给定时间内是否可以吃掉所有谷子。
     """
-    # TODO: 实现最优解法
-    pass
+    total_time = 0
+    for grain in grains:
+        total_time += (grain + time - 1) // time  # 向上取整
+        if total_time > time:
+            return False
+    return True
 
+def solution_function_name(grains: List[int]) -> int:
+    """
+    函数式接口 - 实现最优解法
+    """
+    left, right = 0, max(grains)
+    while left < right:
+        mid = (left + right) // 2
+        if can_eat_all_grains(grains, mid):
+            right = mid
+        else:
+            left = mid + 1
+    return left
 
 Solution = create_solution(solution_function_name)

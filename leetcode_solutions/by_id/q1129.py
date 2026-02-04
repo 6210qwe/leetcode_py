@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划 + 哈希表
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有单词按长度排序。
+2. 使用一个哈希表 dp 来存储每个单词的最长字符串链长度。
+3. 对于每个单词，尝试删除其每一个字符，生成新的单词。
+4. 在哈希表中查找新生成的单词的最长字符串链长度，并更新当前单词的最长字符串链长度。
+5. 最后返回哈希表中的最大值。
 
 关键点:
-- [TODO]
+- 使用哈希表来存储每个单词的最长字符串链长度，避免重复计算。
+- 通过删除字符来生成新的单词，从而找到当前单词的前身。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m^2)，其中 n 是单词的数量，m 是单词的最大长度。
+空间复杂度: O(n)，哈希表的大小与单词数量相同。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def longestStrChain(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长字符串链的长度
     """
-    # TODO: 实现最优解法
-    pass
+    # 按单词长度排序
+    words.sort(key=len)
+    
+    # 哈希表存储每个单词的最长字符串链长度
+    dp = {}
+    
+    for word in words:
+        dp[word] = 1  # 初始化每个单词的最长字符串链长度为1
+        for i in range(len(word)):
+            # 生成新的单词
+            new_word = word[:i] + word[i+1:]
+            if new_word in dp:
+                dp[word] = max(dp[word], dp[new_word] + 1)
+    
+    return max(dp.values())
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longestStrChain)

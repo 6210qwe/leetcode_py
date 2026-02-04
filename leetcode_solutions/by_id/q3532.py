@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来计算每个节点被标记的时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树结构。
+2. 定义一个递归函数 `dfs` 来计算从当前节点开始标记所有节点所需的时间。
+3. 对于每个节点，分别计算其作为起始节点时的标记时间，并存储在结果数组中。
 
 关键点:
-- [TODO]
+- 使用 DFS 从当前节点开始遍历树，计算每个节点的标记时间。
+- 奇数节点和偶数节点的标记时间不同，需要分别处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。每个节点和边都被访问一次。
+空间复杂度: O(n)，用于存储邻接表和递归调用栈。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def time_taken_to_mark_all_nodes(edges: List[List[int]]) -> List[int]:
+    def dfs(node: int, parent: int, is_odd: bool) -> int:
+        # 计算当前节点的最大子树高度
+        max_height = 0
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                height = dfs(neighbor, node, not is_odd)
+                max_height = max(max_height, height)
+        
+        # 根据节点编号的奇偶性计算标记时间
+        if is_odd:
+            return max_height + 1
+        else:
+            return max_height + 2
+    
+    n = len(edges) + 1
+    adj_list = [[] for _ in range(n)]
+    for u, v in edges:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
+    
+    result = [0] * n
+    for i in range(n):
+        result[i] = dfs(i, -1, i % 2 == 1)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(time_taken_to_mark_all_nodes)

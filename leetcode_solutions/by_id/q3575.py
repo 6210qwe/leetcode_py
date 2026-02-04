@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中选择 j 个元素的最大或值。然后通过枚举分割点来计算最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i][j] 表示前 i 个元素中选择 j 个元素的最大或值。
+2. 计算 dp 数组。
+3. 枚举分割点，计算最大值。
 
 关键点:
-- [TODO]
+- 使用动态规划预处理每个子集的最大或值。
+- 通过枚举分割点来计算最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_max_sequence_value(nums: List[int], k: int) -> int:
+    n = len(nums)
+    max_or = 0
+    for num in nums:
+        max_or |= num
+    
+    # 动态规划预处理每个子集的最大或值
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] | nums[i - 1])
+    
+    # 计算最大值
+    max_value = 0
+    for i in range(k, n - k + 1):
+        for j in range(k + 1):
+            max_value = max(max_value, (dp[i][j] ^ dp[n][k - j]))
+    
+    return max_value
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_max_sequence_value)

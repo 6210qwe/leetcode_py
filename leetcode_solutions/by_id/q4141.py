@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对数组进行排序，然后通过二分查找找到每个元素在排序数组中的位置，从而确定有多少个元素大于它。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用二分查找找到每个元素在排序数组中的位置。
+3. 计算每个元素右侧有多少个元素，并判断是否满足条件。
 
 关键点:
-- [TODO]
+- 排序后使用二分查找可以高效地找到每个元素的位置。
+- 通过计算每个元素右侧的元素数量来判断是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度为 O(n log n)，二分查找的时间复杂度为 O(log n)，总的时间复杂度为 O(n log n)。
+空间复杂度: O(1) - 除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_elements_with_at_least_k_greater_values(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计数组中至少有 k 个元素严格大于它的元素个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行排序
+    sorted_nums = sorted(nums)
+    
+    # 计算每个元素右侧有多少个元素
+    def count_greater_elements(x: int) -> int:
+        left, right = 0, len(sorted_nums)
+        while left < right:
+            mid = (left + right) // 2
+            if sorted_nums[mid] > x:
+                right = mid
+            else:
+                left = mid + 1
+        return len(sorted_nums) - left
+    
+    # 统计符合条件的元素个数
+    count = 0
+    for num in set(nums):
+        if count_greater_elements(num) >= k:
+            count += nums.count(num)
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_elements_with_at_least_k_greater_values)

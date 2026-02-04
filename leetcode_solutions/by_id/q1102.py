@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来确定目标值的左右边界，从而计算出目标值的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找找到目标值的左边界。
+2. 使用二分查找找到目标值的右边界。
+3. 计算目标值的出现次数，并判断是否超过数组长度的一半。
 
 关键点:
-- [TODO]
+- 二分查找的时间复杂度为 O(log n)，通过两次二分查找可以高效地找到目标值的边界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_left(nums: List[int], target: int) -> int:
+    left, right = 0, len(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
 
-def solution_function_name(params):
+def find_right(nums: List[int], target: int) -> int:
+    left, right = 0, len(nums)
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] <= target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+def is_majority_element(nums: List[int], target: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断目标值是否在数组中占绝大多数
     """
-    # TODO: 实现最优解法
-    pass
+    left_index = find_left(nums, target)
+    right_index = find_right(nums, target)
+    
+    # 如果目标值不存在于数组中
+    if left_index == len(nums) or nums[left_index] != target:
+        return False
+    
+    count = right_index - left_index
+    return count > len(nums) // 2
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_majority_element)

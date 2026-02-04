@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用三重循环枚举所有可能的分配方案，并检查每个方案是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用三重循环枚举三个小朋友的糖果数 i, j, k。
+3. 检查 i, j, k 是否满足条件：i + j + k == n 且 i, j, k 均不超过 limit。
+4. 如果满足条件，计数器 count 加 1。
+5. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 通过三重循环枚举所有可能的分配方案。
+- 每个小朋友的糖果数不能超过 limit。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(limit^3)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def distribute_candies(n: int, limit: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 分配糖果
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for i in range(min(n, limit) + 1):
+        for j in range(min(n - i, limit) + 1):
+            k = n - i - j
+            if 0 <= k <= limit:
+                count += 1
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(distribute_candies)

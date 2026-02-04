@@ -21,40 +21,68 @@ LCP 16. 游乐园的游览计划 - 又到了一年一度的春游时间，小吴
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用图的邻接表表示法，通过遍历每个节点及其相邻节点来找到满足条件的最大喜爱值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表。
+2. 遍历每个节点，计算其相邻节点对的最大喜爱值。
+3. 对于每个节点，找到两个不相交的相邻节点对，计算总喜爱值。
+4. 返回最大总喜爱值。
 
 关键点:
-- [TODO]
+- 使用邻接表存储图结构，便于快速查找相邻节点。
+- 通过遍历每个节点及其相邻节点对，确保找到所有可能的路径组合。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是节点数，m 是边数。构建邻接表的时间复杂度为 O(m)，遍历每个节点及其相邻节点对的时间复杂度为 O(n + m)。
+空间复杂度: O(n + m)，用于存储邻接表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_happiness(edges: List[List[int]], value: List[int]) -> int:
+    # 构建邻接表
+    graph = [[] for _ in range(len(value))]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    max_happiness = 0
+    
+    # 遍历每个节点
+    for a in range(len(value)):
+        if len(graph[a]) < 2:
+            continue
+        
+        # 找到节点 a 的相邻节点对 (b, c)
+        for i in range(len(graph[a])):
+            b = graph[a][i]
+            for j in range(i + 1, len(graph[a])):
+                c = graph[a][j]
+                if c in graph[b]:
+                    morning_happiness = value[a] + value[b] + value[c]
+                    
+                    # 找到另一个相邻节点对 (b', c')
+                    for k in range(len(graph[a])):
+                        b_prime = graph[a][k]
+                        if b_prime == b or b_prime == c:
+                            continue
+                        for l in range(k + 1, len(graph[a])):
+                            c_prime = graph[a][l]
+                            if c_prime == b or c_prime == c or c_prime not in graph[b_prime]:
+                                continue
+                            afternoon_happiness = value[a] + value[b_prime] + value[c_prime]
+                            total_happiness = morning_happiness + afternoon_happiness - value[a]
+                            max_happiness = max(max_happiness, total_happiness)
+    
+    return max_happiness
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_happiness)

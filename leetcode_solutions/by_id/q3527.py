@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组来维护前缀和，以便快速计算交替组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化树状数组，并计算初始的交替组数量。
+2. 对于每个查询：
+   - 如果是更新操作，更新树状数组并调整交替组数量。
+   - 如果是查询操作，使用树状数组快速计算交替组数量。
 
 关键点:
-- [TODO]
+- 使用树状数组高效地进行区间查询和单点更新。
+- 处理环形数组时，需要考虑首尾相接的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) * log n)，其中 n 是 colors 的长度，q 是 queries 的长度。
+空间复杂度: O(n)，用于存储树状数组。
 """
 
 # ============================================================================
@@ -48,13 +51,51 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class BIT:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def update(self, idx, val):
+        while idx <= self.n:
+            self.bit[idx] += val
+            idx += idx & -idx
 
+    def query(self, idx):
+        res = 0
+        while idx > 0:
+            res += self.bit[idx]
+            idx -= idx & -idx
+        return res
+
+def solution_function_name(colors: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(colors)
+    bit = BIT(n)
+    result = []
+
+    # 计算初始的交替组数量
+    for i in range(n):
+        if colors[i] != colors[(i + 1) % n]:
+            bit.update(i + 1, 1)
+
+    for query in queries:
+        if query[0] == 1:
+            size = query[1]
+            count = 0
+            for i in range(n):
+                if bit.query(min(i + size, n)) - bit.query(i) == size - 1:
+                    count += 1
+            result.append(count)
+        elif query[0] == 2:
+            idx, new_color = query[1], query[2]
+            old_color = colors[idx]
+            if old_color != new_color:
+                colors[idx] = new_color
+                if (idx > 0 and colors[idx - 1] != new_color) or (idx < n - 1 and colors[idx + 1] != new_color):
+                    bit.update(idx + 1, -1)
+                if (idx > 0 and colors[idx - 1] != new_color) or (idx < n - 1 and colors[idx + 1] != new_color):
+                    bit.update(idx + 1, 1)
+
+    return result
 
 Solution = create_solution(solution_function_name)

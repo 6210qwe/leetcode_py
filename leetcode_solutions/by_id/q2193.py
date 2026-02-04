@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个位置可以形成的金字塔和倒金字塔的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个二维数组 `dp_up` 和 `dp_down`，分别用于记录每个位置可以向上和向下扩展的最大金字塔高度。
+2. 遍历整个网格，对于每个肥沃的格子，更新 `dp_up` 和 `dp_down`。
+3. 计算每个位置可以形成的金字塔和倒金字塔的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程：
+  - `dp_up[i][j] = min(dp_up[i-1][j-1], dp_up[i-1][j+1]) + 1` 如果 `grid[i-1][j-1]` 和 `grid[i-1][j+1]` 都是肥沃的。
+  - `dp_down[i][j] = min(dp_down[i+1][j-1], dp_down[i+1][j+1]) + 1` 如果 `grid[i+1][j-1]` 和 `grid[i+1][j+1]` 都是肥沃的。
+- 边界条件处理：确保不会越界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。
+空间复杂度: O(m * n)，用于存储动态规划数组 `dp_up` 和 `dp_down`。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def count_fertile_pyramids(grid: List[List[int]]) -> int:
+    if not grid or not grid[0]:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    dp_up = [[0] * n for _ in range(m)]
+    dp_down = [[0] * n for _ in range(m)]
+    result = 0
 
+    # 计算向上扩展的最大金字塔高度
+    for i in range(1, m):
+        for j in range(1, n - 1):
+            if grid[i][j] == 1 and grid[i - 1][j - 1] == 1 and grid[i - 1][j + 1] == 1:
+                dp_up[i][j] = min(dp_up[i - 1][j - 1], dp_up[i - 1][j + 1]) + 1
+                result += dp_up[i][j]
 
-Solution = create_solution(solution_function_name)
+    # 计算向下扩展的最大倒金字塔高度
+    for i in range(m - 2, -1, -1):
+        for j in range(1, n - 1):
+            if grid[i][j] == 1 and grid[i + 1][j - 1] == 1 and grid[i + 1][j + 1] == 1:
+                dp_down[i][j] = min(dp_down[i + 1][j - 1], dp_down[i + 1][j + 1]) + 1
+                result += dp_down[i][j]
+
+    return result
+
+Solution = create_solution(count_fertile_pyramids)

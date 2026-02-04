@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过模拟二进制数的转换过程，逐步将二进制数减少到 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右到左遍历二进制字符串。
+2. 如果遇到 '0'，则直接跳过（相当于除以 2）。
+3. 如果遇到 '1'，则需要进行加 1 操作，并处理进位。
+4. 记录每一步操作的次数，直到二进制数变为 '1'。
 
 关键点:
-- [TODO]
+- 通过模拟二进制数的转换过程，避免直接将二进制数转换为十进制数进行计算，从而优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二进制字符串的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def number_of_steps_to_reduce_binary(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将二进制表示减到 1 的步骤数
     """
-    # TODO: 实现最优解法
-    pass
+    steps = 0
+    carry = 0
+    for i in range(len(s) - 1, 0, -1):
+        if s[i] == '1':
+            carry = 1
+            while carry:
+                if s[i] == '1':
+                    s = s[:i] + '0' + s[i+1:]
+                    steps += 1
+                else:
+                    break
+                i -= 1
+            steps += 1  # 加 1 操作
+        steps += 1  # 除以 2 操作
+    return steps
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(number_of_steps_to_reduce_binary)

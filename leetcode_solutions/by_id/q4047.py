@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个状态（偶数和奇数的不同数量差）第一次出现的位置，并通过前缀和来快速计算子数组的平衡性。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表分别记录偶数和奇数的不同数量。
+2. 遍历数组，更新当前的偶数和奇数不同数量。
+3. 计算当前状态（偶数和奇数的不同数量差）。
+4. 如果当前状态在哈希表中已经存在，则更新最长平衡子数组的长度。
+5. 如果当前状态不在哈希表中，则记录当前状态及其位置。
 
 关键点:
-- [TODO]
+- 使用哈希表记录状态及其位置，以快速查找和更新最长平衡子数组的长度。
+- 通过前缀和的思想，避免重复计算子数组的平衡性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储 n 个状态。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def longest_balanced_subarray(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回最长平衡子数组的长度
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+    
+    # 哈希表记录每个状态第一次出现的位置
+    seen = {0: -1}
+    even_count, odd_count = 0, 0
+    max_length = 0
+    
+    for i, num in enumerate(nums):
+        if num % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+        
+        # 当前状态
+        state = even_count - odd_count
+        
+        if state in seen:
+            # 更新最长平衡子数组的长度
+            max_length = max(max_length, i - seen[state])
+        else:
+            # 记录当前状态及其位置
+            seen[state] = i
+    
+    return max_length
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(longest_balanced_subarray)

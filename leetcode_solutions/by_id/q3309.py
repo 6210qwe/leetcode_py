@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历所有可能的下标对 (i, j)，并检查 words[i] 是否同时是 words[j] 的前缀和后缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用双重循环遍历所有可能的下标对 (i, j)，其中 i < j。
+3. 对于每一对 (i, j)，检查 words[i] 是否同时是 words[j] 的前缀和后缀。
+4. 如果是，则将计数器 count 加 1。
+5. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 使用字符串切片来检查前缀和后缀。
+- 双重循环的时间复杂度为 O(n^2)，但考虑到输入长度较小，可以接受。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是 words 的长度，m 是每个字符串的最大长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_prefix_suffix_pairs(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计满足条件的前后缀下标对
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    n = len(words)
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            if words[i] == words[j][:len(words[i])] and words[i] == words[j][-len(words[i]):]:
+                count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_prefix_suffix_pairs)

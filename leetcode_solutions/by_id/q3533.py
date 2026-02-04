@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过解析命令并更新蛇的位置来模拟蛇的移动。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化蛇的位置为 (0, 0)，对应于矩阵中的位置 0。
+2. 遍历命令列表，根据每个命令更新蛇的位置。
+3. 将最终位置转换为矩阵中的位置编号。
 
 关键点:
-- [TODO]
+- 使用方向字典来映射命令到坐标变化。
+- 确保蛇的位置在矩阵边界内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是命令的数量。
+空间复杂度: O(1)，只使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, commands: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据命令模拟蛇的移动并返回最终位置
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始位置
+    x, y = 0, 0
+    
+    # 方向字典
+    directions = {
+        "UP": (-1, 0),
+        "RIGHT": (0, 1),
+        "DOWN": (1, 0),
+        "LEFT": (0, -1)
+    }
+    
+    # 遍历命令
+    for command in commands:
+        dx, dy = directions[command]
+        x += dx
+        y += dy
+        
+        # 确保位置在矩阵边界内
+        x = max(0, min(x, n - 1))
+        y = max(0, min(y, n - 1))
+    
+    # 计算最终位置
+    final_position = x * n + y
+    return final_position
 
 
 Solution = create_solution(solution_function_name)

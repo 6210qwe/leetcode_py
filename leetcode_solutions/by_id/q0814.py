@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来计算每个轮调后的得分，并找到得分最高的轮调下标。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化差分数组 diff 和当前得分 current_score。
+2. 计算初始得分 current_score。
+3. 遍历每个可能的轮调 k，更新差分数组并计算新的得分。
+4. 记录得分最高的轮调下标。
 
 关键点:
-- [TODO]
+- 使用差分数组来高效地更新得分。
+- 通过遍历每个可能的轮调 k 来找到最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +52,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到得分最高的最小轮调下标
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    diff = [0] * (n + 1)
+    current_score = 0
+    
+    # 计算初始得分
+    for i in range(n):
+        if nums[i] <= i:
+            current_score += 1
+            diff[0] += 1
+            diff[i - nums[i] + 1] -= 1
+        else:
+            diff[i + 1] += 1
+            diff[n - (nums[i] - i)] -= 1
+    
+    max_score = current_score
+    best_k = 0
+    
+    # 遍历每个可能的轮调 k
+    for k in range(1, n):
+        current_score += diff[k]
+        if current_score > max_score:
+            max_score = current_score
+            best_k = k
+    
+    return best_k
 
 
 Solution = create_solution(solution_function_name)

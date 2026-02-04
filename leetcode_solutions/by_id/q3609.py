@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个产品的最终价格。首先，我们需要找到每个产品的最低折扣价，然后应用该折扣价计算最终价格。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个子查询来获取每个产品的最低折扣价。
+2. 在主查询中，使用子查询的结果来计算每个产品的最终价格。
 
 关键点:
-- [TODO]
+- 使用窗口函数 `MIN` 来获取每个产品的最低折扣价。
+- 使用 `CASE` 语句来处理没有折扣的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表的行数。因为我们需要对数据进行排序和分组操作。
+空间复杂度: O(n)，存储中间结果和最终结果所需的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现
+    query = """
+    SELECT 
+        product_id, 
+        CASE 
+            WHEN min_discounted_price IS NOT NULL THEN price * (1 - min_discounted_price) 
+            ELSE price 
+        END AS final_price
+    FROM (
+        SELECT 
+            product_id, 
+            price, 
+            MIN(discount) OVER (PARTITION BY product_id) AS min_discounted_price
+        FROM products
+    ) AS subquery
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

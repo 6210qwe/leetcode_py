@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针遍历字符串，比较每个字母组的长度是否满足扩张条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `group`，用于生成字符串中每个字母组及其长度。
+2. 遍历每个查询单词，使用双指针逐个比较字母组。
+3. 如果当前字母组不匹配，返回 False。
+4. 如果当前字母组匹配但长度不满足扩张条件，返回 False。
+5. 如果所有字母组都匹配且满足扩张条件，计数器加一。
 
 关键点:
-- [TODO]
+- 使用双指针遍历字符串，比较每个字母组的长度。
+- 确保扩展后的字母组长度至少为 3。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是查询单词的数量，m 是每个单词的平均长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def expressive_words(s: str, words: List[str]) -> int:
+    def group(word):
+        i = 0
+        while i < len(word):
+            count = 1
+            while i + 1 < len(word) and word[i] == word[i + 1]:
+                i += 1
+                count += 1
+            yield word[i], count
+            i += 1
+    
+    def is_stretchy(s, word):
+        s_groups = group(s)
+        word_groups = group(word)
+        
+        for (s_char, s_count), (word_char, word_count) in zip(s_groups, word_groups):
+            if s_char != word_char or (s_count < word_count) or (s_count < 3 and s_count != word_count):
+                return False
+        return next(s_groups, None) is None and next(word_groups, None) is None
+    
+    return sum(is_stretchy(s, word) for word in words)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(expressive_words)

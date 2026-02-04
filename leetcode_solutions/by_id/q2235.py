@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将输入字符串按空格分割成单词列表，然后对每个单词进行处理。如果单词长度小于等于2，则将其全部转换为小写；否则，将单词首字母大写，其余字母小写。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将输入字符串按空格分割成单词列表。
+2. 对每个单词进行处理：
+   - 如果单词长度小于等于2，将其全部转换为小写。
+   - 否则，将单词首字母大写，其余字母小写。
+3. 将处理后的单词重新拼接成一个字符串并返回。
 
 关键点:
-- [TODO]
+- 使用 Python 内置函数 `split` 和 `join` 来处理字符串。
+- 使用 `str.capitalize` 方法来将单词首字母大写，其余字母小写。
+- 使用 `str.lower` 方法来将单词全部转换为小写。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 title 的长度。我们需要遍历整个字符串来进行分割和处理。
+空间复杂度: O(n)，需要额外的空间来存储分割后的单词列表和最终的结果字符串。
 """
 
 # ============================================================================
@@ -49,12 +54,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def capitalize_title(title: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将标题首字母大写
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入字符串按空格分割成单词列表
+    words = title.split()
+    
+    # 对每个单词进行处理
+    for i in range(len(words)):
+        if len(words[i]) <= 2:
+            # 如果单词长度小于等于2，将其全部转换为小写
+            words[i] = words[i].lower()
+        else:
+            # 否则，将单词首字母大写，其余字母小写
+            words[i] = words[i].capitalize()
+    
+    # 将处理后的单词重新拼接成一个字符串并返回
+    return ' '.join(words)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(capitalize_title)

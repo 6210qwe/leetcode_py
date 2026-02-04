@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个元素的出现次数，并通过滑动窗口来模拟移除操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个元素的出现次数。
+2. 使用一个变量 `ops` 来记录操作次数。
+3. 使用一个指针 `i` 从数组的末尾向前遍历。
+4. 每次将当前元素的计数减一，如果计数为零则从哈希表中移除该元素。
+5. 如果当前哈希表的大小等于剩余元素的数量，则说明剩余元素互不相同，返回操作次数。
+6. 否则，增加操作次数并继续遍历。
 
 关键点:
-- [TODO]
+- 使用哈希表记录元素的出现次数，以便快速判断是否还有重复元素。
+- 通过从数组末尾向前遍历来模拟移除操作，确保每次操作都移除前三个元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_operations_to_distinct(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算得到互不相同元素的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    ops = 0
+    n = len(nums)
+    
+    for i in range(n - 1, -1, -1):
+        count[nums[i]] = count.get(nums[i], 0) + 1
+        if len(count) == n - 3 * ops:
+            return ops
+        if (n - i) % 3 == 0:
+            ops += 1
+            # Remove the first three elements
+            for j in range(3):
+                if i + j < n:
+                    count[nums[i + j]] -= 1
+                    if count[nums[i + j]] == 0:
+                        del count[nums[i + j]]
+    
+    return ops
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_distinct)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来查找两个数组的交集，并找到最小的共同数字。如果没有共同数字，则选择两个数组中最小的数字组合成两位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将两个数组转换为集合，以便快速查找交集。
+2. 找到两个集合的交集，如果交集不为空，则返回最小的共同数字。
+3. 如果没有共同数字，则分别找到两个数组中的最小数字，并组合成两位数，返回较小的两位数。
 
 关键点:
-- [TODO]
+- 使用集合操作来高效查找交集。
+- 通过比较两个数组中的最小数字来生成最小的两位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 nums1 和 nums2 的长度。集合操作的时间复杂度为 O(1)。
+空间复杂度: O(n + m)，用于存储两个集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    set1 = set(nums1)
+    set2 = set(nums2)
+    
+    # 找到两个集合的交集
+    common_digits = set1 & set2
+    if common_digits:
+        return min(common_digits)
+    
+    # 如果没有共同数字，则分别找到两个数组中的最小数字
+    min_num1 = min(nums1)
+    min_num2 = min(nums2)
+    
+    # 返回较小的两位数
+    return min(min_num1 * 10 + min_num2, min_num2 * 10 + min_num1)
 
 Solution = create_solution(solution_function_name)

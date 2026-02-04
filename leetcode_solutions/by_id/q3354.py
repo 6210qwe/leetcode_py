@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和优先队列来替换问号，使得替换后的字符串分数最小且字典序最小。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的出现次数。
+2. 使用优先队列（最小堆）来存储每个字符及其出现次数。
+3. 遍历字符串，对于每个问号，从优先队列中取出当前出现次数最少的字符进行替换，并更新其出现次数。
+4. 将替换后的字符放回优先队列中。
+5. 返回最终的字符串。
 
 关键点:
-- [TODO]
+- 使用优先队列来动态维护字符及其出现次数，确保每次替换时选择出现次数最少的字符。
+- 通过优先队列保证替换后的字符串在字典序上最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是字符串的长度。插入和删除操作的时间复杂度为 O(log n)。
+空间复杂度: O(1)，因为优先队列中最多只会存储 26 个字符。
 """
 
 # ============================================================================
@@ -47,14 +51,31 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换字符串中的问号使分数最小
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个字符的出现次数
+    char_count = [0] * 26
+    for char in s:
+        if char != '?':
+            char_count[ord(char) - ord('a')] += 1
+    
+    # 初始化优先队列
+    min_heap = []
+    for i in range(26):
+        heapq.heappush(min_heap, (char_count[i], chr(i + ord('a'))))
+    
+    # 构建结果字符串
+    result = list(s)
+    for i in range(len(result)):
+        if result[i] == '?':
+            count, char = heapq.heappop(min_heap)
+            result[i] = char
+            heapq.heappush(min_heap, (count + 1, char))
+    
+    return ''.join(result)
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们使用一个二维数组 dp[i][j] 来表示以 j 结尾的长度为 i 的锯齿形数组的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[1][j] 表示长度为 1 且以 j 结尾的锯齿形数组数量。
+2. 使用动态规划填充 dp 数组：
+   - 如果当前元素大于前一个元素，则 dp[i][j] += dp[i-1][k] for k < j。
+   - 如果当前元素小于前一个元素，则 dp[i][j] += dp[i-1][k] for k > j。
+3. 最后，将 dp[n][l...r] 的所有值相加即为结果。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 使用矩阵快速幂优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((r-l+1)^3 * log(n))
+空间复杂度: O((r-l+1)^2)
 """
 
 # ============================================================================
@@ -49,12 +53,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, l: int, r: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 n 且取值范围在 [l, r] 内的锯齿形数组的总数。
     """
-    # TODO: 实现最优解法
-    pass
+    MOD = 10**9 + 7
+
+    def matrix_mult(A, B):
+        m, n, p = len(A), len(B), len(B[0])
+        C = [[0] * p for _ in range(m)]
+        for i in range(m):
+            for j in range(p):
+                for k in range(n):
+                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+        return C
+
+    def matrix_pow(A, power):
+        result = [[1 if i == j else 0 for j in range(len(A))] for i in range(len(A))]
+        base = A
+        while power:
+            if power & 1:
+                result = matrix_mult(result, base)
+            base = matrix_mult(base, base)
+            power >>= 1
+        return result
+
+    # 构建初始状态转移矩阵
+    size = r - l + 1
+    dp = [[0] * size for _ in range(size)]
+    for i in range(size):
+        for j in range(size):
+            if i != j:
+                dp[i][j] = 1
+
+    # 矩阵快速幂
+    dp = matrix_pow(dp, n - 1)
+
+    # 计算结果
+    result = sum(sum(row) for row in dp) % MOD
+    return result
 
 
 Solution = create_solution(solution_function_name)

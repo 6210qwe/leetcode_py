@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理字符串中的 "AB" 和 "CD" 子串。每次遇到 "A" 或 "C" 时将其压入栈中，遇到 "B" 或 "D" 时检查栈顶元素是否为 "A" 或 "C"，如果是则弹出栈顶元素，否则将当前字符压入栈中。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历字符串 s 的每个字符：
+   - 如果当前字符是 "B" 且栈顶元素是 "A"，则弹出栈顶元素。
+   - 如果当前字符是 "D" 且栈顶元素是 "C"，则弹出栈顶元素。
+   - 否则，将当前字符压入栈中。
+3. 最后，栈中的字符即为删除所有 "AB" 和 "CD" 子串后的结果，返回栈的长度。
 
 关键点:
-- [TODO]
+- 使用栈来处理字符串中的 "AB" 和 "CD" 子串。
+- 每次遇到 "B" 或 "D" 时检查栈顶元素，决定是否弹出栈顶元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，在最坏情况下，栈中可能存储所有字符。
 """
 
 # ============================================================================
@@ -49,12 +54,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_length_after_removals(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删除所有 "AB" 和 "CD" 子串后的字符串最小长度
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for char in s:
+        if char == "B" and stack and stack[-1] == "A":
+            stack.pop()
+        elif char == "D" and stack and stack[-1] == "C":
+            stack.pop()
+        else:
+            stack.append(char)
+    return len(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_length_after_removals)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来获取每个产品在不同商店的销售数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表，包含每个产品的 ID 和对应的商店 ID。
+2. 使用 GROUP BY 对产品 ID 和商店 ID 进行分组，并计算每个组合的销售数量。
+3. 返回结果。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 COUNT 函数来统计每个产品在不同商店的销售数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是销售记录的数量。需要遍历所有记录来进行分组和计数。
+空间复杂度: O(m)，其中 m 是不同产品和商店组合的数量。需要存储这些组合及其销售数量。
 """
 
 # ============================================================================
@@ -48,13 +49,17 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
-
+    # SQL 查询实现最优解法
+    query = """
+    SELECT product_id, store, SUM(quantity) AS total_quantity
+    FROM sales
+    GROUP BY product_id, store
+    ORDER BY product_id, store;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

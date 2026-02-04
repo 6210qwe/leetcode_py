@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来找到所有连通分量。每个连通分量可以看作是一个独立的图，其中的石头可以通过移除操作使得只剩下一块石头。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集。
+2. 遍历每块石头，将同一行或同一列的石头进行合并。
+3. 计算连通分量的数量。
+4. 最大可移除石头数量为总石头数量减去连通分量的数量。
 
 关键点:
-- [TODO]
+- 并查集用于高效地管理和合并连通分量。
+- 通过行和列索引映射到并查集中的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是石头的数量。并查集的操作均摊时间复杂度接近 O(1)。
+空间复杂度: O(n)，并查集需要存储每个节点的父节点和秩。
 """
 
 # ============================================================================
@@ -49,12 +52,46 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+
+def solution_function_name(stones: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用并查集计算可以移除的最大石头数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(stones)
+    if n == 1:
+        return 0
+    
+    uf = UnionFind(20000)  # 0 <= xi, yi <= 10^4，所以使用 20000 个节点
+    for x, y in stones:
+        uf.union(x, y + 10000)  # 将行和列分别映射到不同的区间
+    
+    components = set()
+    for x, y in stones:
+        components.add(uf.find(x))
+    
+    return n - len(components)
 
 
 Solution = create_solution(solution_function_name)

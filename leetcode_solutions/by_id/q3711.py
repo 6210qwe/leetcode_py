@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式和字符串操作来处理文本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `capitalize_word` 来处理单个单词。
+2. 使用正则表达式将文本拆分为单词列表。
+3. 对每个单词应用 `capitalize_word` 函数。
+4. 将处理后的单词重新组合成字符串。
 
 关键点:
-- [TODO]
+- 使用正则表达式来识别连字符词。
+- 保持原始文本中的空格和其他格式不变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是文本的长度。
+空间复杂度: O(n)，用于存储处理后的文本。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import re
 
+def capitalize_word(word):
+    if '-' in word:
+        parts = word.split('-')
+        return '-'.join(part.capitalize() for part in parts)
+    else:
+        return word.capitalize()
 
-def solution_function_name(params):
+def solution_function_name(content_text):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将每个单词的首字母大写，其余字母小写，并处理连字符词。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用正则表达式将文本拆分为单词列表
+    words = re.findall(r'\b\w+\b', content_text)
+    
+    # 对每个单词应用 capitalize_word 函数
+    capitalized_words = [capitalize_word(word) for word in words]
+    
+    # 将处理后的单词重新组合成字符串
+    def replace_match(match):
+        return capitalized_words.pop(0)
+    
+    converted_text = re.sub(r'\b\w+\b', replace_match, content_text)
+    
+    return converted_text
 
 Solution = create_solution(solution_function_name)

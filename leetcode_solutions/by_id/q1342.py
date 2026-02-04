@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个方向上最近的皇后，然后检查这些皇后是否能攻击到国王。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `directions`，记录每个方向上最近的皇后。
+2. 遍历所有皇后，更新哈希表中每个方向上最近的皇后。
+3. 遍历哈希表，检查每个方向上最近的皇后是否能攻击到国王，如果可以则加入结果列表。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个方向上最近的皇后，避免重复计算。
+- 检查每个方向上最近的皇后是否能攻击到国王。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是皇后数量。我们只需要遍历一次皇后数组。
+空间复杂度: O(1)，哈希表的大小是固定的，最多有 8 个方向。
 """
 
 # ============================================================================
@@ -49,12 +51,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(queens: List[List[int]], king: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回能够直接攻击国王的黑皇后的坐标
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义八个方向
+    directions = [
+        (0, 1), (1, 0), (0, -1), (-1, 0),
+        (1, 1), (1, -1), (-1, 1), (-1, -1)
+    ]
+    
+    # 初始化哈希表，记录每个方向上最近的皇后
+    closest_queens = {d: None for d in directions}
+    
+    # 遍历所有皇后，更新哈希表中每个方向上最近的皇后
+    for queen in queens:
+        for d in directions:
+            if (queen[0] - king[0], queen[1] - king[1]) == d:
+                if closest_queens[d] is None or abs(queen[0] - king[0]) + abs(queen[1] - king[1]) < abs(closest_queens[d][0] - king[0]) + abs(closest_queens[d][1] - king[1]):
+                    closest_queens[d] = queen
+    
+    # 检查每个方向上最近的皇后是否能攻击到国王
+    result = [queen for queen in closest_queens.values() if queen is not None]
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

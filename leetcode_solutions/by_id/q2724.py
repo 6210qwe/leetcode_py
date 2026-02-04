@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和哈希表来构建二维数组，确保每一行的元素都是唯一的。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个哈希表记录每个元素出现的次数。
+2. 使用一个列表来存储结果二维数组。
+3. 遍历哈希表，将当前未使用的元素添加到新的一行中，直到所有元素都被使用完。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个元素的出现次数，确保每一行的元素都是唯一的。
+- 每次从哈希表中取出未使用的元素，确保行数最少。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def convert_to_2d_array(nums: List[int]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将一维数组转换为满足条件的二维数组
     """
-    # TODO: 实现最优解法
-    pass
+    # 记录每个元素出现的次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    result = []
+    
+    while count:
+        row = []
+        to_remove = []
+        for num in count:
+            row.append(num)
+            count[num] -= 1
+            if count[num] == 0:
+                to_remove.append(num)
+        
+        for num in to_remove:
+            del count[num]
+        
+        result.append(row)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_to_2d_array)

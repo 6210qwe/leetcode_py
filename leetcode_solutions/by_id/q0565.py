@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历每个起点，标记访问过的节点以避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `max_size` 来记录最大集合的大小。
+2. 遍历数组中的每个元素，如果该元素未被访问过，则从该元素开始进行DFS。
+3. 在DFS过程中，使用一个集合 `visited` 来记录已经访问过的节点，并更新当前集合的大小。
+4. 更新 `max_size` 为当前集合大小和 `max_size` 的较大值。
+5. 返回 `max_size`。
 
 关键点:
-- [TODO]
+- 使用集合 `visited` 来记录已经访问过的节点，避免重复计算。
+- 通过标记访问过的节点来优化时间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个节点最多只会被访问一次。
+空间复杂度: O(n)，最坏情况下需要存储所有的节点。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def array_nesting(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到数组嵌套的最大集合大小
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(index: int) -> int:
+        if index in visited:
+            return 0
+        visited.add(index)
+        return 1 + dfs(nums[index])
 
+    max_size = 0
+    visited = set()
+    for i in range(len(nums)):
+        if i not in visited:
+            max_size = max(max_size, dfs(i))
+    
+    return max_size
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(array_nesting)

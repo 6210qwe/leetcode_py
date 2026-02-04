@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来找到可以交换的最大子数组差值，并将其加到原始数组的总和上。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 nums1 和 nums2 的初始总和。
+2. 使用动态规划计算可以交换的最大子数组差值。
+3. 更新最大分数。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程是 dp[i] = max(dp[i-1] + diff, diff)，其中 diff = nums2[i] - nums1[i]。
+- 通过两次遍历分别计算从左到右和从右到左的最大子数组差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums1)
+    sum1 = sum(nums1)
+    sum2 = sum(nums2)
+
+    # 从左到右计算最大子数组差值
+    max_diff_left_to_right = 0
+    current_diff = 0
+    for i in range(n):
+        diff = nums2[i] - nums1[i]
+        current_diff = max(current_diff + diff, diff)
+        max_diff_left_to_right = max(max_diff_left_to_right, current_diff)
+
+    # 从右到左计算最大子数组差值
+    max_diff_right_to_left = 0
+    current_diff = 0
+    for i in range(n - 1, -1, -1):
+        diff = nums1[i] - nums2[i]
+        current_diff = max(current_diff + diff, diff)
+        max_diff_right_to_left = max(max_diff_right_to_left, current_diff)
+
+    # 更新最大分数
+    max_score = max(sum1 + max_diff_left_to_right, sum2 + max_diff_right_to_left)
+    return max_score
 
 
 Solution = create_solution(solution_function_name)

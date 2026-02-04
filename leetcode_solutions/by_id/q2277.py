@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历数组，检查每一对 (i, j) 是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 使用双重循环遍历数组，外层循环 i 从 0 到 n-2，内层循环 j 从 i+1 到 n-1。
+3. 检查 nums[i] 是否等于 nums[j] 且 (i * j) % k 是否等于 0。
+4. 如果满足条件，将计数器 count 加 1。
+5. 返回计数器 count 的值。
 
 关键点:
-- [TODO]
+- 使用双重循环遍历所有可能的 (i, j) 对。
+- 检查每个 (i, j) 对是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。因为我们需要遍历所有可能的 (i, j) 对。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_equal_and_divisible_pairs(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计数组中相等且可以被整除的数对
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    n = len(nums)
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            if nums[i] == nums[j] and (i * j) % k == 0:
+                count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_equal_and_divisible_pairs)

@@ -21,40 +21,96 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来高效处理区间反转和区间求和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，用于维护 nums1 的区间和。
+2. 对于每种操作：
+   - 操作类型 1: 使用线段树进行区间反转。
+   - 操作类型 2: 计算 nums1 的区间和，并更新 nums2。
+   - 操作类型 3: 计算 nums2 的当前和并记录结果。
 
 关键点:
-- [TODO]
+- 使用线段树来高效处理区间反转和区间求和。
+- 通过懒惰标记来优化区间反转操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O((n + q) * log n)，其中 n 是数组长度，q 是查询数量。
+空间复杂度: O(n)，线段树的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
+        self.lazy = [False] * (4 * n)
+
+    def push_down(self, node, start, end):
+        if self.lazy[node]:
+            mid = (start + end) // 2
+            self.tree[node * 2] = mid - start + 1 - self.tree[node * 2]
+            self.tree[node * 2 + 1] = end - mid - self.tree[node * 2 + 1]
+            self.lazy[node * 2] = not self.lazy[node * 2]
+            self.lazy[node * 2 + 1] = not self.lazy[node * 2 + 1]
+            self.lazy[node] = False
+
+    def update(self, node, start, end, l, r):
+        if l > end or r < start:
+            return
+        if l <= start and end <= r:
+            self.tree[node] = end - start + 1 - self.tree[node]
+            if start != end:
+                self.lazy[node] = not self.lazy[node]
+            return
+        self.push_down(node, start, end)
+        mid = (start + end) // 2
+        self.update(node * 2, start, mid, l, r)
+        self.update(node * 2 + 1, mid + 1, end, l, r)
+        self.tree[node] = self.tree[node * 2] + self.tree[node * 2 + 1]
+
+    def query(self, node, start, end, l, r):
+        if l > end or r < start:
+            return 0
+        if l <= start and end <= r:
+            return self.tree[node]
+        self.push_down(node, start, end)
+        mid = (start + end) // 2
+        return self.query(node * 2, start, mid, l, r) + self.query(node * 2 + 1, mid + 1, end, l, r)
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def handle_query(nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
+    n = len(nums1)
+    seg_tree = SegmentTree(n)
+    
+    for i in range(n):
+        if nums1[i] == 1:
+            seg_tree.update(1, 0, n - 1, i, i)
+    
+    result = []
+    sum_nums2 = sum(nums2)
+    
+    for query in queries:
+        if query[0] == 1:
+            l, r = query[1], query[2]
+            seg_tree.update(1, 0, n - 1, l, r)
+        elif query[0] == 2:
+            p = query[1]
+            ones_count = seg_tree.query(1, 0, n - 1, 0, n - 1)
+            sum_nums2 += ones_count * p
+        elif query[0] == 3:
+            result.append(sum_nums2)
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(handle_query)

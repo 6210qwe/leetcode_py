@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速计算每个位置的左右和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的总和。
+2. 遍历数组，同时维护一个左侧和的变量。
+3. 对于每个位置，检查左侧和是否等于总和减去当前元素再减去左侧和。
+4. 如果相等，则该位置为中心下标，返回该位置。
+5. 如果遍历完数组没有找到中心下标，返回 -1。
 
 关键点:
-- [TODO]
+- 使用前缀和可以避免重复计算，提高效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。需要遍历数组两次，一次计算总和，一次查找中心下标。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_pivot_index(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找数组的中心下标
     """
-    # TODO: 实现最优解法
-    pass
+    total_sum = sum(nums)
+    left_sum = 0
+    for i, num in enumerate(nums):
+        if left_sum == (total_sum - left_sum - num):
+            return i
+        left_sum += num
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_pivot_index)

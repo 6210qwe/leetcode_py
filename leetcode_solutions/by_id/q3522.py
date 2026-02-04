@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口检查每个长度为 k 的子数组是否满足条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `results`。
+2. 使用滑动窗口遍历数组 `nums`，检查每个长度为 k 的子数组：
+   - 检查子数组是否连续且上升。
+   - 如果满足条件，记录最大值；否则记录 -1。
+3. 返回结果数组 `results`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口可以高效地检查每个子数组。
+- 检查子数组是否连续且上升时，只需比较相邻元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输出数组）
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_power_of_k_size_subarrays(nums: List[int], k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算长度为 k 的子数组的能量值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    results = [-1] * (n - k + 1)
+
+    for i in range(n - k + 1):
+        if all(nums[i + j] == nums[i] + j for j in range(k)):
+            results[i] = nums[i + k - 1]
+
+    return results
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_power_of_k_size_subarrays)

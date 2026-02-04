@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滚动哈希来快速查找水平和垂直子串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算模式字符串的滚动哈希值。
+2. 对每一行进行滚动哈希，记录所有匹配的起始位置。
+3. 对每一列进行滚动哈希，记录所有匹配的起始位置。
+4. 找出同时在水平和垂直匹配中的单元格。
 
 关键点:
-- [TODO]
+- 使用滚动哈希可以高效地查找子串。
+- 通过预计算模式字符串的哈希值，可以快速比较子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m + n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def compute_rolling_hash(s: str, base: int, mod: int) -> List[int]:
+    hash_values = [0] * (len(s) + 1)
+    power = 1
+    for i in range(len(s)):
+        hash_values[i + 1] = (hash_values[i] + (ord(s[i]) - ord('a') + 1) * power) % mod
+        power = (power * base) % mod
+    return hash_values
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_substring_starts(text: str, pattern: str, base: int, mod: int) -> List[int]:
+    text_hash = compute_rolling_hash(text, base, mod)
+    pattern_hash = compute_rolling_hash(pattern, base, mod)[-1]
+    
+    starts = []
+    pattern_len = len(pattern)
+    for i in range(len(text) - pattern_len + 1):
+        if (text_hash[i + pattern_len] - text_hash[i] + mod) % mod == pattern_hash:
+            starts.append(i)
+    return starts
 
+def count_overlap_cells(grid: List[List[str]], pattern: str) -> int:
+    m, n = len(grid), len(grid[0])
+    base, mod = 257, 10**9 + 7
+    
+    # 将每行和每列转换为字符串
+    rows = [''.join(row) for row in grid]
+    cols = [''.join(grid[i][j] for i in range(m)) for j in range(n)]
+    
+    # 查找水平和垂直匹配的起始位置
+    row_matches = [find_substring_starts(row, pattern, base, mod) for row in rows]
+    col_matches = [find_substring_starts(col, pattern, base, mod) for col in cols]
+    
+    # 记录每个单元格是否在水平和垂直匹配中
+    horizontal_matches = set()
+    vertical_matches = set()
+    
+    for i, matches in enumerate(row_matches):
+        for start in matches:
+            for j in range(start, start + len(pattern)):
+                horizontal_matches.add((i, j))
+    
+    for j, matches in enumerate(col_matches):
+        for start in matches:
+            for i in range(start, start + len(pattern)):
+                vertical_matches.add((i, j))
+    
+    # 计算重叠单元格的数量
+    overlap_count = len(horizontal_matches & vertical_matches)
+    return overlap_count
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_overlap_cells)

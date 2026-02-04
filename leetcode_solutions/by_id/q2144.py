@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历数组来找到最大差值。我们需要维护一个当前最小值，并在遍历时更新最大差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最小值为数组的第一个元素，最大差值为 -1。
+2. 遍历数组，从第二个元素开始：
+   - 如果当前元素小于最小值，更新最小值。
+   - 否则，计算当前元素与最小值的差值，并更新最大差值。
+3. 返回最大差值。
 
 关键点:
-- [TODO]
+- 通过一次遍历即可找到最大差值，时间复杂度为 O(n)。
+- 只需要常数空间来存储最小值和最大差值，空间复杂度为 O(1)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximum_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算增量元素之间的最大差值
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums or len(nums) < 2:
+        return -1
+
+    min_val = nums[0]
+    max_diff = -1
+
+    for num in nums[1:]:
+        if num < min_val:
+            min_val = num
+        else:
+            max_diff = max(max_diff, num - min_val)
+
+    return max_diff
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximum_difference)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和最大堆来安排任务，以确保最短的时间间隔。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个任务的频率。
+2. 将任务频率存入最大堆中。
+3. 每次从堆中取出最多 n+1 个任务执行，并将剩余的任务频率重新放回堆中。
+4. 计算总的时间间隔。
 
 关键点:
-- [TODO]
+- 使用最大堆来动态获取当前频率最高的任务。
+- 每次从堆中取出 n+1 个任务，确保满足冷却时间要求。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log k)，其中 n 是任务的数量，k 是不同任务的种类数。每次插入和删除堆的操作时间复杂度为 O(log k)。
+空间复杂度: O(k)，用于存储任务频率的计数和最大堆。
 """
 
 # ============================================================================
@@ -47,14 +50,34 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(tasks: List[str], n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现任务调度器
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 统计每个任务的频率
+    task_counts = [0] * 26
+    for task in tasks:
+        task_counts[ord(task) - ord('A')] += 1
+    
+    # 将任务频率存入最大堆
+    max_heap = [-count for count in task_counts if count > 0]
+    heapq.heapify(max_heap)
+    
+    time = 0
+    while max_heap:
+        temp = []
+        for _ in range(n + 1):
+            if max_heap:
+                temp.append(heapq.heappop(max_heap))
+            time += 1
+            if not max_heap and all(x == 0 for x in temp):
+                break
+        for count in temp:
+            if count < -1:
+                heapq.heappush(max_heap, count + 1)
+    
+    return time
 
 Solution = create_solution(solution_function_name)

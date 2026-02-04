@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每对点之间的斜率，并计算可以形成梯形的组合数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `slope_map`，用于存储每对点之间的斜率。
+2. 遍历所有点对，计算它们之间的斜率，并将斜率存储在哈希表中。
+3. 对于每个斜率，如果它在哈希表中的出现次数大于等于2，则可以形成梯形。
+4. 计算可以形成梯形的组合数量。
 
 关键点:
-- [TODO]
+- 使用哈希表存储斜率，避免重复计算。
+- 斜率计算时需要考虑精度问题，使用分数表示斜率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
+from fractions import Fraction
 
+def count_trapezoids(points: List[List[int]]) -> int:
+    def get_slope(p1, p2):
+        if p1[0] == p2[0]:
+            return 'inf'
+        return Fraction(p2[1] - p1[1], p2[0] - p1[0])
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n = len(points)
+    slope_map = defaultdict(lambda: defaultdict(set))
+    for i in range(n):
+        for j in range(i + 1, n):
+            slope = get_slope(points[i], points[j])
+            slope_map[i][slope].add(j)
+            slope_map[j][slope].add(i)
 
+    trapezoid_count = 0
+    for i in range(n):
+        for slope, neighbors in slope_map[i].items():
+            m = len(neighbors)
+            if m >= 2:
+                trapezoid_count += m * (m - 1) // 2
 
-Solution = create_solution(solution_function_name)
+    return trapezoid_count
+
+Solution = create_solution(count_trapezoids)

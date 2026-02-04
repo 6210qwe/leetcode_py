@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学方法直接计算第 k 个字符，避免构造整个字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串长度达到 k 时所需的步数。
+2. 通过递归或迭代的方法找到第 k 个字符。
 
 关键点:
-- [TODO]
+- 通过数学公式直接计算第 k 个字符的位置，避免构造整个字符串。
+- 使用模运算和递归简化问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log k)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_kth_character(k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出第 k 个字符
     """
-    # TODO: 实现最优解法
-    pass
+    def next_char(c: str) -> str:
+        return chr((ord(c) - ord('a') + 1) % 26 + ord('a'))
+
+    def find_char(n: int) -> str:
+        if n == 1:
+            return 'a'
+        length = 1
+        step = 1
+        while length < n:
+            length = 2 * length + step
+            step += 1
+        if length == n:
+            return next_char(find_char(length // 2))
+        else:
+            return find_char(n - (length - step))
+
+    return find_char(k)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_character)

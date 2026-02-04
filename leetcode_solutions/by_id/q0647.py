@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中心扩展法来检查每个可能的回文中心，并统计回文子串的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 `count` 为 0。
+2. 遍历字符串的每一个字符，将其作为回文中心（奇数长度的回文）。
+3. 对于每一对相邻字符，将其作为回文中心（偶数长度的回文）。
+4. 在每个回文中心处，使用双指针向两边扩展，直到不再构成回文为止。
+5. 每次找到一个回文子串时，增加计数器 `count`。
 
 关键点:
-- [TODO]
+- 使用双指针从中心向两边扩展，可以有效地检查回文子串。
+- 通过遍历所有可能的回文中心，确保不会遗漏任何回文子串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 每个字符最多被检查两次（一次作为奇数长度回文中心，一次作为偶数长度回文中心），每次检查的时间复杂度为 O(n)。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def countSubstrings(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计字符串中的回文子串数量
     """
-    # TODO: 实现最优解法
-    pass
+    def expand_around_center(left: int, right: int) -> int:
+        count = 0
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            count += 1
+            left -= 1
+            right += 1
+        return count
+
+    total_count = 0
+    for i in range(len(s)):
+        # 奇数长度的回文
+        total_count += expand_around_center(i, i)
+        # 偶数长度的回文
+        if i + 1 < len(s):
+            total_count += expand_around_center(i, i + 1)
+
+    return total_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(countSubstrings)

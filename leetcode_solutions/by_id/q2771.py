@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个计时器来控制函数的调用频率
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化节流器，记录上一次调用的时间戳和当前时间戳
+2. 每次调用时，检查当前时间与上一次调用的时间差是否大于给定的时间间隔
+3. 如果时间差大于给定的时间间隔，则调用函数并更新上一次调用的时间戳
+4. 如果时间差小于给定的时间间隔，则不调用函数
 
 关键点:
-- [TODO]
+- 使用 `time` 模块获取当前时间戳
+- 通过比较时间差来决定是否调用函数
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用的时间复杂度是常数级别的
+空间复杂度: O(1) - 只需要常数级别的额外空间
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import time
+from typing import Callable, Any
+
+
+class Throttle:
+    def __init__(self, func: Callable, interval: int):
+        self.func = func
+        self.interval = interval
+        self.last_call_time = 0
+
+    def __call__(self, *args, **kwargs) -> Any:
+        current_time = time.time()
+        if current_time - self.last_call_time >= self.interval:
+            self.last_call_time = current_time
+            return self.func(*args, **kwargs)
+        else:
+            return None
 
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 无需实现，直接使用 Throttle 类
     """
-    # TODO: 实现最优解法
     pass
 
 
-Solution = create_solution(solution_function_name)
+Solution = lambda: Throttle
+
+# 示例使用
+if __name__ == "__main__":
+    def print_hello():
+        print("Hello, World!")
+
+    throttled_print_hello = Throttle(print_hello, 5)
+    for _ in range(10):
+        throttled_print_hello()
+        time.sleep(2)

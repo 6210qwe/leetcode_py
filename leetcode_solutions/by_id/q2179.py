@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 先对物品按价格排序，然后使用二分查找来处理每个查询。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对物品按价格进行排序。
+2. 使用一个字典来记录每个价格的最大美丽值。
+3. 对于每个查询，使用二分查找找到价格小于等于查询价格的最大美丽值。
 
 关键点:
-- [TODO]
+- 排序后可以利用二分查找快速定位。
+- 使用字典记录每个价格的最大美丽值，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 items 的长度，m 是 queries 的长度。排序的时间复杂度是 O(n log n)，每个查询的二分查找时间复杂度是 O(log n)。
+空间复杂度: O(n)，用于存储排序后的物品和字典。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_beauty(items: List[List[int]], queries: List[int]) -> List[int]:
+    # 按价格排序
+    items.sort(key=lambda x: x[0])
+    
+    # 记录每个价格的最大美丽值
+    max_beauty_dict = {}
+    max_beauty = 0
+    for price, beauty in items:
+        if beauty > max_beauty:
+            max_beauty = beauty
+        max_beauty_dict[price] = max_beauty
+    
+    # 处理每个查询
+    result = []
+    for query in queries:
+        # 二分查找
+        left, right = 0, len(items) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if items[mid][0] <= query:
+                left = mid + 1
+            else:
+                right = mid - 1
+        if right >= 0:
+            result.append(max_beauty_dict[items[right][0]])
+        else:
+            result.append(0)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_beauty)

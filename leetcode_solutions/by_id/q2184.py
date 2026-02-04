@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示 s1 的前 i 个字符和 s2 的前 j 个字符是否可以由同一个原字符串编码得到。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，大小为 (len(s1) + 1) x (len(s2) + 1)，初始值为 False。
+2. 设置 dp[0][0] 为 True，表示空字符串可以由空字符串编码得到。
+3. 遍历 s1 和 s2 的每个字符，根据字符是字母还是数字来更新 dp 数组。
+4. 如果当前字符是字母，则检查对应的字符是否相同，如果相同则更新 dp 数组。
+5. 如果当前字符是数字，则计算可能的长度范围，并更新 dp 数组。
+6. 最后返回 dp[len(s1)][len(s2)] 的值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程需要考虑字母和数字的不同情况。
+- 数字的处理需要考虑多个连续数字的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * 1000)，其中 n 和 m 分别是 s1 和 s2 的长度。最坏情况下，每个数字可以表示的最大长度为 1000。
+空间复杂度: O(n * m)，dp 数组的大小。
 """
 
 # ============================================================================
@@ -49,12 +54,39 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def can_be_encoded(s1: str, s2: str) -> bool:
+    len1, len2 = len(s1), len(s2)
+    dp = [[False] * (len2 + 1) for _ in range(len1 + 1)]
+    dp[0][0] = True
+
+    def get_length_range(s: str, start: int) -> (int, int):
+        length = 0
+        while start < len(s) and s[start].isdigit():
+            length = length * 10 + int(s[start])
+            start += 1
+        return max(1, length), min(1000, length)
+
+    for i in range(len1 + 1):
+        for j in range(len2 + 1):
+            if i > 0 and s1[i - 1].isalpha() and j > 0 and s2[j - 1].isalpha():
+                if s1[i - 1] == s2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1]
+            elif i > 0 and s1[i - 1].isdigit():
+                min_len, max_len = get_length_range(s1, i - 1)
+                for k in range(j, max(0, j - max_len - 1), -1):
+                    if dp[i - (i - k + 1)][k]:
+                        dp[i][j] = True
+                        break
+            elif j > 0 and s2[j - 1].isdigit():
+                min_len, max_len = get_length_range(s2, j - 1)
+                for k in range(i, max(0, i - max_len - 1), -1):
+                    if dp[k][j - (j - k + 1)]:
+                        dp[i][j] = True
+                        break
+            else:
+                dp[i][j] = dp[i - 1][j - 1]
+
+    return dp[len1][len2]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(can_be_encoded)

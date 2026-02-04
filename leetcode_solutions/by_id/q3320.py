@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算前两个元素的和作为目标分数，然后逐对检查后续元素是否满足该目标分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查输入数组长度是否小于2，如果是则直接返回0。
+2. 计算前两个元素的和作为目标分数。
+3. 初始化计数器为1（已经进行了第一次操作）。
+4. 从第三个元素开始，每次取两个元素，检查它们的和是否等于目标分数。
+5. 如果等于目标分数，则计数器加1，并继续检查下一组元素。
+6. 如果不等于目标分数或剩余元素不足两个，则停止操作并返回计数器的值。
 
 关键点:
-- [TODO]
+- 通过逐对检查元素，确保所有操作的分数相同。
+- 使用简单的循环和条件判断来实现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中n是数组的长度，因为我们需要遍历数组中的每个元素。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
+def max_operations_with_same_score(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最多可以进行的操作次数，确保所有操作的分数相同。
     """
-    # TODO: 实现最优解法
-    pass
+    if len(nums) < 2:
+        return 0
+
+    target_score = nums[0] + nums[1]
+    count = 1
+
+    for i in range(2, len(nums), 2):
+        if i + 1 < len(nums) and nums[i] + nums[i + 1] == target_score:
+            count += 1
+        else:
+            break
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_operations_with_same_score)

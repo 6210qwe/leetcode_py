@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来计算车队数量。首先计算每辆车到达目的地的时间，然后按位置从远到近排序。遍历排序后的车辆，如果当前车到达目的地的时间大于前一辆车，则形成一个新的车队。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每辆车到达目的地的时间。
+2. 按位置从远到近对车辆进行排序。
+3. 使用单调栈来计算车队数量。
 
 关键点:
-- [TODO]
+- 通过计算每辆车到达目的地的时间，可以确定哪些车会形成车队。
+- 使用单调栈可以有效地计算车队数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是车辆的数量。排序操作的时间复杂度是 O(n log n)，遍历操作的时间复杂度是 O(n)。
+空间复杂度: O(n)，需要额外的空间来存储每辆车到达目的地的时间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def car_fleet(target: int, position: List[int], speed: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算车队数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每辆车到达目的地的时间
+    time_to_target = [(target - p) / s for p, s in zip(position, speed)]
+    
+    # 按位置从远到近对车辆进行排序
+    sorted_pairs = sorted(zip(position, time_to_target), key=lambda x: x[0], reverse=True)
+    
+    # 使用单调栈来计算车队数量
+    stack = []
+    for _, time in sorted_pairs:
+        if not stack or time > stack[-1]:
+            stack.append(time)
+    
+    return len(stack)
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(car_fleet)

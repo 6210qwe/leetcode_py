@@ -21,40 +21,75 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集和二分查找来找到最小的最大成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有边按权重从小到大排序。
+2. 使用二分查找来确定最小的最大成本。
+3. 在每次二分查找的过程中，使用并查集来判断当前成本是否可以满足最多 k 个连通分量的要求。
 
 关键点:
-- [TODO]
+- 通过二分查找来优化搜索过程，减少不必要的计算。
+- 使用并查集来高效地管理连通分量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log E + E log W)，其中 E 是边的数量，W 是边权的最大值。
+空间复杂度: O(n)，其中 n 是节点的数量。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.parent[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.parent[rootX] = rootY
+            else:
+                self.parent[rootY] = rootX
+                self.rank[rootX] += 1
+            self.count -= 1
 
-Solution = create_solution(solution_function_name)
+def min_max_cost(n: int, edges: List[List[int]], k: int) -> int:
+    def is_valid(max_cost):
+        uf = UnionFind(n)
+        for u, v, w in sorted_edges:
+            if w <= max_cost:
+                uf.union(u, v)
+        return uf.count <= k
+
+    sorted_edges = sorted(edges, key=lambda x: x[2])
+    left, right = 0, max(edge[2] for edge in edges)
+
+    while left < right:
+        mid = (left + right) // 2
+        if is_valid(mid):
+            right = mid
+        else:
+            left = mid + 1
+
+    return left
+
+Solution = create_solution(min_max_cost)

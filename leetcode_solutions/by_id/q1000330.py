@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,40 +22,74 @@ LCR 066. 键值映射 - 实现一个 MapSum 类，支持两个方法，insert �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储键值对，并在每个节点上维护一个值，以便快速计算前缀和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 Trie 树。
+2. 在插入时，遍历键的每个字符，更新 Trie 节点的值。
+3. 在求和时，遍历前缀的每个字符，找到对应的 Trie 节点，然后递归计算该节点下所有子节点的值之和。
 
 关键点:
-- [TODO]
+- 使用 Trie 树来高效存储和查找前缀。
+- 在每个 Trie 节点上维护一个值，以便快速计算前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(L)，其中 L 是键或前缀的长度。
+空间复杂度: O(N * L)，其中 N 是插入的键的数量，L 是键的平均长度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TrieNode:
+    def __init__(self):
+        self.children: Dict[str, TrieNode] = {}
+        self.value: int = 0
 
 
-Solution = create_solution(solution_function_name)
+class MapSum:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, key: str, val: int) -> None:
+        node = self.root
+        for char in key:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.value = val
+
+    def sum(self, prefix: str) -> int:
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return 0
+            node = node.children[char]
+
+        return self._sum_subtree(node)
+
+    def _sum_subtree(self, node: TrieNode) -> int:
+        total = node.value
+        for child in node.children.values():
+            total += self._sum_subtree(child)
+        return total
+
+
+# 示例测试
+if __name__ == "__main__":
+    map_sum = MapSum()
+    map_sum.insert("apple", 3)
+    print(map_sum.sum("ap"))  # 输出 3
+    map_sum.insert("app", 2)
+    print(map_sum.sum("ap"))  # 输出 5
+```
+
+这个实现使用了字典树（Trie）来存储键值对，并在每个节点上维护一个值，以便快速计算前缀和。时间复杂度为 O(L)，空间复杂度为 O(N * L)。

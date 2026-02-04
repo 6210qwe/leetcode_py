@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和数学方法来避免直接构建字符串，从而减少时间和空间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化字符串长度 `n` 为 1（初始字符串 "a"）。
+2. 从后向前遍历 `operations` 数组，根据操作类型更新字符串长度 `n` 和索引 `k`。
+3. 如果 `operations[i] == 0`，则字符串长度翻倍。
+4. 如果 `operations[i] == 1`，则根据当前字符和索引 `k` 计算新的字符。
+5. 递归地计算最终结果。
 
 关键点:
-- [TODO]
+- 通过递归和数学方法避免直接构建字符串。
+- 使用模运算和除法来更新索引 `k` 和字符串长度 `n`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m)，其中 m 是 operations 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def find_kth_character(k: int, operations: List[int]) -> str:
+    def next_char(c: str) -> str:
+        return chr((ord(c) - ord('a') + 1) % 26 + ord('a'))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n = 1
+    for op in reversed(operations):
+        if op == 0:
+            n *= 2
+        else:
+            n *= 2
+            k -= 1  # Adjust k to account for the shift in the second half
+        k %= n
 
+    # Initial character is 'a'
+    c = 'a'
+    for op in operations:
+        if op == 0:
+            continue
+        c = next_char(c)
+    return c
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_kth_character)

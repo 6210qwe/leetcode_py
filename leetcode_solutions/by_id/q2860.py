@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 内置的 `sorted` 函数，通过 `key` 参数传递 `fn` 函数来进行自定义排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 `sorted` 函数对数组进行排序，`key` 参数设置为 `fn`。
+2. 返回排序后的数组。
 
 关键点:
-- [TODO]
+- 利用 Python 内置的 `sorted` 函数，时间复杂度为 O(n log n)，空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +49,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sort_by(arr: List, fn):
     """
-    函数式接口 - [TODO] 实现
+    根据给定的函数 fn 对数组 arr 进行排序。
+    :param arr: 待排序的数组
+    :param fn: 用于排序的函数
+    :return: 排序后的数组
     """
-    # TODO: 实现最优解法
-    pass
+    return sorted(arr, key=fn)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_by)

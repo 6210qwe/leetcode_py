@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算时针和分针的角度，然后求它们之间的夹角。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算分针的角度。
+2. 计算时针的角度。
+3. 求两者的绝对差值。
+4. 返回较小的角度。
 
 关键点:
-- [TODO]
+- 分针每分钟走 6 度。
+- 时针每小时走 30 度，并且每分钟走 0.5 度。
+- 最终角度取 360 度减去绝对差值后的最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def angle_clock(hour: int, minutes: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算时钟上时针和分针的夹角
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算分针的角度
+    minute_angle = minutes * 6
+    
+    # 计算时针的角度
+    hour_angle = (hour % 12) * 30 + minutes * 0.5
+    
+    # 求两者的绝对差值
+    diff_angle = abs(hour_angle - minute_angle)
+    
+    # 返回较小的角度
+    return min(diff_angle, 360 - diff_angle)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(angle_clock)

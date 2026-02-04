@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个位置的差值，并检查是否可以通过 k 的倍数来调整。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `diff_sum` 来记录总的差值。
+2. 遍历数组，计算每个位置的差值 `diff`，并累加到 `diff_sum` 中。
+3. 如果 `diff` 不是 k 的倍数，直接返回 -1。
+4. 最后，如果 `diff_sum` 不为 0，返回 -1；否则返回 `total_operations`。
 
 关键点:
-- [TODO]
+- 差值必须是 k 的倍数。
+- 总的差值必须为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_operations_to_make_equal(nums1: List[int], nums2: List[int], k: int) -> int:
+    if k == 0:
+        return 0 if nums1 == nums2 else -1
+    
+    diff_sum = 0
+    total_operations = 0
+    
+    for num1, num2 in zip(nums1, nums2):
+        diff = num1 - num2
+        if diff % k != 0:
+            return -1
+        diff_sum += diff
+        total_operations += abs(diff) // k
+    
+    if diff_sum != 0:
+        return -1
+    return total_operations
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_make_equal)

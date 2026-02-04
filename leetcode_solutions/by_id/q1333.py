@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用自定义排序函数来实现映射后的排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `map_number`，用于将单个数字按给定的映射规则转换。
+2. 使用 `sorted` 函数对 `nums` 进行排序，排序键为 `map_number` 返回的映射值。
+3. 返回排序后的数组。
 
 关键点:
-- [TODO]
+- 使用 `enumerate` 保持原始索引，以便在映射值相同时保持相对顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 `nums` 的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，存储映射后的值和索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def map_number(num: int, mapping: List[int]) -> int:
+    """将单个数字按给定的映射规则转换。"""
+    return int("".join(str(mapping[int(digit)]) for digit in str(num)))
 
-def solution_function_name(params):
+def sort_jumbled(nums: List[int], mapping: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    将数组 nums 中每个数按照它们映射后对应数字非递减顺序排序后返回。
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 enumerate 保持原始索引，以便在映射值相同时保持相对顺序
+    indexed_nums = list(enumerate(nums))
+    # 自定义排序，排序键为映射后的值
+    sorted_nums = sorted(indexed_nums, key=lambda x: (map_number(x[1], mapping), x[0]))
+    # 返回排序后的数组
+    return [num for _, num in sorted_nums]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sort_jumbled)

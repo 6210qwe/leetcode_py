@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每次操作的影响，并通过前缀和来检查是否可以将所有元素变为 0。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个差分数组 `diff`，长度为 `n + 1`。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`，在 `diff` 中记录 `+nums[i]` 和 `-nums[i]` 的位置。
+3. 计算前缀和数组 `prefix_sum`，并检查 `prefix_sum` 是否全为 0。
 
 关键点:
-- [TODO]
+- 使用差分数组来记录每次操作的影响。
+- 通过前缀和来检查是否可以将所有元素变为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def canMakeAllZero(nums: List[int], k: int) -> bool:
+    n = len(nums)
+    diff = [0] * (n + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    for i in range(n):
+        if nums[i] > 0:
+            if i + k > n:
+                return False
+            diff[i] += nums[i]
+            diff[i + k] -= nums[i]
 
+    prefix_sum = 0
+    for i in range(n):
+        prefix_sum += diff[i]
+        if prefix_sum != nums[i]:
+            return False
 
-Solution = create_solution(solution_function_name)
+    return True
+
+Solution = create_solution(canMakeAllZero)

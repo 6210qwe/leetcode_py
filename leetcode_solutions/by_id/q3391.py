@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个单元格的最大得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `max_right` 和 `max_down`，分别记录每个单元格向右和向下移动的最大得分。
+2. 从右下角开始，逆向遍历矩阵，更新 `max_right` 和 `max_down`。
+3. 计算每个单元格的最大得分，取 `max_right` 和 `max_down` 中的最大值。
+4. 返回最大得分。
 
 关键点:
-- [TODO]
+- 逆向遍历矩阵，确保每个单元格在计算时已经知道其右侧和下方的最大得分。
+- 使用两个辅助数组来存储中间结果，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(m * n)
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_difference_score(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算矩阵中的最大得分
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    
+    # 初始化两个辅助数组
+    max_right = [[0] * n for _ in range(m)]
+    max_down = [[0] * n for _ in range(m)]
+    
+    # 从右下角开始逆向遍历矩阵
+    for i in range(m - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            if i < m - 1:
+                max_down[i][j] = max(max_down[i + 1][j], grid[i + 1][j] - grid[i][j])
+            if j < n - 1:
+                max_right[i][j] = max(max_right[i][j + 1], grid[i][j + 1] - grid[i][j])
+    
+    # 计算每个单元格的最大得分
+    max_score = float('-inf')
+    for i in range(m):
+        for j in range(n):
+            max_score = max(max_score, max(max_right[i][j], max_down[i][j]))
+    
+    return max_score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_difference_score)

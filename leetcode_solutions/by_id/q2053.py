@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符的出现次数，然后检查这些次数是否都相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 collections.Counter 统计字符串中每个字符的出现次数。
+2. 将所有字符的出现次数存储在一个集合中。
+3. 如果集合的大小为 1，则说明所有字符的出现次数相同，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 使用 Counter 统计字符出现次数。
+- 使用集合来检查所有字符的出现次数是否相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。我们需要遍历字符串一次来统计字符出现次数。
+空间复杂度: O(1)，因为字符集是固定的（只有 26 个小写字母），所以使用的额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -47,14 +49,21 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
 
-def solution_function_name(params):
+def are_occurrences_equal(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查字符串中的所有字符是否出现次数相同
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用 Counter 统计每个字符的出现次数
+    char_count = Counter(s)
+    
+    # 将所有字符的出现次数存储在一个集合中
+    occurrences = set(char_count.values())
+    
+    # 如果集合的大小为 1，则说明所有字符的出现次数相同
+    return len(occurrences) == 1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(are_occurrences_equal)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个用户的总旅行距离，并按要求排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 Users 表和 Rides 表进行左连接，以获取每个用户的旅行记录。
+2. 使用 GROUP BY 对用户进行分组，并使用 SUM 函数计算每个用户的总旅行距离。
+3. 使用 COALESCE 函数将没有旅行记录的用户的旅行距离设为 0。
+4. 按 travelled_distance 降序排列，如果 travel_distance 相同，则按 name 升序排列。
 
 关键点:
-- [TODO]
+- 使用 LEFT JOIN 确保所有用户都包含在结果中，即使他们没有旅行记录。
+- 使用 COALESCE 处理 NULL 值，确保没有旅行记录的用户显示为 0。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是用户的数量。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询的空间复杂度主要取决于数据库的内部实现，但通常为常数级别。
 """
 
 # ============================================================================
@@ -49,12 +52,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(users: List[List[str]], rides: List[List[int]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个字典来存储每个用户的总旅行距离
+    user_distances = {}
+    
+    # 遍历 rides 表，计算每个用户的总旅行距离
+    for ride in rides:
+        user_id, distance = ride[1], ride[2]
+        if user_id in user_distances:
+            user_distances[user_id] += distance
+        else:
+            user_distances[user_id] = distance
+    
+    # 创建结果列表
+    result = []
+    
+    # 遍历 users 表，生成结果
+    for user in users:
+        user_id, name = int(user[0]), user[1]
+        travelled_distance = user_distances.get(user_id, 0)
+        result.append([name, travelled_distance])
+    
+    # 按 travelled_distance 降序排列，如果 travel_distance 相同，则按 name 升序排列
+    result.sort(key=lambda x: (-x[1], x[0]))
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

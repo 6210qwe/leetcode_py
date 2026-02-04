@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用笛卡尔积生成所有学生和所有科目的组合。
+2. 对于每个组合，计算该学生参加该科目的考试次数。
+3. 将结果按照 student_id 和 subject_name 排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 生成所有学生和所有科目的笛卡尔积。
+2. 计算每个学生在每个科目上的考试次数。
+3. 将结果合并并排序。
 
 关键点:
-- [TODO]
+- 使用笛卡尔积确保所有学生和所有科目的组合都被考虑到。
+- 使用聚合函数 COUNT 来计算每个学生在每个科目上的考试次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是学生数量，m 是科目数量。
+空间复杂度: O(n * m)，存储所有学生和所有科目的组合。
 """
 
 # ============================================================================
@@ -49,12 +54,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(students: List[List[str]], subjects: List[str], examinations: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查询每个学生参加每一门科目测试的次数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import defaultdict
+    from itertools import product
+
+    # 生成所有学生和所有科目的笛卡尔积
+    all_combinations = list(product(students, subjects))
+
+    # 计算每个学生在每个科目上的考试次数
+    exam_count = defaultdict(int)
+    for student_id, subject in examinations:
+        exam_count[(student_id, subject)] += 1
+
+    # 生成结果
+    result = []
+    for (student_id, student_name), subject in all_combinations:
+        count = exam_count.get((student_id, subject), 0)
+        result.append([student_id, student_name, subject, count])
+
+    # 按 student_id 和 subject_name 排序
+    result.sort(key=lambda x: (x[0], x[2]))
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

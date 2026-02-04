@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个余数出现的次数，从而快速找到满足条件的配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 60 的数组 `count`，用于记录每个余数出现的次数。
+2. 遍历 `time` 数组，对于每个元素 `t`，计算其对 60 取余的结果 `remainder`。
+3. 对于每个 `remainder`，查找 `count[(60 - remainder) % 60]` 的值，并累加到结果 `res` 中。
+4. 更新 `count[remainder]` 的值。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录每个余数出现的次数，从而快速找到满足条件的配对。
+- 通过取模运算将时间复杂度降低到 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(time: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回总持续时间可被 60 整除的歌曲对的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    count = [0] * 60
+    res = 0
+    
+    for t in time:
+        remainder = t % 60
+        res += count[(60 - remainder) % 60]
+        count[remainder] += 1
+    
+    return res
 
 Solution = create_solution(solution_function_name)

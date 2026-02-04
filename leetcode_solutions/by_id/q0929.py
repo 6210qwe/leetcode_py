@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过将每个字符串的偶数和奇数位置的字符分别排序，生成一个唯一的标识符来表示其特殊等价类。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每个字符串，将其偶数位置的字符和奇数位置的字符分别提取出来并排序。
+2. 将排序后的偶数位置字符和奇数位置字符拼接成一个新的字符串，作为该字符串的唯一标识符。
+3. 使用一个集合来存储这些唯一标识符，集合的大小即为特殊等价字符串组的数量。
 
 关键点:
-- [TODO]
+- 通过排序和拼接生成唯一标识符，确保相同特殊等价类的字符串具有相同的标识符。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m log m)，其中 n 是字符串数组的长度，m 是每个字符串的最大长度。每个字符串需要进行两次排序，每次排序的时间复杂度为 O(m log m)。
+空间复杂度: O(n * m)，用于存储每个字符串的唯一标识符。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def num_special_equiv_groups(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算特殊等价字符串组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    def get_identifier(s: str) -> str:
+        even_chars = []
+        odd_chars = []
+        for i, char in enumerate(s):
+            if i % 2 == 0:
+                even_chars.append(char)
+            else:
+                odd_chars.append(char)
+        even_chars.sort()
+        odd_chars.sort()
+        return ''.join(even_chars) + ''.join(odd_chars)
+
+    unique_identifiers = set()
+    for word in words:
+        identifier = get_identifier(word)
+        unique_identifiers.add(identifier)
+
+    return len(unique_identifiers)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_special_equiv_groups)

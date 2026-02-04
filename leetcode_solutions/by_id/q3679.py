@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算和二分查找来找到最大尺寸的子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向数组的起始位置。
+2. 使用一个变量 max_size 来记录当前找到的最大尺寸。
+3. 使用位运算来检查当前子数组是否满足条件。
+4. 如果满足条件，更新 max_size 并移动右指针扩大窗口；否则，移动左指针缩小窗口。
+5. 重复步骤 3-4 直到遍历完整个数组。
 
 关键点:
-- [TODO]
+- 使用位运算来快速判断子数组是否满足条件。
+- 使用二分查找来优化窗口的移动。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最大尺寸的子数组
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(arr)
+    if n == 0:
+        return 0
+
+    left, right = 0, 0
+    max_size = 0
+    current_xor = 0
+
+    while right < n:
+        current_xor ^= arr[right]
+        while current_xor & (current_xor - 1) != 0:
+            current_xor ^= arr[left]
+            left += 1
+        max_size = max(max_size, right - left + 1)
+        right += 1
+
+    return max_size
 
 
 Solution = create_solution(solution_function_name)

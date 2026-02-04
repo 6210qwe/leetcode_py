@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 语句来实现座位交换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 CASE WHEN 语句来判断每个学生的 id 是奇数还是偶数。
+2. 如果 id 是奇数且不是最后一个学生，则将其 id 增加 1。
+3. 如果 id 是偶数，则将其 id 减少 1。
+4. 如果 id 是奇数且是最后一个学生，则保持不变。
+5. 按新的 id 排序并返回结果。
 
 关键点:
-- [TODO]
+- 使用 CASE WHEN 语句来处理不同的 id 情况。
+- 确保最后一个学生的 id 不被交换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是学生的数量。我们需要遍历所有学生来进行交换。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def exchange_seats(seat: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    交换每两个连续的学生的座位号。如果学生的数量是奇数，则最后一个学生的id不交换。
+    按 id 升序 返回结果表。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将输入列表转换为字典，方便后续操作
+    seat_dict = {int(id): student for id, student in seat}
+    
+    # 获取学生总数
+    n = len(seat)
+    
+    # 用于存储结果的列表
+    result = []
+    
+    for i in range(1, n + 1):
+        if i % 2 == 0:
+            # 如果 id 是偶数，将其 id 减少 1
+            new_id = i - 1
+        elif i < n:
+            # 如果 id 是奇数且不是最后一个学生，将其 id 增加 1
+            new_id = i + 1
+        else:
+            # 如果 id 是奇数且是最后一个学生，保持不变
+            new_id = i
+        
+        # 将新 id 和对应的学生添加到结果列表中
+        result.append([new_id, seat_dict[i]])
+    
+    # 按新的 id 排序
+    result.sort(key=lambda x: x[0])
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(exchange_seats)

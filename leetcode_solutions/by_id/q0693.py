@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查相邻位是否交替出现
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 右移一位得到 n >> 1。
+2. 使用异或操作 (n ^ (n >> 1)) 检查相邻位是否交替出现。
+3. 如果结果的所有位都是 1，则说明相邻位交替出现。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地检查相邻位是否交替出现。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def has_alternating_bits(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查给定正整数的二进制表示是否总是 0、1 交替出现
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用位运算检查相邻位是否交替出现
+    x = n ^ (n >> 1)
+    return (x & (x + 1)) == 0
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(has_alternating_bits)

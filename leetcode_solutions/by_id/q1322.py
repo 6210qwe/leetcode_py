@@ -21,40 +21,78 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从起点到终点的最短路径。每个节点表示蛇的状态，包括蛇头的位置和方向。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列，将起始状态加入队列，并标记为已访问。
+2. 进行BFS遍历，每次从队列中取出一个状态，检查是否到达目标位置。
+3. 如果未到达目标位置，生成所有可能的下一步状态（向右、向下、旋转），并将未访问过的状态加入队列。
+4. 如果队列为空且未找到目标位置，返回-1。
 
 关键点:
-- [TODO]
+- 使用一个三维数组 visited 来记录每个状态是否被访问过。
+- 每个状态包含蛇头的位置和方向（水平或垂直）。
+- 通过检查下一个状态是否有效（即不越界且无障碍物）来生成下一步状态。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List, Tuple
+from collections import deque
 
+def minimumMoves(grid: List[List[int]]) -> int:
+    n = len(grid)
+    if grid[0][0] == 1 or grid[0][1] == 1:
+        return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 状态定义：(row, col, direction) 其中direction=0表示水平，direction=1表示垂直
+    start = (0, 0, 0)
+    end = (n - 1, n - 2, 0)
 
+    # 访问标记
+    visited = [[[False for _ in range(2)] for _ in range(n)] for _ in range(n)]
+    visited[0][0][0] = True
 
-Solution = create_solution(solution_function_name)
+    # 队列初始化
+    queue = deque([(start, 0)])
+
+    while queue:
+        (row, col, direction), moves = queue.popleft()
+
+        # 到达终点
+        if (row, col, direction) == end:
+            return moves
+
+        # 向右移动
+        if direction == 0 and col + 2 < n and grid[row][col + 2] == 0 and not visited[row][col + 1][direction]:
+            visited[row][col + 1][direction] = True
+            queue.append(((row, col + 1, direction), moves + 1))
+
+        # 向下移动
+        if direction == 1 and row + 2 < n and grid[row + 2][col] == 0 and not visited[row + 1][col][direction]:
+            visited[row + 1][col][direction] = True
+            queue.append(((row + 1, col, direction), moves + 1))
+
+        # 顺时针旋转
+        if direction == 0 and row + 1 < n and grid[row + 1][col] == 0 and grid[row + 1][col + 1] == 0 and not visited[row][col][1]:
+            visited[row][col][1] = True
+            queue.append(((row, col, 1), moves + 1))
+
+        # 逆时针旋转
+        if direction == 1 and col + 1 < n and grid[row][col + 1] == 0 and grid[row + 1][col + 1] == 0 and not visited[row][col][0]:
+            visited[row][col][0] = True
+            queue.append(((row, col, 0), moves + 1))
+
+    return -1
+
+Solution = create_solution(minimumMoves)

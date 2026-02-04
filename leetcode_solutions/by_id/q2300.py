@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针方法来构建字典序最大的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 统计每个字符的频率。
+2. 从字典序最大的字符开始，尽可能多地添加字符，直到达到 repeatLimit。
+3. 如果当前字符达到 repeatLimit，尝试添加下一个字典序最大的字符。
+4. 如果无法添加更多字符，结束构建。
 
 关键点:
-- [TODO]
+- 使用双指针方法来管理当前字符和下一个字符。
+- 确保每个字符的连续出现次数不超过 repeatLimit。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串并进行一些常数时间的操作。
+空间复杂度: O(1)，因为字母表的大小是固定的（26 个小写字母），所以使用的额外空间是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +52,41 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, repeatLimit: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构造限制重复的字符串
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个字符的频率
+    char_count = [0] * 26
+    for char in s:
+        char_count[ord(char) - ord('a')] += 1
+    
+    result = []
+    i = 25  # 从字典序最大的字符开始
+    j = 24  # 下一个字典序最大的字符
+    
+    while i >= 0:
+        if char_count[i] > 0:
+            # 尽可能多地添加当前字符
+            add_count = min(char_count[i], repeatLimit)
+            result.append(chr(i + ord('a')) * add_count)
+            char_count[i] -= add_count
+            
+            if char_count[i] > 0:
+                # 当前字符达到 repeatLimit，尝试添加下一个字符
+                while j >= 0 and char_count[j] == 0:
+                    j -= 1
+                if j >= 0:
+                    result.append(chr(j + ord('a')))
+                    char_count[j] -= 1
+                    j = min(j, 24)  # 更新 j 为下一个字典序最大的字符
+                else:
+                    break
+        else:
+            i -= 1
+            j = i - 1
+    
+    return ''.join(result)
 
 
 Solution = create_solution(solution_function_name)

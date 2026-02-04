@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 来找到最长的公共前缀。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算两个字符串长度的最大公约数。
+2. 提取该长度的子串作为候选解。
+3. 验证该子串是否能同时整除两个字符串。
 
 关键点:
-- [TODO]
+- 使用 `math.gcd` 函数来计算两个字符串长度的最大公约数。
+- 通过验证子串是否能整除两个字符串来确保结果的正确性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是 str1 和 str2 的长度。计算 GCD 的时间复杂度为 O(log(min(n, m)))，验证子串的时间复杂度为 O(n + m)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +49,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
 
-def solution_function_name(params):
+def gcd_of_strings(str1: str, str2: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回两个字符串的最大公因子。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算两个字符串长度的最大公约数
+    gcd_length = math.gcd(len(str1), len(str2))
+    
+    # 提取该长度的子串作为候选解
+    candidate = str1[:gcd_length]
+    
+    # 验证该子串是否能同时整除两个字符串
+    if str1 == candidate * (len(str1) // gcd_length) and str2 == candidate * (len(str2) // gcd_length):
+        return candidate
+    else:
+        return ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(gcd_of_strings)

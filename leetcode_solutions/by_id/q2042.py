@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过一次遍历找到数组中最大的两个数和最小的两个数，然后计算它们的乘积差。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化四个变量来存储最大的两个数和最小的两个数。
+2. 遍历数组，更新这四个变量。
+3. 计算并返回最大乘积差。
 
 关键点:
-- [TODO]
+- 一次遍历即可找到所需的四个数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要一次遍历来找到所需的四个数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_product_difference(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个数对之间的最大乘积差
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最大的两个数和最小的两个数
+    max1, max2 = float('-inf'), float('-inf')
+    min1, min2 = float('inf'), float('inf')
+
+    # 遍历数组，更新最大和最小的两个数
+    for num in nums:
+        if num > max1:
+            max1, max2 = num, max1
+        elif num > max2:
+            max2 = num
+
+        if num < min1:
+            min1, min2 = num, min1
+        elif num < min2:
+            min2 = num
+
+    # 计算并返回最大乘积差
+    return (max1 * max2) - (min1 * min2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_product_difference)

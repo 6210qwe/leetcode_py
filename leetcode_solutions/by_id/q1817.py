@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每周的存款总额和剩余天数的存款总额来求解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算完整的周数和剩余的天数。
+2. 计算完整周数的总存款。
+3. 计算剩余天数的总存款。
+4. 返回总存款。
 
 关键点:
-- [TODO]
+- 使用等差数列求和公式来计算每周的存款总额。
+- 递增每周的起始存款金额。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def calculate_money_in_leetcode_bank(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算第 n 天结束时在力扣银行的总存款
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算完整的周数和剩余的天数
+    full_weeks = n // 7
+    remaining_days = n % 7
+    
+    # 计算完整周数的总存款
+    total_deposit = 0
+    for week in range(full_weeks):
+        start_deposit = week + 1
+        total_deposit += (start_deposit + (start_deposit + 6)) * 7 // 2
+    
+    # 计算剩余天数的总存款
+    start_deposit = full_weeks + 1
+    total_deposit += (start_deposit + (start_deposit + remaining_days - 1)) * remaining_days // 2
+    
+    return total_deposit
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calculate_money_in_leetcode_bank)

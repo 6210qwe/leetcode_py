@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个数组分别记录每个位置左侧和右侧的连续递增和递减长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `left` 和 `right`，分别记录每个位置左侧和右侧的连续递增和递减长度。
+2. 从左到右遍历字符串，填充 `left` 数组。
+3. 从右到左遍历字符串，填充 `right` 数组。
+4. 再次遍历字符串，检查每个位置是否满足 `left[i-1] >= k` 和 `right[i+1] >= k`，如果满足则该位置为好索引。
 
 关键点:
-- [TODO]
+- 使用两个数组分别记录左侧和右侧的连续递增和递减长度，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数字字符串中的所有好索引
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    if n < 2 * k + 1:
+        return []
+
+    left = [0] * n
+    right = [0] * n
+
+    # 填充 left 数组
+    for i in range(1, n):
+        if s[i] <= s[i - 1]:
+            left[i] = left[i - 1] + 1
+
+    # 填充 right 数组
+    for i in range(n - 2, -1, -1):
+        if s[i] <= s[i + 1]:
+            right[i] = right[i + 1] + 1
+
+    # 检查每个位置是否为好索引
+    good_indices = []
+    for i in range(k, n - k):
+        if left[i - 1] >= k and right[i + 1] >= k:
+            good_indices.append(i)
+
+    return good_indices
 
 
 Solution = create_solution(solution_function_name)

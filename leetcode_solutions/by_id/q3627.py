@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法找到从起点 (0, 0) 到终点 (n-1, m-1) 的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个优先队列，将起点 (0, 0) 和初始时间 0 加入队列。
+2. 使用一个二维数组 dist 来记录从起点到每个点的最短时间。
+3. 从优先队列中取出当前时间最小的节点，更新其相邻节点的时间，并将其加入队列。
+4. 重复步骤 3，直到队列为空或到达终点 (n-1, m-1)。
 
 关键点:
-- [TODO]
+- 使用优先队列来确保每次处理的是当前时间最小的节点。
+- 更新相邻节点的时间时，需要考虑移动时间和房间开启时间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m * log(n * m))，其中 n 和 m 分别是网格的行数和列数。优先队列的插入和删除操作的时间复杂度是 O(log(n * m))，最多有 n * m 个节点。
+空间复杂度: O(n * m)，用于存储距离数组和优先队列。
 """
 
 # ============================================================================
@@ -44,17 +47,37 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(moveTime: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用 Dijkstra 算法找到从起点 (0, 0) 到终点 (n-1, m-1) 的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    n, m = len(moveTime), len(moveTime[0])
+    if n == 1 and m == 1:
+        return moveTime[0][0]
 
+    # 定义方向数组
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # 初始化距离数组
+    dist = [[float('inf')] * m for _ in range(n)]
+    dist[0][0] = max(0, moveTime[0][0])
+
+    # 初始化优先队列
+    pq = [(dist[0][0], 0, 0)]
+
+    while pq:
+        time, x, y = heapq.heappop(pq)
+        if x == n - 1 and y == m - 1:
+            return time
+
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < n and 0 <= ny < m:
+                new_time = max(time + 1, moveTime[nx][ny])
+                if new_time < dist[nx][ny]:
+                    dist[nx][ny] = new_time
+                    heapq.heappush(pq, (new_time, nx, ny))
 
 Solution = create_solution(solution_function_name)

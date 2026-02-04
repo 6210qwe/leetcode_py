@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个数字在二进制表示下每一位上1的数量，然后对这些数量进行累加。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 `count_bits` 来计算一个数字在二进制表示下每一位上1的数量。
+2. 遍历每个查询，对于每个查询范围 [l, r]，计算每个数字在二进制表示下每一位上1的数量，并累加。
+3. 返回所有查询结果的总和。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地计算每个数字在二进制表示下每一位上1的数量。
+- 对每个查询范围内的数字进行处理，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * log(max(r)))，其中 n 是 queries 的长度，max(r) 是查询范围的最大值。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_bits(num: int) -> int:
+    """计算一个数字在二进制表示下每一位上1的数量。"""
+    count = 0
+    while num > 0:
+        count += num & 1
+        num >>= 1
+    return count
+
+
+def solution_function_name(queries: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组元素都变为零的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    total_operations = 0
+    for l, r in queries:
+        for num in range(l, r + 1):
+            total_operations += count_bits(num)
+    return total_operations
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用树状数组来维护前缀和，以高效地计算满足条件的四元组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个树状数组，分别用于维护左侧和右侧的前缀和。
+2. 遍历数组，对于每个元素，计算其左侧和右侧的前缀和。
+3. 对于每个可能的中间元素对 (j, k)，计算满足条件的 i 和 l 的数量，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用树状数组可以高效地进行区间查询和更新操作。
+- 通过两次遍历数组，分别计算左侧和右侧的前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import bisect
 
+class BIT:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (n + 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def update(self, idx, val):
+        while idx <= self.n:
+            self.tree[idx] += val
+            idx += idx & -idx
 
+    def query(self, idx):
+        res = 0
+        while idx > 0:
+            res += self.tree[idx]
+            idx -= idx & -idx
+        return res
 
-Solution = create_solution(solution_function_name)
+def count_quadruplets(nums: List[int]) -> int:
+    n = len(nums)
+    left_bit = BIT(n)
+    right_bit = BIT(n)
+    count = 0
+
+    for num in nums:
+        right_bit.update(num, 1)
+
+    for j in range(n):
+        right_bit.update(nums[j], -1)
+        for k in range(j + 1, n):
+            if nums[j] > nums[k]:
+                left_count = left_bit.query(nums[k] - 1)
+                right_count = right_bit.query(n) - right_bit.query(nums[j])
+                count += left_count * right_count
+        left_bit.update(nums[j], 1)
+
+    return count
+
+Solution = create_solution(count_quadruplets)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用记忆化搜索来减少重复计算，并利用数学性质优化时间复杂度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dp(target)` 来计算使表达式等于 `target` 所需的最少运算符数量。
+2. 如果 `target` 小于 `x`，则只能通过加法或减法来达到目标，此时直接返回 `min(2 * target - 1, 2 * (x - target))`。
+3. 否则，找到最大的 `k` 使得 `x^k <= target`，然后递归计算 `dp(target - x^k)` 和 `dp(x^(k+1) - target)`，取两者中的最小值并加上 `k`。
+4. 使用 `@lru_cache` 进行记忆化搜索，避免重复计算。
 
 关键点:
-- [TODO]
+- 利用数学性质优化时间复杂度。
+- 使用记忆化搜索减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log(target) * log(x))
+空间复杂度: O(log(target) * log(x))
 """
 
 # ============================================================================
@@ -47,14 +50,21 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from functools import lru_cache
 
-
-def solution_function_name(params):
+def least_operators_to_express_number(x: int, target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使表达式等于 target 所需的最少运算符数量
     """
-    # TODO: 实现最优解法
-    pass
+    @lru_cache(maxsize=None)
+    def dp(t: int) -> int:
+        if t < x:
+            return min(2 * t - 1, 2 * (x - t))
+        k = 0
+        while x ** (k + 1) <= t:
+            k += 1
+        return min(k + dp(t - x ** k), k + 1 + dp(x ** (k + 1) - t))
 
+    return dp(target)
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(least_operators_to_express_number)

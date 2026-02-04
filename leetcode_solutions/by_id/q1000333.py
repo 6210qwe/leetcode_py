@@ -21,22 +21,26 @@ LCR 069. 山脉数组的峰顶索引 - 符合下列属性的数组 arr 称为 �
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找来找到山脉数组的峰顶索引。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化左右指针 left 和 right。
+2. 在 while 循环中，计算中间位置 mid。
+3. 比较 arr[mid] 和 arr[mid + 1]：
+   - 如果 arr[mid] < arr[mid + 1]，说明峰顶在 mid 右侧，更新 left = mid + 1。
+   - 否则，峰顶在 mid 或其左侧，更新 right = mid。
+4. 当 left == right 时，返回 left 作为峰顶索引。
 
 关键点:
-- [TODO]
+- 通过二分查找，可以在 O(log n) 时间内找到峰顶索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,20 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用二分查找找到山脉数组的峰顶索引
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] < arr[mid + 1]:
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left
 
 
 Solution = create_solution(solution_function_name)

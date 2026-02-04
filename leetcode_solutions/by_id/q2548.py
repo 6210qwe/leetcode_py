@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个余数出现的次数，找到出现次数最多的余数对应的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个 nums[i] 对 space 取模的结果，并统计每个余数出现的次数。
+2. 找到出现次数最多的余数。
+3. 在所有具有该余数的 nums[i] 中，找到最小的 nums[i]。
 
 关键点:
-- [TODO]
+- 使用哈希表高效统计余数出现的次数。
+- 找到出现次数最多的余数后，再找到对应最小的 nums[i]。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], space: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个余数出现的次数
+    remainder_count = {}
+    for num in nums:
+        remainder = num % space
+        if remainder not in remainder_count:
+            remainder_count[remainder] = []
+        remainder_count[remainder].append(num)
+
+    # 找到出现次数最多的余数
+    max_count = 0
+    best_remainder = None
+    for remainder, count in remainder_count.items():
+        if len(count) > max_count:
+            max_count = len(count)
+            best_remainder = remainder
+
+    # 在具有最多余数的 nums[i] 中找到最小的 nums[i]
+    return min(remainder_count[best_remainder])
 
 
 Solution = create_solution(solution_function_name)

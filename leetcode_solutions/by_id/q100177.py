@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历检查二叉树是否为二叉搜索树。中序遍历的结果应该是一个严格递增的序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `is_valid_bst`，该函数接受当前节点和上下界作为参数。
+2. 如果当前节点为空，返回 True。
+3. 检查当前节点的值是否在上下界之间。
+4. 递归检查左子树和右子树，更新上下界。
 
 关键点:
-- [TODO]
+- 中序遍历的结果应该是严格递增的。
+- 使用上下界来确保每个节点的值都在正确的范围内。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def is_valid_bst(root: Optional[TreeNode], low: float = float('-inf'), high: float = float('inf')) -> bool:
+    if not root:
+        return True
+    if not (low < root.val < high):
+        return False
+    return (is_valid_bst(root.left, low, root.val) and
+            is_valid_bst(root.right, root.val, high))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_valid_bst)

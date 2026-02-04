@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）遍历每个岛屿，并计算其面积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大岛屿面积为 0。
+2. 遍历整个网格，对于每个值为 1 的单元格，启动一次 DFS，计算该岛屿的面积。
+3. 在 DFS 过程中，将访问过的单元格标记为 0，以避免重复访问。
+4. 更新最大岛屿面积。
+5. 返回最大岛屿面积。
 
 关键点:
-- [TODO]
+- 使用 DFS 遍历岛屿，并标记已访问的单元格。
+- 通过递归调用 DFS 来计算岛屿的面积。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)，其中 m 和 n 分别是网格的行数和列数。每个单元格最多被访问一次。
+空间复杂度: O(m * n)，在最坏情况下，递归栈的深度可能达到 m * n。
 """
 
 # ============================================================================
@@ -48,13 +52,32 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def max_area_of_island(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算并返回 grid 中最大的岛屿面积。如果没有岛屿，则返回面积为 0 。
     """
-    # TODO: 实现最优解法
-    pass
+    if not grid or not grid[0]:
+        return 0
 
+    rows, cols = len(grid), len(grid[0])
+    max_area = 0
 
-Solution = create_solution(solution_function_name)
+    def dfs(r: int, c: int) -> int:
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == 0:
+            return 0
+        grid[r][c] = 0  # 标记为已访问
+        area = 1
+        area += dfs(r + 1, c)
+        area += dfs(r - 1, c)
+        area += dfs(r, c + 1)
+        area += dfs(r, c - 1)
+        return area
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1:
+                max_area = max(max_area, dfs(r, c))
+
+    return max_area
+
+Solution = create_solution(max_area_of_island)

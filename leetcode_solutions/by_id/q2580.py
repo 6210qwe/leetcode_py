@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 检查每个单词的最后一个字符是否与下一个单词的第一个字符相同，并检查最后一个单词的最后一个字符是否与第一个单词的第一个字符相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将句子按空格分割成单词列表。
+2. 遍历单词列表，检查每个单词的最后一个字符是否与下一个单词的第一个字符相同。
+3. 检查最后一个单词的最后一个字符是否与第一个单词的第一个字符相同。
 
 关键点:
-- [TODO]
+- 使用 `split` 方法将句子分割成单词列表。
+- 通过遍历和比较相邻单词的字符来验证回环条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是句子的长度。我们需要遍历整个句子一次。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_circular_sentence(sentence: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断给定的句子是否为回环句。
+    
+    :param sentence: 输入的句子
+    :return: 是否为回环句
     """
-    # TODO: 实现最优解法
-    pass
+    words = sentence.split()
+    n = len(words)
+    
+    # 检查每个单词的最后一个字符是否与下一个单词的第一个字符相同
+    for i in range(n):
+        if words[i][-1] != words[(i + 1) % n][0]:
+            return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_circular_sentence)

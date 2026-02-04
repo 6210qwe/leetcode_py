@@ -21,22 +21,31 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来遍历树，并在必要时翻转节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果列表 `flipped` 用于存储需要翻转的节点值。
+2. 使用一个索引 `i` 来跟踪当前在 `voyage` 中的位置。
+3. 定义一个递归函数 `dfs`，该函数接受当前节点作为参数。
+4. 在 `dfs` 函数中：
+   - 如果当前节点为空，直接返回。
+   - 如果当前节点的值与 `voyage[i]` 不匹配，设置 `flipped` 为 `[-1]` 并返回。
+   - 如果当前节点的左子节点存在且其值与 `voyage[i+1]` 不匹配，则翻转当前节点的左右子树，并将当前节点的值加入 `flipped`。
+   - 递归调用 `dfs` 处理左子树和右子树。
+5. 调用 `dfs` 函数从根节点开始遍历。
+6. 返回 `flipped` 列表。
 
 关键点:
-- [TODO]
+- 使用索引来跟踪 `voyage` 中的当前位置。
+- 在必要时翻转节点，并记录翻转的节点值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
@@ -44,17 +53,30 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def flip_match_voyage(root: Optional[TreeNode], voyage: List[int]) -> List[int]:
+    flipped = []
+    i = 0
+    
+    def dfs(node: Optional[TreeNode]):
+        nonlocal i
+        if not node:
+            return
+        if node.val != voyage[i]:
+            flipped[:] = [-1]
+            return
+        i += 1
+        if node.left and i < len(voyage) and node.left.val != voyage[i]:
+            flipped.append(node.val)
+            dfs(node.right)
+            dfs(node.left)
+        else:
+            dfs(node.left)
+            dfs(node.right)
+    
+    dfs(root)
+    return flipped
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(flip_match_voyage)

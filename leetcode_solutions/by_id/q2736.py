@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，逐个字符检查并计算需要插入的字符数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个期望字符 `expected` 为 'a'。
+2. 遍历字符串 `word` 的每个字符 `char`：
+   - 如果 `char` 不等于 `expected`，则计算需要插入的字符数，并更新 `expected`。
+   - 更新 `expected` 为下一个期望字符（'a' -> 'b' -> 'c' -> 'a'）。
+3. 返回总插入字符数。
 
 关键点:
-- [TODO]
+- 使用贪心算法逐个字符检查并计算需要插入的字符数。
+- 通过维护一个期望字符 `expected` 来判断当前字符是否符合预期。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `word` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_add_to_make_valid(word: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使 word 有效需要插入的最少字母数
     """
-    # TODO: 实现最优解法
-    pass
+    expected = 'a'
+    insertions = 0
+    
+    for char in word:
+        while char != expected:
+            insertions += 1
+            if expected == 'a':
+                expected = 'b'
+            elif expected == 'b':
+                expected = 'c'
+            else:
+                expected = 'a'
+        
+        # 更新期望字符
+        if expected == 'a':
+            expected = 'b'
+        elif expected == 'b':
+            expected = 'c'
+        else:
+            expected = 'a'
+    
+    # 处理剩余的不完整 "abc"
+    if expected == 'b':
+        insertions += 2
+    elif expected == 'c':
+        insertions += 1
+    
+    return insertions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_add_to_make_valid)

@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法来解决八皇后问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表和一个空的棋盘。
+2. 定义一个递归函数 `backtrack`，该函数接受当前行作为参数。
+3. 在递归函数中，遍历当前行的所有列，尝试放置皇后。
+4. 如果当前列可以放置皇后（即不在同一列、不在对角线上），则放置皇后并继续递归到下一行。
+5. 如果所有行都成功放置了皇后，则将当前棋盘状态加入结果列表。
+6. 回溯时移除当前行的皇后，继续尝试下一列。
+7. 从第 0 行开始调用递归函数。
+8. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用三个集合来记录已经放置的列、主对角线和副对角线。
+- 通过递归和回溯来尝试所有可能的放置方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N!)
+空间复杂度: O(N)
 """
 
 # ============================================================================
@@ -49,12 +56,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solve_n_queens(n: int) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 解决 N 皇后问题
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(row: int):
+        if row == n:
+            solutions.append(["".join(row) for row in board])
+            return
+        for col in range(n):
+            if col in cols or (row - col) in diag1 or (row + col) in diag2:
+                continue
+            cols.add(col)
+            diag1.add(row - col)
+            diag2.add(row + col)
+            board[row][col] = 'Q'
+            backtrack(row + 1)
+            cols.remove(col)
+            diag1.remove(row - col)
+            diag2.remove(row + col)
+            board[row][col] = '.'
+
+    solutions = []
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    cols = set()
+    diag1 = set()
+    diag2 = set()
+    backtrack(0)
+    return solutions
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solve_n_queens)

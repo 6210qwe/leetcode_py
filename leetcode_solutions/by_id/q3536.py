@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来计算单调数组对的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 DP 数组 `dp`，其中 `dp[i][j]` 表示以 `i` 结尾且最大值为 `j` 的单调非递减数组的数量。
+2. 遍历数组 `nums`，对于每个元素 `nums[i]`，更新 `dp` 数组。
+3. 计算每个位置的组合数，并累加结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来维护单调非递减数组的数量。
+- 使用组合数学来计算单调非递增数组的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是数组 `nums` 的长度，m 是 `nums` 中的最大值。
+空间复杂度: O(n * m)，用于存储 DP 数组。
 """
 
 # ============================================================================
@@ -47,14 +49,38 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+def count_monotonic_pairs(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    max_val = max(nums)
+    
+    # 初始化 DP 数组
+    dp = [[0] * (max_val + 1) for _ in range(n)]
+    dp[0][nums[0]] = 1
+    
+    # 动态规划更新 DP 数组
+    for i in range(1, n):
+        for j in range(max_val + 1):
+            if j <= nums[i]:
+                dp[i][j] = sum(dp[i - 1][:j + 1]) % MOD
+            else:
+                dp[i][j] = sum(dp[i - 1][:nums[i] + 1]) % MOD
+    
+    # 计算组合数
+    def comb(n, k):
+        return math.comb(n, k) % MOD
+    
+    result = 0
+    for i in range(n):
+        for j in range(max_val + 1):
+            if dp[i][j] > 0:
+                remaining_sum = sum(nums[i:]) - j
+                if remaining_sum >= 0:
+                    result += dp[i][j] * comb(remaining_sum + i - i, i) % MOD
+                    result %= MOD
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_monotonic_pairs)

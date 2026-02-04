@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的交替排列，并使用计数器来找到第 k 个排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个列表，分别存储奇数和偶数。
+2. 使用回溯法生成所有可能的交替排列。
+3. 使用计数器记录当前生成的排列数量，当达到第 k 个时返回结果。
 
 关键点:
-- [TODO]
+- 通过回溯法生成交替排列，确保相邻元素不都是奇数或偶数。
+- 使用计数器来跟踪生成的排列数量，避免生成过多的排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def get_kth_alternating_permutation(n: int, k: int) -> List[int]:
+    def backtrack(odd, even, path, count):
+        if len(path) == n:
+            count[0] += 1
+            if count[0] == k:
+                result.append(path[:])
+            return
+        if not path or path[-1] % 2 == 0:
+            for i in range(len(odd)):
+                path.append(odd[i])
+                backtrack(odd[:i] + odd[i+1:], even, path, count)
+                path.pop()
+        else:
+            for i in range(len(even)):
+                path.append(even[i])
+                backtrack(odd, even[:i] + even[i+1:], path, count)
+                path.pop()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    odd = [i for i in range(1, n + 1) if i % 2 != 0]
+    even = [i for i in range(1, n + 1) if i % 2 == 0]
+    result = []
+    count = [0]
+    backtrack(odd, even, [], count)
+    return result[0] if result else []
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_kth_alternating_permutation)

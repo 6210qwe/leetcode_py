@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算当前数组总和与目标值之间的差值，然后计算需要添加的最少元素数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算当前数组的总和。
+2. 计算当前数组总和与目标值之间的差值。
+3. 计算需要添加的最少元素数量，即差值除以 limit 的向上取整。
 
 关键点:
-- [TODO]
+- 使用向上取整来确保添加的元素数量是最小的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度，因为我们需要遍历整个数组来计算总和。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def min_elements_to_add(nums: List[int], limit: int, goal: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组元素总和等于 goal 所需要向数组中添加的最少元素数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算当前数组的总和
+    current_sum = sum(nums)
+    
+    # 计算当前数组总和与目标值之间的差值
+    difference = abs(goal - current_sum)
+    
+    # 计算需要添加的最少元素数量
+    min_elements = math.ceil(difference / limit)
+    
+    return min_elements
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_elements_to_add)

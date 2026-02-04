@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个数字，计算其各个数位之和，并找到这些数位和中的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `digit_sum` 来计算一个整数的数位和。
+2. 遍历数组 `nums`，将每个元素替换为其数位和。
+3. 返回替换后的数组中的最小值。
 
 关键点:
-- [TODO]
+- 使用辅助函数来简化数位和的计算。
+- 一次遍历即可完成替换和找最小值的操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是数组长度，d 是数字的位数（最大为 5）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +50,19 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def digit_sum(num: int) -> int:
+    """计算一个整数的数位和"""
+    return sum(int(digit) for digit in str(num))
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算替换为数位和以后的最小元素
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 将每个元素替换为其数位和
+    for i in range(len(nums)):
+        nums[i] = digit_sum(nums[i])
+    
+    # 返回替换后的数组中的最小值
+    return min(nums)
 
 Solution = create_solution(solution_function_name)

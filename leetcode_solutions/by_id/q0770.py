@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来记录每个情侣的连接情况，并计算需要的最少交换次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将每对情侣的两个ID合并。
+2. 遍历座位数组，检查每对情侣是否已经连接，如果没有连接，则进行合并操作。
+3. 计算最终的连通分量数量，最少交换次数为总情侣对数减去连通分量数量。
 
 关键点:
-- [TODO]
+- 使用并查集高效地管理连通性。
+- 通过连通分量的数量来计算最少交换次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -48,13 +50,37 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.rank[rootX] > self.rank[rootY]:
+                self.parent[rootY] = rootX
+            elif self.rank[rootX] < self.rank[rootY]:
+                self.parent[rootX] = rootY
+            else:
+                self.parent[rootY] = rootX
+                self.rank[rootX] += 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def min_swaps_couples(row: List[int]) -> int:
+    n = len(row) // 2
+    uf = UnionFind(n)
+    
+    for i in range(0, len(row), 2):
+        x, y = row[i] // 2, row[i + 1] // 2
+        uf.union(x, y)
+    
+    components = sum(uf.find(i) == i for i in range(n))
+    return n - components
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_swaps_couples)

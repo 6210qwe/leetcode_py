@@ -21,40 +21,89 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用锁来避免死锁，通过给奇数和偶数编号的哲学家不同的顺序获取叉子。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化五个锁，分别代表五个叉子。
+2. 在 `wantsToEat` 方法中，根据哲学家的编号决定先拿左边还是右边的叉子。
+3. 奇数编号的哲学家先拿右边的叉子，再拿左边的叉子。
+4. 偶数编号的哲学家先拿左边的叉子，再拿右边的叉子。
+5. 拿到两个叉子后，哲学家开始吃面，然后放下叉子。
 
 关键点:
-- [TODO]
+- 通过给奇数和偶数编号的哲学家不同的顺序获取叉子，避免了死锁。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次操作都是常数时间。
+空间复杂度: O(1) - 使用固定数量的锁。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from threading import Lock
+from typing import Callable
 
+class DiningPhilosophers:
+    def __init__(self):
+        self.forks = [Lock() for _ in range(5)]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def wantsToEat(self,
+                   philosopher: int,
+                   pickLeftFork: 'Callable[[], None]',
+                   pickRightFork: 'Callable[[], None]',
+                   eat: 'Callable[[], None]',
+                   putLeftFork: 'Callable[[], None]',
+                   putRightFork: 'Callable[[], None]') -> None:
+        if philosopher % 2 == 0:
+            # 偶数编号的哲学家先拿左边的叉子
+            first_fork = philosopher
+            second_fork = (philosopher + 1) % 5
+        else:
+            # 奇数编号的哲学家先拿右边的叉子
+            first_fork = (philosopher + 1) % 5
+            second_fork = philosopher
 
+        with self.forks[first_fork]:
+            with self.forks[second_fork]:
+                pickLeftFork()
+                pickRightFork()
+                eat()
+                putLeftFork()
+                putRightFork()
 
-Solution = create_solution(solution_function_name)
+# 示例用法
+if __name__ == "__main__":
+    from threading import Thread
+    from time import sleep
+
+    def pickLeftFork():
+        print(f"Philosopher {philosopher} picks left fork")
+
+    def pickRightFork():
+        print(f"Philosopher {philosopher} picks right fork")
+
+    def eat():
+        print(f"Philosopher {philosopher} eats")
+
+    def putLeftFork():
+        print(f"Philosopher {philosopher} puts left fork")
+
+    def putRightFork():
+        print(f"Philosopher {philosopher} puts right fork")
+
+    philosophers = [DiningPhilosophers() for _ in range(5)]
+    threads = []
+
+    for i in range(5):
+        t = Thread(target=philosophers[i].wantsToEat, args=(i, pickLeftFork, pickRightFork, eat, putLeftFork, putRightFork))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()

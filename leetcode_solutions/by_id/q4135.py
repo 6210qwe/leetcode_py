@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历 n 的每一位数字，提取出非零数字并计算其和，然后将这些非零数字连接成一个新的整数 x，最后返回 x 与数字和的乘积。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个变量：`non_zero_digits` 用于存储非零数字的字符串形式，`digit_sum` 用于存储非零数字的和。
+2. 遍历 n 的每一位数字，如果是非零数字，则将其添加到 `non_zero_digits` 中，并累加到 `digit_sum` 中。
+3. 如果 `non_zero_digits` 为空，则返回 0。
+4. 将 `non_zero_digits` 转换为整数 x。
+5. 返回 x 与 `digit_sum` 的乘积。
 
 关键点:
-- [TODO]
+- 通过字符串操作来连接非零数字。
+- 通过遍历每一位数字来提取非零数字并计算其和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d)，其中 d 是 n 的位数。我们需要遍历 n 的每一位数字。
+空间复杂度: O(d)，其中 d 是 n 的位数。我们使用了一个字符串来存储非零数字。
 """
 
 # ============================================================================
@@ -49,12 +53,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def concatenate_non_zero_digits_and_multiply_by_sum(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现连接非零数字并乘以其数字和
     """
-    # TODO: 实现最优解法
-    pass
+    non_zero_digits = ""
+    digit_sum = 0
+
+    # 遍历 n 的每一位数字
+    while n > 0:
+        digit = n % 10
+        if digit != 0:
+            non_zero_digits += str(digit)
+            digit_sum += digit
+        n //= 10
+
+    # 如果没有非零数字，返回 0
+    if not non_zero_digits:
+        return 0
+
+    # 将非零数字字符串转换为整数
+    x = int(non_zero_digits)
+
+    # 返回 x 与数字和的乘积
+    return x * digit_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(concatenate_non_zero_digits_and_multiply_by_sum)

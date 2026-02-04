@@ -21,40 +21,67 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 为在前 i 个元素中进行 j 次调整操作的最小浪费空间。通过预处理每个子数组的最大值和总和，我们可以快速计算出每个子数组的浪费空间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个子数组的最大值和总和。
+2. 初始化 dp 表，dp[i][0] 为前 i 个元素不进行任何调整的最小浪费空间。
+3. 填充 dp 表，对于每个可能的调整次数 j，计算 dp[i][j] 的值。
+4. 返回 dp[n][k]，即在 n 个元素中进行 k 次调整操作的最小浪费空间。
 
 关键点:
-- [TODO]
+- 通过预处理减少重复计算。
+- 动态规划的状态转移方程为 dp[i][j] = min(dp[i][j], dp[p][j-1] + waste(p+1, i))，其中 waste(p+1, i) 表示从 p+1 到 i 的子数组的浪费空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * k)，其中 n 是 nums 的长度，k 是调整次数。
+空间复杂度: O(n * k)，用于存储 dp 表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_space_wasted_k_resizing(nums: List[int], k: int) -> int:
+    n = len(nums)
+    if n == 0:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 预处理每个子数组的最大值和总和
+    max_values = [[0] * n for _ in range(n)]
+    sums = [0] * n
+    for i in range(n):
+        max_val = 0
+        total = 0
+        for j in range(i, n):
+            max_val = max(max_val, nums[j])
+            total += nums[j]
+            max_values[i][j] = max_val
+            if i > 0:
+                sums[j] += sums[j - 1]
+            else:
+                sums[j] = total
 
+    # 初始化 dp 表
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            if j > 0:
+                for p in range(i):
+                    waste = max_values[p][i - 1] * (i - p) - (sums[i - 1] - (p > 0 and sums[p - 1]))
+                    dp[i][j] = min(dp[i][j], dp[p][j - 1] + waste)
+            else:
+                waste = max_values[0][i - 1] * i - sums[i - 1]
+                dp[i][j] = min(dp[i][j], waste)
+
+    return dp[n][k]
+
+Solution = create_solution(min_space_wasted_k_resizing)

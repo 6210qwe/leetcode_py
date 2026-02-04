@@ -21,40 +21,41 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Pandas 库来处理数据，筛选出符合条件的国家。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 读取输入的 DataFrame。
+2. 筛选出面积大于等于 3000000 或人口大于等于 25000000 的国家。
+3. 选择需要的列（name, population, area）并返回结果。
 
 关键点:
-- [TODO]
+- 使用 Pandas 库进行数据处理，提高代码可读性和效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 DataFrame 的行数。因为我们需要遍历整个 DataFrame 来筛选符合条件的国家。
+空间复杂度: O(1)，除了输出结果外，我们没有使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def big_countries(world: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出大国的国家名称、人口和面积
     """
-    # TODO: 实现最优解法
-    pass
+    # 筛选出面积大于等于 3000000 或人口大于等于 25000000 的国家
+    big_countries_df = world[(world['area'] >= 3000000) | (world['population'] >= 25000000)]
+    
+    # 选择需要的列（name, population, area）
+    result = big_countries_df[['name', 'population', 'area']]
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(big_countries)

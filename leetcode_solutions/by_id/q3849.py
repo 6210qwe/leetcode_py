@@ -14,47 +14,92 @@
 # 问题描述
 # ============================================================================
 """
-3546. 等和矩阵分割 I - 给你一个由正整数组成的 m x n 矩阵 grid。你的任务是判断是否可以通过 一条水平或一条垂直分割线 将矩阵分割成两部分，使得： * 分割后形成的每个部分都是 非空 的。 * 两个部分中所有元素的和 相等 。 如果存在这样的分割，返回 true；否则，返回 false。 示例 1： 输入： grid = [[1,4],[2,3]] 输出： true 解释： [https://pic.leetcode.cn/1746839596-kWigaF-lc.jpeg] 在第 0 行和第 1 行之间进行水平分割，得到两个非空部分，每部分的元素之和为 5。因此，答案是 true。 示例 2： 输入： grid = [[1,3],[2,4]] 输出： false 解释： 无论是水平分割还是垂直分割，都无法使两个非空部分的元素之和相等。因此，答案是 false。 提示： * 1 <= m == grid.length <= 105 * 1 <= n == grid[i].length <= 105 * 2 <= m * n <= 105 * 1 <= grid[i][j] <= 105
+3546. 等和矩阵分割 I - 给你一个由正整数组成的 m x n 矩阵 grid。你的任务是判断是否可以通过 一条水平或一条垂直分割线 将矩阵分割成两部分，使得：
+* 分割后形成的每个部分都是 非空 的。
+* 两个部分中所有元素的和 相等 。
+如果存在这样的分割，返回 true；否则，返回 false。
+
+示例 1：
+输入： grid = [[1,4],[2,3]]
+输出： true
+解释： [https://pic.leetcode.cn/1746839596-kWigaF-lc.jpeg]
+在第 0 行和第 1 行之间进行水平分割，得到两个非空部分，每部分的元素之和为 5。因此，答案是 true。
+
+示例 2：
+输入： grid = [[1,3],[2,4]]
+输出： false
+解释： 无论是水平分割还是垂直分割，都无法使两个非空部分的元素之和相等。因此，答案是 false。
+
+提示：
+* 1 <= m == grid.length <= 105
+* 1 <= n == grid[i].length <= 105
+* 2 <= m * n <= 105
+* 1 <= grid[i][j] <= 105
 """
 
 # ============================================================================
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 计算矩阵的总和，然后检查是否存在一条水平或垂直分割线，使得分割后的两部分和相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算矩阵的总和。
+2. 检查是否存在一条水平分割线，使得分割后的两部分和相等。
+3. 检查是否存在一条垂直分割线，使得分割后的两部分和相等。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算子矩阵的和。
+- 通过遍历行和列来检查是否存在满足条件的分割线。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def canPartitionGrid(grid: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断是否可以通过一条水平或一条垂直分割线将矩阵分割成两部分，使得两部分的和相等。
     """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    total_sum = sum(sum(row) for row in grid)
+    
+    # 如果总和是奇数，则不可能分割成两个相等的部分
+    if total_sum % 2 != 0:
+        return False
+    
+    target = total_sum // 2
+    row_sum = 0
+    col_sums = [0] * n
+    
+    # 检查是否存在一条水平分割线
+    for i in range(m):
+        row_sum += sum(grid[i])
+        if row_sum == target:
+            return True
+        if row_sum > target:
+            break
+    
+    # 检查是否存在一条垂直分割线
+    for j in range(n):
+        for i in range(m):
+            col_sums[j] += grid[i][j]
+        if sum(col_sums[:j+1]) == target:
+            return True
+        if sum(col_sums[:j+1]) > target:
+            break
+    
+    return False
 
-
-Solution = create_solution(solution_function_name)
+Solution = canPartitionGrid

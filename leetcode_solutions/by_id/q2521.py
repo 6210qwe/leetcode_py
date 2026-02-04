@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录从起点到每个位置的路径和模 k 的值及其数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个三维数组 dp，其中 dp[i][j][r] 表示从起点 (0, 0) 到达 (i, j) 且路径和模 k 为 r 的路径数目。
+2. 初始化 dp[0][0][grid[0][0] % k] 为 1，表示从起点出发的路径和模 k 的值。
+3. 遍历矩阵，对于每个位置 (i, j)，更新 dp[i][j][r]，其中 r 是从上方或左方到达 (i, j) 的路径和模 k 的值。
+4. 最终结果是 dp[m-1][n-1][0]，即从起点到终点且路径和模 k 为 0 的路径数目。
 
 关键点:
-- [TODO]
+- 使用三维数组 dp 来记录路径和模 k 的值及其数量。
+- 通过动态规划避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * k)
+空间复杂度: O(m * n * k)
 """
 
 # ============================================================================
@@ -48,13 +51,25 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def count_paths_divisible_by_k(grid: List[List[int]], k: int) -> int:
+    MOD = 10**9 + 7
+    m, n = len(grid), len(grid[0])
+    
+    # 初始化 dp 数组
+    dp = [[[0 for _ in range(k)] for _ in range(n)] for _ in range(m)]
+    dp[0][0][grid[0][0] % k] = 1
+    
+    # 动态规划填充 dp 数组
+    for i in range(m):
+        for j in range(n):
+            for r in range(k):
+                if i > 0:
+                    dp[i][j][(r + grid[i][j]) % k] += dp[i-1][j][r]
+                    dp[i][j][(r + grid[i][j]) % k] %= MOD
+                if j > 0:
+                    dp[i][j][(r + grid[i][j]) % k] += dp[i][j-1][r]
+                    dp[i][j][(r + grid[i][j]) % k] %= MOD
+    
+    return dp[m-1][n-1][0]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_paths_divisible_by_k)

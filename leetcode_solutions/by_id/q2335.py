@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来找到每篇文章的主题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个临时表，将 `Topics` 表中的 `topic_id` 和 `topic_name` 与 `Keywords` 表中的 `keyword` 进行连接。
+2. 使用 `Posts` 表中的 `content` 字段进行全文搜索，匹配 `Keywords` 表中的 `keyword`。
+3. 将匹配到的关键词和对应的文章进行关联，最终得到每篇文章的主题。
 
 关键点:
-- [TODO]
+- 使用全文搜索来匹配关键词。
+- 使用临时表来存储中间结果，提高查询效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是文章的数量，m 是关键词的数量。
+空间复杂度: O(k)，其中 k 是临时表的大小。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
-
+    query = """
+    WITH Keywords AS (
+        SELECT t.topic_id, t.topic_name, k.keyword
+        FROM Topics t
+        JOIN Keywords k ON t.topic_id = k.topic_id
+    ),
+    MatchedPosts AS (
+        SELECT p.post_id, p.content, k.topic_id, k.topic_name
+        FROM Posts p
+        JOIN Keywords k ON p.content LIKE CONCAT('%', k.keyword, '%')
+    )
+    SELECT post_id, topic_name
+    FROM MatchedPosts
+    GROUP BY post_id, topic_name;
+    """
+    return query
 
 Solution = create_solution(solution_function_name)

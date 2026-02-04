@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: Alice 要赢得游戏，她必须在最后一步摘掉最后一朵花。因此，x 和 y 的奇偶性不同，即 x 是奇数且 y 是偶数，或者 x 是偶数且 y 是奇数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n 和 m 中奇数和偶数的数量。
+2. 计算所有可能的 (x, y) 对的数量，其中 x 和 y 的奇偶性不同。
 
 关键点:
-- [TODO]
+- 利用奇偶性来判断 Alice 是否能赢。
+- 通过计算奇数和偶数的数量来简化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的 (x, y) 对的数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算 n 和 m 中奇数和偶数的数量
+    odd_n = (n + 1) // 2
+    even_n = n // 2
+    odd_m = (m + 1) // 2
+    even_m = m // 2
+    
+    # 计算所有可能的 (x, y) 对的数量，其中 x 和 y 的奇偶性不同
+    return odd_n * even_m + even_n * odd_m
 
 
 Solution = create_solution(solution_function_name)

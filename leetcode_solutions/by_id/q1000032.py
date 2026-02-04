@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用异或操作来找到缺失的数字
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `missing` 为 0。
+2. 遍历数组 `nums`，对每个元素和其索引进行异或操作，并将结果与 `missing` 进行异或操作。
+3. 最后，`missing` 将是缺失的数字。
 
 关键点:
-- [TODO]
+- 异或操作的性质：a ^ a = 0 和 a ^ 0 = a
+- 通过遍历数组并将其索引和值进行异或操作，可以消除所有出现的数字，剩下的就是缺失的数字
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,14 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出缺失的数字
     """
-    # TODO: 实现最优解法
-    pass
+    missing = len(nums)
+    for i, num in enumerate(nums):
+        missing ^= i ^ num
+    return missing
 
 
 Solution = create_solution(solution_function_name)

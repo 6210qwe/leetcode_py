@@ -21,40 +21,69 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到每个位置的最少翻转操作数。我们使用两个有序集合来维护当前可以翻转的区间，并在每次翻转时更新这些集合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化答案数组 `answer`，并将所有位置初始化为 -1。
+2. 将初始位置 `p` 的答案设置为 0，并将其加入队列。
+3. 使用 BFS 进行层次遍历，每次从队列中取出一个位置 `i`，并尝试将其翻转到新的位置 `j`。
+4. 更新 `answer` 数组，并将新的位置 `j` 加入队列。
+5. 重复上述过程，直到队列为空。
 
 关键点:
-- [TODO]
+- 使用有序集合来高效地维护和查找可以翻转的区间。
+- 使用 BFS 来确保找到的是最少翻转操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import sortedcontainers
 
+def min_reverse_operations(n: int, p: int, banned: List[int], k: int) -> List[int]:
+    if k == 1:
+        return [-1] * n
+    
+    answer = [-1] * n
+    answer[p] = 0
+    banned_set = set(banned)
+    
+    # 初始化有序集合
+    even = sortedcontainers.SortedList()
+    odd = sortedcontainers.SortedList()
+    for i in range(n):
+        if i not in banned and i != p:
+            (even if i % 2 == 0 else odd).add(i)
+    
+    queue = collections.deque([p])
+    
+    while queue:
+        i = queue.popleft()
+        left = max(0, i - k + 1)
+        right = min(n - k, i)
+        
+        for l in range(left, right + 1):
+            r = l + k - 1
+            j = l + r - i
+            if j % 2 == i % 2:
+                positions = even if i % 2 == 0 else odd
+                idx = positions.bisect_left(j)
+                if idx < len(positions) and positions[idx] == j:
+                    answer[j] = answer[i] + 1
+                    queue.append(j)
+                    positions.remove(j)
+    
+    return answer
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_reverse_operations)

@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来生成步进数。从给定的低值开始，逐层扩展，直到达到高值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将所有可能的起始数字（0到9）加入队列。
+2. 使用一个集合来存储已经访问过的数字，避免重复计算。
+3. 从队列中取出一个数字，检查它是否在给定范围内，如果是，则将其加入结果列表。
+4. 对于当前数字的每一位，生成新的步进数，并将其加入队列。
+5. 重复上述步骤，直到队列为空。
 
 关键点:
-- [TODO]
+- 使用BFS可以确保按顺序生成步进数。
+- 通过集合记录已访问的数字，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(2^n)，其中n是数字的位数。每个数字最多有两位相邻的数字可以选择。
+空间复杂度: O(2^n)，队列和集合的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import deque
 
-
-def solution_function_name(params):
+def countSteppingNumbers(low: int, high: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回在给定范围 [low, high] 内的所有步进数
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    if low == 0:
+        result.append(0)
+    
+    queue = deque(range(1, 10))
+    
+    while queue:
+        num = queue.popleft()
+        if low <= num <= high:
+            result.append(num)
+        
+        if num * 10 + (num % 10) + 1 <= high and num % 10 < 9:
+            queue.append(num * 10 + (num % 10) + 1)
+        
+        if num * 10 + (num % 10) - 1 >= low and num % 10 > 0:
+            queue.append(num * 10 + (num % 10) - 1)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(countSteppingNumbers)

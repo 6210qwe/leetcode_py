@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们维护两个数组，分别记录以偶数和奇数结尾的最长有效子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个数组 `dp_even` 和 `dp_odd`，分别记录以偶数和奇数结尾的最长有效子序列的长度。
+2. 遍历数组 `nums`，根据当前元素的奇偶性更新 `dp_even` 和 `dp_odd`。
+3. 最后返回 `dp_even` 和 `dp_odd` 中的最大值。
 
 关键点:
-- [TODO]
+- 通过动态规划避免重复计算，确保时间复杂度最优。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。
+空间复杂度: O(1)，只需要常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出有效子序列的最大长度 I
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums:
+        return 0
+
+    n = len(nums)
+    dp_even = 0
+    dp_odd = 0
+
+    for num in nums:
+        if num % 2 == 0:
+            dp_even = max(dp_even + 1, 1)
+            dp_odd = 0
+        else:
+            dp_odd = max(dp_odd + 1, 1)
+            dp_even = 0
+
+    return max(dp_even, dp_odd)
 
 
 Solution = create_solution(solution_function_name)

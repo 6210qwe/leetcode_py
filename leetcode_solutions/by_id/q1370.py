@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和 + 哈希表来记录奇数的数量，从而快速计算出符合条件的子数组数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_count`，用于记录前缀和出现的次数。初始时 `prefix_count[0] = 1`。
+2. 遍历数组 `nums`，使用变量 `odd_count` 记录当前遍历到的奇数数量。
+3. 对于每个元素，更新 `odd_count`。
+4. 检查 `odd_count - k` 是否在 `prefix_count` 中，如果存在，则将其对应的值加到结果中。
+5. 更新 `prefix_count` 中 `odd_count` 的出现次数。
 
 关键点:
-- [TODO]
+- 使用前缀和来记录奇数的数量。
+- 使用哈希表来快速查找符合条件的前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历一次数组。
+空间复杂度: O(n)，哈希表 `prefix_count` 在最坏情况下需要存储 n 个不同的前缀和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_nice_subarrays(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计「优美子数组」的数量
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_count = {0: 1}
+    odd_count = 0
+    result = 0
+    
+    for num in nums:
+        if num % 2 == 1:
+            odd_count += 1
+        if odd_count - k in prefix_count:
+            result += prefix_count[odd_count - k]
+        prefix_count[odd_count] = prefix_count.get(odd_count, 0) + 1
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_nice_subarrays)

@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典来记录每个文件名及其对应的下一个可用编号。遍历输入的文件名列表，对于每个文件名，检查其是否已被使用。如果已被使用，则为其生成一个新的唯一文件名。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `name_count` 来记录每个文件名及其对应的下一个可用编号。
+2. 初始化一个结果列表 `result` 来存储最终的文件名。
+3. 遍历输入的文件名列表：
+   - 如果当前文件名未被使用，直接将其加入结果列表，并在字典中记录该文件名。
+   - 如果当前文件名已被使用，生成一个新的唯一文件名，并更新字典中的计数。
+4. 返回结果列表。
 
 关键点:
-- [TODO]
+- 使用字典来记录每个文件名及其对应的下一个可用编号，可以高效地生成唯一文件名。
+- 通过不断递增编号，确保生成的文件名是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 遍历输入的文件名列表，每个文件名最多处理一次。
+空间复杂度: O(n) - 使用了一个字典来记录每个文件名及其对应的下一个可用编号。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def get_unique_filename(names: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    生成唯一文件名
     """
-    # TODO: 实现最优解法
-    pass
+    name_count = {}
+    result = []
+
+    for name in names:
+        if name not in name_count:
+            # 文件名未被使用
+            result.append(name)
+            name_count[name] = 1
+        else:
+            # 文件名已被使用，生成新的唯一文件名
+            k = name_count[name]
+            new_name = f"{name}({k})"
+            while new_name in name_count:
+                k += 1
+                new_name = f"{name}({k})"
+            result.append(new_name)
+            name_count[new_name] = 1
+            name_count[name] = k + 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_unique_filename)

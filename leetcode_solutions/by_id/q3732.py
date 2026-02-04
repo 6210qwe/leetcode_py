@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个集合来记录已经访问过的指令，并使用一个变量来跟踪当前的得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化当前下标 i 为 0，得分 score 为 0，以及一个集合 visited 来记录已经访问过的指令。
+2. 进入循环，直到 i 越界或 i 已经在 visited 中：
+   - 如果 instructions[i] 是 "add"，将 values[i] 加到 score 中，并将 i 增加 1。
+   - 如果 instructions[i] 是 "jump"，将 i 更新为 i + values[i]。
+   - 将 i 添加到 visited 集合中。
+3. 返回最终的得分。
 
 关键点:
-- [TODO]
+- 使用集合来记录已经访问过的指令，确保不会重复执行。
+- 通过条件判断和更新下标来模拟指令的执行过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 instructions 的长度。每个指令最多只会被执行一次。
+空间复杂度: O(n)，最坏情况下所有指令都会被访问并存储在 visited 集合中。
 """
 
 # ============================================================================
@@ -49,12 +54,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def calculate_score_after_instructions(instructions: List[str], values: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据给定的指令和值计算最终得分
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(instructions)
+    i = 0
+    score = 0
+    visited = set()
+
+    while 0 <= i < n and i not in visited:
+        if instructions[i] == "add":
+            score += values[i]
+            i += 1
+        elif instructions[i] == "jump":
+            i += values[i]
+        
+        visited.add(i)
+
+    return score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calculate_score_after_instructions)

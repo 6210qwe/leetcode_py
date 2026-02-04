@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个前缀和第一次出现的位置，从而快速找到满足条件的最长子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_sum_index`，用于存储前缀和及其对应的索引。
+2. 遍历数组，计算当前前缀和 `prefix_sum`，并根据字符是字母还是数字进行加减操作。
+3. 如果当前前缀和在哈希表中已经存在，则更新最长子数组的长度和起始位置。
+4. 如果当前前缀和不在哈希表中，则将其加入哈希表。
+5. 返回最长子数组。
 
 关键点:
-- [TODO]
+- 使用哈希表存储前缀和及其第一次出现的位置，可以快速找到满足条件的最长子数组。
+- 前缀和的初始值为 0，并且在哈希表中预先存储 (0, -1) 以处理从头开始的子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储 n 个前缀和。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最长的字母和数字数量相等的子数组
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum_index = {0: -1}  # 哈希表存储前缀和及其第一次出现的位置
+    prefix_sum = 0  # 当前前缀和
+    max_len = 0  # 最长子数组的长度
+    start_index = -1  # 最长子数组的起始位置
+
+    for i, char in enumerate(arr):
+        if char.isdigit():
+            prefix_sum += 1
+        else:
+            prefix_sum -= 1
+
+        if prefix_sum in prefix_sum_index:
+            if i - prefix_sum_index[prefix_sum] > max_len:
+                max_len = i - prefix_sum_index[prefix_sum]
+                start_index = prefix_sum_index[prefix_sum] + 1
+        else:
+            prefix_sum_index[prefix_sum] = i
+
+    return arr[start_index:start_index + max_len] if start_index != -1 else []
 
 
 Solution = create_solution(solution_function_name)

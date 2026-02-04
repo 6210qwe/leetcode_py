@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用正则表达式来匹配有效的电子邮件地址。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个正则表达式来匹配有效的电子邮件地址。
+2. 使用 pandas 库读取输入数据。
+3. 使用正则表达式过滤出有效的电子邮件地址。
+4. 返回过滤后的数据。
 
 关键点:
-- [TODO]
+- 正则表达式的定义要符合题目要求的有效电子邮件格式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是 Users 表的行数。我们需要遍历每一行来检查电子邮件的有效性。
+空间复杂度: O(1) - 除了输入输出外，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution(users: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现查找具有有效电子邮件的用户
     """
-    # TODO: 实现最优解法
-    pass
+    # 定义正则表达式
+    valid_email_pattern = r'^[a-zA-Z][a-zA-Z0-9_.-]*@leetcode\.com$'
+    
+    # 过滤出有效的电子邮件地址
+    valid_emails = users[users['mail'].str.match(valid_email_pattern)]
+    
+    return valid_emails
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(solution)

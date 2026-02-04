@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学公式直接计算每个位置的值
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 res，长度为 n。
+2. 对于每个索引 i，使用公式 res[i] = (start + i * k) % 10 计算其值。
+3. 返回结果数组 res。
 
 关键点:
-- [TODO]
+- 直接利用公式计算每个位置的值，避免了循环数组的复杂操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（不考虑输出数组的空间）
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def generate_circular_array_values(n: int, start: int, k: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    生成循环数组的值
+    :param n: 数组长度
+    :param start: 起始值
+    :param k: 每个位置的增量
+    :return: 生成的循环数组
     """
-    # TODO: 实现最优解法
-    pass
+    res = [0] * n
+    for i in range(n):
+        res[i] = (start + i * k) % 10
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_circular_array_values)

@@ -21,40 +21,62 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来构建每个节点的 DFS 字符串，并检查其是否为回文串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构，使用邻接表表示。
+2. 定义一个递归函数 `dfs`，用于构建从某个节点开始的 DFS 字符串。
+3. 对于每个节点，调用 `dfs` 函数生成其 DFS 字符串，并检查该字符串是否为回文串。
+4. 返回结果数组 `answer`，其中 `answer[i]` 表示以节点 `i` 开始的 DFS 字符串是否为回文串。
 
 关键点:
-- [TODO]
+- 使用邻接表表示树结构，便于进行 DFS。
+- 在递归过程中构建 DFS 字符串，并在每次调用后清空字符串。
+- 使用双指针法检查字符串是否为回文串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是节点数。最坏情况下，每个节点都需要进行一次 DFS，且每次 DFS 的时间复杂度为 O(n)。
+空间复杂度: O(n)，存储树结构和递归调用栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_palindrome(s: str) -> bool:
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(parent: List[int], s: str) -> List[bool]:
+    n = len(parent)
+    tree = [[] for _ in range(n)]
+    
+    # 构建树结构
+    for i in range(1, n):
+        tree[parent[i]].append(i)
+    
+    def dfs(node: int) -> str:
+        dfs_str = s[node]
+        for child in sorted(tree[node]):
+            dfs_str += dfs(child)
+        return dfs_str
+    
+    answer = []
+    for i in range(n):
+        dfs_str = dfs(i)
+        answer.append(is_palindrome(dfs_str))
+    
+    return answer
 
 Solution = create_solution(solution_function_name)

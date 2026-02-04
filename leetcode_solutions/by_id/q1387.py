@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来还原二叉树，并使用集合来存储所有节点的值，以便快速查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，使用 DFS 遍历树，将每个节点的值恢复并存储在集合中。
+2. 在 `find` 方法中，直接检查目标值是否在集合中。
 
 关键点:
-- [TODO]
+- 使用集合存储节点值，以 O(1) 时间复杂度进行查找。
+- 通过递归 DFS 恢复树的结构。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是树中节点的数量。初始化时需要遍历整个树，每次查找操作是 O(1)。
+空间复杂度: O(n) - 需要存储所有节点的值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class FindElements:
+
+    def __init__(self, root: Optional[TreeNode]):
+        self.values = set()
+        self._recover_tree(root, 0)
+
+    def _recover_tree(self, node: Optional[TreeNode], value: int):
+        if not node:
+            return
+        node.val = value
+        self.values.add(value)
+        if node.left:
+            self._recover_tree(node.left, 2 * value + 1)
+        if node.right:
+            self._recover_tree(node.right, 2 * value + 2)
+
+    def find(self, target: int) -> bool:
+        return target in self.values
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(FindElements)

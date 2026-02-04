@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法深度合并两个字典。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果任一输入为空，则返回另一个输入。
+2. 对于每个键，如果两个字典中都存在该键且对应的值都是字典，则递归合并这两个子字典。
+3. 如果两个字典中都存在该键但其中一个值不是字典，则保留第一个字典的值。
+4. 如果某个键只存在于一个字典中，则直接将该键值对添加到结果字典中。
 
 关键点:
-- [TODO]
+- 递归地处理嵌套字典。
+- 确保在合并过程中不丢失任何键值对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两个输入字典的大小。每个键值对最多只会被访问一次。
+空间复杂度: O(n + m)，递归调用栈的深度取决于输入字典的最大嵌套深度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, Any
 
 
-def solution_function_name(params):
+def deep_merge(obj1: Dict[str, Any], obj2: Dict[str, Any]) -> Dict[str, Any]:
     """
-    函数式接口 - [TODO] 实现
+    深度合并两个字典。
+    :param obj1: 第一个字典
+    :param obj2: 第二个字典
+    :return: 合并后的字典
     """
-    # TODO: 实现最优解法
-    pass
+    if not obj1:
+        return obj2
+    if not obj2:
+        return obj1
+
+    merged = {}
+
+    for key in set(obj1.keys()).union(obj2.keys()):
+        if key in obj1 and key in obj2:
+            if isinstance(obj1[key], dict) and isinstance(obj2[key], dict):
+                merged[key] = deep_merge(obj1[key], obj2[key])
+            else:
+                merged[key] = obj1[key]
+        elif key in obj1:
+            merged[key] = obj1[key]
+        else:
+            merged[key] = obj2[key]
+
+    return merged
 
 
-Solution = create_solution(solution_function_name)
+Solution = deep_merge

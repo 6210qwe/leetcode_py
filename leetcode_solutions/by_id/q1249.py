@@ -1,3 +1,4 @@
+```python
 # -*- coding:utf-8 -*-
 # ============================================================================
 # 题目信息
@@ -21,22 +22,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个索引在不同快照中的值，并使用二分查找来高效地获取特定快照的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化时，创建一个字典，用于存储每个索引在不同快照中的值。
+2. 在 set 方法中，更新当前快照的值。
+3. 在 snap 方法中，增加快照编号并返回当前快照编号。
+4. 在 get 方法中，使用二分查找找到指定快照编号的值。
 
 关键点:
-- [TODO]
+- 使用字典存储每个索引在不同快照中的值。
+- 使用二分查找来高效地获取特定快照的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: 
+- set: O(1)
+- snap: O(1)
+- get: O(log n)，其中 n 是快照的数量
+
+空间复杂度: O(n * m)，其中 n 是数组的长度，m 是快照的数量
 """
 
 # ============================================================================
@@ -44,17 +52,47 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class SnapshotArray:
+
+    def __init__(self, length: int):
+        self.snap_id = 0
+        self.data = {i: [] for i in range(length)}
+
+    def set(self, index: int, val: int) -> None:
+        if not self.data[index] or self.data[index][-1][0] != self.snap_id:
+            self.data[index].append((self.snap_id, val))
+        else:
+            self.data[index][-1] = (self.snap_id, val)
+
+    def snap(self) -> int:
+        self.snap_id += 1
+        return self.snap_id - 1
+
+    def get(self, index: int, snap_id: int) -> int:
+        snapshots = self.data[index]
+        left, right = 0, len(snapshots) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if snapshots[mid][0] == snap_id:
+                return snapshots[mid][1]
+            elif snapshots[mid][0] < snap_id:
+                left = mid + 1
+            else:
+                right = mid - 1
+        if right >= 0:
+            return snapshots[right][1]
+        return 0
 
 
-Solution = create_solution(solution_function_name)
+# 测试用例
+if __name__ == "__main__":
+    snapshot_arr = SnapshotArray(3)
+    snapshot_arr.set(0, 5)
+    print(snapshot_arr.snap())  # 输出 0
+    snapshot_arr.set(0, 6)
+    print(snapshot_arr.get(0, 0))  # 输出 5
+```
+
+这个实现中，`SnapshotArray` 类使用了哈希表来存储每个索引在不同快照中的值，并使用二分查找来高效地获取特定快照的值。这样可以确保 `set` 和 `snap` 操作的时间复杂度为 O(1)，而 `get` 操作的时间复杂度为 O(log n)。

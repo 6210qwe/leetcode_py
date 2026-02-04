@@ -21,40 +21,97 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来维护砖块的连通性，并通过逆序处理 hits 来模拟砖块掉落的过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集，将所有砖块和一个虚拟节点（表示顶部）加入并查集。
+2. 逆序处理 hits，先将所有要敲掉的砖块标记为 0。
+3. 遍历整个网格，将剩余的砖块加入并查集中。
+4. 逆序处理 hits，恢复被敲掉的砖块，并检查其连通性，计算掉落的砖块数量。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地管理砖块的连通性。
+- 通过逆序处理 hits 来模拟砖块掉落的过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n + k)，其中 m 和 n 分别是网格的行数和列数，k 是 hits 的长度。
+空间复杂度: O(m * n)，并查集的空间开销。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.count = n
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            if self.size[rootX] < self.size[rootY]:
+                rootX, rootY = rootY, rootX
+            self.parent[rootY] = rootX
+            self.size[rootX] += self.size[rootY]
+            self.count -= 1
+    
+    def connected(self, x, y):
+        return self.find(x) == self.find(y)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def hitBricks(grid: List[List[int]], hits: List[List[int]]) -> List[int]:
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    # 将所有要敲掉的砖块标记为 0
+    for i, j in hits:
+        if grid[i][j] == 1:
+            grid[i][j] = 2  # 标记为 2 表示被敲掉的砖块
+    
+    # 初始化并查集
+    uf = UnionFind(m * n + 1)  # 虚拟节点表示顶部
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 1:
+                idx = i * n + j
+                if i == 0:
+                    uf.union(idx, m * n)  # 连接到顶部
+                for dx, dy in directions:
+                    ni, nj = i + dx, j + dy
+                    if 0 <= ni < m and 0 <= nj < n and grid[ni][nj] == 1:
+                        uf.union(idx, ni * n + nj)
+    
+    # 逆序处理 hits，恢复被敲掉的砖块
+    result = []
+    for i, j in reversed(hits):
+        if grid[i][j] == 2:
+            grid[i][j] = 1  # 恢复砖块
+            idx = i * n + j
+            before = uf.size[uf.find(m * n)] - 1  # 当前连通的砖块数
+            if i == 0:
+                uf.union(idx, m * n)  # 连接到顶部
+            for dx, dy in directions:
+                ni, nj = i + dx, j + dy
+                if 0 <= ni < m and 0 <= nj < n and grid[ni][nj] == 1:
+                    uf.union(idx, ni * n + nj)
+            after = uf.size[uf.find(m * n)] - 1  # 修复后的连通砖块数
+            result.append(max(0, after - before - 1))  # 计算掉落的砖块数
+        else:
+            result.append(0)  # 如果该位置本来就没有砖块，则掉落的砖块数为 0
+    
+    return result[::-1]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(hitBricks)

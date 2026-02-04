@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个元素的出现次数，然后遍历哈希表计算只出现一次的元素的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典来记录每个元素的出现次数。
+2. 遍历数组，更新字典中的元素计数。
+3. 遍历字典，累加只出现一次的元素的值。
 
 关键点:
-- [TODO]
+- 使用字典来高效统计元素出现次数。
+- 只累加出现次数为1的元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们需要遍历数组两次，一次用于统计元素出现次数，一次用于计算唯一元素的和。
+空间复杂度: O(n)，最坏情况下，所有元素都不同，字典需要存储 n 个键值对。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_unique_elements(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中唯一元素的和
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用字典统计每个元素的出现次数
+    count = {}
+    for num in nums:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+    
+    # 累加只出现一次的元素的值
+    unique_sum = 0
+    for num, freq in count.items():
+        if freq == 1:
+            unique_sum += num
+    
+    return unique_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_unique_elements)

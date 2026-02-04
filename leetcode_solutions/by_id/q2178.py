@@ -21,40 +21,73 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用一个循环来处理机器人的移动，并在每次移动时检查是否超出边界。如果超出边界，则改变方向。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化机器人的位置和方向。
+2. 在 `step` 方法中，根据当前方向计算新的位置，并在必要时改变方向。
+3. 在 `getPos` 和 `getDir` 方法中返回当前的位置和方向。
 
 关键点:
-- [TODO]
+- 使用一个方向数组来表示四个方向。
+- 通过取模运算来处理大步数的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次移动操作的时间复杂度是常数级别的。
+空间复杂度: O(1) - 只使用了常数级别的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class Robot:
+    def __init__(self, width: int, height: int):
+        self.width = width
+        self.height = height
+        self.x, self.y = 0, 0
+        self.directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # East, North, West, South
+        self.dir_index = 0  # Initial direction is East
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def step(self, num: int):
+        total_steps = (self.x + self.y + num) % ((self.width + self.height - 2) * 2)
+        while total_steps > 0:
+            dx, dy = self.directions[self.dir_index]
+            if 0 <= self.x + dx < self.width and 0 <= self.y + dy < self.height:
+                self.x += dx
+                self.y += dy
+                total_steps -= 1
+            else:
+                self.dir_index = (self.dir_index + 1) % 4
 
+    def getPos(self) -> List[int]:
+        return [self.x, self.y]
 
-Solution = create_solution(solution_function_name)
+    def getDir(self) -> str:
+        dir_names = ["East", "North", "West", "South"]
+        return dir_names[self.dir_index]
+
+# Example usage
+# robot = Robot(6, 3)
+# robot.step(2)
+# print(robot.getPos())  # Output: [2, 0]
+# print(robot.getDir())  # Output: "East"
+# robot.step(2)
+# print(robot.getPos())  # Output: [4, 0]
+# print(robot.getDir())  # Output: "East"
+# robot.step(2)
+# print(robot.getPos())  # Output: [5, 1]
+# print(robot.getDir())  # Output: "North"
+# robot.step(1)
+# print(robot.getPos())  # Output: [5, 2]
+# print(robot.getDir())  # Output: "North"
+# robot.step(4)
+# print(robot.getPos())  # Output: [1, 2]
+# print(robot.getDir())  # Output: "West"

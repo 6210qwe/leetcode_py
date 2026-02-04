@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储节点，并通过集合来确定根节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `nodes` 来存储所有节点。
+2. 初始化一个集合 `children` 来存储所有子节点。
+3. 遍历 `descriptions`，对于每个描述：
+   - 如果父节点或子节点不在 `nodes` 中，则创建新节点并加入 `nodes`。
+   - 根据 `isLeft` 的值，将子节点连接到父节点的左或右子节点。
+   - 将子节点加入 `children` 集合。
+4. 根节点是 `nodes` 中不在 `children` 集合中的节点。
+5. 返回根节点。
 
 关键点:
-- [TODO]
+- 使用哈希表存储节点，方便快速查找和更新。
+- 使用集合来确定根节点，避免重复遍历。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 descriptions 的长度。我们只需要遍历一次 descriptions。
+空间复杂度: O(n)，用于存储节点和子节点集合。
 """
 
 # ============================================================================
@@ -44,17 +51,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def create_binary_tree_from_descriptions(descriptions: List[List[int]]) -> Optional[TreeNode]:
+    nodes = {}
+    children = set()
+
+    for parent, child, is_left in descriptions:
+        if parent not in nodes:
+            nodes[parent] = TreeNode(parent)
+        if child not in nodes:
+            nodes[child] = TreeNode(child)
+
+        if is_left:
+            nodes[parent].left = nodes[child]
+        else:
+            nodes[parent].right = nodes[child]
+
+        children.add(child)
+
+    # 根节点是不在 children 集合中的节点
+    for node in nodes:
+        if node not in children:
+            return nodes[node]
+
+    return None
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(create_binary_tree_from_descriptions)

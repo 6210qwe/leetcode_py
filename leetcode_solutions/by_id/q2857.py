@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 模拟主油箱和副油箱的燃料消耗过程，每次主油箱消耗 5 升燃料时，检查副油箱是否有燃料可以转移。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总行驶距离 `distance` 为 0。
+2. 当主油箱还有燃料时，进行以下操作：
+   - 每次从主油箱消耗 1 升燃料，增加 10 公里的行驶距离。
+   - 如果主油箱已经消耗了 5 升燃料，并且副油箱还有燃料，将 1 升燃料从副油箱转移到主油箱。
+3. 返回总行驶距离 `distance`。
 
 关键点:
-- [TODO]
+- 每次主油箱消耗 5 升燃料时，检查副油箱是否有燃料可以转移。
+- 主油箱和副油箱的燃料总量决定了总行驶距离。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(mainTank)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def total_distance_traveled(main_tank: int, additional_tank: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算卡车可以行驶的最大距离
     """
-    # TODO: 实现最优解法
-    pass
+    distance = 0
+    consumed = 0  # 主油箱已消耗的燃料量
+
+    while main_tank > 0:
+        main_tank -= 1
+        distance += 10
+        consumed += 1
+
+        if consumed == 5 and additional_tank > 0:
+            main_tank += 1
+            additional_tank -= 1
+            consumed = 0  # 重置消耗计数
+
+    return distance
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(total_distance_traveled)

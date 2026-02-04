@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个字符且最后一个数字为 j 的有效排列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 遍历字符串 s，对于每个字符：
+   - 如果是 'D'，则 dp[i][j] = sum(dp[i-1][j+1:])。
+   - 如果是 'I'，则 dp[i][j] = sum(dp[i-1][:j])。
+3. 最后结果是 dp[n][0] 到 dp[n][n] 的和。
 
 关键点:
-- [TODO]
+- 使用前缀和优化求和操作，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +52,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算有效的排列数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    mod = 10**9 + 7
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        prefix_sum = 0
+        for j in range(i + 1):
+            if s[i - 1] == 'I':
+                dp[i][j] = prefix_sum
+            else:
+                dp[i][j] = (dp[i - 1][i] - dp[i - 1][j] + mod) % mod
+            prefix_sum = (prefix_sum + dp[i][j]) % mod
+
+    return sum(dp[n]) % mod
 
 
 Solution = create_solution(solution_function_name)

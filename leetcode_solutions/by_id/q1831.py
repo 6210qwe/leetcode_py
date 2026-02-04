@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与双指针来找到所有可能的分割点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用双指针遍历前缀和数组，找到所有满足条件的分割点。
+3. 对于每个可能的分割点，计算符合条件的分割方案数，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用前缀和数组可以快速计算任意子数组的和。
+- 使用双指针可以在 O(n) 时间复杂度内找到所有可能的分割点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def waysToSplit(nums: List[int]) -> int:
+    MOD = 10**9 + 7
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+    
+    result = 0
+    j, k = 1, 1
+    
+    # 使用双指针遍历前缀和数组
+    for i in range(1, n):
+        # 更新 j 指针
+        j = max(j, i + 1)
+        while j < n and prefix_sum[j] - prefix_sum[i] < prefix_sum[i]:
+            j += 1
+        
+        # 更新 k 指针
+        k = max(k, j)
+        while k < n and prefix_sum[k] - prefix_sum[i] <= prefix_sum[-1] - prefix_sum[k]:
+            k += 1
+        
+        # 计算符合条件的分割方案数
+        if j < k:
+            result = (result + k - j) % MOD
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = waysToSplit

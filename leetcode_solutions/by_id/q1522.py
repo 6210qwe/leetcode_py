@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示从第 i 堆石子开始，当前玩家与对手的最大得分差值。通过递归和记忆化搜索，我们可以计算出最优解。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[i] 表示从第 i 堆石子开始，当前玩家与对手的最大得分差值。
+2. 从后往前遍历石子堆，对于每个位置 i，计算当前玩家可以选择的三种情况（拿 1 堆、2 堆或 3 堆）的最大得分差值。
+3. 更新 dp[i] 为这三种情况的最大值。
+4. 最终结果根据 dp[0] 的值来判断。
 
 关键点:
-- [TODO]
+- 使用记忆化搜索来避免重复计算。
+- 通过从后往前遍历来确保每个位置的 dp 值已经计算完毕。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 stoneValue 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def stoneGameIII(stoneValue: List[int]) -> str:
+    n = len(stoneValue)
+    dp = [float('-inf')] * (n + 1)
+    dp[n] = 0  # 从最后一个位置开始，没有石子可拿，得分为 0
+
+    for i in range(n - 1, -1, -1):
+        take = 0
+        for j in range(3):
+            if i + j < n:
+                take += stoneValue[i + j]
+                dp[i] = max(dp[i], take - dp[i + j + 1])
+
+    if dp[0] > 0:
+        return "Alice"
+    elif dp[0] < 0:
+        return "Bob"
+    else:
+        return "Tie"
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(stoneGameIII)

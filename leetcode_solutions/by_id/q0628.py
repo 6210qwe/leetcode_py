@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 最大乘积可能由三种情况产生：
+1. 三个最大的正数相乘
+2. 两个最小的负数和一个最大的正数相乘
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 找出数组中最大的三个数
+2. 找出数组中最小的两个数
+3. 计算两种情况的乘积并返回较大值
 
 关键点:
-- [TODO]
+- 使用线性扫描找到最大的三个数和最小的两个数，避免排序
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximumProduct(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出数组中由三个数组成的最大乘积
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最大和最小值
+    max1, max2, max3 = float('-inf'), float('-inf'), float('-inf')
+    min1, min2 = float('inf'), float('inf')
+
+    # 遍历数组，更新最大和最小值
+    for num in nums:
+        if num > max1:
+            max3, max2, max1 = max2, max1, num
+        elif num > max2:
+            max3, max2 = max2, num
+        elif num > max3:
+            max3 = num
+
+        if num < min1:
+            min2, min1 = min1, num
+        elif num < min2:
+            min2 = num
+
+    # 计算两种情况的乘积并返回较大值
+    return max(max1 * max2 * max3, max1 * min1 * min2)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximumProduct)

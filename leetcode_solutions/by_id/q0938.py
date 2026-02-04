@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和计数方法来计算可以生成的小于或等于给定整数 n 的正整数的个数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 n 转换为字符串形式，方便逐位处理。
+2. 初始化结果变量 res 为 0。
+3. 计算所有长度小于 n 的数字的数量。
+4. 逐位处理 n 的每一位，计算可以生成的数字数量。
+5. 如果当前位在 digits 中存在，则继续处理下一位；否则停止。
 
 关键点:
-- [TODO]
+- 通过逐位处理 n 的每一位，可以避免生成所有可能的数字，从而提高效率。
+- 使用动态规划的思想，逐位累加可以生成的数字数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(d * log(n))，其中 d 是 digits 的长度，log(n) 是 n 的位数。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def atMostNGivenDigitSet(digits: List[str], n: int) -> int:
+    n_str = str(n)
+    k = len(n_str)
+    d = len(digits)
+    
+    # 计算所有长度小于 n 的数字的数量
+    res = sum(d ** i for i in range(1, k))
+    
+    # 逐位处理 n 的每一位
+    for i in range(k):
+        prefix_match = False
+        for digit in digits:
+            if digit < n_str[i]:
+                res += d ** (k - i - 1)
+            elif digit == n_str[i]:
+                prefix_match = True
+                break
+            else:
+                break
+        if not prefix_match:
+            return res
+    
+    return res + 1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(atMostNGivenDigitSet)

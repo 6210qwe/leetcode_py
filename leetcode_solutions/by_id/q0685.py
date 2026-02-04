@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来检测环，并处理入度为2的情况。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集和入度数组。
+2. 遍历所有边，记录每个节点的入度。
+3. 如果某个节点的入度为2，尝试删除这两条边之一，检查是否形成有根树。
+4. 如果没有入度为2的节点，找到形成环的边并删除。
 
 关键点:
-- [TODO]
+- 使用并查集来检测环。
+- 处理入度为2的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -44,17 +47,49 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+        if rootX != rootY:
+            self.parent[rootX] = rootY
+            return True
+        return False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
+def solution_function_name(edges: List[List[int]]) -> List[int]:
+    n = len(edges)
+    uf = UnionFind(n + 1)
+    indegree = [0] * (n + 1)
+    candidateA, candidateB = None, None
+    
+    for u, v in edges:
+        if indegree[v] == 1:
+            candidateA = [u, v]
+        else:
+            indegree[v] += 1
+            if not uf.union(u, v):
+                candidateB = [u, v]
+    
+    def is_valid_tree(edges_to_remove):
+        uf = UnionFind(n + 1)
+        for u, v in edges:
+            if [u, v] == edges_to_remove:
+                continue
+            if not uf.union(u, v):
+                return False
+        return True
+    
+    if candidateA and is_valid_tree(candidateA):
+        return candidateA
+    return candidateB
 
 Solution = create_solution(solution_function_name)

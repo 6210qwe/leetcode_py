@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来维护当前窗口内的元素及其频率，并计算窗口内不同元素的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化滑动窗口的左右指针 `left` 和 `right`，以及一个哈希表 `freq` 来记录窗口内元素的频率。
+2. 初始化变量 `max_sum` 用于记录最大和，`current_sum` 用于记录当前窗口的和。
+3. 滑动窗口从左到右遍历数组：
+   - 将 `nums[right]` 加入窗口，并更新 `freq` 和 `current_sum`。
+   - 如果窗口大小达到 `k`，检查窗口内不同元素的数量是否大于等于 `m`，如果是则更新 `max_sum`。
+   - 移动左指针 `left`，移除 `nums[left]` 并更新 `freq` 和 `current_sum`。
+4. 返回 `max_sum`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地维护窗口内的元素及其频率。
+- 通过滑动窗口的移动来动态更新窗口内的和及不同元素的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每个元素最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(k) - 哈希表 `freq` 最多存储 `k` 个元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_sum_of_almost_unique_subarray(nums: List[int], m: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回长度为 k 的几乎唯一子数组的最大和。
     """
-    # TODO: 实现最优解法
-    pass
+    if k > len(nums):
+        return 0
+    
+    left = 0
+    current_sum = 0
+    max_sum = 0
+    freq = {}
+    
+    for right in range(len(nums)):
+        # 将 nums[right] 加入窗口
+        current_sum += nums[right]
+        freq[nums[right]] = freq.get(nums[right], 0) + 1
+        
+        # 窗口大小达到 k
+        if right - left + 1 == k:
+            # 检查窗口内不同元素的数量
+            if len(freq) >= m:
+                max_sum = max(max_sum, current_sum)
+            
+            # 移除 nums[left] 并更新窗口
+            freq[nums[left]] -= 1
+            if freq[nums[left]] == 0:
+                del freq[nums[left]]
+            current_sum -= nums[left]
+            left += 1
+    
+    return max_sum
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_sum_of_almost_unique_subarray)

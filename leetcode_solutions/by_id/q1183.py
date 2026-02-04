@@ -21,40 +21,74 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 一次遍历 count 数组，计算最小值、最大值、总和、元素个数、众数。
+- 根据元素个数计算中位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量：最小值、最大值、总和、元素个数、众数及其出现次数。
+2. 遍历 count 数组，更新上述变量。
+3. 计算平均值。
+4. 根据元素个数的奇偶性，计算中位数。
+5. 返回结果。
 
 关键点:
-- [TODO]
+- 通过一次遍历完成所有统计量的计算。
+- 使用累加器来计算总和和元素个数。
+- 通过比较当前元素出现次数来确定众数。
+- 中位数的计算需要考虑样本数量的奇偶性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 count 数组的长度（固定为 256）。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def sample_stats(count: List[int]) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    计算样本的最小值、最大值、平均值、中位数和众数。
     """
-    # TODO: 实现最优解法
-    pass
+    min_val = 256
+    max_val = -1
+    total_sum = 0
+    total_count = 0
+    mode = 0
+    max_count = 0
+    
+    for i, c in enumerate(count):
+        if c > 0:
+            if i < min_val:
+                min_val = i
+            if i > max_val:
+                max_val = i
+            total_sum += i * c
+            total_count += c
+            if c > max_count:
+                max_count = c
+                mode = i
+    
+    mean = total_sum / total_count
+    
+    # 计算中位数
+    mid = (total_count + 1) // 2
+    left, right = 0, 0
+    for i, c in enumerate(count):
+        left += c
+        if left >= mid:
+            if total_count % 2 == 1 or left == mid:
+                return [min_val, max_val, mean, i, mode]
+            else:
+                for j in range(i + 1, 256):
+                    if count[j] > 0:
+                        return [min_val, max_val, mean, (i + j) / 2, mode]
 
-
-Solution = create_solution(solution_function_name)
+Solution = sample_stats

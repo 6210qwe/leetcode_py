@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和和哈希表来记录和为 target 的子数组，并确保这些子数组不重叠。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化前缀和 `prefix_sum` 为 0，哈希表 `seen` 用于存储前缀和及其对应的索引。
+2. 遍历数组 `nums`，计算当前前缀和 `prefix_sum`。
+3. 检查 `prefix_sum - target` 是否在 `seen` 中，如果在，则找到了一个和为 `target` 的子数组。
+4. 更新 `seen` 中的前缀和及其对应的索引，确保子数组不重叠。
+5. 记录找到的子数组数量。
 
 关键点:
-- [TODO]
+- 使用哈希表 `seen` 来存储前缀和及其对应的索引，以便快速查找和更新。
+- 确保子数组不重叠，通过更新 `seen` 中的前缀和及其对应的索引。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表 `seen` 在最坏情况下需要存储 n 个前缀和。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_non_overlapping_subarrays(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回非空不重叠子数组的最大数目，且每个子数组中数字和都为 target。
     """
-    # TODO: 实现最优解法
-    pass
+    prefix_sum = 0
+    seen = {0: -1}  # 前缀和为 0 的初始位置
+    count = 0
+    last_end = -1  # 上一个子数组的结束位置
+
+    for i, num in enumerate(nums):
+        prefix_sum += num
+        if prefix_sum - target in seen and seen[prefix_sum - target] >= last_end:
+            count += 1
+            last_end = i
+        seen[prefix_sum] = i
+
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_non_overlapping_subarrays)

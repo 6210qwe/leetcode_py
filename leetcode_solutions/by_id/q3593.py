@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算数组的所有元素的 LCM 和 GCD，并在最多移除一个元素的情况下，找到最大因子得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算整个数组的 LCM 和 GCD。
+2. 遍历数组，每次移除一个元素，计算剩余元素的 LCM 和 GCD。
+3. 更新最大因子得分。
 
 关键点:
-- [TODO]
+- 使用 math 库中的 gcd 函数来计算 GCD。
+- 使用 reduce 函数和 lcm 函数来计算 LCM。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * log(max(nums)))，其中 n 是数组长度，log(max(nums)) 是计算 LCM 和 GCD 的时间复杂度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from math import gcd
+from functools import reduce
 
+def lcm(a, b):
+    return a * b // gcd(a, b)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def max_factor_score(nums: List[int]) -> int:
+    if len(nums) == 1:
+        return nums[0] ** 2
+    
+    def array_lcm(arr):
+        return reduce(lcm, arr)
+    
+    def array_gcd(arr):
+        return reduce(gcd, arr)
+    
+    full_lcm = array_lcm(nums)
+    full_gcd = array_gcd(nums)
+    max_score = full_lcm * full_gcd
+    
+    for i in range(len(nums)):
+        new_nums = nums[:i] + nums[i+1:]
+        new_lcm = array_lcm(new_nums)
+        new_gcd = array_gcd(new_nums)
+        max_score = max(max_score, new_lcm * new_gcd)
+    
+    return max_score
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_factor_score)

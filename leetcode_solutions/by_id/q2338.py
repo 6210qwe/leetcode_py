@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每张卡牌上次出现的位置，通过遍历数组来找到最小的连续卡牌数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `last_seen` 用于存储每张卡牌上次出现的位置。
+2. 初始化变量 `min_length` 为无穷大，用于记录最小的连续卡牌数。
+3. 遍历数组 `cards`：
+   - 如果当前卡牌在 `last_seen` 中存在，则计算当前卡牌与上次出现位置之间的距离，并更新 `min_length`。
+   - 更新 `last_seen` 中当前卡牌的位置。
+4. 如果 `min_length` 仍为无穷大，说明没有找到匹配的卡牌，返回 -1；否则返回 `min_length`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每张卡牌上次出现的位置，可以快速找到匹配的卡牌。
+- 通过一次遍历数组即可完成计算，时间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +54,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimumCardPickup(cards: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回必须拿起的最小连续卡牌数，以使在拿起的卡牌中有一对匹配的卡牌。
     """
-    # TODO: 实现最优解法
-    pass
+    last_seen = {}
+    min_length = float('inf')
+    
+    for i, card in enumerate(cards):
+        if card in last_seen:
+            min_length = min(min_length, i - last_seen[card] + 1)
+        last_seen[card] = i
+    
+    return min_length if min_length != float('inf') else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimumCardPickup)

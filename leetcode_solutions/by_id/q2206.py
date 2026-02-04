@@ -21,40 +21,66 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来模拟每个炸弹的引爆过程，并记录每个炸弹能引爆的最大数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，表示每个炸弹可以引爆哪些其他炸弹。
+2. 对于每个炸弹，使用 BFS 来计算其能引爆的最大炸弹数量。
+3. 返回最大值。
 
 关键点:
-- [TODO]
+- 使用欧几里得距离公式来判断一个炸弹是否在另一个炸弹的爆炸范围内。
+- 使用 BFS 来遍历每个炸弹的引爆路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是炸弹的数量。构建图的时间复杂度为 O(n^2)，每个炸弹的 BFS 时间复杂度为 O(n)。
+空间复杂度: O(n^2)，用于存储图和 BFS 过程中的队列。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
 
+def maximum_detonation(bombs: List[List[int]]) -> int:
+    def can_detonate(bomb1, bomb2):
+        x1, y1, r1 = bomb1
+        x2, y2, r2 = bomb2
+        distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+        return distance <= r1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    n = len(bombs)
+    graph = collections.defaultdict(list)
+    
+    # 构建图
+    for i in range(n):
+        for j in range(n):
+            if i != j and can_detonate(bombs[i], bombs[j]):
+                graph[i].append(j)
 
+    def bfs(start):
+        queue = collections.deque([start])
+        visited = set([start])
+        count = 0
+        while queue:
+            node = queue.popleft()
+            count += 1
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        return count
 
-Solution = create_solution(solution_function_name)
+    max_detonated = 0
+    for i in range(n):
+        max_detonated = max(max_detonated, bfs(i))
+    
+    return max_detonated
+
+Solution = create_solution(maximum_detonation)

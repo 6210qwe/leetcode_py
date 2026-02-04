@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环来检查每个字符串是否是其他字符串的子字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空列表 `result` 用于存储结果。
+2. 对于每个字符串 `word`，检查它是否是其他字符串的子字符串。
+3. 如果是，则将其添加到 `result` 列表中。
+4. 返回 `result` 列表。
 
 关键点:
-- [TODO]
+- 使用 Python 的 `in` 操作符来检查子字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 * m)，其中 n 是 words 的长度，m 是 words 中最长字符串的长度。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for i, word in enumerate(words):
+        for j, other_word in enumerate(words):
+            if i != j and word in other_word:
+                result.append(word)
+                break
+    return result
 
 
 Solution = create_solution(solution_function_name)

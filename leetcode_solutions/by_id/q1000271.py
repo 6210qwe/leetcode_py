@@ -21,22 +21,25 @@ LCR 093. 最长的斐波那契子序列的长度 - 如果序列 X_1, X_2, ..., X
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和哈希表来记录每个可能的斐波那契子序列的长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个字典 `dp`，其中 `dp[(a, b)]` 表示以 `a` 和 `b` 结尾的斐波那契子序列的长度。
+2. 遍历数组中的每一对元素 `(a, b)`，并检查是否存在 `c` 使得 `a + b = c`。
+3. 如果存在 `c`，则更新 `dp[(b, c)]` 为 `dp[(a, b)] + 1`。
+4. 记录最长的斐波那契子序列的长度。
 
 关键点:
-- [TODO]
+- 使用哈希表来快速查找 `c`。
+- 动态规划状态转移方程为 `dp[(b, c)] = dp[(a, b)] + 1`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。需要遍历每一对元素。
+空间复杂度: O(n^2)，用于存储动态规划的状态。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    if len(arr) < 3:
+        return 0
+
+    dp = {}
+    max_length = 0
+
+    for k in range(2, len(arr)):
+        for j in range(k):
+            a = arr[k] - arr[j]
+            if a < arr[j] and a in arr[:j]:
+                dp[(arr[j], arr[k])] = dp.get((a, arr[j]), 2) + 1
+                max_length = max(max_length, dp[(arr[j], arr[k])])
+
+    return max_length if max_length >= 3 else 0
 
 
 Solution = create_solution(solution_function_name)

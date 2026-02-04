@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来优化子数组求和的过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 遍历每个下标 i，计算对应的子数组和，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子数组的和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +49,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_variable_length_subarrays(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算变长子数组的和
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+
+    total_sum = 0
+
+    # 遍历每个下标 i，计算对应的子数组和
+    for i in range(n):
+        start = max(0, i - nums[i])
+        subarray_sum = prefix_sum[i + 1] - prefix_sum[start]
+        total_sum += subarray_sum
+
+    return total_sum
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_variable_length_subarrays)

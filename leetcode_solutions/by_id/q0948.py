@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用归并排序算法来实现数组的升序排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组分成两个子数组。
+2. 递归地对每个子数组进行排序。
+3. 合并两个已排序的子数组。
 
 关键点:
-- [TODO]
+- 归并排序的时间复杂度为 O(n log n)，空间复杂度为 O(n)。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def merge_sort(nums: List[int]) -> List[int]:
+    if len(nums) <= 1:
+        return nums
+
+    mid = len(nums) // 2
+    left = merge_sort(nums[:mid])
+    right = merge_sort(nums[mid:])
+
+    return merge(left, right)
+
+
+def merge(left: List[int], right: List[int]) -> List[int]:
+    merged = []
+    i, j = 0, 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+
+    while i < len(left):
+        merged.append(left[i])
+        i += 1
+
+    while j < len(right):
+        merged.append(right[j])
+        j += 1
+
+    return merged
+
+
+def solution_function_name(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用归并排序算法对数组进行升序排列
     """
-    # TODO: 实现最优解法
-    pass
+    return merge_sort(nums)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过排序和双指针方法找到最长的平衡子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行排序。
+2. 使用双指针方法，左指针从头开始，右指针从尾部开始。
+3. 每次检查当前子数组是否平衡，如果不平衡则移动左指针，否则移动右指针。
+4. 记录最长的平衡子数组长度。
+5. 返回需要移除的元素数量，即总长度减去最长平衡子数组长度。
 
 关键点:
-- [TODO]
+- 排序后的数组可以简化问题，只需检查相邻元素。
+- 双指针方法可以高效地找到最长的平衡子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序的时间复杂度。
+空间复杂度: O(1) - 仅使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_removals_to_balance_array(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回为了使剩余数组平衡，需要移除的元素的最小数量。
     """
-    # TODO: 实现最优解法
-    pass
+    nums.sort()  # 对数组进行排序
+    n = len(nums)
+    left = 0
+    right = 0
+    max_length = 0
+    
+    while right < n:
+        while right < n and nums[right] <= k * nums[left]:
+            right += 1
+        max_length = max(max_length, right - left)
+        left += 1
+    
+    return n - max_length
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_removals_to_balance_array)

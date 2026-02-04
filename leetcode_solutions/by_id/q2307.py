@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来处理相邻的非互质数，逐步替换为它们的最小公倍数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空栈。
+2. 遍历数组中的每个元素：
+   - 如果栈不为空且当前元素与栈顶元素不互质，则计算它们的最小公倍数并将其压入栈中。
+   - 否则，将当前元素压入栈中。
+3. 最终栈中的元素即为结果数组。
 
 关键点:
-- [TODO]
+- 使用栈来处理相邻的非互质数，确保每次替换后的结果仍然保持在栈中。
+- 通过计算最大公约数来判断两个数是否互质。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums)))，其中 n 是数组长度，log(max(nums)) 是计算最大公约数的时间复杂度。
+空间复杂度: O(n)，最坏情况下栈中存储了所有元素。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def replace_non_coprimes(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换数组中的非互质数
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    for num in nums:
+        while stack and math.gcd(stack[-1], num) > 1:
+            gcd = math.gcd(stack[-1], num)
+            lcm = (stack[-1] * num) // gcd
+            stack.pop()
+            num = lcm
+        stack.append(num)
+    return stack
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(replace_non_coprimes)

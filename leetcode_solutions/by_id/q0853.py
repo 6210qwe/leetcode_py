@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和双指针来最大化收益。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将工作按难度升序排序。
+2. 创建一个数组 `max_profit`，其中 `max_profit[i]` 表示难度不超过 `difficulty[i]` 的最大收益。
+3. 对于每个工人，使用二分查找找到他们能完成的最难的工作，并计算其收益。
 
 关键点:
-- [TODO]
+- 通过排序和预处理 `max_profit` 数组，可以在 O(log n) 时间内找到每个工人能完成的最难的工作。
+- 使用双指针来优化遍历过程。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是工作的数量，m 是工人的数量。排序的时间复杂度是 O(n log n)，二分查找的时间复杂度是 O(m log n)。
+空间复杂度: O(n)，用于存储 `max_profit` 数组。
 """
 
 # ============================================================================
@@ -49,12 +51,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maxProfitAssignment(difficulty: List[int], profit: List[int], worker: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 将工作按难度升序排序
+    jobs = sorted(zip(difficulty, profit))
+    
+    # 创建一个数组 max_profit，其中 max_profit[i] 表示难度不超过 difficulty[i] 的最大收益
+    max_profit = [0] * len(jobs)
+    max_profit[0] = jobs[0][1]
+    for i in range(1, len(jobs)):
+        max_profit[i] = max(max_profit[i-1], jobs[i][1])
+    
+    # 计算每个工人的最大收益
+    total_profit = 0
+    for w in worker:
+        # 使用二分查找找到工人能完成的最难的工作
+        left, right = 0, len(jobs) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if jobs[mid][0] <= w:
+                left = mid + 1
+            else:
+                right = mid - 1
+        if right >= 0:
+            total_profit += max_profit[right]
+    
+    return total_profit
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maxProfitAssignment)

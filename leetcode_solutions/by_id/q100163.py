@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录已经访问过的节点值，以便在遍历时快速判断是否为重复节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `seen` 用于存储已访问的节点值。
+2. 使用两个指针 `prev` 和 `curr` 分别指向当前节点的前一个节点和当前节点。
+3. 遍历链表：
+   - 如果当前节点的值不在 `seen` 中，将其值加入 `seen`，并移动 `prev` 和 `curr` 指针。
+   - 如果当前节点的值已经在 `seen` 中，删除当前节点，并移动 `curr` 指针。
+4. 返回处理后的链表头节点。
 
 关键点:
-- [TODO]
+- 使用哈希表来记录已访问的节点值，确保时间复杂度为 O(n)。
+- 使用双指针遍历链表，方便删除重复节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。每个节点最多被访问一次。
+空间复杂度: O(n)，哈希表 `seen` 在最坏情况下需要存储所有节点的值。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_duplicate_nodes(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除未排序链表中的重复节点
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return None
+
+    seen = set()
+    seen.add(head.val)
+    prev = head
+    curr = head.next
+
+    while curr:
+        if curr.val in seen:
+            # 删除当前节点
+            prev.next = curr.next
+        else:
+            seen.add(curr.val)
+            prev = curr
+        curr = curr.next
+
+    return head
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_duplicate_nodes)

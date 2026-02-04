@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个矩形的对角线长度，并找到对角线最长且面积最大的矩形。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化变量 `max_diagonal` 和 `max_area` 分别记录当前最长的对角线长度和对应的矩形面积。
+2. 遍历每个矩形，计算其对角线长度和面积。
+3. 如果当前矩形的对角线长度大于 `max_diagonal`，更新 `max_diagonal` 和 `max_area`。
+4. 如果当前矩形的对角线长度等于 `max_diagonal` 但面积更大，更新 `max_area`。
+5. 返回 `max_area`。
 
 关键点:
-- [TODO]
+- 使用勾股定理计算对角线长度。
+- 通过一次遍历找到对角线最长且面积最大的矩形。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 dimensions 的长度。我们只需要遍历一次数组。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(dimensions: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算对角线最长的矩形的面积
     """
-    # TODO: 实现最优解法
-    pass
+    max_diagonal = 0
+    max_area = 0
+    
+    for length, width in dimensions:
+        diagonal = (length ** 2 + width ** 2) ** 0.5
+        area = length * width
+        
+        if diagonal > max_diagonal or (diagonal == max_diagonal and area > max_area):
+            max_diagonal = diagonal
+            max_area = area
+    
+    return max_area
 
 
 Solution = create_solution(solution_function_name)

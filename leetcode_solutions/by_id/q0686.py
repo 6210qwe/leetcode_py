@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 KMP 算法进行字符串匹配，通过计算 a 重复叠加的最小次数来构建目标字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 a 重复叠加的最小次数，使得叠加后的字符串长度大于等于 b。
+2. 构建叠加后的字符串。
+3. 使用 KMP 算法在叠加后的字符串中查找 b。
 
 关键点:
-- [TODO]
+- 计算 a 重复叠加的最小次数。
+- 使用 KMP 算法进行高效字符串匹配。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是字符串 a 的长度，m 是字符串 b 的长度。
+空间复杂度: O(m)，KMP 算法的空间复杂度。
 """
 
 # ============================================================================
@@ -49,12 +51,53 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def repeated_string_match(a: str, b: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 寻找重复叠加字符串 a 的最小次数，使得字符串 b 成为叠加后的字符串 a 的子串。
     """
-    # TODO: 实现最优解法
-    pass
+    def compute_lps(pattern: str) -> List[int]:
+        lps = [0] * len(pattern)
+        length = 0
+        i = 1
+        while i < len(pattern):
+            if pattern[i] == pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        return lps
+
+    def kmp_search(text: str, pattern: str) -> bool:
+        lps = compute_lps(pattern)
+        i = j = 0
+        while i < len(text):
+            if text[i] == pattern[j]:
+                i += 1
+                j += 1
+                if j == len(pattern):
+                    return True
+            elif j > 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+        return False
+
+    # 计算 a 重复叠加的最小次数
+    min_repeats = (len(b) + len(a) - 1) // len(a)
+    max_repeats = min_repeats + 1
+
+    # 构建叠加后的字符串
+    for repeats in range(min_repeats, max_repeats + 1):
+        repeated_a = a * repeats
+        if kmp_search(repeated_a, b):
+            return repeats
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(repeated_string_match)

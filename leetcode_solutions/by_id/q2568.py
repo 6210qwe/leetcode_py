@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 计算每个子树的代表数量，并计算所需的油耗。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建邻接表表示树。
+2. 使用 DFS 从首都开始遍历树，计算每个子树的代表数量。
+3. 在回溯过程中，计算每个子树到其父节点的油耗，并累加总油耗。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算每个子树的代表数量。
+- 计算每个子树到其父节点的油耗时，考虑每辆车的座位数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是城市的数量。每个节点和边都只访问一次。
+空间复杂度: O(n)，存储邻接表和递归调用栈的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimum_fuel_cost(roads: List[List[int]], seats: int) -> int:
+    def dfs(node: int, parent: int) -> int:
+        # 计算当前子树的代表数量
+        representatives = 1
+        for neighbor in adj_list[node]:
+            if neighbor != parent:
+                representatives += dfs(neighbor, node)
+        
+        # 计算从当前子树到父节点的油耗
+        if node != 0:
+            fuel_cost[0] += (representatives + seats - 1) // seats
+        
+        return representatives
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 构建邻接表
+    adj_list = [[] for _ in range(len(roads) + 1)]
+    for u, v in roads:
+        adj_list[u].append(v)
+        adj_list[v].append(u)
 
+    # 初始化油耗计数器
+    fuel_cost = [0]
+    dfs(0, -1)
+    
+    return fuel_cost[0]
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_fuel_cost)

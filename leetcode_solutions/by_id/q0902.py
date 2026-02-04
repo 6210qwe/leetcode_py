@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大堆来存储可以加油的加油站，并在需要加油时选择加油量最大的加油站。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最大堆和当前燃料。
+2. 遍历每个加油站，如果当前燃料不足以到达下一个加油站或目标，则从堆中取出加油量最大的加油站进行加油。
+3. 如果当前燃料仍不足以到达下一个加油站或目标，则返回 -1。
+4. 如果遍历完所有加油站并且当前燃料足以到达目标，则返回加油次数。
 
 关键点:
-- [TODO]
+- 使用最大堆来存储可以加油的加油站，确保每次加油时选择加油量最大的加油站。
+- 在需要加油时，从堆中取出加油量最大的加油站进行加油。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是加油站的数量。因为每次插入和删除堆的操作都是 O(log n)。
+空间复杂度: O(n)，因为最坏情况下堆中会存储所有的加油站。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def min_refuel_stops(target: int, start_fuel: int, stations: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算到达目标所需的最少加油次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化最大堆和当前燃料
+    max_heap = []
+    current_fuel = start_fuel
+    refuel_count = 0
+    prev_position = 0
+    
+    for position, fuel in stations + [[target, 0]]:
+        # 计算从上一个加油站到当前加油站的距离
+        distance = position - prev_position
+        # 检查当前燃料是否足够到达下一个加油站
+        while current_fuel < distance and max_heap:
+            # 从堆中取出加油量最大的加油站进行加油
+            current_fuel -= heapq.heappop(max_heap)
+            refuel_count += 1
+        # 如果当前燃料仍不足以到达下一个加油站，则返回 -1
+        if current_fuel < distance:
+            return -1
+        # 将当前加油站的燃料加入堆中
+        heapq.heappush(max_heap, -fuel)
+        # 更新当前位置和当前燃料
+        current_fuel -= distance
+        prev_position = position
+    
+    return refuel_count
 
-
-Solution = create_solution(solution_function_name)
+Solution = min_refuel_stops

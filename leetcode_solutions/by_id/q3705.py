@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和计数器来统计每个元素在所有大小为 k 的子数组中的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 来记录每个元素在当前窗口中的出现次数。
+2. 使用滑动窗口遍历数组，维护一个大小为 k 的窗口，并更新计数器。
+3. 对于每个窗口，检查计数器中的元素是否只出现一次，并记录这些元素的最大值。
+4. 返回最大值，如果没有找到符合条件的元素则返回 -1。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和计数器来高效统计每个元素在所有大小为 k 的子数组中的出现次数。
+- 只关注出现次数为 1 的元素，并记录其中的最大值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。滑动窗口遍历数组的时间复杂度为 O(n)。
+空间复杂度: O(k)，其中 k 是窗口的大小。计数器的空间复杂度为 O(k)。
 """
 
 # ============================================================================
@@ -49,12 +52,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_largest_almost_missing_integer(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出最大的几近缺失整数
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import Counter
+
+    if len(nums) < k:
+        return -1
+
+    # 初始化计数器
+    count = Counter()
+    max_val = -1
+
+    # 初始化第一个窗口
+    for i in range(k):
+        count[nums[i]] += 1
+
+    # 检查第一个窗口
+    for num, freq in count.items():
+        if freq == 1:
+            max_val = max(max_val, num)
+
+    # 滑动窗口
+    for i in range(k, len(nums)):
+        # 移除窗口左侧元素
+        count[nums[i - k]] -= 1
+        if count[nums[i - k]] == 0:
+            del count[nums[i - k]]
+
+        # 添加窗口右侧元素
+        count[nums[i]] += 1
+
+        # 检查当前窗口
+        for num, freq in count.items():
+            if freq == 1:
+                max_val = max(max_val, num)
+
+    return max_val
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_largest_almost_missing_integer)

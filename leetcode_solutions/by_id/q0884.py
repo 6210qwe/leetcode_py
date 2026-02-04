@@ -21,22 +21,29 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索（BFS）来找到从 s1 到 s2 的最短转换路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化队列，将 s1 加入队列，并记录已访问的字符串。
+2. 开始 BFS：
+   - 从队列中取出一个字符串 cur。
+   - 如果 cur 等于 s2，返回当前步数。
+   - 找到第一个不匹配的字符位置 i。
+   - 尝试交换 cur[i] 与后续所有可能的字符，生成新的字符串 new_str。
+   - 如果 new_str 未被访问过，将其加入队列并标记为已访问。
+3. 重复上述过程直到找到 s2 或队列为空。
 
 关键点:
-- [TODO]
+- 使用 BFS 保证找到的路径是最短的。
+- 通过剪枝减少不必要的交换操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)，其中 n 是字符串的长度。在最坏情况下，每个字符都需要尝试交换。
+空间复杂度: O(n!)，队列和已访问集合在最坏情况下需要存储 n! 个字符串。
 """
 
 # ============================================================================
@@ -49,12 +56,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def kSimilarity(s1: str, s2: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 s1 和 s2 的最小相似度 k
     """
-    # TODO: 实现最优解法
-    pass
+    if s1 == s2:
+        return 0
+
+    def get_next_strings(s: str, target: str):
+        i = 0
+        while s[i] == target[i]:
+            i += 1
+        for j in range(i + 1, len(s)):
+            if s[j] == target[i] and s[j] != target[j]:
+                yield s[:i] + s[j] + s[i + 1:j] + s[i] + s[j + 1:]
+
+    from collections import deque
+    queue = deque([(s1, 0)])
+    visited = {s1}
+
+    while queue:
+        cur, steps = queue.popleft()
+        if cur == s2:
+            return steps
+        for next_str in get_next_strings(cur, s2):
+            if next_str not in visited:
+                visited.add(next_str)
+                queue.append((next_str, steps + 1))
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(kSimilarity)

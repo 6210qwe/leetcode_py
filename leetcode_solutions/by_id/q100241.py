@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法生成所有可能的排列组合。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `backtrack`，用于生成排列。
+2. 初始化结果列表 `res` 和当前路径 `path`。
+3. 在递归函数中，如果当前路径长度等于字符串长度，则将当前路径加入结果列表。
+4. 否则，遍历字符串中的每个字符，如果该字符未被使用，则将其加入当前路径，并标记为已使用。
+5. 递归调用 `backtrack` 生成下一个字符的排列。
+6. 回溯时，移除当前路径中的最后一个字符，并标记为未使用。
 
 关键点:
-- [TODO]
+- 使用一个布尔数组 `used` 来记录字符是否被使用。
+- 通过递归和回溯来生成所有可能的排列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n!)
+- 其中 n 是字符串的长度，因为我们需要生成所有可能的排列。
+
+空间复杂度: O(n)
+- 递归调用栈的深度最多为 n，同时需要一个长度为 n 的布尔数组 `used`。
 """
 
 # ============================================================================
@@ -49,12 +57,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def permutation(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 生成字符串 s 的所有排列组合
     """
-    # TODO: 实现最优解法
-    pass
+    def backtrack(path, used):
+        if len(path) == len(s):
+            res.append(''.join(path))
+            return
+        for i in range(len(s)):
+            if not used[i]:
+                path.append(s[i])
+                used[i] = True
+                backtrack(path, used)
+                path.pop()
+                used[i] = False
+
+    res = []
+    used = [False] * len(s)
+    backtrack([], used)
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(permutation)

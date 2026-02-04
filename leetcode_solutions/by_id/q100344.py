@@ -21,22 +21,24 @@ LCR 188. 买卖芯片的最佳时机 - 数组 prices 记录了某芯片近期的
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一次遍历的方法来找到最大利润。通过维护一个最小价格和最大利润来实现。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最小价格为无穷大，最大利润为0。
+2. 遍历价格数组，对于每个价格：
+   - 更新最小价格。
+   - 计算当前价格与最小价格的差值，并更新最大利润。
 
 关键点:
-- [TODO]
+- 只需要一次遍历即可找到最大利润。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是价格数组的长度，因为只需要一次遍历。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_profit(prices: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最大利润
     """
-    # TODO: 实现最优解法
-    pass
+    if not prices:
+        return 0
+
+    min_price = float('inf')
+    max_profit = 0
+
+    for price in prices:
+        min_price = min(min_price, price)
+        max_profit = max(max_profit, price - min_price)
+
+    return max_profit
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_profit)

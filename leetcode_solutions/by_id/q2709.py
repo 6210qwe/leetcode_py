@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和状态压缩来解决这个问题。我们可以通过预处理每个数字的质因数，并使用位掩码来表示这些质因数的状态。然后，我们使用动态规划来计算所有可能的无平方子集。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 预处理每个数字的质因数，并使用位掩码表示。
+2. 使用动态规划数组 dp 来记录每个状态下的子集数量。
+3. 遍历每个数字，更新动态规划数组。
+4. 计算最终结果并返回。
 
 关键点:
-- [TODO]
+- 使用位掩码来表示质因数状态。
+- 动态规划数组 dp 用于记录每个状态下的子集数量。
+- 需要处理数字 1 的特殊情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^m)，其中 n 是数组长度，m 是质因数的数量（最多 10 个）。
+空间复杂度: O(2^m)，用于存储动态规划数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(nums: List[int]) -> int:
+    # 预处理每个数字的质因数，并使用位掩码表示
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    prime_mask = {}
+    for num in nums:
+        mask = 0
+        for i, p in enumerate(primes):
+            if num % (p * p) == 0:
+                mask = -1
+                break
+            if num % p == 0:
+                mask |= 1 << i
+        if mask != -1:
+            prime_mask[num] = mask
 
+    # 动态规划数组
+    dp = [0] * (1 << 10)
+    dp[0] = 1  # 空集
+
+    # 更新动态规划数组
+    for num, mask in prime_mask.items():
+        for state in range((1 << 10) - 1, -1, -1):
+            if state & mask == 0:
+                dp[state | mask] = (dp[state | mask] + dp[state]) % MOD
+
+    # 计算最终结果
+    return (sum(dp) - 1) % MOD  # 减去空集
 
 Solution = create_solution(solution_function_name)

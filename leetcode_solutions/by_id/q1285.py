@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用中序遍历将二叉搜索树转换为有序数组，然后通过递归构建平衡二叉搜索树。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 中序遍历原二叉搜索树，得到一个有序数组。
+2. 通过递归方式构建平衡二叉搜索树，每次选择中间元素作为根节点，左半部分作为左子树，右半部分作为右子树。
 
 关键点:
-- [TODO]
+- 中序遍历确保了节点值的有序性。
+- 递归构建时，选择中间元素作为根节点，保证了树的高度平衡。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是节点数。中序遍历和构建平衡二叉搜索树的时间复杂度均为 O(n)。
+空间复杂度: O(n)，中序遍历需要 O(n) 的空间存储节点值，递归调用栈的空间复杂度也为 O(log n)。
 """
 
 # ============================================================================
@@ -44,17 +45,33 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def balance_bst(root: TreeNode) -> TreeNode:
     """
-    函数式接口 - [TODO] 实现
+    将二叉搜索树变平衡
     """
-    # TODO: 实现最优解法
-    pass
+    # 中序遍历，将节点值存入列表
+    def inorder_traversal(node: TreeNode, values: List[int]):
+        if node is None:
+            return
+        inorder_traversal(node.left, values)
+        values.append(node.val)
+        inorder_traversal(node.right, values)
 
+    # 通过有序数组构建平衡二叉搜索树
+    def build_balanced_bst(values: List[int], start: int, end: int) -> Optional[TreeNode]:
+        if start > end:
+            return None
+        mid = (start + end) // 2
+        root = TreeNode(values[mid])
+        root.left = build_balanced_bst(values, start, mid - 1)
+        root.right = build_balanced_bst(values, mid + 1, end)
+        return root
 
-Solution = create_solution(solution_function_name)
+    values = []
+    inorder_traversal(root, values)
+    return build_balanced_bst(values, 0, len(values) - 1)
+
+Solution = create_solution(balance_bst)

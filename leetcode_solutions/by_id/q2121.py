@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用并查集来判断两个顶点是否连通
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化并查集
+2. 遍历所有边，将每条边的两个顶点进行合并
+3. 检查源顶点和目标顶点是否在同一个集合中
 
 关键点:
-- [TODO]
+- 并查集的路径压缩和按秩合并可以优化查询和合并操作的时间复杂度
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E * α(n))，其中 E 是边的数量，α 是阿克曼函数的反函数，近似为常数
+空间复杂度: O(n)，用于存储并查集的数据结构
 """
 
 # ============================================================================
@@ -48,13 +49,39 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+def solution_function_name(n: int, edges: List[List[int]], source: int, destination: int) -> bool:
+    """
+    函数式接口 - 使用并查集判断两个顶点是否连通
+    """
+    if source == destination:
+        return True
+
+    uf = UnionFind(n)
+    for u, v in edges:
+        uf.union(u, v)
+
+    return uf.find(source) == uf.find(destination)
 
 Solution = create_solution(solution_function_name)

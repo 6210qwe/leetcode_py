@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断两个矩形是否重叠可以通过检查它们在 x 轴和 y 轴上的投影是否有重叠来实现。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查 rec1 和 rec2 在 x 轴上的投影是否有重叠。
+2. 检查 rec1 和 rec2 在 y 轴上的投影是否有重叠。
+3. 如果在 x 轴和 y 轴上都有重叠，则两个矩形重叠，返回 True；否则返回 False。
 
 关键点:
-- [TODO]
+- 两个矩形在 x 轴上的投影有重叠的条件是：rec1 的最右端大于 rec2 的最左端，并且 rec1 的最左端小于 rec2 的最右端。
+- 两个矩形在 y 轴上的投影有重叠的条件是：rec1 的最上端大于 rec2 的最下端，并且 rec1 的最下端小于 rec2 的最上端。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,19 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_rectangle_overlap(rec1: List[int], rec2: List[int]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    判断两个矩形是否重叠
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查 x 轴上的投影是否有重叠
+    if rec1[2] <= rec2[0] or rec2[2] <= rec1[0]:
+        return False
+    
+    # 检查 y 轴上的投影是否有重叠
+    if rec1[3] <= rec2[1] or rec2[3] <= rec1[1]:
+        return False
+    
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_rectangle_overlap)

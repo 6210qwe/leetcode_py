@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两个字典来分别记录每个餐桌的订单和所有出现过的餐品。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典：`table_orders` 用于记录每个餐桌的订单，`all_foods` 用于记录所有出现过的餐品。
+2. 遍历 `orders`，更新 `table_orders` 和 `all_foods`。
+3. 获取 `all_foods` 的排序列表作为表头。
+4. 遍历 `table_orders`，构建每张餐桌的订单行，并按桌号排序。
+5. 将表头和订单行组合成最终结果。
 
 关键点:
-- [TODO]
+- 使用字典进行高效统计。
+- 使用排序确保表头和订单行的顺序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m log m)，其中 n 是 `orders` 的长度，m 是不同餐品的数量。遍历 `orders` 是 O(n)，排序是 O(m log m)。
+空间复杂度: O(n + m)，存储 `table_orders` 和 `all_foods`。
 """
 
 # ============================================================================
@@ -49,12 +53,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def display_table(orders: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回餐厅的点菜展示表
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化字典
+    table_orders = {}
+    all_foods = set()
+
+    # 遍历 orders，更新 table_orders 和 all_foods
+    for _, table, food in orders:
+        if table not in table_orders:
+            table_orders[table] = {}
+        if food not in table_orders[table]:
+            table_orders[table][food] = 0
+        table_orders[table][food] += 1
+        all_foods.add(food)
+
+    # 获取 all_foods 的排序列表作为表头
+    header = sorted(all_foods)
+    result = [["Table"] + header]
+
+    # 遍历 table_orders，构建每张餐桌的订单行，并按桌号排序
+    for table in sorted(table_orders.keys(), key=int):
+        row = [table]
+        for food in header:
+            row.append(str(table_orders[table].get(food, 0)))
+        result.append(row)
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(display_table)

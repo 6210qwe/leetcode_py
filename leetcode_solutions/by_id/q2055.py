@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用扫描线算法来处理重叠的线段，并计算每个区间的颜色和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将每个线段的起点和终点分别记录下来，并标记是起点还是终点。
+2. 对所有的事件点进行排序。
+3. 遍历排序后的事件点，维护当前的颜色和，并在颜色和发生变化时记录新的区间。
 
 关键点:
-- [TODO]
+- 使用字典记录每个位置的颜色变化。
+- 在遍历过程中动态更新当前的颜色和。
+- 当颜色和发生变化时，记录新的区间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 segments 的长度。主要的时间开销在于对事件点的排序。
+空间复杂度: O(n)，用于存储事件点和结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import List
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def describe_painting(segments: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 描述绘画结果
     """
-    # TODO: 实现最优解法
-    pass
+    events = []
+    for start, end, color in segments:
+        events.append((start, 1, color))  # 起点事件
+        events.append((end, -1, color))   # 终点事件
+    
+    # 按位置排序，如果位置相同，先处理终点事件
+    events.sort(key=lambda x: (x[0], -x[1]))
+    
+    result = []
+    current_color_sum = 0
+    prev_position = None
+    for position, event_type, color in events:
+        if prev_position is not None and current_color_sum > 0:
+            result.append([prev_position, position, current_color_sum])
+        
+        current_color_sum += event_type * color
+        prev_position = position
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(describe_painting)

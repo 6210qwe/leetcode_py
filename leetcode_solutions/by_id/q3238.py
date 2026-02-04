@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和Floyd-Warshall算法来计算所有子串之间的最小转换成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建一个图，其中节点表示字符串，边表示转换成本。
+2. 使用Floyd-Warshall算法计算所有节点对之间的最短路径。
+3. 使用动态规划来计算将source转换为target的最小成本。
 
 关键点:
-- [TODO]
+- 使用Floyd-Warshall算法来计算所有子串之间的最小转换成本。
+- 动态规划状态转移方程：dp[i] = min(dp[i], dp[j] + cost[j][i])，其中cost[j][i]是从source[j:i]到target[j:i]的最小转换成本。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^3 + m^3)，其中n是source和target的长度，m是original和changed的长度。
+空间复杂度: O(m^2)，用于存储转换成本矩阵。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import collections
+import itertools
 
+def minimum_cost_to_convert_string(source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
+    # 构建图
+    graph = collections.defaultdict(lambda: collections.defaultdict(lambda: float('inf')))
+    for orig, chng, c in zip(original, changed, cost):
+        graph[orig][chng] = min(graph[orig][chng], c)
+    
+    # Floyd-Warshall算法计算所有节点对之间的最短路径
+    nodes = set(original) | set(changed)
+    for k, i, j in itertools.product(nodes, repeat=3):
+        if i in graph and j in graph[i]:
+            graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j])
+    
+    # 动态规划计算最小转换成本
+    n = len(source)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+    for i in range(1, n + 1):
+        for j in range(i):
+            substr = source[j:i]
+            if substr in graph and target[j:i] in graph[substr]:
+                dp[i] = min(dp[i], dp[j] + graph[substr][target[j:i]])
+    
+    return dp[n] if dp[n] != float('inf') else -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cost_to_convert_string)

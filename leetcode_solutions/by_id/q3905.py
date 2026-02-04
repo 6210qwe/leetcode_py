@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希集合来记录已经出现过的段，逐字符扩展当前段，直到该段之前未曾出现过。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希集合 `seen` 来记录已经出现过的段。
+2. 初始化一个空的列表 `segments` 来存储分割后的段。
+3. 从字符串的第一个字符开始遍历，逐字符扩展当前段。
+4. 如果当前段在 `seen` 中未出现过，则将其加入 `segments` 并更新 `seen`。
+5. 重复上述步骤，直到处理完整个字符串。
 
 关键点:
-- [TODO]
+- 使用哈希集合来快速判断当前段是否已经出现过。
+- 逐字符扩展当前段，确保每个段都是唯一的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被处理两次（一次加入当前段，一次检查是否已出现）。
+空间复杂度: O(n)，哈希集合 `seen` 和结果列表 `segments` 最多存储 n 个字符。
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def partition_string(s: str) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将字符串 s 分割为互不相同的段
     """
-    # TODO: 实现最优解法
-    pass
+    seen = set()  # 记录已经出现过的段
+    segments = []  # 存储分割后的段
+    current_segment = ""  # 当前段
+
+    for char in s:
+        # 逐字符扩展当前段
+        current_segment += char
+
+        # 如果当前段未出现过
+        if current_segment not in seen:
+            seen.add(current_segment)
+            segments.append(current_segment)
+            current_segment = ""  # 重置当前段
+
+    return segments
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partition_string)

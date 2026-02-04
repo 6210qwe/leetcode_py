@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用位运算来记录路径上的节点值出现次数，并检查是否可以形成伪回文路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用深度优先搜索 (DFS) 遍历二叉树。
+2. 使用一个整数 `path` 来记录路径上每个节点值的出现次数，使用位运算进行更新。
+3. 当到达叶子节点时，检查 `path` 中 1 的个数是否不超过 1（即最多只有一个节点值出现奇数次），如果是，则该路径是伪回文路径。
+4. 递归遍历左右子树，并回溯更新 `path`。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地记录和检查节点值的出现次数。
+- 通过递归和回溯遍历所有路径。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树的节点数。每个节点只被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度取决于树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def pseudo_palindromic_paths(root: Optional[TreeNode]) -> int:
+    def dfs(node: Optional[TreeNode], path: int) -> int:
+        if not node:
+            return 0
+        
+        # 更新路径状态
+        path ^= 1 << (node.val - 1)
+        
+        # 如果是叶子节点，检查路径是否是伪回文
+        if not node.left and not node.right:
+            return 1 if bin(path).count('1') <= 1 else 0
+        
+        # 递归遍历左右子树
+        return dfs(node.left, path) + dfs(node.right, path)
+    
+    return dfs(root, 0)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(pseudo_palindromic_paths)

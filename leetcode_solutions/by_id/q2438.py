@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索（DFS）来计算从 node1 和 node2 出发到其他节点的距离，并找到满足条件的节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 DFS 计算从 node1 出发到所有可达节点的距离。
+2. 使用 DFS 计算从 node2 出发到所有可达节点的距离。
+3. 遍历所有节点，找到同时可从 node1 和 node2 到达的节点，并计算这些节点的最大距离。
+4. 返回最大距离最小且节点编号最小的节点。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算距离时，需要记录访问过的节点以避免重复计算。
+- 在遍历所有节点时，使用集合操作来快速查找共同可达的节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 每个节点和边最多访问一次。
+空间复杂度: O(n) - 需要存储从 node1 和 node2 出发到其他节点的距离。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def dfs(edges: List[int], node: int, dist: List[int]) -> None:
+    while node != -1 and dist[node] == -1:
+        next_node = edges[node]
+        dist[node] = dist[next_node] + 1 if next_node != -1 else 0
+        node = next_node
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_closest_node(edges: List[int], node1: int, node2: int) -> int:
+    n = len(edges)
+    dist1 = [-1] * n
+    dist2 = [-1] * n
+    
+    # Calculate distances from node1
+    dfs(edges, node1, dist1)
+    
+    # Calculate distances from node2
+    dfs(edges, node2, dist2)
+    
+    min_max_dist = float('inf')
+    result_node = -1
+    
+    for i in range(n):
+        if dist1[i] != -1 and dist2[i] != -1:
+            max_dist = max(dist1[i], dist2[i])
+            if max_dist < min_max_dist or (max_dist == min_max_dist and i < result_node):
+                min_max_dist = max_dist
+                result_node = i
+    
+    return result_node
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_closest_node)

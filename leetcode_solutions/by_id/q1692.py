@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归和组合数学来计算满足条件的排列数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `count_ways` 来计算以某个节点为根的子树的排列数。
+2. 在递归函数中，首先将当前节点的左右子树分别递归计算排列数。
+3. 计算左右子树的排列数之和，使用组合数学公式 C(n, k) 来计算总的排列数。
+4. 返回总排列数，并对结果取模 1e9+7。
 
 关键点:
-- [TODO]
+- 使用组合数学公式 C(n, k) 来计算排列数。
+- 递归地处理每个节点的左右子树。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是 nums 的长度。递归调用的时间复杂度是 O(n)，每次递归调用中需要计算组合数，最坏情况下需要 O(n) 时间。
+空间复杂度: O(n)，递归调用栈的深度最多为 n。
 """
 
 # ============================================================================
@@ -47,14 +50,30 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import math
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_ways(nums: List[int]) -> int:
+    if len(nums) < 3:
+        return 1
+    
+    root = nums[0]
+    left = [x for x in nums if x < root]
+    right = [x for x in nums if x > root]
+    
+    left_ways = count_ways(left)
+    right_ways = count_ways(right)
+    
+    total_ways = (left_ways * right_ways * math.comb(len(nums) - 1, len(left))) % MOD
+    return total_ways
+
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算将 nums 重新排序后，与原数组 nums 得到相同二叉搜索树的方案数。
     """
-    # TODO: 实现最优解法
-    pass
-
+    if not nums:
+        return 0
+    return (count_ways(nums) - 1) % MOD
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用差分数组来记录每年的人口变化，然后通过前缀和计算每年的生存人数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为101的差分数组，用于记录从1900年到2000年的每年人口变化。
+2. 遍历每个人的出生年份和死亡年份，更新差分数组。
+3. 计算前缀和，得到每年的实际生存人数。
+4. 找出生存人数最多的年份。
 
 关键点:
-- [TODO]
+- 使用差分数组可以高效地记录每年的人口变化。
+- 前缀和可以快速计算每年的生存人数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 birth 和 death 数组的长度，m 是年份范围（101）。
+空间复杂度: O(m)，需要一个长度为101的差分数组。
 """
 
 # ============================================================================
@@ -49,12 +52,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_living_year(birth: List[int], death: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算生存人数最多的年份
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化差分数组
+    diff = [0] * 101
+    
+    # 更新差分数组
+    for b in birth:
+        diff[b - 1900] += 1
+    for d in death:
+        diff[d - 1900 + 1] -= 1
+    
+    # 计算前缀和
+    population = 0
+    max_population = 0
+    max_year = 1900
+    for i in range(101):
+        population += diff[i]
+        if population > max_population:
+            max_population = population
+            max_year = 1900 + i
+    
+    return max_year
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_living_year)

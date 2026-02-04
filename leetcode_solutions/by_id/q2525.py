@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用集合来存储原始数组和反转后的数组中的所有不同整数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个集合 `seen` 来存储所有不同的整数。
+2. 遍历数组 `nums`，将每个整数及其反转后的整数添加到 `seen` 集合中。
+3. 返回 `seen` 集合的大小，即不同整数的数量。
 
 关键点:
-- [TODO]
+- 使用集合来自动去重。
+- 反转整数时，可以将其转换为字符串进行反转，然后再转换回整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。每个整数的反转操作是 O(1) 的。
+空间复杂度: O(n)，最坏情况下，所有的整数都是不同的，需要存储 n 个整数。
 """
 
 # ============================================================================
@@ -49,12 +51,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_distinct_integers(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算反转之后不同整数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    seen = set()
+    
+    for num in nums:
+        seen.add(num)
+        seen.add(int(str(num)[::-1]))
+    
+    return len(seen)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_distinct_integers)

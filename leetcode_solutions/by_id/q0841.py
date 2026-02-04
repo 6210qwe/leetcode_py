@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用两次遍历的方法，第一次从左到右遍历，记录每个字符到左边最近的目标字符的距离；第二次从右到左遍历，记录每个字符到右边最近的目标字符的距离。最后取两者中的最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果数组 `answer`，长度与 `s` 相同，初始值为无穷大。
+2. 从左到右遍历字符串 `s`，记录当前目标字符 `c` 的位置 `last_pos`，更新 `answer` 数组。
+3. 从右到左遍历字符串 `s`，再次记录当前目标字符 `c` 的位置 `last_pos`，更新 `answer` 数组。
+4. 返回 `answer` 数组。
 
 关键点:
-- [TODO]
+- 两次遍历分别记录左右最近的目标字符位置。
+- 使用 `min` 函数取两者中的最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 `s` 的长度。需要两次遍历字符串。
+空间复杂度: O(1)，除了返回的结果数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def shortest_distance_to_character(s: str, c: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    返回一个整数数组 answer，其中 answer.length == s.length 且 answer[i] 是 s 中从下标 i 到离它最近的字符 c 的距离。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    answer = [float('inf')] * n
+    last_pos = -float('inf')
+    
+    # 从左到右遍历
+    for i in range(n):
+        if s[i] == c:
+            last_pos = i
+        answer[i] = min(answer[i], i - last_pos)
+    
+    # 从右到左遍历
+    last_pos = float('inf')
+    for i in range(n - 1, -1, -1):
+        if s[i] == c:
+            last_pos = i
+        answer[i] = min(answer[i], last_pos - i)
+    
+    return answer
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_distance_to_character)

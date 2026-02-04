@@ -21,40 +21,44 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法，优先选择当前幸福值最高的孩子，以最大化总幸福值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对幸福值数组进行降序排序。
+2. 依次选择前 k 个孩子，每次选择后将剩余孩子的幸福值减 1（但不低于 0）。
+3. 计算并返回所选孩子的幸福值之和。
 
 关键点:
-- [TODO]
+- 通过排序和贪心选择，确保每次选择的孩子都是当前幸福值最高的。
+- 逐步减少剩余孩子的幸福值，保证后续选择的孩子幸福值尽可能高。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n) - 排序操作的时间复杂度。
+空间复杂度: O(1) - 除了输入输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def maximize_happiness(happiness: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 1. 对幸福值数组进行降序排序
+    happiness.sort(reverse=True)
+    
+    # 2. 依次选择前 k 个孩子，计算总幸福值
+    total_happiness = 0
+    for i in range(k):
+        total_happiness += max(0, happiness[i] - i)
+    
+    return total_happiness
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_happiness)

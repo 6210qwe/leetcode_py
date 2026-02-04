@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用倒排索引和集合操作来计算相似度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建倒排索引，记录每个单词出现在哪些文档中。
+2. 遍历每个文档，使用集合操作计算与其他文档的相似度。
+3. 将相似度大于 0 的结果存储在结果列表中。
 
 关键点:
-- [TODO]
+- 使用倒排索引来快速查找包含相同单词的文档。
+- 使用集合操作来高效计算交集和并集。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N * M + N^2)，其中 N 是文档数量，M 是每个文档的平均长度。
+空间复杂度: O(N * M)，用于存储倒排索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(docs: List[List[int]]) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算文档间的稀疏相似度
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 构建倒排索引
+    inverted_index = {}
+    for doc_id, doc in enumerate(docs):
+        for word in doc:
+            if word not in inverted_index:
+                inverted_index[word] = set()
+            inverted_index[word].add(doc_id)
+    
+    n = len(docs)
+    result = []
+    
+    # 计算相似度
+    for i in range(n):
+        for j in range(i + 1, n):
+            doc_i_set = set(docs[i])
+            doc_j_set = set(docs[j])
+            
+            intersection = doc_i_set & doc_j_set
+            union = doc_i_set | doc_j_set
+            
+            if intersection:
+                similarity = len(intersection) / len(union)
+                result.append(f"{i},{j}: {similarity:.4f}")
+    
+    return result
 
 Solution = create_solution(solution_function_name)

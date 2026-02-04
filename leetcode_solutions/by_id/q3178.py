@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为使得 nums[0:i+1] 变成美丽数组所需的最小增量次数。状态转移方程为：
+dp[i] = min(dp[i-1] + max(0, k - nums[i]), dp[i-2] + max(0, k - nums[i-1]), dp[i-3] + max(0, k - nums[i-2]))
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] 和 dp[1] 分别为 max(0, k - nums[0]) 和 max(0, k - nums[1])。
+2. 从 i = 2 开始，使用状态转移方程计算 dp[i]。
+3. 返回 dp[n-1] 作为结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 状态转移方程考虑了前三个位置的最小增量次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 nums 的长度。我们需要遍历整个数组一次。
+空间复杂度: O(n)，用于存储 dp 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_increment_operations(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使数组变美的最小增量运算数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n < 3:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [0] * n
+    dp[0] = max(0, k - nums[0])
+    dp[1] = max(0, k - nums[1])
+
+    for i in range(2, n):
+        dp[i] = min(
+            dp[i-1] + max(0, k - nums[i]),
+            dp[i-2] + max(0, k - nums[i-1]),
+            dp[i-3] + max(0, k - nums[i-2])
+        )
+
+    return dp[n-1]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_increment_operations)

@@ -21,40 +21,43 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双重循环遍历所有可能的强数对，并计算它们的异或值，记录最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化最大异或值为 0。
+2. 使用双重循环遍历数组中的每一对元素 (i, j)，其中 i <= j。
+3. 检查 (i, j) 是否构成强数对，即 |i - j| <= min(i, j)。
+4. 如果是强数对，计算它们的异或值，并更新最大异或值。
 
 关键点:
-- [TODO]
+- 双重循环遍历所有可能的数对。
+- 检查强数对的条件。
+- 计算并更新最大异或值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组的长度。双重循环遍历所有可能的数对。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出强数对的最大异或值
     """
-    # TODO: 实现最优解法
-    pass
-
+    max_xor = 0
+    for i in range(len(nums)):
+        for j in range(i, len(nums)):
+            if abs(nums[i] - nums[j]) <= min(nums[i], nums[j]):
+                max_xor = max(max_xor, nums[i] ^ nums[j])
+    return max_xor
 
 Solution = create_solution(solution_function_name)

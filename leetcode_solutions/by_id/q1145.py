@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来优化计算子矩阵的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对于每一行，计算从该行开始的所有行的前缀和。
+2. 对于每一列，使用哈希表记录前缀和出现的次数，并计算当前列的前缀和。
+3. 通过哈希表查找是否存在某个前缀和，使得当前前缀和减去该前缀和等于目标值。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子矩阵的和。
+- 使用哈希表记录前缀和出现的次数，可以在 O(1) 时间内查找是否存在某个前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n^2)，其中 m 是矩阵的行数，n 是矩阵的列数。
+空间复杂度: O(n)，用于存储每一列的前缀和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def numSubmatrixSumTarget(matrix: List[List[int]], target: int) -> int:
+    def count_subarrays(nums: List[int], target: int) -> int:
+        count, cur_sum = 0, 0
+        prefix_sums = {0: 1}
+        
+        for num in nums:
+            cur_sum += num
+            if cur_sum - target in prefix_sums:
+                count += prefix_sums[cur_sum - target]
+            prefix_sums[cur_sum] = prefix_sums.get(cur_sum, 0) + 1
+        
+        return count
+    
+    m, n = len(matrix), len(matrix[0])
+    result = 0
+    
+    for top in range(m):
+        row_sums = [0] * n
+        for bottom in range(top, m):
+            for col in range(n):
+                row_sums[col] += matrix[bottom][col]
+            result += count_subarrays(row_sums, target)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(numSubmatrixSumTarget)

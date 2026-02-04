@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用扫描线算法和线段树来高效地找到可以构成矩形的点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有点按 x 坐标排序。
+2. 使用线段树来维护当前扫描线上的 y 坐标。
+3. 对于每个 x 坐标，更新线段树并检查是否存在可以构成矩形的点对。
+4. 计算并更新最大面积。
 
 关键点:
-- [TODO]
+- 使用线段树来高效地查询和更新 y 坐标的范围。
+- 通过扫描线算法来逐步处理每个 x 坐标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是点的数量。排序操作的时间复杂度为 O(n log n)，线段树的操作为 O(log n)。
+空间复杂度: O(n)，线段树的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -48,13 +52,63 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def update(self, idx, val):
+        self._update(1, 0, self.n - 1, idx, val)
 
+    def _update(self, node, start, end, idx, val):
+        if start == end:
+            self.tree[node] = max(self.tree[node], val)
+            return
+        mid = (start + end) // 2
+        if idx <= mid:
+            self._update(2 * node, start, mid, idx, val)
+        else:
+            self._update(2 * node + 1, mid + 1, end, idx, val)
+        self.tree[node] = max(self.tree[2 * node], self.tree[2 * node + 1])
+
+    def query(self, left, right):
+        return self._query(1, 0, self.n - 1, left, right)
+
+    def _query(self, node, start, end, left, right):
+        if left > end or right < start:
+            return 0
+        if left <= start and end <= right:
+            return self.tree[node]
+        mid = (start + end) // 2
+        return max(self._query(2 * node, start, mid, left, right),
+                   self._query(2 * node + 1, mid + 1, end, left, right))
+
+def solution_function_name(xCoord: List[int], yCoord: List[int]) -> int:
+    """
+    函数式接口 - 用点构造面积最大的矩形 II
+    """
+    points = list(zip(xCoord, yCoord))
+    points.sort()
+    
+    n = len(points)
+    max_y = max(yCoord)
+    st = SegmentTree(max_y + 1)
+    
+    max_area = -1
+    for i in range(n):
+        x, y = points[i]
+        if i > 0 and points[i][0] == points[i - 1][0]:
+            continue
+        for j in range(i + 1, n):
+            if points[j][0] != x:
+                break
+            y2 = points[j][1]
+            min_y = st.query(min(y, y2), max(y, y2))
+            if min_y == 0:
+                area = (y2 - y) * (points[j][0] - points[i - 1][0])
+                max_area = max(max_area, area)
+        st.update(y, x)
+    
+    return max_area
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算阶乘，避免重复计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个列表 `factorials`，用于存储从 0 到 n 的阶乘值。
+2. 计算并存储每个数的阶乘值。
+3. 返回 `factorials` 列表。
 
 关键点:
-- [TODO]
+- 使用动态规划来存储已经计算过的阶乘值，以减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def generate_factorials(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    生成从 0 到 n 的阶乘值。
+    
+    :param n: 整数 n
+    :return: 包含从 0 到 n 的阶乘值的列表
     """
-    # TODO: 实现最优解法
-    pass
+    if n < 0:
+        raise ValueError("n must be a non-negative integer")
+    
+    # 初始化阶乘列表
+    factorials = [1] * (n + 1)
+    
+    # 计算阶乘值
+    for i in range(1, n + 1):
+        factorials[i] = factorials[i - 1] * i
+    
+    return factorials
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(generate_factorials)

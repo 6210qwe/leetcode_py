@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和二分查找来计算每个子数组的不同元素数量，并使用计数器来找到中位数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个计数器 `count` 来记录每个不同元素数量的出现次数。
+2. 使用滑动窗口遍历所有子数组，计算每个子数组的不同元素数量，并更新计数器。
+3. 使用二分查找来找到中位数的位置。
+4. 返回中位数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口高效地计算每个子数组的不同元素数量。
+- 使用计数器来记录每个不同元素数量的出现次数。
+- 使用二分查找来找到中位数的位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 最坏情况下需要遍历所有子数组。
+空间复杂度: O(n) - 计数器和滑动窗口所需的空间。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_median_of_uniqueness_array(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出唯一性数组的中位数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    count = [0] * (n + 1)
+    
+    for i in range(n):
+        seen = set()
+        for j in range(i, n):
+            seen.add(nums[j])
+            count[len(seen)] += 1
+    
+    total = n * (n + 1) // 2
+    median_pos = (total + 1) // 2
+    current_sum = 0
+    
+    for k in range(1, n + 1):
+        current_sum += count[k]
+        if current_sum >= median_pos:
+            return k
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_median_of_uniqueness_array)

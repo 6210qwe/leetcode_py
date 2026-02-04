@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过检查每个可能的二进制位，找到第一个未被覆盖的位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个集合来记录所有已出现的二进制位。
+2. 遍历数组中的每个数，将其转换为二进制表示，并将每个二进制位加入集合。
+3. 从1开始，逐个检查每个整数的二进制表示，直到找到第一个不在集合中的二进制位。
 
 关键点:
-- [TODO]
+- 利用集合来高效地存储和查找二进制位。
+- 通过逐个检查整数的二进制表示，确保找到最小的不可表达的整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + log(max(nums)))
+空间复杂度: O(log(max(nums)))
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_impossible_or(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到最小的不可表达的整数
     """
-    # TODO: 实现最优解法
-    pass
+    # 使用集合记录所有已出现的二进制位
+    seen_bits = set()
+    
+    # 遍历数组中的每个数，将其转换为二进制表示，并将每个二进制位加入集合
+    for num in nums:
+        bit = 1
+        while num > 0:
+            if num & 1:
+                seen_bits.add(bit)
+            num >>= 1
+            bit <<= 1
+    
+    # 从1开始，逐个检查每个整数的二进制表示，直到找到第一个不在集合中的二进制位
+    result = 1
+    while result in seen_bits:
+        result <<= 1
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_impossible_or)

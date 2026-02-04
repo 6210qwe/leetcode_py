@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用Pandas库来处理数据，首先统计每个数字出现的次数，然后筛选出只出现一次的数字，并返回其中的最大值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用Pandas读取MyNumbers表。
+2. 统计每个数字出现的次数。
+3. 筛选出只出现一次的数字。
+4. 返回这些数字中的最大值，如果没有这样的数字则返回null。
 
 关键点:
-- [TODO]
+- 使用Pandas的value_counts方法统计每个数字出现的次数。
+- 使用布尔索引筛选出只出现一次的数字。
+- 使用max方法找到最大值，如果没有符合条件的数字则返回null。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中n是MyNumbers表中的行数。统计每个数字出现的次数和筛选操作都是线性时间复杂度。
+空间复杂度: O(n)，需要存储每个数字及其出现次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
 
-def solution_function_name(params):
+def solution_function_name(nums: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出最大的单一数字
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计每个数字出现的次数
+    value_counts = nums['num'].value_counts()
+    
+    # 筛选出只出现一次的数字
+    unique_nums = value_counts[value_counts == 1].index
+    
+    # 如果没有只出现一次的数字，返回null
+    if unique_nums.empty:
+        return pd.DataFrame({'num': [None]})
+    
+    # 返回这些数字中的最大值
+    max_unique_num = unique_nums.max()
+    return pd.DataFrame({'num': [max_unique_num]})
 
 
 Solution = create_solution(solution_function_name)

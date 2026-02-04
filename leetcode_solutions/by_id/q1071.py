@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个变量来累积当前的二进制前缀，并在每次迭代中检查其是否能被 5 整除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个变量 `current` 为 0，用于存储当前的二进制前缀。
+2. 遍历数组 `nums`，对于每个元素：
+   - 更新 `current` 为 `current * 2 + num`。
+   - 检查 `current` 是否能被 5 整除，并将结果添加到答案列表中。
+   - 对 `current` 取模 5，以防止溢出。
 
 关键点:
-- [TODO]
+- 使用取模操作来保持 `current` 的大小在合理范围内。
+- 通过累积和取模操作，可以在 O(1) 空间复杂度内解决问题。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> List[bool]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断二进制前缀是否能被 5 整除
     """
-    # TODO: 实现最优解法
-    pass
+    current = 0
+    result = []
+    
+    for num in nums:
+        current = (current * 2 + num) % 5
+        result.append(current == 0)
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用一个最小堆来维护未标记的元素，并使用一个集合来记录已标记的元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个最小堆，将所有元素及其索引存入堆中。
+2. 初始化一个集合，用于记录已标记的元素。
+3. 对于每个查询，首先检查指定的索引是否已经标记，如果没有标记，则将其标记。
+4. 然后从堆中取出最小的 k 个未标记元素并标记它们。
+5. 计算当前未标记元素的总和，并将其添加到结果列表中。
 
 关键点:
-- [TODO]
+- 使用最小堆来高效地获取最小的未标记元素。
+- 使用集合来快速检查和标记元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 nums 的长度，m 是 queries 的长度。初始化堆的时间复杂度为 O(n log n)，每次查询的时间复杂度为 O(log n)。
+空间复杂度: O(n)，用于存储最小堆和已标记元素的集合。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], queries: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 执行操作标记数组中的元素
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    min_heap = [(num, i) for i, num in enumerate(nums)]
+    heapq.heapify(min_heap)
+    
+    marked = set()
+    result = []
+    unmarked_sum = sum(nums)
+    
+    for index, k in queries:
+        if index not in marked:
+            marked.add(index)
+            unmarked_sum -= nums[index]
+        
+        while k > 0 and min_heap:
+            num, i = heapq.heappop(min_heap)
+            if i not in marked:
+                marked.add(i)
+                unmarked_sum -= num
+                k -= 1
+        
+        result.append(unmarked_sum)
+    
+    return result
 
 Solution = create_solution(solution_function_name)

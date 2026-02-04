@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针和排序来找到最小的整数 x，使得在移除 nums1 中的两个元素后，nums1 和 nums2 相等。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 nums1 和 nums2 进行排序。
+2. 使用双指针遍历 nums1 和 nums2，找到可能的 x 值。
+3. 检查移除两个元素后的 nums1 是否与 nums2 相等。
+4. 返回最小的 x 值。
 
 关键点:
-- [TODO]
+- 通过排序和双指针可以高效地找到可能的 x 值。
+- 需要检查移除两个元素后的 nums1 是否与 nums2 相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 nums1 的长度。排序的时间复杂度是 O(n log n)，双指针遍历的时间复杂度是 O(n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,21 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_integer_added_to_array(nums1: List[int], nums2: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    找出与数组相加的整数 II
+    :param nums1: 第一个整数数组
+    :param nums2: 第二个整数数组
+    :return: 能够实现数组相等的最小整数 x
     """
-    # TODO: 实现最优解法
-    pass
+    nums1.sort()
+    nums2.sort()
+    
+    for i in range(len(nums1)):
+        for j in range(i + 1, len(nums1)):
+            x = nums2[0] - nums1[i]
+            if all(nums1[k] + x == nums2[k - (k > i) - (k > j)] for k in range(len(nums1)) if k != i and k != j):
+                return x
+    return 0  # 理论上不会到达这里，因为题目保证存在解
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_integer_added_to_array)

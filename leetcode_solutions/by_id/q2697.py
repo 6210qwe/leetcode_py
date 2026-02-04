@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用优先队列（最小堆）来优化广度优先搜索（BFS），确保每次扩展的节点都是当前最优的选择。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个优先队列，分别用于存储行和列的可达位置。
+2. 将起点 (0, 0) 加入优先队列，并初始化距离为 1。
+3. 从优先队列中取出当前最优的节点，检查是否到达终点 (m-1, n-1)。
+4. 如果未到达终点，将当前节点可以到达的所有新节点加入优先队列，并更新它们的距离。
+5. 重复步骤 3 和 4，直到优先队列为空或找到终点。
 
 关键点:
-- [TODO]
+- 使用优先队列来保证每次扩展的节点都是当前最优的选择。
+- 通过维护两个优先队列，分别处理行和列的可达位置，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))，其中 m 和 n 分别是网格的行数和列数。每个节点最多被处理一次，且每次处理需要 O(log(m * n)) 的时间进行堆操作。
+空间复杂度: O(m * n)，最坏情况下所有节点都会被加入优先队列。
 """
 
 # ============================================================================
@@ -44,17 +48,58 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from heapq import heappush, heappop
 
+def min_visited_cells(grid: List[List[int]]) -> int:
+    if not grid or not grid[0]:
+        return -1
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    m, n = len(grid), len(grid[0])
+    row_queues = [[] for _ in range(m)]
+    col_queues = [[] for _ in range(n)]
+    distances = [[float('inf')] * n for _ in range(m)]
+    distances[0][0] = 1
 
+    def add_to_queue(queue, i, j, distance):
+        heappush(queue, (distance, i, j))
 
-Solution = create_solution(solution_function_name)
+    def process_queue(queue):
+        while queue and distances[queue[0][1]][queue[0][2]] < queue[0][0]:
+            heappop(queue)
+
+    def expand(i, j, distance):
+        if i == m - 1 and j == n - 1:
+            return distance
+        max_row = min(j + grid[i][j], n - 1)
+        max_col = min(i + grid[i][j], m - 1)
+        for k in range(j + 1, max_row + 1):
+            if distances[i][k] > distance + 1:
+                distances[i][k] = distance + 1
+                add_to_queue(row_queues[i], i, k, distance + 1)
+        for k in range(i + 1, max_col + 1):
+            if distances[k][j] > distance + 1:
+                distances[k][j] = distance + 1
+                add_to_queue(col_queues[j], k, j, distance + 1)
+
+    add_to_queue(row_queues[0], 0, 0, 1)
+    add_to_queue(col_queues[0], 0, 0, 1)
+
+    while any(row_queues) or any(col_queues):
+        for i in range(m):
+            process_queue(row_queues[i])
+            if row_queues[i]:
+                _, i, j = heappop(row_queues[i])
+                result = expand(i, j, distances[i][j])
+                if result != float('inf'):
+                    return result
+        for j in range(n):
+            process_queue(col_queues[j])
+            if col_queues[j]:
+                _, i, j = heappop(col_queues[j])
+                result = expand(i, j, distances[i][j])
+                if result != float('inf'):
+                    return result
+
+    return -1
+
+Solution = create_solution(min_visited_cells)

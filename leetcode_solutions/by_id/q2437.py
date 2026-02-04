@@ -21,22 +21,22 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学公式计算最大组数
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算满足条件的最大组数 k，使得 1 + 2 + ... + k <= n
+2. 使用二分查找找到满足上述条件的最大 k
 
 关键点:
-- [TODO]
+- 利用等差数列求和公式 S = k * (k + 1) / 2 来判断是否满足条件
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +49,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_number_of_groups(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算可以形成的最大组数
     """
-    # TODO: 实现最优解法
-    pass
+    left, right = 1, n
+    while left < right:
+        mid = (left + right + 1) // 2
+        if mid * (mid + 1) // 2 <= n:
+            left = mid
+        else:
+            right = mid - 1
+    return left
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_number_of_groups)

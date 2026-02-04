@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用容斥原理来计算能被 3、5、7 整除的所有整数之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算能被 3、5、7 整除的整数之和。
+2. 使用容斥原理减去重复计算的部分（即同时能被两个或三个数整除的部分）。
 
 关键点:
-- [TODO]
+- 使用等差数列求和公式来计算每个部分的和。
+- 容斥原理确保不重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_of_multiples(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算在 [1, n] 范围内能被 3、5、7 整除的所有整数之和。
     """
-    # TODO: 实现最优解法
-    pass
+    def sum_divisible_by(k: int) -> int:
+        """计算从 1 到 n 中能被 k 整除的数的和"""
+        p = n // k
+        return k * p * (p + 1) // 2
+
+    # 计算能被 3、5、7 整除的数的和
+    sum_3 = sum_divisible_by(3)
+    sum_5 = sum_divisible_by(5)
+    sum_7 = sum_divisible_by(7)
+
+    # 计算能被 15、21、35 整除的数的和
+    sum_15 = sum_divisible_by(15)
+    sum_21 = sum_divisible_by(21)
+    sum_35 = sum_divisible_by(35)
+
+    # 计算能被 105 整除的数的和
+    sum_105 = sum_divisible_by(105)
+
+    # 使用容斥原理计算最终结果
+    return sum_3 + sum_5 + sum_7 - sum_15 - sum_21 - sum_35 + sum_105
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(sum_of_multiples)

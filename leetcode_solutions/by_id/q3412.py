@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符在 s 和 t 中的位置，然后计算每个字符的位置差的绝对值之和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建两个字典分别记录 s 和 t 中每个字符的位置。
+2. 遍历 s 中的每个字符，计算其在 s 和 t 中的位置差的绝对值，并累加到结果中。
 
 关键点:
-- [TODO]
+- 使用字典来存储字符的位置，可以快速查找。
+- 由于 s 和 t 的长度相同且 t 是 s 的一个排列，因此可以直接遍历 s 来计算位置差。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。我们需要遍历字符串 s 和 t 各一次。
+空间复杂度: O(n)，我们使用了两个字典来存储字符的位置。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str, t: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算两个字符串的排列差
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建两个字典来记录 s 和 t 中每个字符的位置
+    pos_s = {char: idx for idx, char in enumerate(s)}
+    pos_t = {char: idx for idx, char in enumerate(t)}
+
+    # 计算每个字符的位置差的绝对值之和
+    diff_sum = sum(abs(pos_s[char] - pos_t[char]) for char in s)
+
+    return diff_sum
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择最大的元素，直到子序列的和大于剩余元素的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行降序排序。
+2. 初始化两个变量 `subseq_sum` 和 `total_sum`，分别表示子序列的和和整个数组的和。
+3. 逐个将排序后的元素加入子序列，并更新 `subseq_sum` 和 `total_sum`。
+4. 当 `subseq_sum` 大于 `total_sum - subseq_sum` 时，停止并返回子序列。
 
 关键点:
-- [TODO]
+- 通过降序排序确保每次选择的元素是当前最大的。
+- 通过比较子序列的和与剩余元素的和来决定何时停止。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_subsequence(nums: List[int]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回非递增顺序的最小子序列
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行降序排序
+    nums.sort(reverse=True)
+    
+    subseq_sum = 0
+    total_sum = sum(nums)
+    subseq = []
+    
+    for num in nums:
+        subseq.append(num)
+        subseq_sum += num
+        if subseq_sum > total_sum - subseq_sum:
+            break
+    
+    return subseq
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_subsequence)

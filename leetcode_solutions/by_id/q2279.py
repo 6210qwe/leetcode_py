@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从最小的正偶数开始逐步累加，直到达到或超过 finalSum。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果 finalSum 是奇数，直接返回空数组。
+2. 初始化一个空列表 result 来存储结果。
+3. 从 2 开始，逐步增加偶数，并将其加入 result 列表中，同时从 finalSum 中减去该偶数。
+4. 当剩余的 finalSum 小于当前偶数时，将剩余的 finalSum 加到最后一个元素上。
+5. 返回 result 列表。
 
 关键点:
-- [TODO]
+- 从最小的正偶数开始逐步累加，确保每次添加的偶数都是唯一的。
+- 当剩余的 finalSum 小于当前偶数时，将剩余的 finalSum 加到最后一个元素上，确保最终结果的和等于 finalSum。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(sqrt(finalSum)) - 因为我们是从 2 开始逐步增加偶数，最坏情况下需要增加到 sqrt(finalSum)。
+空间复杂度: O(sqrt(finalSum)) - 结果列表的长度最多为 sqrt(finalSum)。
 """
 
 # ============================================================================
@@ -49,12 +53,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(final_sum: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将 finalSum 拆分成最多数目的正偶数之和
     """
-    # TODO: 实现最优解法
-    pass
+    if final_sum % 2 != 0:
+        return []
+
+    result = []
+    current_even = 2
+
+    while final_sum >= current_even:
+        result.append(current_even)
+        final_sum -= current_even
+        current_even += 2
+
+    # 如果 finalSum 还有剩余，加到最后一个元素上
+    if final_sum > 0:
+        result[-1] += final_sum
+
+    return result
 
 
 Solution = create_solution(solution_function_name)

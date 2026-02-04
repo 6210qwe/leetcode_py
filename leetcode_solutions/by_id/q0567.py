@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来检查 s2 中是否存在 s1 的排列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个哈希表 `count_s1` 和 `count_window` 分别记录 s1 和当前窗口的字符频率。
+2. 初始化窗口的左右边界 `left` 和 `right`。
+3. 移动右边界 `right`，扩展窗口，并更新 `count_window`。
+4. 如果窗口大小等于 s1 的长度，比较 `count_s1` 和 `count_window`，如果相等则返回 True。
+5. 移动左边界 `left`，收缩窗口，并更新 `count_window`。
+6. 重复步骤 3-5 直到右边界到达 s2 的末尾。
 
 关键点:
-- [TODO]
+- 使用滑动窗口技术，保持窗口大小为 s1 的长度。
+- 使用哈希表记录字符频率，快速比较两个字符串的字符频率是否相同。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 s2 的长度。每个字符最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(1)，因为字母表的大小是固定的（26 个小写字母），所以哈希表的空间复杂度是常数级别的。
 """
 
 # ============================================================================
@@ -49,12 +54,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def check_inclusion(s1: str, s2: str) -> bool:
+    if len(s1) > len(s2):
+        return False
+
+    count_s1 = [0] * 26
+    count_window = [0] * 26
+
+    for char in s1:
+        count_s1[ord(char) - ord('a')] += 1
+
+    left, right = 0, 0
+    while right < len(s2):
+        count_window[ord(s2[right]) - ord('a')] += 1
+
+        if right - left + 1 == len(s1):
+            if count_s1 == count_window:
+                return True
+
+            count_window[ord(s2[left]) - ord('a')] -= 1
+            left += 1
+
+        right += 1
+
+    return False
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(check_inclusion)

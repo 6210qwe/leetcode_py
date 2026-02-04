@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调栈来维护当前处理的元素，并在每次弹出元素时计算非叶节点的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈，用于存储当前处理的元素。
+2. 遍历数组 arr，对于每个元素：
+   - 如果当前元素大于栈顶元素，则弹出栈顶元素，并计算非叶节点的值。
+   - 将当前元素压入栈中。
+3. 最后，处理栈中剩余的元素，计算非叶节点的值。
 
 关键点:
-- [TODO]
+- 使用单调栈来维护当前处理的元素，确保每次弹出元素时计算非叶节点的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 arr 的长度。每个元素最多只会被压入和弹出栈一次。
+空间复杂度: O(n)，栈的空间复杂度为 O(n)。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_cost_tree_from_leaf_values(arr: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小代价生成树的非叶节点值的最小可能总和
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    result = 0
+    
+    for num in arr:
+        while stack and stack[-1] <= num:
+            mid = stack.pop()
+            if stack:
+                result += mid * min(stack[-1], num)
+            else:
+                result += mid * num
+        stack.append(num)
+    
+    while len(stack) > 1:
+        result += stack.pop() * stack[-1]
+    
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_cost_tree_from_leaf_values)

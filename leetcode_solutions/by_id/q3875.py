@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来遍历树，并使用动态规划 (DP) 来记录每个节点的状态。通过位运算来检查和更新每个节点的数字频率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树结构。
+2. 使用 DFS 遍历树，对于每个节点，计算其子树中的最大好子集分数。
+3. 使用 DP 数组来记录每个节点的状态，状态包括当前节点的数字频率和最大分数。
+4. 通过位运算来检查和更新数字频率，确保每个数字在子集中最多出现一次。
+5. 返回所有节点的最大好子集分数的总和。
 
 关键点:
-- [TODO]
+- 使用位运算来高效地检查和更新数字频率。
+- 使用 DFS 和 DP 来处理树的遍历和状态传递。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 1024)，其中 n 是节点数，1024 是状态空间的大小（2^10）。
+空间复杂度: O(n * 1024)，用于存储 DP 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def solution_function_name(vals: List[int], par: List[int]) -> int:
+    def build_tree():
+        tree = defaultdict(list)
+        for i in range(1, len(par)):
+            tree[par[i]].append(i)
+        return tree
 
+    def dfs(node):
+        dp[node][0] = 0
+        for child in tree[node]:
+            dfs(child)
+            new_dp = dp[node].copy()
+            for mask, score in dp[node].items():
+                for child_mask, child_score in dp[child].items():
+                    if mask & child_mask == 0:
+                        new_mask = mask | child_mask
+                        new_score = (score + child_score) % MOD
+                        new_dp[new_mask] = max(new_dp[new_mask], new_score)
+            dp[node] = new_dp
+        for digit in str(vals[node]):
+            dp[node][1 << int(digit)] = max(dp[node][1 << int(digit)], vals[node])
+
+    n = len(vals)
+    tree = build_tree()
+    dp = [defaultdict(int) for _ in range(n)]
+    dfs(0)
+
+    total_score = 0
+    for node in range(n):
+        total_score = (total_score + max(dp[node].values())) % MOD
+
+    return total_score
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用最大公约数 (GCD) 来判断两个数是否互质，从而生成最简分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 遍历所有可能的分子和分母组合。
+2. 对于每个组合，使用 GCD 判断是否互质。
+3. 如果互质，则将该分数加入结果列表。
 
 关键点:
-- [TODO]
+- 使用 `math.gcd` 函数来计算两个数的最大公约数。
+- 只有当分子和分母的最大公约数为 1 时，该分数才是最简分数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)
+  - 遍历所有可能的分子和分母组合需要 O(n^2) 时间。
+  - 计算 GCD 的时间复杂度为 O(log(min(a, b)))，总的时间复杂度为 O(n^2 log n)。
+空间复杂度: O(1)
+  - 除了结果列表外，不需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
-
-def solution_function_name(params):
+def simplifiedFractions(n: int) -> List[str]:
     """
-    函数式接口 - [TODO] 实现
+    返回所有 0 到 1 之间（不包括 0 和 1）满足分母小于等于 n 的最简分数。
     """
-    # TODO: 实现最优解法
-    pass
+    result = []
+    for denominator in range(2, n + 1):
+        for numerator in range(1, denominator):
+            if math.gcd(numerator, denominator) == 1:
+                result.append(f"{numerator}/{denominator}")
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(simplifiedFractions)

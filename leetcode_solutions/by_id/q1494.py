@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每个活动的参与者数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 子句按 activity 字段分组。
+2. 使用 COUNT 函数计算每组的参与者数量。
+3. 使用 ORDER BY 子句按参与者数量降序排列。
 
 关键点:
-- [TODO]
+- 使用 GROUP BY 和 COUNT 函数进行分组和计数。
+- 使用 ORDER BY 子句对结果进行排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是表中记录的数量。GROUP BY 和 COUNT 操作的时间复杂度为 O(n)，ORDER BY 操作的时间复杂度为 O(n log n)。
+空间复杂度: O(1)，查询操作的空间复杂度主要取决于数据库的实现，但通常不会超过常数级别。
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name():
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 SQL 查询语句
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT activity, COUNT(*) AS count
+    FROM Friends
+    GROUP BY activity
+    ORDER BY count DESC
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

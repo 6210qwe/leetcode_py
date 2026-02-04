@@ -21,40 +21,36 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库来创建 DataFrame。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 使用 pandas 的 DataFrame 构造函数将二维列表转换为 DataFrame，并指定列名。
 
 关键点:
-- [TODO]
+- 使用 pandas 库可以方便地处理数据并创建 DataFrame。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 student_data 的长度。因为创建 DataFrame 的操作是线性的。
+空间复杂度: O(n)，因为 DataFrame 会存储所有的数据。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def create_student_dataframe(student_data: List[List[int]]) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 根据给定的二维列表创建 DataFrame
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建 DataFrame 并指定列名
+    df = pd.DataFrame(student_data, columns=['student_id', 'age'])
+    return df
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(create_student_dataframe)

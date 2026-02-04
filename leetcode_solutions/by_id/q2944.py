@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归的深度优先搜索 (DFS) 来计算特殊二叉树的高度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个递归函数 `dfs`，用于计算当前节点的高度。
+2. 如果当前节点为空，返回高度 0。
+3. 递归计算左子树和右子树的高度。
+4. 返回当前节点的高度，即左右子树高度的最大值加 1。
 
 关键点:
-- [TODO]
+- 递归终止条件是当前节点为空。
+- 递归调用时，分别计算左子树和右子树的高度。
+- 当前节点的高度是左右子树高度的最大值加 1。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是树中节点的数量。每个节点只会被访问一次。
+空间复杂度: O(h)，其中 h 是树的高度。递归调用栈的深度最多为树的高度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def height_of_special_binary_tree(root: Optional[TreeNode]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算特殊二叉树的高度
     """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: Optional[TreeNode]) -> int:
+        if not node:
+            return 0
+        left_height = dfs(node.left)
+        right_height = dfs(node.right)
+        return max(left_height, right_height) + 1
+
+    return dfs(root)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(height_of_special_binary_tree)

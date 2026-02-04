@@ -21,40 +21,65 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 计算每个子树的异或值，并通过枚举删除的两条边来找到最小分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 使用 DFS 计算每个子树的异或值，并存储在数组中。
+3. 枚举删除的两条边，计算三个连通组件的异或值，更新最小分数。
 
 关键点:
-- [TODO]
+- 使用 DFS 计算子树的异或值。
+- 枚举删除的两条边时，确保两个边不相邻。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def minimumScore(nums: List[int], edges: List[List[int]]) -> int:
+    n = len(nums)
+    tree = [[] for _ in range(n)]
+    for u, v in edges:
+        tree[u].append(v)
+        tree[v].append(u)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    xor_values = [0] * n
+    visited = [False] * n
 
+    def dfs(node: int) -> int:
+        visited[node] = True
+        xor_values[node] = nums[node]
+        for neighbor in tree[node]:
+            if not visited[neighbor]:
+                xor_values[node] ^= dfs(neighbor)
+        return xor_values[node]
 
-Solution = create_solution(solution_function_name)
+    dfs(0)
+
+    min_score = float('inf')
+
+    for i in range(1, n):
+        for j in range(i + 1, n):
+            if i in tree[j] or j in tree[i]:
+                continue
+            xor1 = xor_values[i]
+            xor2 = xor_values[j]
+            xor3 = xor_values[0] ^ xor1 ^ xor2
+            max_xor = max(xor1, xor2, xor3)
+            min_xor = min(xor1, xor2, xor3)
+            min_score = min(min_score, max_xor - min_xor)
+
+    return min_score
+
+Solution = create_solution(minimumScore)

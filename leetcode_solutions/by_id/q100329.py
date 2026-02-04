@@ -21,22 +21,24 @@ LCR 172. 统计目标成绩的出现次数 - 某班级考试成绩按非严格�
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二分查找找到目标成绩的起始和结束位置，然后计算出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用二分查找找到目标成绩的左边界。
+2. 使用二分查找找到目标成绩的右边界。
+3. 计算出现次数：右边界 - 左边界 + 1。
 
 关键点:
-- [TODO]
+- 二分查找的实现需要考虑边界条件。
+- 确保在找不到目标成绩时返回正确的结果。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,37 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(scores: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计目标成绩的出现次数
     """
-    # TODO: 实现最优解法
-    pass
+    def binary_search_left(nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
+
+    def binary_search_right(nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return right
+
+    left = binary_search_left(scores, target)
+    right = binary_search_right(scores, target)
+
+    if left <= right and scores[left] == target:
+        return right - left + 1
+    else:
+        return 0
 
 
 Solution = create_solution(solution_function_name)

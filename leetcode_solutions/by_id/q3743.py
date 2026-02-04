@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法来最大化相邻会议之间的空余时间。通过优先移动间隔较小的会议，我们可以最大化空余时间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个会议的间隔时间。
+2. 选择最小的 k 个间隔进行调整。
+3. 通过平移会议来最大化空余时间。
 
 关键点:
-- [TODO]
+- 优先移动间隔较小的会议。
+- 保持会议的相对顺序不变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +51,33 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(eventTime: int, k: int, startTime: List[int], endTime: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 重新安排会议以最大化空余时间
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(startTime)
+    intervals = [(endTime[i] - startTime[i], startTime[i], endTime[i]) for i in range(n)]
+    intervals.sort(key=lambda x: x[0])
+
+    # 选择最小的 k 个间隔进行调整
+    for i in range(min(k, n)):
+        _, start, end = intervals[i]
+        if i == 0:
+            new_start = 0
+        else:
+            new_start = intervals[i-1][2]
+        intervals[i] = (end - start, new_start, new_start + (end - start))
+
+    # 重新计算最大空余时间
+    max_gap = 0
+    for i in range(1, n):
+        gap = intervals[i][1] - intervals[i-1][2]
+        max_gap = max(max_gap, gap)
+
+    # 计算最后一个会议和活动结束时间之间的空余时间
+    max_gap = max(max_gap, eventTime - intervals[-1][2])
+
+    return max_gap
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,60 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录已经出现过的节点值，并在遍历链表时移除重复节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的哈希表 `seen` 用于记录已经出现过的节点值。
+2. 使用一个哑节点 `dummy` 作为新链表的头节点，方便处理边界情况。
+3. 使用两个指针 `prev` 和 `curr` 分别指向哑节点和原链表的头节点。
+4. 遍历链表：
+   - 如果当前节点的值不在 `seen` 中，将其加入 `seen` 并将 `prev` 的 `next` 指向 `curr`，然后移动 `prev` 和 `curr`。
+   - 如果当前节点的值已经在 `seen` 中，跳过该节点，继续遍历。
+5. 返回哑节点的 `next` 作为新的链表头。
 
 关键点:
-- [TODO]
+- 使用哈希表记录已经出现过的节点值，确保每个值只出现一次。
+- 使用哑节点简化边界处理。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需要遍历链表一次。
+空间复杂度: O(n)，最坏情况下，哈希表需要存储所有节点的值。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def remove_duplicates(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 移除未排序链表中的重复元素
     """
-    # TODO: 实现最优解法
-    pass
+    if not head:
+        return None
+
+    seen = set()
+    dummy = ListNode(0)
+    dummy.next = head
+    prev, curr = dummy, head
+
+    while curr:
+        if curr.val in seen:
+            prev.next = curr.next
+        else:
+            seen.add(curr.val)
+            prev = curr
+        curr = curr.next
+
+    return dummy.next
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(remove_duplicates)

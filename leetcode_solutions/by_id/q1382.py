@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历每个税级，计算每个税级应缴纳的税款，并累加得到总税款。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总税款为 0。
+2. 遍历每个税级，计算当前税级应缴纳的税款，并累加到总税款中。
+3. 如果收入小于当前税级的上限，则计算剩余收入的税款并结束循环。
+4. 返回总税款。
 
 关键点:
-- [TODO]
+- 处理收入小于当前税级上限的情况。
+- 累加每个税级的税款。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是税级的数量。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def calculate_tax(brackets: List[List[int]], income: int) -> float:
     """
-    函数式接口 - [TODO] 实现
+    计算应缴税款总额
     """
-    # TODO: 实现最优解法
-    pass
+    total_tax = 0.0
+    prev_upper = 0
+    
+    for upper, percent in brackets:
+        if income <= 0:
+            break
+        taxable_income = min(upper, income) - prev_upper
+        total_tax += taxable_income * (percent / 100)
+        income -= taxable_income
+        prev_upper = upper
+    
+    return total_tax
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(calculate_tax)

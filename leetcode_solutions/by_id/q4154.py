@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法和位运算找到最大按位与的结果。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对数组进行降序排序。
+2. 初始化结果为 0。
+3. 从最高位开始逐位尝试设置为 1，检查是否可以在不超过 k 次操作的情况下使前 m 个数的按位与结果为当前位。
+4. 如果可以，则将结果加上当前位的值，并更新剩余的操作次数。
+5. 重复步骤 3 和 4 直到所有位都检查完毕。
 
 关键点:
-- [TODO]
+- 通过位运算逐位尝试设置为 1。
+- 通过贪心算法选择前 m 个数进行操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + 32m) - 排序的时间复杂度为 O(n log n)，逐位检查的时间复杂度为 O(32m)。
+空间复杂度: O(1) - 仅使用常数级额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int, m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最优解法
     """
-    # TODO: 实现最优解法
-    pass
+    # 对数组进行降序排序
+    nums.sort(reverse=True)
+    
+    # 初始化结果为 0
+    result = 0
+    
+    # 从最高位开始逐位尝试设置为 1
+    for bit in range(30, -1, -1):
+        # 计算当前位的值
+        current_bit_value = 1 << bit
+        # 计算将前 m 个数的按位与结果设置为当前位所需的总操作次数
+        total_operations = sum(max(current_bit_value - num, 0) for num in nums[:m])
+        
+        # 如果总操作次数不超过 k，则将结果加上当前位的值，并更新 k
+        if total_operations <= k:
+            result += current_bit_value
+            k -= total_operations
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

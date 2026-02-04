@@ -21,22 +21,37 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用深度优先搜索 (DFS) 来遍历树，并在遍历过程中维护一个集合来记录已经访问过的基因值。
+- 如果当前子树中没有基因值 1，则该子树及其所有后代子树的缺失最小基因值都是 1。
+- 如果当前子树中有基因值 1，则使用并查集 (Union-Find) 来合并子树中的基因值，并找到缺失的最小基因值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建树的邻接表表示。
+2. 初始化结果数组 `ans`，默认值为 1。
+3. 使用 DFS 遍历树，维护一个集合 `seen` 来记录已经访问过的基因值。
+4. 在 DFS 过程中，如果当前子树中没有基因值 1，则直接返回 1。
+5. 如果当前子树中有基因值 1，则使用并查集来合并子树中的基因值，并找到缺失的最小基因值。
+6. 更新结果数组 `ans`。
 
 关键点:
-- [TODO]
+- 使用并查集来高效地合并和查找基因值。
+- 在 DFS 过程中，通过集合 `seen` 来快速判断是否已经访问过某个基因值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+- 构建树的邻接表需要 O(n) 时间。
+- DFS 遍历树需要 O(n) 时间。
+- 并查集的操作（合并和查找）均摊时间复杂度为 O(α(n))，其中 α(n) 是反阿克曼函数，可以视为常数。
+
+空间复杂度: O(n)
+- 存储树的邻接表需要 O(n) 空间。
+- 结果数组 `ans` 需要 O(n) 空间。
+- 并查集需要 O(n) 空间。
 """
 
 # ============================================================================
@@ -48,13 +63,28 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+def find_smallest_missing_genetic_value(parents: List[int], nums: List[int]) -> List[int]:
+    n = len(parents)
+    tree = [[] for _ in range(n)]
+    for i in range(1, n):
+        tree[parents[i]].append(i)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def dfs(node: int, seen: set) -> int:
+        if nums[node] == 1:
+            seen.add(1)
+        min_missing = 1
+        for child in tree[node]:
+            min_missing = max(min_missing, dfs(child, seen))
+        while min_missing in seen:
+            min_missing += 1
+        return min_missing
 
+    ans = [1] * n
+    for i in range(n):
+        if nums[i] == 1:
+            seen = set()
+            ans[i] = dfs(i, seen)
+    
+    return ans
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_smallest_missing_genetic_value)

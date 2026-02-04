@@ -21,40 +21,80 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用线段树来维护区间乘积，并在每次查询时更新和计算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化线段树，存储区间乘积。
+2. 对于每个查询，更新指定位置的值，并计算新的区间乘积。
+3. 计算从 starti 到末尾的乘积，并统计满足条件的方案数。
 
 关键点:
-- [TODO]
+- 使用线段树高效地维护区间乘积。
+- 通过模运算减少大数运算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + q log n)，其中 n 是数组长度，q 是查询数量。
+空间复杂度: O(n)，线段树的空间复杂度。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+class SegmentTree:
+    def __init__(self, nums: List[int], k: int):
+        self.n = len(nums)
+        self.k = k
+        self.tree = [0] * (4 * self.n)
+        self.build(nums, 0, 0, self.n - 1)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def build(self, nums: List[int], node: int, start: int, end: int):
+        if start == end:
+            self.tree[node] = nums[start] % self.k
+        else:
+            mid = (start + end) // 2
+            self.build(nums, 2 * node + 1, start, mid)
+            self.build(nums, 2 * node + 2, mid + 1, end)
+            self.tree[node] = (self.tree[2 * node + 1] * self.tree[2 * node + 2]) % self.k
 
+    def update(self, index: int, value: int, node: int, start: int, end: int):
+        if start == end:
+            self.tree[node] = value % self.k
+        else:
+            mid = (start + end) // 2
+            if index <= mid:
+                self.update(index, value, 2 * node + 1, start, mid)
+            else:
+                self.update(index, value, 2 * node + 2, mid + 1, end)
+            self.tree[node] = (self.tree[2 * node + 1] * self.tree[2 * node + 2]) % self.k
 
-Solution = create_solution(solution_function_name)
+    def query(self, left: int, right: int, node: int, start: int, end: int) -> int:
+        if left > end or right < start:
+            return 1
+        if left <= start and end <= right:
+            return self.tree[node]
+        mid = (start + end) // 2
+        return (self.query(left, right, 2 * node + 1, start, mid) * 
+                self.query(left, right, 2 * node + 2, mid + 1, end)) % self.k
+
+def find_x_value_of_array_ii(nums: List[int], k: int, queries: List[List[int]]) -> List[int]:
+    st = SegmentTree(nums, k)
+    results = []
+    for index, value, start, x in queries:
+        st.update(index, value, 0, 0, st.n - 1)
+        count = 0
+        product = 1
+        for i in range(start, st.n):
+            product = (product * st.query(i, i, 0, 0, st.n - 1)) % k
+            if product == x:
+                count += 1
+        results.append(count)
+    return results
+
+Solution = create_solution(find_x_value_of_array_ii)

@@ -21,40 +21,48 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，首先按每个数对的第二个元素进行排序，然后遍历排序后的数组，尽可能选择更多的数对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 按每个数对的第二个元素进行排序。
+2. 初始化当前链的最后一个数对的结束位置为负无穷大。
+3. 遍历排序后的数组，如果当前数对的第一个元素大于当前链的最后一个数对的结束位置，则将该数对加入链中，并更新当前链的最后一个数对的结束位置。
 
 关键点:
-- [TODO]
+- 按第二个元素排序，确保每次选择的数对的结束位置最小，从而尽可能多地选择后续数对。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 pairs 的长度，主要由排序操作决定。
+空间复杂度: O(1)，除了输入和输出外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def findLongestChain(pairs: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最长数对链
     """
-    # TODO: 实现最优解法
-    pass
+    # 按第二个元素排序
+    pairs.sort(key=lambda x: x[1])
+    
+    # 初始化当前链的最后一个数对的结束位置
+    current_end = float('-inf')
+    count = 0
+    
+    # 遍历排序后的数组
+    for pair in pairs:
+        if pair[0] > current_end:
+            count += 1
+            current_end = pair[1]
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(findLongestChain)

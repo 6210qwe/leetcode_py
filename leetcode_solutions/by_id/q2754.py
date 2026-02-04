@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法选择正数和负数的乘积来最大化小组的实力值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 过滤掉所有的零。
+2. 如果数组中没有非零元素，则返回0。
+3. 对于负数，选择偶数个负数以确保乘积为正。
+4. 对于正数，选择所有正数。
+5. 计算乘积并返回结果。
 
 关键点:
-- [TODO]
+- 选择偶数个负数以确保乘积为正。
+- 选择所有正数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,32 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def max_strength(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回小组的最大实力值
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤掉所有的零
+    non_zero_nums = [num for num in nums if num != 0]
+    
+    # 如果数组中没有非零元素，则返回0
+    if not non_zero_nums:
+        return 0
+    
+    # 对于负数，选择偶数个负数以确保乘积为正
+    negative_nums = [num for num in non_zero_nums if num < 0]
+    if len(negative_nums) % 2 != 0:
+        negative_nums.sort()
+        negative_nums.pop(0)
+    
+    # 对于正数，选择所有正数
+    positive_nums = [num for num in non_zero_nums if num > 0]
+    
+    # 计算乘积并返回结果
+    product = 1
+    for num in negative_nums + positive_nums:
+        product *= num
+    
+    return product
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_strength)

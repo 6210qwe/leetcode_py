@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，优先删除值较小的元素，以最大化得分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将数组按降序排序。
+2. 初始化两个指针，分别指向数组的开头和结尾。
+3. 比较两个指针所指的元素，删除较小的元素，并更新得分。
+4. 移动指针，直到所有元素都被处理。
 
 关键点:
-- [TODO]
+- 通过降序排序，确保每次删除的都是当前最小的元素。
+- 使用双指针法，可以有效地遍历数组并进行比较。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是数组的长度。排序操作的时间复杂度为 O(n log n)，遍历操作为 O(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,26 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def maximize_score(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大化配对删除后的得分
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数组按降序排序
+    nums.sort(reverse=True)
+    
+    score = 0
+    left, right = 0, len(nums) - 1
+    
+    while left < right:
+        # 删除较小的元素并更新得分
+        if nums[left] > nums[right]:
+            score += nums[right]
+            right -= 1
+        else:
+            score += nums[left]
+            left += 1
+    
+    return score
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(maximize_score)

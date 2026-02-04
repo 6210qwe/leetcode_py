@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 `Promise.race` 来实现超时控制。创建两个 Promise，一个用于执行原函数，另一个用于超时处理。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个 Promise，用于执行原函数。
+2. 创建一个超时 Promise，在指定时间后拒绝，并返回 "Time Limit Exceeded"。
+3. 使用 `Promise.race` 来等待两个 Promise 中先完成的那个。
 
 关键点:
-- [TODO]
+- 使用 `Promise.race` 来实现超时控制。
+- 确保超时 Promise 在指定时间后拒绝。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any
+import asyncio
 
-
-def solution_function_name(params):
+async def time_limit(fn: Callable, t: int, *args: Any, **kwargs: Any) -> Any:
     """
-    函数式接口 - [TODO] 实现
+    限时函数 - 如果 fn 在 t 毫秒的时间限制内完成，限时 函数应返回结果。
+    如果 fn 的执行超过时间限制，限时 函数应拒绝并返回字符串 "Time Limit Exceeded"。
     """
-    # TODO: 实现最优解法
-    pass
+    # 创建一个 Promise 用于执行原函数
+    promise = asyncio.create_task(fn(*args, **kwargs))
+    
+    # 创建一个超时 Promise
+    timeout_promise = asyncio.create_task(asyncio.sleep(t / 1000))
+    
+    # 使用 Promise.race 来等待两个 Promise 中先完成的那个
+    done, pending = await asyncio.wait(
+        [promise, timeout_promise],
+        return_when=asyncio.FIRST_COMPLETED
+    )
+    
+    # 取消未完成的 Promise
+    for task in pending:
+        task.cancel()
+    
+    # 检查是否是超时 Promise 完成
+    if timeout_promise in done:
+        raise Exception("Time Limit Exceeded")
+    
+    # 返回原函数的结果
+    return await promise
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(time_limit)

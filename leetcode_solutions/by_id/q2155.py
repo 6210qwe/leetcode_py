@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算总和来确定缺失的观测数据，并确保这些数据在 1 到 6 之间。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n + m 次投掷的总和 total_sum。
+2. 计算已知的 m 次投掷的总和 known_sum。
+3. 计算缺失的 n 次投掷的总和 missing_sum。
+4. 如果 missing_sum 不在合理范围内（即 n 到 6n 之间），返回空数组。
+5. 将 missing_sum 分配到 n 个位置，确保每个值在 1 到 6 之间。
 
 关键点:
-- [TODO]
+- 计算总和并检查其合理性。
+- 分配缺失的观测数据，确保每个值在 1 到 6 之间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_missing_observations(rolls: List[int], mean: int, n: int) -> List[int]:
+    m = len(rolls)
+    total_sum = (n + m) * mean
+    known_sum = sum(rolls)
+    missing_sum = total_sum - known_sum
+
+    if missing_sum < n or missing_sum > 6 * n:
+        return []
+
+    result = [missing_sum // n] * n
+    remainder = missing_sum % n
+
+    for i in range(remainder):
+        result[i] += 1
+
+    return result
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_missing_observations)

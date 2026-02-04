@@ -21,24 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示在子数组 nums[i...j] 中，当前玩家与另一个玩家的最大分差。通过递归和记忆化搜索来计算每个子数组的最大分差。
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 定义一个二维数组 dp，其中 dp[i][j] 表示在子数组 nums[i...j] 中，当前玩家与另一个玩家的最大分差。
+2. 使用递归和记忆化搜索来填充 dp 数组。
+3. 返回 dp[0][n-1] 是否大于等于 0，判断玩家 1 是否能赢。
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 使用记忆化搜索来避免重复计算。
+- 优化时间和空间复杂度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(n^2) - 我们需要计算 n^2 个状态。
+空间复杂度: O(n^2) - 使用一个 n x n 的二维数组来存储中间结果。
 """
 
 # ============================================================================
@@ -51,25 +51,40 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def predict_the_winner(params):
+def predict_the_winner(nums: List[int]) -> bool:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 判断玩家 1 是否能成为赢家
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用动态规划来解决这个问题。我们定义一个二维数组 dp，其中 dp[i][j] 表示在子数组 nums[i...j] 中，当前玩家与另一个玩家的最大分差。通过递归和记忆化搜索来计算每个子数组的最大分差。
     
     Args:
-        params: [待实现] 参数说明
+        nums: 整数数组
         
     Returns:
-        [待实现] 返回值说明
+        bool: 玩家 1 是否能成为赢家
         
     Example:
-        >>> predict_the_winner([待实现])
-        [待实现]
+        >>> predict_the_winner([1, 5, 2])
+        False
+        >>> predict_the_winner([1, 5, 233, 7])
+        True
     """
-    # TODO: 实现最优解法
-    pass
+    def score_diff(nums, start, end, memo):
+        if start == end:
+            return nums[start]
+        if (start, end) in memo:
+            return memo[(start, end)]
+        
+        pick_start = nums[start] - score_diff(nums, start + 1, end, memo)
+        pick_end = nums[end] - score_diff(nums, start, end - 1, memo)
+        
+        memo[(start, end)] = max(pick_start, pick_end)
+        return memo[(start, end)]
+    
+    n = len(nums)
+    memo = {}
+    return score_diff(nums, 0, n - 1, memo) >= 0
 
 
 # 自动生成Solution类（无需手动编写）

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针方法，从字符串的两端向中间移动，交换遇到的字母。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right，分别指向字符串的开头和结尾。
+2. 使用 while 循环，当 left 小于 right 时：
+   - 如果 left 指向的字符不是字母，则左指针右移。
+   - 如果 right 指向的字符不是字母，则右指针左移。
+   - 如果 left 和 right 指向的字符都是字母，则交换它们，并移动两个指针。
+3. 返回修改后的字符串。
 
 关键点:
-- [TODO]
+- 使用双指针可以高效地完成字母的反转，同时保持非字母字符的位置不变。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def reverse_only_letters(s: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现反转字符串中的字母，非字母字符保持原位
     """
-    # TODO: 实现最优解法
-    pass
+    s = list(s)  # 将字符串转换为列表以便修改
+    left, right = 0, len(s) - 1
+    
+    while left < right:
+        if not s[left].isalpha():
+            left += 1
+        elif not s[right].isalpha():
+            right -= 1
+        else:
+            s[left], s[right] = s[right], s[left]
+            left += 1
+            right -= 1
+    
+    return ''.join(s)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(reverse_only_letters)

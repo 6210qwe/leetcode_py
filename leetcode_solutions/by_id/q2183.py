@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用广度优先搜索 (BFS) 来找到从 start 到 goal 的最短路径。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个队列，将 start 加入队列，并初始化一个集合 visited 来记录已经访问过的节点。
+2. 开始 BFS 循环：
+   - 从队列中取出当前节点 current。
+   - 如果 current 等于 goal，返回当前的操作数。
+   - 对于每个 nums[i]，计算三种可能的新状态：current + nums[i]，current - nums[i]，current ^ nums[i]。
+   - 如果新状态在 0 到 1000 之间且未被访问过，将其加入队列和 visited 集合。
+3. 如果队列为空且未找到 goal，返回 -1。
 
 关键点:
-- [TODO]
+- 使用 BFS 可以保证找到最短路径。
+- 使用集合来记录已访问的状态，避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(3 * n * 1000) = O(n)，其中 n 是 nums 的长度。因为每个状态最多有 3 种变化，且状态范围在 0 到 1000 之间。
+空间复杂度: O(1000) = O(1)，因为 visited 集合的最大大小为 1001。
 """
 
 # ============================================================================
@@ -49,12 +55,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_convert_number(nums: List[int], start: int, goal: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 使用广度优先搜索 (BFS) 找到从 start 到 goal 的最短路径。
     """
-    # TODO: 实现最优解法
-    pass
+    from collections import deque
+
+    # 初始化队列和已访问集合
+    queue = deque([(start, 0)])
+    visited = set([start])
+
+    while queue:
+        current, steps = queue.popleft()
+
+        if current == goal:
+            return steps
+
+        for num in nums:
+            for new_state in [current + num, current - num, current ^ num]:
+                if 0 <= new_state <= 1000 and new_state not in visited:
+                    visited.add(new_state)
+                    queue.append((new_state, steps + 1))
+
+    return -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_convert_number)

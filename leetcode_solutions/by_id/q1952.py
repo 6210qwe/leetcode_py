@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来记录每个位置在每条跑道上的最少侧跳次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，dp[i][j] 表示到达第 i 个位置第 j 条跑道的最少侧跳次数。
+2. 初始化起点位置的 dp 值。
+3. 从左到右遍历每个位置，更新 dp 值：
+   - 如果当前跑道有障碍，则跳过。
+   - 否则，更新当前跑道的 dp 值为前一个位置的最小 dp 值加 1（如果需要侧跳）或保持不变（如果不需要侧跳）。
+4. 返回最后一个位置的最小 dp 值。
 
 关键点:
-- [TODO]
+- 动态规划的状态转移方程。
+- 处理障碍物的方式。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def min_sideway_jumps(obstacles: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算最少侧跳次数
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(obstacles) - 1
+    dp = [[float('inf')] * 3 for _ in range(n + 1)]
+    
+    # 初始化起点
+    dp[0][1] = 0
+    
+    for i in range(1, n + 1):
+        for j in range(3):
+            if obstacles[i] != j + 1:
+                dp[i][j] = dp[i - 1][j]
+                for k in range(3):
+                    if k != j and obstacles[i] != k + 1:
+                        dp[i][j] = min(dp[i][j], dp[i][k] + 1)
+    
+    return min(dp[n])
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_sideway_jumps)

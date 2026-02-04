@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用单调双端队列来维护前缀和，以找到满足条件的最短子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组。
+2. 使用一个单调递增的双端队列来存储前缀和及其对应的索引。
+3. 遍历前缀和数组，对于每个前缀和：
+   - 如果当前前缀和减去队列头部的前缀和大于等于 k，则更新结果，并移除队列头部元素。
+   - 移除队列尾部所有不满足单调递增的元素。
+   - 将当前前缀和及其索引加入队列。
+4. 返回结果，如果没有找到满足条件的子数组则返回 -1。
 
 关键点:
-- [TODO]
+- 使用单调双端队列来维护前缀和，确保队列中的前缀和是单调递增的。
+- 通过比较当前前缀和与队列头部的前缀和，快速找到满足条件的最短子数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +55,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def shortest_subarray(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出 nums 中和至少为 k 的最短非空子数组，并返回该子数组的长度。如果不存在这样的子数组，返回 -1。
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+
+    result = n + 1
+    deque = []
+
+    for i in range(n + 1):
+        while deque and prefix_sum[i] - prefix_sum[deque[0]] >= k:
+            result = min(result, i - deque.pop(0))
+        
+        while deque and prefix_sum[i] <= prefix_sum[deque[-1]]:
+            deque.pop()
+        
+        deque.append(i)
+
+    return result if result <= n else -1
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(shortest_subarray)

@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算数组中所有元素的最大公约数，来判断是否可以将所有元素变为 1。如果最大公约数为 1，则可以通过一系列操作将所有元素变为 1。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算数组中所有元素的最大公约数。
+2. 如果最大公约数不为 1，返回 -1。
+3. 如果最大公约数为 1，计算将所有元素变为 1 所需的最少操作次数。
 
 关键点:
-- [TODO]
+- 使用 Python 的 math.gcd 函数来计算最大公约数。
+- 通过遍历数组，找到第一个为 1 的元素，然后计算将其传播到整个数组所需的最少操作次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log(max(nums))) - 计算最大公约数的时间复杂度为 O(log(max(nums)))，遍历数组的时间复杂度为 O(n)。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
+from typing import List
+import math
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def min_operations_to_one(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使数组所有元素变成 1 的最少操作次数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算数组中所有元素的最大公约数
+    gcd = nums[0]
+    for num in nums[1:]:
+        gcd = math.gcd(gcd, num)
+    
+    # 如果最大公约数不为 1，返回 -1
+    if gcd != 1:
+        return -1
+    
+    # 计算将所有元素变为 1 所需的最少操作次数
+    first_one_index = -1
+    for i, num in enumerate(nums):
+        if num == 1:
+            first_one_index = i
+            break
+    
+    if first_one_index == -1:
+        # 如果没有 1，需要先生成一个 1
+        return len(nums) - 1 + (len(nums) - 2)
+    else:
+        # 已经有一个 1，计算将其传播到整个数组所需的最少操作次数
+        return len(nums) - 1
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_one)

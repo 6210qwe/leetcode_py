@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表统计每个字符串在两个数组中的出现次数，然后找出在两个数组中都恰好出现一次的字符串。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建两个字典，分别统计 words1 和 words2 中每个字符串的出现次数。
+2. 遍历第一个字典，检查每个字符串是否在第二个字典中也恰好出现一次。
+3. 统计满足条件的字符串数量并返回。
 
 关键点:
-- [TODO]
+- 使用哈希表进行高效计数。
+- 只遍历一次字典即可找到所有满足条件的字符串。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 words1 的长度，m 是 words2 的长度。
+空间复杂度: O(n + m)，用于存储两个字典。
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_common_words_with_one_occurrence(words1: List[str], words2: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计在两个字符串数组中都恰好出现一次的字符串的数目
     """
-    # TODO: 实现最优解法
-    pass
+    # 统计 words1 中每个字符串的出现次数
+    count1 = {}
+    for word in words1:
+        count1[word] = count1.get(word, 0) + 1
+
+    # 统计 words2 中每个字符串的出现次数
+    count2 = {}
+    for word in words2:
+        count2[word] = count2.get(word, 0) + 1
+
+    # 统计在两个数组中都恰好出现一次的字符串数量
+    common_count = 0
+    for word, count in count1.items():
+        if count == 1 and count2.get(word, 0) == 1:
+            common_count += 1
+
+    return common_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_common_words_with_one_occurrence)

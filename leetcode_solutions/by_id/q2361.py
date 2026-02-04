@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过不断将字符串按 k 长度分组，并计算每组的数字和，直到字符串长度不大于 k 为止。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `sum_digits` 来计算一个字符串中所有数字的和。
+2. 使用一个循环，当字符串长度大于 k 时，将其按 k 长度分组，并计算每组的数字和，然后合并这些和形成新的字符串。
+3. 重复上述过程，直到字符串长度不大于 k 为止。
 
 关键点:
-- [TODO]
+- 使用切片操作来分组字符串。
+- 使用辅助函数来计算每组的数字和。
+- 使用循环来处理多轮操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串 s 的长度。最坏情况下，每轮操作都需要遍历整个字符串。
+空间复杂度: O(n)，用于存储新的字符串。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def sum_digits(group: str) -> str:
+    """计算一个字符串中所有数字的和，并返回结果字符串"""
+    return str(sum(int(digit) for digit in group))
+
+
+def solution_function_name(s: str, k: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算字符串的数字和
     """
-    # TODO: 实现最优解法
-    pass
+    while len(s) > k:
+        new_s = ""
+        for i in range(0, len(s), k):
+            group = s[i:i + k]
+            new_s += sum_digits(group)
+        s = new_s
+    return s
 
 
 Solution = create_solution(solution_function_name)

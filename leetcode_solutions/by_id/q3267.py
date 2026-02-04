@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录每个字符的连续子串及其出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录每个字符的每个长度的特殊子串的出现次数。
+2. 遍历字符串 `s`，使用滑动窗口找到所有连续相同字符的子串，并记录其长度和出现次数。
+3. 遍历哈希表 `count`，找到出现至少三次的最长特殊子串的长度。
 
 关键点:
-- [TODO]
+- 使用滑动窗口找到所有连续相同字符的子串。
+- 使用哈希表记录每个长度的特殊子串的出现次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2) - 遍历字符串和处理每个子串的时间复杂度。
+空间复杂度: O(n^2) - 哈希表存储每个长度的特殊子串的出现次数。
 """
 
 # ============================================================================
@@ -49,12 +51,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找出出现至少三次的最长特殊子字符串
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(s)
+    count = {}
+
+    # 记录每个字符的每个长度的特殊子串的出现次数
+    for i in range(n):
+        length = 1
+        while i + length <= n and s[i] == s[i + length - 1]:
+            key = (s[i], length)
+            count[key] = count.get(key, 0) + 1
+            length += 1
+
+    # 找到出现至少三次的最长特殊子串的长度
+    max_length = -1
+    for (char, length), freq in count.items():
+        if freq >= 3:
+            max_length = max(max_length, length)
+
+    return max_length
 
 
 Solution = create_solution(solution_function_name)

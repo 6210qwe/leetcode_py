@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算每个位置的最大加号标志阶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 n x n 的矩阵 dp，其中 dp[i][j] 表示以 (i, j) 为中心的最大加号标志的阶数。
+2. 将 mines 中的位置标记为 0，其余位置标记为 1。
+3. 从四个方向（上、下、左、右）分别计算每个位置的最大连续 1 的长度。
+4. 对于每个位置 (i, j)，dp[i][j] 取四个方向中的最小值。
+5. 找到 dp 矩阵中的最大值。
 
 关键点:
-- [TODO]
+- 使用四个方向的动态规划来计算每个位置的最大加号标志阶数。
+- 通过取四个方向中的最小值来确定当前点的最大加号标志阶数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +53,44 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, mines: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现最大加号标志的阶数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化网格
+    grid = [[1] * n for _ in range(n)]
+    for x, y in mines:
+        grid[x][y] = 0
+    
+    # 动态规划数组
+    dp = [[0] * n for _ in range(n)]
+    
+    # 计算从左到右和从上到下的最大连续 1 的长度
+    left, up = [0] * n, [0] * n
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] == 1:
+                left[j] += 1
+                up[i] += 1
+                dp[i][j] = min(left[j], up[i])
+            else:
+                left[j] = 0
+                up[i] = 0
+    
+    # 计算从右到左和从下到上的最大连续 1 的长度
+    right, down = [0] * n, [0] * n
+    for i in range(n - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            if grid[i][j] == 1:
+                right[j] += 1
+                down[i] += 1
+                dp[i][j] = min(dp[i][j], right[j], down[i])
+            else:
+                right[j] = 0
+                down[i] = 0
+    
+    # 找到 dp 矩阵中的最大值
+    return max(max(row) for row in dp)
 
 
 Solution = create_solution(solution_function_name)

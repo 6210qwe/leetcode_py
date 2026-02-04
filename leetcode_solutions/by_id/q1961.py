@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和计数排序来最大化购买的雪糕数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用计数排序统计每个价格的雪糕数量。
+2. 从小到大遍历价格，尽可能多地购买雪糕，直到用完所有现金或无法再购买更多雪糕。
 
 关键点:
-- [TODO]
+- 使用计数排序来统计每个价格的雪糕数量。
+- 从小到大遍历价格，确保优先购买便宜的雪糕。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + k)，其中 n 是 costs 的长度，k 是 costs 中最大值（即价格范围）。
+空间复杂度: O(k)，用于存储计数排序的结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def max_ice_cream(costs: List[int], coins: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算并返回 Tony 用 coins 现金能够买到的雪糕的最大数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 找到价格的最大值
+    max_cost = max(costs)
+    
+    # 使用计数排序统计每个价格的雪糕数量
+    count = [0] * (max_cost + 1)
+    for cost in costs:
+        count[cost] += 1
+    
+    # 从小到大遍历价格，尽可能多地购买雪糕
+    total_ice_creams = 0
+    for price in range(1, max_cost + 1):
+        if count[price] == 0:
+            continue
+        if coins >= price:
+            buy_count = min(count[price], coins // price)
+            total_ice_creams += buy_count
+            coins -= buy_count * price
+        else:
+            break
+    
+    return total_ice_creams
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_ice_cream)

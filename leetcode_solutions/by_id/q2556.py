@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 直接使用公式进行温度转换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将摄氏度转换为开氏度。
+2. 将摄氏度转换为华氏度。
+3. 返回转换后的结果。
 
 关键点:
-- [TODO]
+- 使用公式进行转换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 常数时间内完成转换。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,13 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def convert_temperature(celsius: float) -> List[float]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将摄氏度转换为开氏度和华氏度
     """
-    # TODO: 实现最优解法
-    pass
+    kelvin = celsius + 273.15
+    fahrenheit = celsius * 1.80 + 32.00
+    return [kelvin, fahrenheit]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(convert_temperature)

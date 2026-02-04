@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用随机化和二分查找来高效地找到多数元素。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 在初始化时，记录每个元素的所有出现位置。
+2. 在查询时，使用随机化选择一个候选元素，并使用二分查找验证其是否为多数元素。
+3. 如果验证失败，则继续随机选择其他候选元素，直到找到一个满足条件的多数元素或遍历完所有候选元素。
 
 关键点:
-- [TODO]
+- 使用随机化减少平均时间复杂度。
+- 使用二分查找高效验证候选元素是否为多数元素。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n * log m)，其中 n 是数组长度，m 是调用 query 的次数。
+空间复杂度: O(n)，用于存储每个元素的所有出现位置。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import random
+from bisect import bisect_left, bisect_right
 
+class MajorityChecker:
+    def __init__(self, arr: List[int]):
+        self.arr = arr
+        self.positions = {}
+        for i, num in enumerate(arr):
+            if num not in self.positions:
+                self.positions[num] = []
+            self.positions[num].append(i)
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def query(self, left: int, right: int, threshold: int) -> int:
+        for _ in range(20):  # 尝试 20 次随机选择
+            random_index = random.randint(left, right)
+            candidate = self.arr[random_index]
+            if candidate in self.positions:
+                pos_list = self.positions[candidate]
+                count = bisect_right(pos_list, right) - bisect_left(pos_list, left)
+                if count >= threshold:
+                    return candidate
+        return -1
 
-
-Solution = create_solution(solution_function_name)
+# 测试代码
+if __name__ == "__main__":
+    obj = MajorityChecker([1, 1, 2, 2, 1, 1])
+    print(obj.query(0, 5, 4))  # 输出 1
+    print(obj.query(0, 3, 3))  # 输出 -1
+    print(obj.query(2, 3, 2))  # 输出 2

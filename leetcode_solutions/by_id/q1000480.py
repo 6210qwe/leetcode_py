@@ -21,22 +21,26 @@ LCP 63. 弹珠游戏 - 欢迎各位来到「力扣嘉年华」，接下来将为
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用深度优先搜索 (DFS) 来模拟弹珠的移动过程。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个结果列表来存储所有有效的打入位置。
+2. 遍历弹珠盘的边缘位置，找到所有可以打入弹珠的位置。
+3. 对于每个可以打入弹珠的位置，使用 DFS 模拟弹珠的移动过程，检查是否可以在规定的步数内进入洞中。
+4. 如果可以进入洞中，则将该位置加入结果列表。
 
 关键点:
-- [TODO]
+- 使用方向数组来表示弹珠的移动方向。
+- 使用递归来实现 DFS。
+- 在 DFS 过程中，处理转向器对弹珠方向的影响。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(N * M * num)，其中 N 和 M 分别是弹珠盘的行数和列数，num 是弹珠的最大步数。
+空间复杂度: O(N * M)，用于存储访问过的状态。
 """
 
 # ============================================================================
@@ -48,13 +52,49 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def find_marble_positions(num: int, plate: List[str]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 找到所有可以使弹珠最终入洞的打入位置
     """
-    # TODO: 实现最优解法
-    pass
+    if not plate or not plate[0]:
+        return []
 
+    n, m = len(plate), len(plate[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 右、下、左、上
+    result = []
 
-Solution = create_solution(solution_function_name)
+    def dfs(x, y, direction, steps):
+        if steps > num:
+            return False
+        if x < 0 or x >= n or y < 0 or y >= m:
+            return False
+        if plate[x][y] == "O":
+            return True
+        if plate[x][y] == "W":
+            direction = (direction + 1) % 4
+        elif plate[x][y] == "E":
+            direction = (direction - 1) % 4
+        dx, dy = directions[direction]
+        return dfs(x + dx, y + dy, direction, steps + 1)
+
+    for i in range(n):
+        for j in range(m):
+            if (i == 0 or i == n - 1 or j == 0 or j == m - 1) and plate[i][j] == ".":
+                if (i == 0 and j == 0) or (i == 0 and j == m - 1) or (i == n - 1 and j == 0) or (i == n - 1 and j == m - 1):
+                    continue
+                if i == 0:
+                    if dfs(i, j, 1, 0):
+                        result.append([i, j])
+                elif i == n - 1:
+                    if dfs(i, j, 3, 0):
+                        result.append([i, j])
+                elif j == 0:
+                    if dfs(i, j, 0, 0):
+                        result.append([i, j])
+                elif j == m - 1:
+                    if dfs(i, j, 2, 0):
+                        result.append([i, j])
+
+    return result
+
+Solution = create_solution(find_marble_positions)

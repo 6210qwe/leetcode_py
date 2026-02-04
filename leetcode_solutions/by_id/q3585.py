@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用区间合并的方法来查找重叠的班次。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将所有班次按开始时间排序。
+2. 遍历排序后的班次列表，使用一个栈来存储当前不重叠的班次。
+3. 对于每个班次，检查其是否与栈顶班次重叠。如果重叠，则将栈顶班次更新为合并后的班次；否则，将当前班次压入栈中。
+4. 最终栈中的班次即为所有不重叠的班次。
 
 关键点:
-- [TODO]
+- 使用栈来存储不重叠的班次，并在遍历过程中进行合并。
+- 确保每次合并后，栈顶班次始终是当前不重叠的最大班次。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是班次的数量。主要的时间开销在于排序操作。
+空间复杂度: O(n)，最坏情况下，所有班次都不重叠，需要存储所有的班次。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(shifts: List[List[int]]) -> List[List[int]]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找重叠的班次 II
     """
-    # TODO: 实现最优解法
-    pass
+    # 按班次的开始时间排序
+    shifts.sort(key=lambda x: x[0])
+    
+    # 初始化栈
+    stack = []
+    
+    for shift in shifts:
+        if not stack:
+            stack.append(shift)
+        else:
+            # 获取栈顶班次
+            top_shift = stack[-1]
+            # 检查当前班次是否与栈顶班次重叠
+            if shift[0] <= top_shift[1]:
+                # 合并重叠的班次
+                stack[-1][1] = max(top_shift[1], shift[1])
+            else:
+                # 当前班次不重叠，压入栈中
+                stack.append(shift)
+    
+    return stack
 
 
 Solution = create_solution(solution_function_name)

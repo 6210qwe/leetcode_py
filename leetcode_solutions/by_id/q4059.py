@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用有序字典来存储每个时间点的分数，并使用前缀和数组来快速计算任意时间段的总分数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 ExamTracker 对象时，创建一个有序字典来存储时间和分数，并初始化一个前缀和数组。
+2. 在 record 方法中，将新的时间和分数添加到有序字典中，并更新前缀和数组。
+3. 在 totalScore 方法中，使用二分查找找到 startTime 和 endTime 在有序字典中的位置，然后通过前缀和数组计算总分数。
 
 关键点:
-- [TODO]
+- 使用有序字典来保持时间的有序性。
+- 使用前缀和数组来快速计算任意时间段的总分数。
+- 使用二分查找来快速定位 startTime 和 endTime。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 记录操作的时间复杂度为 O(log n)，查询操作的时间复杂度为 O(log n)。
+空间复杂度: O(n) - 存储时间和分数的有序字典以及前缀和数组。
 """
 
 # ============================================================================
@@ -47,14 +50,24 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from sortedcontainers import SortedDict
+import bisect
 
+class ExamTracker:
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def __init__(self):
+        self.time_scores = SortedDict()
+        self.prefix_sum = [0]
 
+    def record(self, time: int, score: int) -> None:
+        self.time_scores[time] = score
+        self.prefix_sum.append(self.prefix_sum[-1] + score)
 
-Solution = create_solution(solution_function_name)
+    def totalScore(self, startTime: int, endTime: int) -> int:
+        start_idx = bisect.bisect_left(self.time_scores.keys(), startTime)
+        end_idx = bisect.bisect_right(self.time_scores.keys(), endTime)
+        if start_idx == 0 or (start_idx < len(self.time_scores) and self.time_scores.peekitem(start_idx)[0] != startTime):
+            start_idx -= 1
+        return self.prefix_sum[end_idx] - self.prefix_sum[start_idx]
+
+Solution = create_solution(ExamTracker)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用二叉树来表示表达式，并递归地计算表达式的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个 Node 类来表示表达式树的节点，包含操作符或数值。
+2. 定义一个 TreeBuilder 类来构建表达式树，使用栈来处理操作数和操作符。
+3. 在 TreeBuilder 类中实现 build 方法，将后缀表达式转换为表达式树。
+4. 在 Node 类中实现 evaluate 方法，递归地计算表达式树的值。
 
 关键点:
-- [TODO]
+- 使用栈来处理后缀表达式，确保操作数和操作符的正确顺序。
+- 递归地计算表达式树的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是后缀表达式的长度。每个节点只会被访问一次。
+空间复杂度: O(n)，存储表达式树的空间。
 """
 
 # ============================================================================
@@ -44,17 +47,53 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+class Node:
+    def __init__(self, val: str):
+        self.val = val
+        self.left = None
+        self.right = None
+
+    def evaluate(self) -> int:
+        if self.val.isdigit():
+            return int(self.val)
+        else:
+            left_val = self.left.evaluate()
+            right_val = self.right.evaluate()
+            if self.val == '+':
+                return left_val + right_val
+            elif self.val == '-':
+                return left_val - right_val
+            elif self.val == '*':
+                return left_val * right_val
+            elif self.val == '/':
+                return left_val // right_val
+
+
+class TreeBuilder:
+    def build(self, postfix: List[str]) -> 'Node':
+        stack = []
+        for token in postfix:
+            if token.isdigit():
+                node = Node(token)
+            else:
+                right = stack.pop()
+                left = stack.pop()
+                node = Node(token)
+                node.left = left
+                node.right = right
+            stack.append(node)
+        return stack[0]
+
+
+def solution_function_name(postfix: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 构建表达式树并计算其值
     """
-    # TODO: 实现最优解法
-    pass
+    tree_builder = TreeBuilder()
+    root = tree_builder.build(postfix)
+    return root.evaluate()
 
 
 Solution = create_solution(solution_function_name)

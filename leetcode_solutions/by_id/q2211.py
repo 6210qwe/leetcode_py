@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算每个子数组的和，并更新结果数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果数组 `avgs`，长度与 `nums` 相同，初始值全部为 -1。
+2. 如果 `k` 为 0，直接返回 `nums`。
+3. 计算初始窗口的和 `window_sum`，窗口大小为 `2 * k + 1`。
+4. 从 `k` 到 `n - k` 遍历数组，更新 `window_sum` 并计算当前窗口的平均值。
+5. 将平均值存储在 `avgs` 中对应的位置。
 
 关键点:
-- [TODO]
+- 使用滑动窗口避免重复计算子数组的和。
+- 注意边界条件，确保窗口不会越界。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1) （不考虑输出数组）
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def get_averages(nums: List[int], k: int) -> List[int]:
+    n = len(nums)
+    avgs = [-1] * n
+    
+    if k == 0:
+        return nums
+    
+    if 2 * k + 1 > n:
+        return avgs
+    
+    window_sum = sum(nums[:2 * k + 1])
+    
+    for i in range(k, n - k):
+        avgs[i] = window_sum // (2 * k + 1)
+        if i + k + 1 < n:
+            window_sum += nums[i + k + 1] - nums[i - k]
+    
+    return avgs
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(get_averages)

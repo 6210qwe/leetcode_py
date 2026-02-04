@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双端队列来高效地处理字符串操作，并在处理过程中检查 k 是否在当前结果的范围内。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个双端队列 `result` 来存储处理后的字符串。
+2. 遍历字符串 `s`，根据字符类型进行相应的操作：
+   - 如果是小写字母，直接添加到 `result`。
+   - 如果是 '*'，删除 `result` 的最后一个字符（如果存在）。
+   - 如果是 '#'，复制当前 `result` 并追加到其自身后面。
+   - 如果是 '%'，反转当前 `result`。
+3. 在每次操作后，检查 `k` 是否在当前 `result` 的范围内，如果是则返回对应的字符。
+4. 如果遍历结束后 `k` 仍然超出范围，返回 '.'。
 
 关键点:
-- [TODO]
+- 使用双端队列来高效地处理字符串操作。
+- 在每次操作后检查 `k` 是否在当前结果的范围内，以避免不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符只处理一次。
+空间复杂度: O(n)，双端队列 `result` 的最大长度为 n。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
 
+def process_string(s: str, k: int) -> str:
+    result = deque()
+    
+    for char in s:
+        if char.isalpha():
+            result.append(char)
+        elif char == '*':
+            if result:
+                result.pop()
+        elif char == '#':
+            result.extend(result)
+        elif char == '%':
+            result.reverse()
+        
+        if len(result) > k:
+            return result[k]
+    
+    return '.' if k >= len(result) else result[k]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(process_string)

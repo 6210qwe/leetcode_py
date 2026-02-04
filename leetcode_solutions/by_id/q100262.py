@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针法在两个有序数组中找到最小差值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对两个数组分别进行排序。
+2. 初始化两个指针 i 和 j 分别指向两个数组的起始位置。
+3. 使用双指针遍历两个数组，比较当前指针所指向的元素的差值。
+4. 更新最小差值，并根据当前指针所指向的元素大小移动指针。
+5. 当一个指针到达数组末尾时，遍历结束。
 
 关键点:
-- [TODO]
+- 排序后使用双指针可以高效地找到最小差值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log m)，其中 n 和 m 分别是数组 a 和 b 的长度。排序操作的时间复杂度为 O(n log n) 和 O(m log m)，双指针遍历的时间复杂度为 O(n + m)。
+空间复杂度: O(1)，除了输入数组外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,31 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(a: List[int], b: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 在两个数组中找到最小差值
     """
-    # TODO: 实现最优解法
-    pass
+    # 对两个数组进行排序
+    a.sort()
+    b.sort()
+
+    # 初始化指针和最小差值
+    i, j = 0, 0
+    min_diff = float('inf')
+
+    # 使用双指针遍历两个数组
+    while i < len(a) and j < len(b):
+        diff = abs(a[i] - b[j])
+        if diff < min_diff:
+            min_diff = diff
+
+        # 移动指针
+        if a[i] < b[j]:
+            i += 1
+        else:
+            j += 1
+
+    return min_diff
 
 
 Solution = create_solution(solution_function_name)

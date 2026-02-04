@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录每个物品类型的出现次数，并在每次滑动时更新丢弃的物品数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录当前窗口内每个物品类型的出现次数。
+2. 初始化变量 `discard_count` 来记录需要丢弃的物品数量。
+3. 使用滑动窗口遍历 `arrivals` 数组：
+   - 对于每个新到达的物品，如果其类型在当前窗口内的出现次数已经达到 `m`，则增加 `discard_count`。
+   - 否则，更新 `count` 并将其加入当前窗口。
+   - 如果窗口大小超过 `w`，则移除窗口最左边的物品，并更新 `count`。
+4. 返回 `discard_count`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地管理和更新物品类型的出现次数。
+- 在每次滑动时，确保窗口大小不超过 `w`，并及时更新 `count`。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 `arrivals` 的长度。每个元素最多只会被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(w)，哈希表 `count` 的大小最多为 `w`。
 """
 
 # ============================================================================
@@ -49,12 +55,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_discards_to_balance_inventory(arrivals: List[int], w: int, m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    使库存平衡的最少丢弃次数
+    :param arrivals: 整数数组，表示每天到达的物品类型
+    :param w: 窗口大小
+    :param m: 每种类型的最大出现次数
+    :return: 最少需要丢弃的物品数量
     """
-    # TODO: 实现最优解法
-    pass
+    count = {}
+    discard_count = 0
+    for i, item in enumerate(arrivals):
+        if item in count and count[item] == m:
+            discard_count += 1
+        else:
+            count[item] = count.get(item, 0) + 1
+        if i >= w:
+            old_item = arrivals[i - w]
+            count[old_item] -= 1
+            if count[old_item] == 0:
+                del count[old_item]
+    return discard_count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_discards_to_balance_inventory)

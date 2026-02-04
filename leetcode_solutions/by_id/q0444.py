@@ -21,24 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [待实现] 根据题目类型实现相应算法
+核心思想: 使用拓扑排序来验证序列是否可以重建
 
 算法步骤:
-1. [待实现] 分析题目要求
-2. [待实现] 设计算法流程
-3. [待实现] 实现核心逻辑
+1. 构建图和入度表
+2. 初始化队列，将所有入度为0的节点加入队列
+3. 进行拓扑排序，检查每次出队的节点是否与目标序列一致
+4. 如果在某一步无法继续或不匹配，则返回False；否则返回True
 
 关键点:
-- [待实现] 注意边界条件
-- [待实现] 优化时间和空间复杂度
+- 注意边界条件，如空输入或无效输入
+- 优化时间和空间复杂度，使用邻接表存储图
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([待分析]) - 需要根据具体实现分析
-空间复杂度: O([待分析]) - 需要根据具体实现分析
+时间复杂度: O(V + E) - 其中V是顶点数，E是边数
+空间复杂度: O(V + E) - 存储图和入度表
 """
 
 # ============================================================================
@@ -51,25 +52,62 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def sequence_reconstruction(params):
+def sequence_reconstruction(org: List[int], seqs: List[List[int]]) -> bool:
     """
-    函数式接口 - [待实现]
+    函数式接口 - 判断给定的序列seqs是否可以唯一地重建为org
     
     实现思路:
-    [待实现] 简要说明实现思路
+    使用拓扑排序来验证序列是否可以重建
     
     Args:
-        params: [待实现] 参数说明
+        org: 目标序列
+        seqs: 给定的子序列列表
         
     Returns:
-        [待实现] 返回值说明
+        是否可以唯一地重建为org
         
     Example:
-        >>> sequence_reconstruction([待实现])
-        [待实现]
+        >>> sequence_reconstruction([1,2,3], [[1,2],[1,3]])
+        False
+        >>> sequence_reconstruction([1,2,3], [[1,2],[2,3]])
+        True
     """
-    # TODO: 实现最优解法
-    pass
+    if not org or not seqs:
+        return False
+    
+    # 构建图和入度表
+    graph = {}
+    in_degree = {}
+    
+    for seq in seqs:
+        for i in range(len(seq)):
+            if seq[i] not in graph:
+                graph[seq[i]] = set()
+                in_degree[seq[i]] = 0
+            if i > 0:
+                if seq[i-1] not in graph:
+                    graph[seq[i-1]] = set()
+                    in_degree[seq[i-1]] = 0
+                if seq[i] not in graph[seq[i-1]]:
+                    graph[seq[i-1]].add(seq[i])
+                    in_degree[seq[i]] += 1
+    
+    # 初始化队列，将所有入度为0的节点加入队列
+    queue = [node for node in in_degree if in_degree[node] == 0]
+    
+    # 拓扑排序
+    index = 0
+    while queue:
+        if len(queue) > 1 or (queue and queue[0] != org[index]):
+            return False
+        node = queue.pop(0)
+        index += 1
+        for neighbor in graph.get(node, []):
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return index == len(org)
 
 
 # 自动生成Solution类（无需手动编写）

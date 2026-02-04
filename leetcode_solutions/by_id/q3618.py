@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来计算所有可能的原始字符串。通过记录每个位置的字符重复次数，我们可以构建一个 DP 数组来存储从某个位置开始的有效字符串数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个 DP 数组 dp，其中 dp[i] 表示从位置 i 开始的有效字符串数量。
+2. 从后向前遍历字符串，对于每个位置 i，计算从 i 开始的所有可能的子字符串。
+3. 对于每个子字符串，更新 dp[i] 的值。
+4. 最终返回 dp[0]，即从位置 0 开始的有效字符串数量。
 
 关键点:
-- [TODO]
+- 使用前缀和来快速计算字符的重复次数。
+- 通过动态规划来避免重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是字符串的长度。我们需要遍历字符串的每个位置，并且对于每个位置，我们可能需要遍历剩余的部分。
+空间复杂度: O(n)，用于存储 DP 数组。
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def find_original_string(word: str, k: int) -> int:
+    MOD = 10**9 + 7
+    n = len(word)
+    dp = [0] * (n + 1)
+    dp[n] = 1  # 空字符串也是一种有效方案
+
+    for i in range(n - 1, -1, -1):
+        count = 1
+        for j in range(i, n):
+            if word[j] != word[i]:
+                break
+            if j - i + 1 >= k:
+                dp[i] = (dp[i] + dp[j + 1]) % MOD
+            count += 1
+
+    return dp[0]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_original_string)

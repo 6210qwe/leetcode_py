@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希表来记录每个元素的出现次数，并计算每个窗口内的最小操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `count` 来记录当前窗口内每个元素的出现次数。
+2. 使用两个指针 `left` 和 `right` 来表示滑动窗口的左右边界。
+3. 移动右指针扩展窗口，更新哈希表 `count`。
+4. 当窗口大小超过 `k` 时，移动左指针收缩窗口，更新哈希表 `count`。
+5. 在每次窗口调整后，计算当前窗口内的最小操作数，并更新全局最小操作数。
 
 关键点:
-- [TODO]
+- 使用滑动窗口来维护当前子数组的范围。
+- 使用哈希表来记录当前窗口内每个元素的出现次数。
+- 通过窗口内最大频率的元素来计算最小操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。每个元素最多被处理两次（一次加入窗口，一次移出窗口）。
+空间复杂度: O(n)，哈希表 `count` 最多存储 n 个不同的元素。
 """
 
 # ============================================================================
@@ -49,12 +54,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_operations_to_equal_subarray(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算将子数组元素变为相等所需的最小操作数。
     """
-    # TODO: 实现最优解法
-    pass
+    if not nums or k <= 0:
+        return 0
+
+    count = {}
+    left = 0
+    min_ops = float('inf')
+    max_freq = 0
+
+    for right in range(len(nums)):
+        # 更新当前窗口内元素的出现次数
+        count[nums[right]] = count.get(nums[right], 0) + 1
+        max_freq = max(max_freq, count[nums[right]])
+
+        # 如果窗口大小超过 k，移动左指针收缩窗口
+        if right - left + 1 > k:
+            count[nums[left]] -= 1
+            if count[nums[left]] == 0:
+                del count[nums[left]]
+            left += 1
+
+        # 计算当前窗口内的最小操作数
+        if right - left + 1 == k:
+            min_ops = min(min_ops, k - max_freq)
+
+    return min_ops
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_operations_to_equal_subarray)

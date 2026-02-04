@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过遍历从 1 到 n-1 的所有可能值，找到第一个符合条件的 a 和 b。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从 1 开始遍历到 n-1。
+2. 对于每个 i，检查 i 和 n-i 是否都为无零整数。
+3. 如果找到符合条件的 i 和 n-i，返回 [i, n-i]。
 
 关键点:
-- [TODO]
+- 使用辅助函数 `is_no_zero` 检查一个整数是否为无零整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 最坏情况下需要遍历 n-1 个数。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_no_zero(num: int) -> bool:
+    """检查一个整数是否为无零整数"""
+    return '0' not in str(num)
+
+
+def solution_function_name(n: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将整数 n 转换为两个无零整数的和
     """
-    # TODO: 实现最优解法
-    pass
+    for i in range(1, n):
+        if is_no_zero(i) and is_no_zero(n - i):
+            return [i, n - i]
 
 
 Solution = create_solution(solution_function_name)

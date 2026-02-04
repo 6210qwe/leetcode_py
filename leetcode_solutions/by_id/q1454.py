@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 判断字符串是否为回文，如果是，则只需一次删除；如果不是，则需要两次删除。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查字符串是否为回文。
+2. 如果是回文，返回 1。
+3. 如果不是回文，返回 2。
 
 关键点:
-- [TODO]
+- 回文字符串的判断。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度，因为我们需要遍历字符串来检查是否为回文。
+空间复杂度: O(1)，因为我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +50,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回删除给定字符串中所有字符（字符串为空）的最小删除次数。
     """
-    # TODO: 实现最优解法
-    pass
+    # 检查字符串是否为回文
+    def is_palindrome(s: str) -> bool:
+        left, right = 0, len(s) - 1
+        while left < right:
+            if s[left] != s[right]:
+                return False
+            left += 1
+            right -= 1
+        return True
+
+    if is_palindrome(s):
+        return 1
+    else:
+        return 2
 
 
 Solution = create_solution(solution_function_name)

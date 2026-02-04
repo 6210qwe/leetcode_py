@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用预处理和二分查找来优化查询效率。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `f(s)` 来计算字符串 s 中最小字母的出现频次。
+2. 对 `words` 中的每个字符串应用 `f(s)` 并存储结果。
+3. 对 `words` 的频次结果进行排序。
+4. 对于每个 `queries` 中的字符串，使用二分查找来计算满足条件的 `words` 数量。
 
 关键点:
-- [TODO]
+- 预处理 `words` 的频次并排序，以便后续快速查找。
+- 使用二分查找来高效地找到满足条件的 `words` 数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是 `words` 的长度，m 是 `queries` 的长度。
+空间复杂度: O(n)，用于存储 `words` 的频次结果。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def f(s: str) -> int:
+    """计算字符串 s 中最小字母的出现频次"""
+    min_char = min(s)
+    return s.count(min_char)
 
-def solution_function_name(params):
+def num_smaller_by_frequency(queries: List[str], words: List[str]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    计算每个查询中满足 f(queries[i]) < f(words[j]) 的 words 数量
     """
-    # TODO: 实现最优解法
-    pass
+    # 预处理 words 的频次
+    word_freqs = [f(word) for word in words]
+    word_freqs.sort()
+    
+    # 查询结果
+    result = []
+    
+    for query in queries:
+        query_freq = f(query)
+        # 使用二分查找找到第一个大于等于 query_freq 的位置
+        index = bisect.bisect_right(word_freqs, query_freq)
+        result.append(len(words) - index)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(num_smaller_by_frequency)

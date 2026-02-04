@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中有 j 个相邻元素相等的数组数量。通过状态转移方程进行递推。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0][0] = 1。
+2. 对于每个位置 i，更新 dp[i][j]，考虑两种情况：
+   - 当前元素与前一个元素不同，从 dp[i-1][j] 转移过来。
+   - 当前元素与前一个元素相同，从 dp[i-1][j-1] 转移过来。
+3. 最终结果是 dp[n-1][k]。
 
 关键点:
-- [TODO]
+- 使用模运算来防止溢出。
+- 状态转移方程的设计。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)
+空间复杂度: O(n * k)
 """
 
 # ============================================================================
@@ -48,13 +52,26 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
+def count_good_arrays(n: int, m: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算恰好有 k 个相等相邻元素的数组数目
     """
-    # TODO: 实现最优解法
-    pass
+    if k >= n:
+        return 0
 
+    # 初始化 dp 数组
+    dp = [[0] * (k + 1) for _ in range(n)]
+    dp[0][0] = m
 
-Solution = create_solution(solution_function_name)
+    for i in range(1, n):
+        for j in range(k + 1):
+            if j > 0:
+                dp[i][j] += dp[i - 1][j - 1] * (m - 1)
+            dp[i][j] += dp[i - 1][j] * (m - 1)
+            dp[i][j] %= MOD
+
+    return dp[n - 1][k]
+
+Solution = create_solution(count_good_arrays)

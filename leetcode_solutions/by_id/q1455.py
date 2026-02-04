@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 
+1. 过滤出满足条件的餐馆。
+2. 按照评分从高到低排序，如果评分相同则按 ID 从高到低排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 过滤出满足 veganFriendly、maxPrice 和 maxDistance 条件的餐馆。
+2. 对过滤后的餐馆列表进行排序。
+3. 返回排序后的餐馆 ID 列表。
 
 关键点:
-- [TODO]
+- 使用列表推导式进行过滤。
+- 使用 sorted 函数进行多条件排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)，其中 n 是 restaurants 的长度。排序操作的时间复杂度是 O(n log n)。
+空间复杂度: O(n)，过滤后的餐馆列表需要额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def filter_restaurants(restaurants: List[List[int]], veganFriendly: int, maxPrice: int, maxDistance: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    过滤并排序餐馆信息
     """
-    # TODO: 实现最优解法
-    pass
+    # 过滤出满足条件的餐馆
+    filtered_restaurants = [
+        (r[0], r[1])
+        for r in restaurants
+        if (not veganFriendly or r[2] == veganFriendly) and r[3] <= maxPrice and r[4] <= maxDistance
+    ]
+    
+    # 按照评分从高到低排序，如果评分相同则按 ID 从高到低排序
+    sorted_restaurants = sorted(filtered_restaurants, key=lambda x: (-x[1], -x[0]))
+    
+    # 返回排序后的餐馆 ID 列表
+    return [r[0] for r in sorted_restaurants]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(filter_restaurants)

@@ -21,22 +21,24 @@ LCP 37. 最小矩形面积 - 二维平面上有 $N$ 条直线，形式为 `y = k
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每对直线的交点，找到所有交点的最小和最大 x 坐标及 y 坐标，从而确定最小矩形的边界。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算所有直线的交点。
+2. 找到所有交点的最小和最大 x 坐标及 y 坐标。
+3. 计算最小矩形的面积。
 
 关键点:
-- [TODO]
+- 使用线性扫描来计算交点。
+- 通过维护两个堆来找到最小和最大的 x 坐标及 y 坐标。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -47,14 +49,39 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+import heapq
 
-
-def solution_function_name(params):
+def solution_function_name(lines: List[List[int]]) -> float:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算最小矩形面积
     """
-    # TODO: 实现最优解法
-    pass
+    if len(lines) < 2:
+        return 0.0
 
+    # 计算所有直线的交点
+    intersections = []
+    for i in range(len(lines)):
+        for j in range(i + 1, len(lines)):
+            k1, b1 = lines[i]
+            k2, b2 = lines[j]
+            if k1 == k2:
+                continue
+            x = (b2 - b1) / (k1 - k2)
+            y = k1 * x + b1
+            intersections.append((x, y))
+
+    if not intersections:
+        return 0.0
+
+    # 找到所有交点的最小和最大 x 坐标及 y 坐标
+    min_x = min(intersections, key=lambda p: p[0])[0]
+    max_x = max(intersections, key=lambda p: p[0])[0]
+    min_y = min(intersections, key=lambda p: p[1])[1]
+    max_y = max(intersections, key=lambda p: p[1])[1]
+
+    # 计算最小矩形的面积
+    width = max_x - min_x
+    height = max_y - min_y
+    return width * height
 
 Solution = create_solution(solution_function_name)

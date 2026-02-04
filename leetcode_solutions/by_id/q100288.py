@@ -21,40 +21,44 @@ LCR 144. 翻转二叉树 - 给定一棵二叉树的根节点 root，请左右翻
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用递归方法翻转二叉树
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 如果当前节点为空，直接返回。
+2. 交换当前节点的左子节点和右子节点。
+3. 递归翻转当前节点的左子树和右子树。
 
 关键点:
-- [TODO]
+- 递归地交换每个节点的左右子节点
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是二叉树中的节点数。每个节点都被访问一次。
+空间复杂度: O(h)，其中 h 是二叉树的高度。递归调用栈的深度最多为 h。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
+from typing import Optional
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def invert_tree(root: Optional[TreeNode]) -> Optional[TreeNode]:
     """
-    函数式接口 - [TODO] 实现
+    递归翻转二叉树
     """
-    # TODO: 实现最优解法
-    pass
+    if not root:
+        return None
+    # 交换左右子节点
+    root.left, root.right = root.right, root.left
+    # 递归翻转左右子树
+    invert_tree(root.left)
+    invert_tree(root.right)
+    return root
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(invert_tree)

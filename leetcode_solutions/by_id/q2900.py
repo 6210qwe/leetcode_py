@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用闭包来实现带有占位符的部分函数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个内部函数，该函数接受剩余的参数。
+2. 在内部函数中，将传入的参数与占位符参数合并。
+3. 调用原始函数并返回结果。
 
 关键点:
-- [TODO]
+- 使用闭包来存储部分参数。
+- 动态处理占位符和实际参数的合并。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用内部函数的时间复杂度是常数级的。
+空间复杂度: O(1) - 除了存储部分参数外，不使用额外的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any, List
 
-
-def solution_function_name(params):
+def partial_with_placeholders(fn: Callable, *args, **kwargs) -> Callable:
     """
-    函数式接口 - [TODO] 实现
+    返回一个新的函数，该函数接受剩余的参数，并在调用时将这些参数与已提供的参数合并后调用原函数。
+    
+    :param fn: 原始函数
+    :param args: 已提供的位置参数
+    :param kwargs: 已提供的关键字参数
+    :return: 新的函数
     """
-    # TODO: 实现最优解法
-    pass
+    def wrapper(*new_args, **new_kwargs):
+        # 合并位置参数和关键字参数
+        combined_args = args + new_args
+        combined_kwargs = {**kwargs, **new_kwargs}
+        
+        # 调用原始函数并返回结果
+        return fn(*combined_args, **combined_kwargs)
+    
+    return wrapper
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(partial_with_placeholders)

@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 为到达第 i 级台阶的最小成本。通过递推关系 dp[i] = min(dp[i-1] + costs[i-1] + (i-1)^2, dp[i-2] + costs[i-2] + (i-2)^2, dp[i-3] + costs[i-3] + (i-3)^2)，我们可以计算出到达每一级台阶的最小成本。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0，因为从 0 级台阶开始。
+2. 从第 1 级台阶开始，逐步计算 dp[i]，直到 dp[n]。
+3. 返回 dp[n] 作为结果。
 
 关键点:
-- [TODO]
+- 使用滚动数组优化空间复杂度，只需要常数级别的额外空间。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,30 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, costs: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算到达第 n 级台阶的最小总成本
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 0:
+        return 0
+
+    # 初始化 dp 数组
+    dp = [0] * 4
+    dp[1] = costs[0]
+    dp[2] = costs[0] + (1 ** 2) + costs[1]
+    dp[3] = min(
+        dp[1] + (2 ** 2) + costs[2],
+        dp[2] + (1 ** 2) + costs[2]
+    )
+
+    for i in range(4, n + 1):
+        dp[i % 4] = min(
+            dp[(i-1) % 4] + ((i-1) ** 2) + costs[i-1],
+            dp[(i-2) % 4] + ((i-2) ** 2) + costs[i-1],
+            dp[(i-3) % 4] + ((i-3) ** 2) + costs[i-1]
+        )
+
+    return dp[n % 4]
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和来快速判断子数组是否为特殊数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算前缀和数组，记录每个位置之前奇数和偶数的数量。
+2. 对于每个查询，使用前缀和数组快速判断子数组是否满足条件。
 
 关键点:
-- [TODO]
+- 前缀和数组可以快速计算任意子数组中奇数和偶数的数量。
+- 检查子数组的第一个和最后一个元素的奇偶性，并确保子数组长度为奇数时，奇数和偶数的数量相等。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 是 nums 的长度，m 是 queries 的长度。
+空间复杂度: O(n)，用于存储前缀和数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def is_special_array(nums: List[int], queries: List[List[int]]) -> List[bool]:
+    n = len(nums)
+    prefix_sum = [[0, 0] for _ in range(n + 1)]
+    
+    # 计算前缀和数组
+    for i in range(n):
+        prefix_sum[i + 1][0] = prefix_sum[i][0] + (nums[i] % 2 == 0)
+        prefix_sum[i + 1][1] = prefix_sum[i][1] + (nums[i] % 2 != 0)
+    
+    def is_special(start: int, end: int) -> bool:
+        even_count = prefix_sum[end + 1][0] - prefix_sum[start][0]
+        odd_count = prefix_sum[end + 1][1] - prefix_sum[start][1]
+        length = end - start + 1
+        
+        if length % 2 == 0:
+            return even_count == odd_count
+        else:
+            return abs(even_count - odd_count) == 1 and (nums[start] % 2 != nums[end] % 2)
+    
+    result = []
+    for query in queries:
+        start, end = query
+        result.append(is_special(start, end))
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(is_special_array)

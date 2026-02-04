@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每天的奇数和偶数交易金额总和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 CASE WHEN 语句将交易金额分为奇数和偶数。
+2. 使用 GROUP BY 语句按交易日期分组，并计算每天的奇数和偶数交易金额总和。
+3. 使用 COALESCE 函数处理可能的 NULL 值，确保在某天没有奇数或偶数交易时显示为 0。
+4. 按交易日期升序排序。
 
 关键点:
-- [TODO]
+- 使用 CASE WHEN 语句进行条件判断。
+- 使用 GROUP BY 语句进行分组聚合。
+- 使用 COALESCE 函数处理 NULL 值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 transactions 表的行数。我们需要遍历整个表来进行分组和聚合操作。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(transactions):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # SQL 查询实现最优解法
+    query = """
+    SELECT 
+        transaction_date,
+        COALESCE(SUM(CASE WHEN amount % 2 = 1 THEN amount ELSE 0 END), 0) AS odd_sum,
+        COALESCE(SUM(CASE WHEN amount % 2 = 0 THEN amount ELSE 0 END), 0) AS even_sum
+    FROM 
+        transactions
+    GROUP BY 
+        transaction_date
+    ORDER BY 
+        transaction_date ASC;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

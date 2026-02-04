@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法，从左到右逐个替换隐藏的数字，确保每一步都尽可能选择最大的合法值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将时间字符串拆分为小时和分钟部分。
+2. 逐个处理小时部分的每一位，确保小时部分在 00 到 23 之间。
+3. 逐个处理分钟部分的每一位，确保分钟部分在 00 到 59 之间。
+4. 返回最终的时间字符串。
 
 关键点:
-- [TODO]
+- 确保小时部分的第一位不超过 2，第二位不超过 3（如果第一位是 2）或 9（如果第一位是 0 或 1）。
+- 确保分钟部分的每一位不超过 5。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定长度的字符串处理。
+空间复杂度: O(1) - 只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
-def solution_function_name(params):
+def find_latest_time(time: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 替换隐藏数字得到的最晚时间
     """
-    # TODO: 实现最优解法
-    pass
+    # 将时间字符串拆分为小时和分钟部分
+    hours, minutes = time[:2], time[3:]
 
+    # 处理小时部分
+    if hours[0] == '?':
+        if hours[1] in '0123?':
+            hours = '2' + hours[1]
+        else:
+            hours = '1' + hours[1]
+    if hours[1] == '?':
+        if hours[0] == '2':
+            hours = hours[0] + '3'
+        else:
+            hours = hours[0] + '9'
 
-Solution = create_solution(solution_function_name)
+    # 处理分钟部分
+    if minutes[0] == '?':
+        minutes = '5' + minutes[1]
+    if minutes[1] == '?':
+        minutes = minutes[0] + '9'
+
+    return f"{hours}:{minutes}"
+
+Solution = create_solution(find_latest_time)

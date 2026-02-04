@@ -21,22 +21,25 @@ LCR 115. 序列重建 - 给定一个长度为 n 的整数数组 nums ，其中 n
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序来检查 nums 是否是唯一的最短超序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图和入度表。
+2. 初始化队列，将入度为 0 的节点加入队列。
+3. 进行拓扑排序，每次从队列中取出一个节点，如果队列中有多个节点，则说明存在多种可能的超序列，返回 False。
+4. 如果拓扑排序的结果与 nums 相同，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用拓扑排序来验证 nums 是否是唯一的最短超序列。
+- 通过入度表和队列来实现拓扑排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(V + E)，其中 V 是节点数，E 是边数。
+空间复杂度: O(V + E)，用于存储图和入度表。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], sequences: List[List[int]]) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 检查 nums 是否是唯一的最短超序列
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建图和入度表
+    graph = {i: [] for i in range(1, len(nums) + 1)}
+    in_degree = {i: 0 for i in range(1, len(nums) + 1)}
+
+    for seq in sequences:
+        for i in range(len(seq) - 1):
+            u, v = seq[i], seq[i + 1]
+            graph[u].append(v)
+            in_degree[v] += 1
+
+    # 初始化队列，将入度为 0 的节点加入队列
+    queue = [node for node in in_degree if in_degree[node] == 0]
+
+    # 进行拓扑排序
+    index = 0
+    while queue:
+        if len(queue) > 1:
+            return False
+        node = queue.pop(0)
+        if node != nums[index]:
+            return False
+        index += 1
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    return index == len(nums)
 
 
 Solution = create_solution(solution_function_name)

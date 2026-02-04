@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和哈希集合来记录满足条件的不同子数组。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希集合 `seen` 来存储不同的子数组。
+2. 使用双重循环遍历所有可能的子数组。
+3. 对于每个子数组，计算其中可被 p 整除的元素个数。
+4. 如果该子数组中可被 p 整除的元素个数不超过 k，则将其转换为元组并加入 `seen` 集合。
+5. 返回 `seen` 集合的大小。
 
 关键点:
-- [TODO]
+- 使用哈希集合来去重。
+- 双重循环的时间复杂度为 O(n^2)，但在实际应用中可以通过剪枝优化。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n^2)
 """
 
 # ============================================================================
@@ -49,12 +53,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int, p: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足条件的不同子数组的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    seen = set()
+
+    for i in range(n):
+        count = 0
+        subarray = []
+        for j in range(i, n):
+            if nums[j] % p == 0:
+                count += 1
+            if count > k:
+                break
+            subarray.append(nums[j])
+            seen.add(tuple(subarray))
+
+    return len(seen)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个单词的最后出现位置，遍历数组时更新最大距离。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表来记录每个单词的最后出现位置。
+2. 初始化一个变量 `max_distance` 来记录最大距离。
+3. 遍历数组，对于每个单词：
+   - 如果该单词已经在哈希表中，计算当前索引与哈希表中记录的索引的距离，并更新 `max_distance`。
+   - 更新哈希表中该单词的索引为当前索引。
+4. 返回 `max_distance`。
 
 关键点:
-- [TODO]
+- 使用哈希表记录每个单词的最后出现位置，以 O(1) 时间复杂度进行查找和更新。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(m)，其中 m 是数组中不同单词的数量。最坏情况下，所有单词都不同，需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(words: List[str]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 哈希表记录每个单词的最后出现位置
+    word_index = {}
+    max_distance = 0
+    
+    for i, word in enumerate(words):
+        if word in word_index:
+            distance = i - word_index[word]
+            max_distance = max(max_distance, distance)
+        word_index[word] = i
+    
+    return max_distance
 
 
 Solution = create_solution(solution_function_name)

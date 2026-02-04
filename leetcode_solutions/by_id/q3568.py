@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 将每个数字转换为四位字符串，然后逐位比较并取最小值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将 num1, num2, num3 转换为四位字符串，不足四位的前面补零。
+2. 初始化一个空字符串 result 用于存储结果。
+3. 对每一位进行比较，取最小值并添加到 result 中。
+4. 将 result 转换为整数并返回。
 
 关键点:
-- [TODO]
+- 使用 zfill(4) 方法将数字转换为四位字符串。
+- 逐位比较并取最小值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 固定的四位数操作。
+空间复杂度: O(1) - 使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(num1: int, num2: int, num3: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回三个正整数 num1, num2, num3 的数字答案 key。
     """
-    # TODO: 实现最优解法
-    pass
+    # 将数字转换为四位字符串
+    str_num1 = str(num1).zfill(4)
+    str_num2 = str(num2).zfill(4)
+    str_num3 = str(num3).zfill(4)
+
+    # 初始化结果字符串
+    result = ""
+
+    # 逐位比较并取最小值
+    for i in range(4):
+        result += min(str_num1[i], str_num2[i], str_num3[i])
+
+    # 将结果字符串转换为整数并返回
+    return int(result)
 
 
 Solution = create_solution(solution_function_name)

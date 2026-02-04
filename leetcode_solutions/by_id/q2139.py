@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+- 使用一个嵌套字典来存储每个点 (x, y) 的出现次数。
+- 在 `add` 方法中，更新字典中的计数。
+- 在 `count` 方法中，遍历所有可能的正方形，计算满足条件的正方形数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个嵌套字典 `points` 来存储每个点的出现次数。
+2. 在 `add` 方法中，更新 `points` 中对应点的计数。
+3. 在 `count` 方法中，遍历所有可能的正方形，计算满足条件的正方形数量。
 
 关键点:
-- [TODO]
+- 使用嵌套字典来高效地存储和查找点的计数。
+- 通过遍历所有可能的正方形来计算满足条件的正方形数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - 其中 n 是已添加的点的数量。每次调用 `count` 方法时，需要遍历所有可能的正方形。
+空间复杂度: O(n) - 存储所有已添加的点及其计数。
 """
 
 # ============================================================================
@@ -49,12 +54,34 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class DetectSquares:
+
+    def __init__(self):
+        self.points = {}
+
+    def add(self, point: List[int]) -> None:
+        x, y = point
+        if x not in self.points:
+            self.points[x] = {}
+        if y not in self.points[x]:
+            self.points[x][y] = 0
+        self.points[x][y] += 1
+
+    def count(self, point: List[int]) -> int:
+        x, y = point
+        count = 0
+        if x not in self.points:
+            return 0
+        for y1 in self.points[x]:
+            if y1 == y:
+                continue
+            side_length = abs(y1 - y)
+            # Check points on the same horizontal line
+            if x + side_length in self.points and y in self.points[x + side_length] and y1 in self.points[x + side_length]:
+                count += self.points[x][y1] * self.points[x + side_length][y] * self.points[x + side_length][y1]
+            if x - side_length in self.points and y in self.points[x - side_length] and y1 in self.points[x - side_length]:
+                count += self.points[x][y1] * self.points[x - side_length][y] * self.points[x - side_length][y1]
+        return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(DetectSquares)

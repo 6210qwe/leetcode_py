@@ -21,40 +21,50 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用闭包来实现柯里化
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个辅助函数 `curry_helper`，该函数接受剩余的参数，并在所有参数都收集完毕时调用原函数。
+2. 在每次调用 `curry_helper` 时，检查是否已经收集了足够的参数。如果收集完毕，则调用原函数并返回结果；否则，返回一个新的 `curry_helper` 函数以继续收集参数。
 
 关键点:
-- [TODO]
+- 使用闭包来保存已经收集到的参数
+- 递归地返回新的 `curry_helper` 函数直到收集到所有参数
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 每次调用 `curry_helper` 的时间复杂度是常数级别
+空间复杂度: O(n) - 递归调用栈的空间复杂度，其中 n 是参数的数量
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Callable, Any
 
 
-def solution_function_name(params):
+def curry(func: Callable, *args: Any) -> Callable:
     """
-    函数式接口 - [TODO] 实现
+    柯里化函数 - 将一个接受多个参数的函数转换为一系列接受单个参数的函数
     """
-    # TODO: 实现最优解法
-    pass
+    def curry_helper(*inner_args: Any) -> Any:
+        if len(inner_args) + len(args) == func.__code__.co_argcount:
+            return func(*args, *inner_args)
+        else:
+            return lambda *more_args: curry_helper(*inner_args, *more_args)
+    
+    return curry_helper(*args)
 
 
-Solution = create_solution(solution_function_name)
+# 示例用法
+def add(a, b, c):
+    return a + b + c
+
+curried_add = curry(add, 1)
+print(curried_add(2)(3))  # 输出 6
+
+Solution = create_solution(curry)

@@ -21,40 +21,49 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表来记录每个数在 nums2 中出现的次数，然后遍历 nums1，对于每个数计算其能被哪些数整除，并累加这些数的出现次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 count，记录 nums2 中每个数的出现次数。
+2. 遍历 nums1，对于每个数 num1，计算其能被哪些数整除，并累加这些数的出现次数。
+3. 返回累计的优质数对数量。
 
 关键点:
-- [TODO]
+- 使用哈希表来优化查找和计数操作。
+- 通过预处理 nums2 来减少重复计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)
+空间复杂度: O(m)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums1: List[int], nums2: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算优质数对的总数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化哈希表，记录 nums2 中每个数的出现次数
+    count = {}
+    for num in nums2:
+        if num * k not in count:
+            count[num * k] = 0
+        count[num * k] += 1
 
+    # 累计优质数对的数量
+    good_pairs = 0
+    for num in nums1:
+        if num in count:
+            good_pairs += count[num]
+
+    return good_pairs
 
 Solution = create_solution(solution_function_name)

@@ -21,40 +21,71 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用组合数学和动态规划来计算所有可能的感冒序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个连续未感冒的小朋友段的长度。
+2. 使用组合数学计算每个段内的排列数。
+3. 使用动态规划计算所有段的排列数的乘积。
 
 关键点:
-- [TODO]
+- 使用阶乘和逆元来高效计算组合数。
+- 使用动态规划来处理多个段的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import math
 
+MOD = 10**9 + 7
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def mod_inverse(x, p):
+    return pow(x, p - 2, p)
 
+def factorial_mod(n, p):
+    fact = [1] * (n + 1)
+    for i in range(2, n + 1):
+        fact[i] = fact[i - 1] * i % p
+    return fact
 
-Solution = create_solution(solution_function_name)
+def count_infection_sequences(n: int, sick: List[int]) -> int:
+    # 计算每个连续未感冒的小朋友段的长度
+    segments = []
+    prev = -1
+    for s in sick:
+        if s > 0 and s - prev > 1:
+            segments.append(s - prev - 1)
+        prev = s
+    if n - 1 - sick[-1] > 0:
+        segments.append(n - 1 - sick[-1])
+
+    # 预计算阶乘和逆元
+    fact = factorial_mod(n, MOD)
+    inv_fact = [mod_inverse(f, MOD) for f in fact]
+
+    def comb(n, k):
+        return fact[n] * inv_fact[k] * inv_fact[n - k] % MOD
+
+    # 动态规划计算所有段的排列数的乘积
+    dp = [1]
+    for length in segments:
+        new_dp = [0] * (len(dp) + length)
+        for i in range(len(dp)):
+            for j in range(length + 1):
+                new_dp[i + j] = (new_dp[i + j] + dp[i] * comb(length, j)) % MOD
+        dp = new_dp
+
+    return dp[-1]
+
+Solution = create_solution(count_infection_sequences)

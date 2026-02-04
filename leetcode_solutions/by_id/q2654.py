@@ -21,40 +21,45 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历指定范围内的字符串，检查每个字符串是否以元音字母开头和结尾。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个包含所有元音字母的集合。
+2. 初始化一个计数器，用于记录元音字符串的数量。
+3. 遍历指定范围内的每个字符串。
+4. 检查当前字符串是否以元音字母开头和结尾。
+5. 如果是，则增加计数器。
+6. 返回计数器的值。
 
 关键点:
-- [TODO]
+- 使用集合来快速检查字符是否为元音字母。
+- 只遍历指定范围内的字符串，避免不必要的计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n) - n 为 right - left + 1，即指定范围内的字符串数量。
+空间复杂度: O(1) - 仅使用常数级额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_vowel_strings(words: List[str], left: int, right: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计指定范围内的元音字符串数量
     """
-    # TODO: 实现最优解法
-    pass
+    vowels = set('aeiou')
+    count = 0
+    for i in range(left, right + 1):
+        word = words[i]
+        if word[0] in vowels and word[-1] in vowels:
+            count += 1
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_vowel_strings)

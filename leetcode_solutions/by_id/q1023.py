@@ -21,40 +21,61 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个键的时间戳和对应的值，使用二分查找来快速检索特定时间戳的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用一个字典 `time_map` 来存储每个键的时间戳和对应的值。
+2. 在 `set` 方法中，将键、时间戳和值存储在 `time_map` 中。
+3. 在 `get` 方法中，使用二分查找来找到小于或等于给定时间戳的最大时间戳，并返回对应的值。
 
 关键点:
-- [TODO]
+- 使用哈希表存储键的时间戳和值。
+- 使用二分查找来快速检索特定时间戳的值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 对于 `get` 操作，使用二分查找的时间复杂度为 O(log n)，其中 n 是某个键的时间戳数量。
+空间复杂度: O(n) - 存储所有键的时间戳和值需要 O(n) 的空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import Dict, List
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class TimeMap:
+    def __init__(self):
+        self.time_map: Dict[str, List[tuple]] = {}
+
+    def set(self, key: str, value: str, timestamp: int) -> None:
+        if key not in self.time_map:
+            self.time_map[key] = []
+        self.time_map[key].append((timestamp, value))
+
+    def get(self, key: str, timestamp: int) -> str:
+        if key not in self.time_map:
+            return ""
+        
+        values = self.time_map[key]
+        left, right = 0, len(values) - 1
+        
+        while left <= right:
+            mid = (left + right) // 2
+            if values[mid][0] == timestamp:
+                return values[mid][1]
+            elif values[mid][0] < timestamp:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        if right >= 0 and values[right][0] <= timestamp:
+            return values[right][1]
+        return ""
 
 
-Solution = create_solution(solution_function_name)
+Solution = TimeMap

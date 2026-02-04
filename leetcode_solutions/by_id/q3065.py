@@ -21,40 +21,36 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 pandas 库的 head 方法来获取 DataFrame 的前 3 行。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 导入 pandas 库。
+2. 定义函数 solution_function_name，接收一个 DataFrame 作为参数。
+3. 使用 head 方法返回 DataFrame 的前 3 行。
 
 关键点:
-- [TODO]
+- 使用 pandas 库的 head 方法可以高效地获取 DataFrame 的前 N 行。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - head 方法的时间复杂度是常数级别的。
+空间复杂度: O(1) - head 方法的空间复杂度也是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
-
-def solution_function_name(params):
+def solution_function_name(employees: pd.DataFrame) -> pd.DataFrame:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回 DataFrame 的前 3 行
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 使用 head 方法返回 DataFrame 的前 3 行
+    return employees.head(3)
 
 Solution = create_solution(solution_function_name)

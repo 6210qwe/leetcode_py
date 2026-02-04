@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过比较 n 的数字频次与所有 2 的幂的数字频次，判断 n 是否可以重排成 2 的幂。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算 n 的数字频次。
+2. 枚举所有可能的 2 的幂（在 1 到 10^9 范围内），计算它们的数字频次。
+3. 比较 n 的数字频次与每个 2 的幂的数字频次，如果匹配则返回 True。
+4. 如果没有匹配的 2 的幂，则返回 False。
 
 关键点:
-- [TODO]
+- 使用计数器来比较数字频次。
+- 2 的幂的数量在 1 到 10^9 范围内是有限的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1) - 因为 2 的幂的数量是有限的，且最多只有 30 个。
+空间复杂度: O(1) - 使用常数级的额外空间。
 """
 
 # ============================================================================
@@ -47,14 +50,21 @@ from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
+from collections import Counter
 
-
-def solution_function_name(params):
+def solution_function_name(n: int) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断给定的正整数 n 是否可以通过重新排列得到 2 的幂。
     """
-    # TODO: 实现最优解法
-    pass
-
+    # 计算 n 的数字频次
+    n_counter = Counter(str(n))
+    
+    # 枚举所有可能的 2 的幂
+    for i in range(30):
+        power_of_2 = 2 ** i
+        if Counter(str(power_of_2)) == n_counter:
+            return True
+    
+    return False
 
 Solution = create_solution(solution_function_name)

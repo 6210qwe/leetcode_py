@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过从左到右和从右到左两次遍历数组，分别找到每个位置的最大值和最小值。然后判断每个元素是否满足二分查找的条件。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从左到右遍历数组，记录每个位置左侧的最大值。
+2. 从右到左遍历数组，记录每个位置右侧的最小值。
+3. 再次遍历数组，判断每个元素是否满足二分查找的条件：即该元素大于其左侧的最大值且小于其右侧的最小值。
 
 关键点:
-- [TODO]
+- 通过两次遍历分别记录左侧最大值和右侧最小值，避免了嵌套循环，提高了效率。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +50,35 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算未排序数组中可被二分搜索的数的数量
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    # 从左到右遍历，记录每个位置左侧的最大值
+    left_max = [float('-inf')] * n
+    max_val = float('-inf')
+    for i in range(n):
+        left_max[i] = max_val
+        max_val = max(max_val, nums[i])
+
+    # 从右到左遍历，记录每个位置右侧的最小值
+    right_min = [float('inf')] * n
+    min_val = float('inf')
+    for i in range(n - 1, -1, -1):
+        right_min[i] = min_val
+        min_val = min(min_val, nums[i])
+
+    # 判断每个元素是否满足二分查找的条件
+    count = 0
+    for i in range(n):
+        if left_max[i] < nums[i] < right_min[i]:
+            count += 1
+
+    return count
 
 
 Solution = create_solution(solution_function_name)

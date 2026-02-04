@@ -21,40 +21,57 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用快慢指针来找到链表的中间节点，并删除该节点。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 slow 和 fast，都指向头节点。
+2. 快指针每次移动两步，慢指针每次移动一步。
+3. 当快指针到达链表末尾时，慢指针正好位于中间节点。
+4. 跳过慢指针指向的节点，完成删除操作。
 
 关键点:
-- [TODO]
+- 使用快慢指针可以有效地找到链表的中间节点。
+- 通过跳过中间节点来实现删除操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。快慢指针遍历链表一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def delete_middle(head: Optional[ListNode]) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    删除链表的中间节点，并返回修改后的链表的头节点。
     """
-    # TODO: 实现最优解法
-    pass
+    if not head or not head.next:
+        return None
 
+    # 初始化快慢指针
+    slow = head
+    fast = head
+    prev = None
 
-Solution = create_solution(solution_function_name)
+    # 快指针每次移动两步，慢指针每次移动一步
+    while fast and fast.next:
+        fast = fast.next.next
+        prev = slow
+        slow = slow.next
+
+    # 跳过中间节点
+    if prev:
+        prev.next = slow.next
+
+    return head
+
+Solution = create_solution(delete_middle)

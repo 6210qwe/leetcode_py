@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 遍历每个单词，检查是否包含指定字符 x，如果包含则将该单词的下标加入结果列表。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个空的结果列表 res。
+2. 遍历 words 数组，对于每个单词，检查是否包含字符 x。
+3. 如果包含，则将当前单词的下标加入 res。
+4. 返回结果列表 res。
 
 关键点:
-- [TODO]
+- 使用 in 运算符来检查字符 x 是否在单词中。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * m)，其中 n 是 words 的长度，m 是单词的平均长度。
+空间复杂度: O(1)，除了结果列表外，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +51,15 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def find_words_containing(words: List[str], x: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 查找包含指定字符的单词下标
     """
-    # TODO: 实现最优解法
-    pass
+    res = []
+    for i, word in enumerate(words):
+        if x in word:
+            res.append(i)
+    return res
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(find_words_containing)

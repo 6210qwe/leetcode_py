@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计不同工资类别的账户数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义三个子查询分别统计低薪、中等薪水和高薪的账户数量。
+2. 将三个子查询的结果合并成一个结果表。
 
 关键点:
-- [TODO]
+- 使用 CASE WHEN 语句来分类工资。
+- 使用 COUNT 函数来统计每个类别的账户数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 Accounts 表中的行数。我们需要遍历整个表来进行分类和计数。
+空间复杂度: O(1)，我们只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -48,13 +49,29 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def count_salary_categories(accounts: List[List[int]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    统计不同工资类别的账户数量。
+    
+    :param accounts: Accounts 表，每行包含 account_id 和 income。
+    :return: 结果表，包含每个工资类别的账户数量。
     """
-    # TODO: 实现最优解法
-    pass
+    low_salary = 0
+    average_salary = 0
+    high_salary = 0
+    
+    for _, income in accounts:
+        if income < 20000:
+            low_salary += 1
+        elif 20000 <= income <= 50000:
+            average_salary += 1
+        else:
+            high_salary += 1
+    
+    return [
+        ["Low Salary", low_salary],
+        ["Average Salary", average_salary],
+        ["High Salary", high_salary]
+    ]
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_salary_categories)

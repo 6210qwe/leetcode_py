@@ -21,40 +21,53 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来记录当前的嵌套深度，并根据当前深度决定将括号分配给 A 还是 B。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈 `stack` 用于记录当前的嵌套深度。
+2. 初始化一个结果列表 `result` 用于存储最终的分配结果。
+3. 遍历输入字符串 `seq`：
+   - 如果遇到左括号 `(`，则将当前深度压入栈中，并根据当前深度的奇偶性决定将其分配给 A 还是 B。
+   - 如果遇到右括号 `)`，则从栈中弹出当前深度，并根据当前深度的奇偶性决定将其分配给 A 还是 B。
 
 关键点:
-- [TODO]
+- 使用栈来记录当前的嵌套深度。
+- 根据当前深度的奇偶性决定将括号分配给 A 还是 B，以确保两个字符串的深度最小。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。我们需要遍历整个字符串一次。
+空间复杂度: O(n)，最坏情况下栈的大小为 n/2。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(seq: str) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 将有效括号字符串分成两个不相交的有效括号字符串，使这两个字符串的深度最小。
     """
-    # TODO: 实现最优解法
-    pass
-
+    stack = []
+    result = []
+    for char in seq:
+        if char == '(':
+            # 当前深度为栈的长度
+            depth = len(stack)
+            # 根据当前深度的奇偶性决定分配给 A 还是 B
+            result.append(depth % 2)
+            stack.append(depth)
+        else:
+            stack.pop()
+            # 当前深度为栈的长度
+            depth = len(stack)
+            # 根据当前深度的奇偶性决定分配给 A 还是 B
+            result.append(depth % 2)
+    return result
 
 Solution = create_solution(solution_function_name)

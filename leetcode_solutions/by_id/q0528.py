@@ -21,40 +21,59 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针找到正数第 k 个节点和倒数第 k 个节点，然后交换它们的值。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 first 和 second，都指向链表的头节点。
+2. 将 first 指针向前移动 k-1 步，使其指向正数第 k 个节点。
+3. 保持 first 不动，将 second 指针从头节点开始移动，直到 first 指针到达链表末尾。此时 second 指针指向倒数第 k 个节点。
+4. 交换 first 和 second 指针所指向节点的值。
+5. 返回链表的头节点。
 
 关键点:
-- [TODO]
+- 使用双指针法可以同时找到正数第 k 个节点和倒数第 k 个节点。
+- 只交换节点的值，而不是节点本身，这样可以简化操作。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是链表的长度。我们只需要遍历链表一次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
+from typing import Optional
 from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def swap_nodes(head: Optional[ListNode], k: int) -> Optional[ListNode]:
     """
-    函数式接口 - [TODO] 实现
+    交换链表中的节点 - 给你链表的头节点 head 和一个整数 k 。 交换 链表正数第 k 个节点和倒数第 k 个节点的值后，返回链表的头节点（链表 从 1 开始索引）。
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化两个指针 first 和 second，都指向链表的头节点
+    first = second = head
+    
+    # 将 first 指针向前移动 k-1 步，使其指向正数第 k 个节点
+    for _ in range(k - 1):
+        first = first.next
+    
+    # 保存正数第 k 个节点
+    first_k_node = first
+    
+    # 保持 first 不动，将 second 指针从头节点开始移动，直到 first 指针到达链表末尾
+    while first.next:
+        first = first.next
+        second = second.next
+    
+    # 交换 first 和 second 指针所指向节点的值
+    first_k_node.val, second.val = second.val, first_k_node.val
+    
+    # 返回链表的头节点
+    return head
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(swap_nodes)

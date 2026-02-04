@@ -21,40 +21,52 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和二分查找来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 rides 按照结束时间进行排序。
+2. 初始化一个 dp 数组，dp[i] 表示前 i 个订单的最大收益。
+3. 遍历每个订单，对于每个订单，使用二分查找找到最后一个不与当前订单冲突的订单。
+4. 更新 dp 数组，dp[i] = max(dp[i-1], dp[j] + earnings)，其中 j 是最后一个不冲突的订单索引。
+5. 返回 dp 数组的最后一个元素。
 
 关键点:
-- [TODO]
+- 使用二分查找来优化查找不冲突订单的时间复杂度。
+- 动态规划的状态转移方程确保了最优解。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m log m + m log m) = O(m log m)，其中 m 是 rides 的长度。排序的时间复杂度是 O(m log m)，每次二分查找的时间复杂度是 O(log m)，总的时间复杂度是 O(m log m)。
+空间复杂度: O(m)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from bisect import bisect_right
 
+def max_taxi_earnings(n: int, rides: List[List[int]]) -> int:
+    # 按结束时间排序
+    rides.sort(key=lambda x: x[1])
+    
+    # 初始化 dp 数组
+    dp = [0] * (len(rides) + 1)
+    
+    for i in range(1, len(rides) + 1):
+        start, end, tip = rides[i - 1]
+        earnings = end - start + tip
+        
+        # 二分查找最后一个不冲突的订单
+        j = bisect_right(rides, start, key=lambda x: x[1]) - 1
+        
+        # 更新 dp 数组
+        dp[i] = max(dp[i - 1], dp[j + 1] + earnings)
+    
+    return dp[-1]
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(max_taxi_earnings)

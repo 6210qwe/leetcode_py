@@ -21,40 +21,51 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口和差分数组来记录翻转操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个差分数组 `diff` 和一个当前翻转次数 `flip_count`。
+2. 遍历数组 `nums`，对于每个元素：
+   - 更新当前翻转次数 `flip_count`。
+   - 如果当前元素加上翻转次数后是 0，则需要进行翻转操作。
+   - 在差分数组 `diff` 中记录翻转操作，并更新翻转次数。
+3. 如果遍历过程中发现无法完成翻转（即剩余长度小于 k），则返回 -1。
+4. 返回总的翻转次数。
 
 关键点:
-- [TODO]
+- 使用差分数组记录翻转操作，避免重复计算。
+- 通过滑动窗口维护当前翻转次数，确保每次操作的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组 `nums` 的长度。每个元素只处理一次。
+空间复杂度: O(1)，差分数组 `diff` 的大小是固定的，不随输入规模增加而增加。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def min_k_bit_flips(nums: List[int], k: int) -> int:
+    n = len(nums)
+    diff = [0] * (n + 1)
+    flip_count = 0
+    result = 0
+    
+    for i in range(n):
+        flip_count += diff[i]
+        if (nums[i] + flip_count) % 2 == 0:
+            if i + k > n:
+                return -1
+            result += 1
+            flip_count += 1
+            diff[i + k] -= 1
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = min_k_bit_flips

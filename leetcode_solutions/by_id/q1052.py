@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用曼哈顿距离计算每个工人到每辆自行车的距离，并将这些距离存储在一个列表中。然后对这个列表进行排序，优先选择最短距离的配对。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个工人到每辆自行车的曼哈顿距离，并将这些距离存储在一个列表中，同时记录对应的工人和自行车索引。
+2. 对这个列表按距离进行排序。
+3. 使用一个集合来记录已经被分配的自行车，遍历排序后的列表，为每个工人分配最近且未被分配的自行车。
 
 关键点:
-- [TODO]
+- 使用曼哈顿距离计算距离。
+- 使用优先队列（或排序）来确保每次分配都是最优的。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(nm log(nm))，其中 n 是工人的数量，m 是自行车的数量。需要计算 n * m 个距离，并对它们进行排序。
+空间复杂度: O(nm)，用于存储所有距离及其对应的工人和自行车索引。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def assignBikes(workers: List[List[int]], bikes: List[List[int]]) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现校园自行车分配
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个工人到每辆自行车的曼哈顿距离
+    distances = []
+    for i, (wx, wy) in enumerate(workers):
+        for j, (bx, by) in enumerate(bikes):
+            dist = abs(wx - bx) + abs(wy - by)
+            distances.append((dist, i, j))
+    
+    # 按距离排序
+    distances.sort()
+    
+    # 使用集合记录已被分配的自行车
+    assigned_bikes = set()
+    result = [-1] * len(workers)
+    
+    # 为每个工人分配最近且未被分配的自行车
+    for _, worker, bike in distances:
+        if result[worker] == -1 and bike not in assigned_bikes:
+            result[worker] = bike
+            assigned_bikes.add(bike)
+    
+    return result
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(assignBikes)

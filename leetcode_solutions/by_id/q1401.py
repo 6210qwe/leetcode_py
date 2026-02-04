@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过数学方程求解巨无霸汉堡和小皇堡的数量。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 根据番茄片和奶酪片的数量，建立方程组：
+   - 4 * jumbo + 2 * small = tomatoSlices
+   - jumbo + small = cheeseSlices
+2. 解方程组，得到 jumbo 和 small 的值。
+3. 检查解是否为非负整数，如果是则返回 [jumbo, small]，否则返回 []。
 
 关键点:
-- [TODO]
+- 通过简单的代数运算求解方程组。
+- 检查解的有效性。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +53,17 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(tomato_slices: int, cheese_slices: int) -> List[int]:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回制作巨无霸汉堡和小皇堡的数量，使得剩余的番茄片和奶酪片为 0。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算巨无霸汉堡和小皇堡的数量
+    if (tomato_slices - 2 * cheese_slices) % 2 == 0 and (tomato_slices - 2 * cheese_slices) >= 0:
+        jumbo = (tomato_slices - 2 * cheese_slices) // 2
+        small = cheese_slices - jumbo
+        if small >= 0:
+            return [jumbo, small]
+    return []
 
 
 Solution = create_solution(solution_function_name)

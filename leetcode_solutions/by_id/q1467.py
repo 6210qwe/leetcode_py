@@ -21,40 +21,39 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来统计每次访问的交易次数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用 GROUP BY 子句按 visit_id 分组。
+2. 使用 COUNT 函数计算每个 visit_id 对应的 transactions 数量。
 
 关键点:
-- [TODO]
+- 确保查询结果包含所有 visit_id 及其对应的交易次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是 transactions 表中的行数。因为我们需要遍历整个表来分组和计数。
+空间复杂度: O(m)，其中 m 是不同的 visit_id 的数量。因为我们需要存储每个 visit_id 及其对应的交易次数。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
-
-
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 SQL 查询
     """
-    # TODO: 实现最优解法
-    pass
+    # 最优解法：使用 SQL 查询
+    query = """
+    SELECT visit_id, COUNT(*) AS transaction_count
+    FROM transactions
+    GROUP BY visit_id;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

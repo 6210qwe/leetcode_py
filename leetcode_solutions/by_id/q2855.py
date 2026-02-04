@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i] 表示到达下标 i 所需的最大跳跃次数。对于每个下标 i，我们检查所有可能的前一个下标 j (0 <= j < i)，如果 nums[i] 和 nums[j] 满足跳跃条件，则更新 dp[i]。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化 dp 数组，dp[0] = 0，其他 dp[i] 初始化为 -1。
+2. 遍历数组，对于每个下标 i，检查所有可能的前一个下标 j (0 <= j < i)。
+3. 如果 nums[i] 和 nums[j] 满足跳跃条件且 dp[j] != -1，则更新 dp[i]。
+4. 最后返回 dp[n-1]。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录到达每个下标的最大跳跃次数。
+- 通过遍历和条件判断来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(n)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
+def max_jumps_to_reach_last_index(nums: List[int], target: int) -> int:
+    n = len(nums)
+    if n == 1:
+        return 0
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    dp = [-1] * n
+    dp[0] = 0
 
+    for i in range(1, n):
+        for j in range(i):
+            if -target <= nums[i] - nums[j] <= target and dp[j] != -1:
+                if dp[i] == -1 or dp[i] < dp[j] + 1:
+                    dp[i] = dp[j] + 1
 
-Solution = create_solution(solution_function_name)
+    return dp[-1]
+
+Solution = create_solution(max_jumps_to_reach_last_index)

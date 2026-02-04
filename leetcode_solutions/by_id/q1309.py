@@ -21,40 +21,86 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用拓扑排序对项目和组进行排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建项目和组的图。
+2. 对每个组内的项目进行拓扑排序。
+3. 对所有组进行拓扑排序。
+4. 将组内排序后的项目合并成最终结果。
 
 关键点:
-- [TODO]
+- 使用拓扑排序确保依赖关系得到满足。
+- 分别对项目和组进行拓扑排序。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m + E)，其中 n 是项目数，m 是组数，E 是依赖关系的数量。
+空间复杂度: O(n + m + E)，用于存储图和入度数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from collections import defaultdict, deque
 
+def sort_items(n: int, m: int, group: List[int], before_items: List[List[int]]) -> List[int]:
+    def topological_sort(graph, in_degree):
+        queue = deque([node for node in graph if in_degree[node] == 0])
+        order = []
+        while queue:
+            node = queue.popleft()
+            order.append(node)
+            for neighbor in graph[node]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        return order if len(order) == len(graph) else []
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 给没有组的项目分配新的组
+    for i in range(n):
+        if group[i] == -1:
+            group[i] = m
+            m += 1
 
+    # 构建项目图和组图
+    item_graph = defaultdict(list)
+    item_in_degree = defaultdict(int)
+    group_graph = defaultdict(list)
+    group_in_degree = defaultdict(int)
 
-Solution = create_solution(solution_function_name)
+    for i in range(n):
+        for j in before_items[i]:
+            item_graph[j].append(i)
+            item_in_degree[i] += 1
+            if group[i] != group[j]:
+                group_graph[group[j]].append(group[i])
+                group_in_degree[group[i]] += 1
+
+    # 对每个组内的项目进行拓扑排序
+    sorted_groups = topological_sort(group_graph, group_in_degree)
+    if not sorted_groups:
+        return []
+
+    # 对所有组进行拓扑排序
+    item_order = {}
+    for g in sorted_groups:
+        items_in_group = [i for i in range(n) if group[i] == g]
+        sorted_items = topological_sort({i: item_graph[i] for i in items_in_group}, {i: item_in_degree[i] for i in items_in_group})
+        if not sorted_items:
+            return []
+        item_order[g] = sorted_items
+
+    # 合并组内排序后的项目
+    result = []
+    for g in sorted_groups:
+        result.extend(item_order[g])
+
+    return result
+
+Solution = create_solution(sort_items)

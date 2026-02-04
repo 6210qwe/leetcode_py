@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双指针从两端向中间遍历字符串，遇到不匹配的字符时，尝试跳过左指针或右指针指向的字符，然后继续检查剩余部分是否为回文。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个指针 left 和 right 分别指向字符串的开头和结尾。
+2. 使用 while 循环，当 left < right 时：
+   - 如果 s[left] == s[right]，则移动两个指针。
+   - 如果 s[left] != s[right]，则尝试跳过左指针或右指针指向的字符，检查剩余部分是否为回文。
+3. 如果在任何情况下都能找到回文，则返回 True，否则返回 False。
 
 关键点:
-- [TODO]
+- 使用双指针从两端向中间遍历字符串。
+- 在遇到不匹配字符时，尝试跳过左指针或右指针指向的字符。
+- 检查剩余部分是否为回文。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串的长度。每个字符最多被访问两次。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +54,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def valid_palindrome(s: str) -> bool:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 判断字符串 s 是否可以通过删除一个字符变成回文字符串
     """
-    # TODO: 实现最优解法
-    pass
+    def is_palindrome_range(start: int, end: int) -> bool:
+        """检查指定范围内的子字符串是否为回文"""
+        while start < end:
+            if s[start] != s[end]:
+                return False
+            start += 1
+            end -= 1
+        return True
+
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] == s[right]:
+            left += 1
+            right -= 1
+        else:
+            # 尝试跳过左指针或右指针指向的字符
+            return is_palindrome_range(left + 1, right) or is_palindrome_range(left, right - 1)
+    return True
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(valid_palindrome)

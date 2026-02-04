@@ -21,40 +21,63 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Dijkstra 算法来找到从起点到终点的最大概率路径。我们将边的概率取负对数，这样可以将最大概率路径问题转化为最小路径和问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建图的邻接表表示。
+2. 初始化距离数组 `dist`，所有节点的距离初始化为负无穷，起点的距离初始化为 0。
+3. 使用优先队列（最小堆）进行 Dijkstra 算法，每次从堆中取出当前距离最小的节点，并更新其邻居节点的距离。
+4. 最后返回终点的距离，如果终点的距离仍为负无穷，则说明没有路径，返回 0。
 
 关键点:
-- [TODO]
+- 将概率取负对数，将最大概率路径问题转化为最小路径和问题。
+- 使用优先队列优化 Dijkstra 算法。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(E log V)，其中 E 是边的数量，V 是节点的数量。优先队列的插入和删除操作的时间复杂度是 O(log V)。
+空间复杂度: O(V + E)，存储图的邻接表和距离数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+import heapq
+import math
 
+def max_probability(n: int, edges: List[List[int]], succProb: List[float], start: int, end: int) -> float:
+    # 构建图的邻接表表示
+    graph = [[] for _ in range(n)]
+    for i, (u, v) in enumerate(edges):
+        prob = -math.log(succProb[i])  # 取负对数
+        graph[u].append((v, prob))
+        graph[v].append((u, prob))
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    # 初始化距离数组
+    dist = [float('inf')] * n
+    dist[start] = 0
 
+    # 优先队列
+    pq = [(0, start)]
 
-Solution = create_solution(solution_function_name)
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+
+        if current_dist > dist[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node]:
+            distance = current_dist + weight
+            if distance < dist[neighbor]:
+                dist[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    # 返回结果
+    return math.exp(-dist[end]) if dist[end] != float('inf') else 0
+
+Solution = create_solution(max_probability)

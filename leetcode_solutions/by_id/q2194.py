@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 SQL 查询来计算每个成员的消费金额，并根据消费金额将其分类。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个成员的总消费金额。
+2. 根据总消费金额将成员分类为 "Diamond", "Gold", "Silver" 或 "Bronze"。
 
 关键点:
-- [TODO]
+- 使用 CASE WHEN 语句进行分类。
+- 使用 GROUP BY 和 SUM 函数计算每个成员的总消费金额。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -51,10 +52,31 @@ from leetcode_solutions.utils.solution import create_solution
 
 def solution_function_name(params):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现
     """
-    # TODO: 实现最优解法
-    pass
+    # 实现最优解法
+    query = """
+    SELECT 
+        member_id,
+        CASE
+            WHEN total_spent >= 20000 THEN 'Diamond'
+            WHEN total_spent >= 5000 THEN 'Gold'
+            WHEN total_spent >= 0 THEN 'Silver'
+            ELSE 'Bronze'
+        END AS category
+    FROM (
+        SELECT 
+            member_id,
+            SUM(amount) AS total_spent
+        FROM 
+            sales
+        GROUP BY 
+            member_id
+    ) AS subquery
+    ORDER BY 
+        member_id;
+    """
+    return query
 
 
 Solution = create_solution(solution_function_name)

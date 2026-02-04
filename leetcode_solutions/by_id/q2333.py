@@ -21,40 +21,56 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表存储每个高度的矩形数量，然后对每个点进行二分查找。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `heights`，键为高度，值为该高度下的所有宽度列表。
+2. 对于每个矩形，将其宽度添加到对应高度的列表中。
+3. 对每个高度的宽度列表进行排序。
+4. 对于每个点，使用二分查找找到包含该点的矩形数量。
 
 关键点:
-- [TODO]
+- 使用哈希表存储高度和对应的宽度列表，便于快速查找。
+- 对宽度列表进行排序，以便使用二分查找。
+- 二分查找用于快速统计包含点的矩形数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n + m log n)，其中 n 是矩形的数量，m 是点的数量。排序操作的时间复杂度为 O(n log n)，每个点的二分查找操作为 O(log n)。
+空间复杂度: O(n)，用于存储哈希表中的宽度列表。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from bisect import bisect_left
 
+def count_rectangles(rectangles: List[List[int]], points: List[List[int]]) -> List[int]:
+    # 哈希表存储每个高度的矩形宽度列表
+    heights = {}
+    for l, h in rectangles:
+        if h not in heights:
+            heights[h] = []
+        heights[h].append(l)
+    
+    # 对每个高度的宽度列表进行排序
+    for h in heights:
+        heights[h].sort()
+    
+    result = []
+    for x, y in points:
+        count = 0
+        # 对于每个大于等于 y 的高度，使用二分查找统计包含点的矩形数量
+        for h in range(y, 101):
+            if h in heights:
+                count += len(heights[h]) - bisect_left(heights[h], x)
+        result.append(count)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_rectangles)

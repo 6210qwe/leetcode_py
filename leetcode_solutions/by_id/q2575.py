@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 如果 n 是偶数，可以通过 n/2 次通过圆心的切割将圆分成 n 份；如果 n 是奇数，则需要 n 次从圆心到圆周的切割。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 判断 n 是否为 1，如果是则返回 0。
+2. 如果 n 是偶数，返回 n // 2。
+3. 如果 n 是奇数，返回 n。
 
 关键点:
-- [TODO]
+- 通过判断 n 的奇偶性来决定最少切割次数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,16 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_cuts(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回将圆切割成相等的 n 等分的最少切割次数
     """
-    # TODO: 实现最优解法
-    pass
+    if n == 1:
+        return 0
+    if n % 2 == 0:
+        return n // 2
+    else:
+        return n
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_cuts)

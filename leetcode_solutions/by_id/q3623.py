@@ -21,40 +21,47 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用前缀和与哈希表来记录每个前缀和出现的次数，从而快速计算连续子序列的和。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个哈希表 `prefix_sum_count` 来记录每个前缀和出现的次数，并初始化 `prefix_sum` 为 0。
+2. 遍历数组，更新当前的前缀和 `prefix_sum`。
+3. 对于每个前缀和 `prefix_sum`，检查 `prefix_sum - target` 是否在哈希表中，如果存在，则将其对应的计数加到结果中。
+4. 更新哈希表 `prefix_sum_count`，将当前的 `prefix_sum` 计数加 1。
 
 关键点:
-- [TODO]
+- 使用前缀和可以快速计算任意子序列的和。
+- 使用哈希表记录前缀和的出现次数，可以在 O(1) 时间内检查是否存在满足条件的前缀和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是数组的长度。我们只需要遍历数组一次。
+空间复杂度: O(n)，哈希表在最坏情况下需要存储 n 个不同的前缀和。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], target: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中所有和为 target 的连续子序列的数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    prefix_sum_count = {0: 1}  # 初始化前缀和为 0 的计数为 1
+    prefix_sum = 0  # 当前前缀和
+    count = 0  # 满足条件的子序列数量
+    
+    for num in nums:
+        prefix_sum += num  # 更新前缀和
+        if (prefix_sum - target) in prefix_sum_count:
+            count += prefix_sum_count[prefix_sum - target]  # 累加满足条件的子序列数量
+        prefix_sum_count[prefix_sum] = prefix_sum_count.get(prefix_sum, 0) + 1  # 更新前缀和计数
+    
+    return count
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 动态规划
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个长度为 n+1 的 dp 数组，dp[i] 表示前 i 个按键的所有可能组合数。
+2. 设置 dp[0] = 1，表示空字符串有一种组合方式。
+3. 遍历每个按键，根据当前按键的字符和之前的按键字符来更新 dp 数组。
+4. 如果当前按键与前一个按键相同，则可以考虑连续按多次的情况。
+5. 最后返回 dp[n] 即为结果。
 
 关键点:
-- [TODO]
+- 使用动态规划来记录每一步的组合数。
+- 考虑按键连续按多次的情况。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(n)
 """
 
 # ============================================================================
@@ -49,12 +53,23 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+def count_texts(pressed_keys: str) -> int:
+    MOD = 10**9 + 7
+    n = len(pressed_keys)
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 空字符串有一种组合方式
+
+    for i in range(1, n + 1):
+        dp[i] = dp[i - 1]  # 按一次
+        if i > 1 and pressed_keys[i - 1] == pressed_keys[i - 2]:
+            dp[i] += dp[i - 2]  # 按两次
+            if i > 2 and pressed_keys[i - 1] == pressed_keys[i - 3]:
+                dp[i] += dp[i - 3]  # 按三次
+                if i > 3 and pressed_keys[i - 1] in '79' and pressed_keys[i - 1] == pressed_keys[i - 4]:
+                    dp[i] += dp[i - 4]  # 按四次
+        dp[i] %= MOD
+
+    return dp[n]
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_texts)

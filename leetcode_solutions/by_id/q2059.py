@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用哈希表记录每个字符的最左和最右出现位置，然后遍历所有可能的中间字符，检查是否存在不同的左右字符。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化两个字典 left 和 right，分别记录每个字符的最左和最右出现位置。
+2. 遍历字符串，更新 left 和 right 字典。
+3. 遍历所有可能的中间字符，对于每个中间字符，检查是否存在不同的左右字符，并计数。
 
 关键点:
-- [TODO]
+- 使用哈希表记录字符的位置，避免重复计算。
+- 通过遍历所有可能的中间字符，确保找到所有长度为 3 的回文子序列。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)（因为字母表大小固定为 26）
 """
 
 # ============================================================================
@@ -49,12 +51,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def count_unique_palindromic_subsequences(s: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回字符串 s 中长度为 3 的不同回文子序列的个数
     """
-    # TODO: 实现最优解法
-    pass
+    # 初始化 left 和 right 字典
+    left, right = {}, {}
+    
+    # 更新 left 和 right 字典
+    for i, char in enumerate(s):
+        if char not in left:
+            left[char] = i
+        right[char] = i
+    
+    count = 0
+    # 遍历所有可能的中间字符
+    for char in set(s):
+        for mid_char in set(s[left[char] + 1:right[char]]):
+            if mid_char != char:
+                count += 1
+    
+    return count
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_unique_palindromic_subsequences)

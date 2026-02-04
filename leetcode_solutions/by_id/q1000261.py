@@ -21,22 +21,24 @@ LCR 025. 两数相加 II - 给定两个 非空链表 l1和 l2 来代表两个非
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用栈来存储链表的节点值，然后从栈顶开始逐位相加，处理进位。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将两个链表的节点值分别压入两个栈中。
+2. 从栈顶开始逐位相加，处理进位，并创建新的链表节点。
+3. 最后处理剩余的进位。
 
 关键点:
-- [TODO]
+- 使用栈来逆序处理链表节点值。
+- 逐位相加并处理进位。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是两个链表的长度。
+空间复杂度: O(n + m)，用于存储两个栈。
 """
 
 # ============================================================================
@@ -48,13 +50,33 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def addTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现两数相加 II
     """
-    # TODO: 实现最优解法
-    pass
+    # 将链表节点值压入栈中
+    stack1, stack2 = [], []
+    while l1:
+        stack1.append(l1.val)
+        l1 = l1.next
+    while l2:
+        stack2.append(l2.val)
+        l2 = l2.next
+    
+    # 初始化结果链表和进位
+    carry = 0
+    head = None
+    
+    # 从栈顶开始逐位相加
+    while stack1 or stack2 or carry:
+        val1 = stack1.pop() if stack1 else 0
+        val2 = stack2.pop() if stack2 else 0
+        total = val1 + val2 + carry
+        carry = total // 10
+        new_node = ListNode(total % 10)
+        new_node.next = head
+        head = new_node
+    
+    return head
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(addTwoNumbers)

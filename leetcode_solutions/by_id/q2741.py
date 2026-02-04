@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 从右向左依次应用函数数组中的每个函数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 从右向左遍历函数数组。
+2. 对于每个函数，将其应用于当前的结果。
+3. 返回最终结果。
 
 关键点:
-- [TODO]
+- 使用 `reduce` 函数从右向左应用函数数组中的每个函数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是函数数组的长度。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
+from functools import reduce
 
-
-def solution_function_name(params):
+def compose(functions: List[callable]) -> callable:
     """
-    函数式接口 - [TODO] 实现
+    返回一个复合函数，该函数是从右向左应用函数数组中的每个函数。
     """
-    # TODO: 实现最优解法
-    pass
+    def composed_function(x):
+        return reduce(lambda acc, f: f(acc), reversed(functions), x)
+    return composed_function
 
+Solution = compose
 
-Solution = create_solution(solution_function_name)
+# 示例测试
+if __name__ == "__main__":
+    # 示例 1
+    functions1 = [lambda x: x + 1, lambda x: x * x, lambda x: 2 * x]
+    composed_func1 = compose(functions1)
+    print(composed_func1(4))  # 输出: 65
+
+    # 示例 2
+    functions2 = [lambda x: 10 * x, lambda x: 10 * x, lambda x: 10 * x]
+    composed_func2 = compose(functions2)
+    print(composed_func2(1))  # 输出: 1000
+
+    # 示例 3
+    functions3 = []
+    composed_func3 = compose(functions3)
+    print(composed_func3(42))  # 输出: 42

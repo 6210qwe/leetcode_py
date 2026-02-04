@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算每个传感器的最大覆盖范围来确定最少需要多少个传感器。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算每个传感器的覆盖范围。
+2. 通过贪心算法，从左上角开始，每次放置一个传感器，并跳过已经覆盖的区域。
+3. 重复步骤2，直到覆盖整个网格。
 
 关键点:
-- [TODO]
+- 每个传感器的覆盖范围是一个边长为 2k+1 的正方形。
+- 通过计算行和列的覆盖范围，可以确定最少需要多少个传感器。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +51,18 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_sensors_to_cover_grid(n: int, m: int, k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回覆盖整个网格所需传感器的最少数量。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算每个传感器的覆盖范围
+    coverage_row = 2 * k + 1
+    coverage_col = 2 * k + 1
+    
+    # 计算最少需要多少个传感器
+    sensors_needed = (n + coverage_row - 1) // coverage_row * (m + coverage_col - 1) // coverage_col
+    
+    return sensors_needed
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_sensors_to_cover_grid)

@@ -21,22 +21,24 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 找到一个目标值，使得所有元素变为该目标值的操作次数最少。选择中位数作为目标值可以保证操作次数最少。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 将二维网格展平为一维列表。
+2. 检查每个元素是否都能通过加减 x 变为同一值，如果不能则返回 -1。
+3. 计算每个元素变为中位数所需的操作次数，并求和。
 
 关键点:
-- [TODO]
+- 使用中位数作为目标值可以最小化操作次数。
+- 通过取模运算检查每个元素是否能通过加减 x 变为同一值。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(m * n * log(m * n))，其中 m 和 n 分别是网格的行数和列数。排序操作的时间复杂度为 O(m * n * log(m * n))。
+空间复杂度: O(m * n)，用于存储展平后的数组。
 """
 
 # ============================================================================
@@ -49,12 +51,25 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def minimum_operations_to_make_uni_value_grid(grid: List[List[int]], x: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 获取单值网格的最小操作数
     """
-    # TODO: 实现最优解法
-    pass
+    # 展平二维网格为一维列表
+    flat_grid = [num for row in grid for num in row]
+    
+    # 检查每个元素是否都能通过加减 x 变为同一值
+    if any(num % x != flat_grid[0] % x for num in flat_grid):
+        return -1
+    
+    # 计算中位数
+    flat_grid.sort()
+    median = flat_grid[len(flat_grid) // 2]
+    
+    # 计算每个元素变为中位数所需的操作次数
+    operations = sum(abs(num - median) // x for num in flat_grid)
+    
+    return operations
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(minimum_operations_to_make_uni_value_grid)

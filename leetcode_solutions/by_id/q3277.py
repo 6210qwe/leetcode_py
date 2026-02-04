@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 首先按 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标降序排序。
+2. 遍历排序后的点，对于每个点作为 Alice 的位置，检查后续的点是否可以作为 Bob 的位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 对 points 进行排序。
+2. 遍历排序后的点，对于每个点作为 Alice 的位置，检查后续的点是否可以作为 Bob 的位置。
+3. 如果找到一个合适的 Bob 的位置，计数加一。
 
 关键点:
-- [TODO]
+- 排序时，x 坐标升序，y 坐标降序，这样可以确保在遍历时，后续的点不会在当前点的上方或左侧。
+- 使用一个变量记录当前的最大 y 坐标，以确保 Bob 的位置在 Alice 的下方或右侧。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n log n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def count_ways_to_place_people(points: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    返回 Alice 和 Bob 可以选择的点对数目，使得 Alice 不会难过。
     """
-    # TODO: 实现最优解法
-    pass
+    # 按 x 坐标升序排序，如果 x 坐标相同，则按 y 坐标降序排序
+    points.sort(key=lambda p: (p[0], -p[1]))
+    
+    count = 0
+    max_y = float('-inf')
+    
+    for i in range(len(points)):
+        if points[i][1] > max_y:
+            max_y = points[i][1]
+        else:
+            continue
+        
+        for j in range(i + 1, len(points)):
+            if points[j][1] < points[i][1]:
+                count += 1
+    
+    return count
 
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(count_ways_to_place_people)

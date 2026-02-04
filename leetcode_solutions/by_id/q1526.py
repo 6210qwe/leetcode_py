@@ -21,40 +21,55 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典存储 HTML 实体及其对应的字符，然后遍历字符串进行替换。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 创建一个字典，存储 HTML 实体及其对应的字符。
+2. 遍历字符串，查找并替换所有的 HTML 实体。
 
 关键点:
-- [TODO]
+- 使用正则表达式来匹配 HTML 实体。
+- 通过字典快速查找和替换。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是输入字符串的长度。每个字符最多被处理一次。
+空间复杂度: O(1)，字典的大小是常数级别的。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
+import re
 from typing import List, Optional
 from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(text: str) -> str:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 实现 HTML 实体解析器
     """
-    # TODO: 实现最优解法
-    pass
+    # HTML 实体及其对应的字符
+    entities = {
+        '&quot;': '"',
+        '&apos;': "'",
+        '&amp;': '&',
+        '&gt;': '>',
+        '&lt;': '<',
+        '&frasl;': '/'
+    }
+
+    # 使用正则表达式匹配 HTML 实体
+    pattern = re.compile('|'.join(re.escape(key) for key in entities.keys()))
+
+    # 替换所有匹配到的 HTML 实体
+    return pattern.sub(lambda match: entities[match.group(0)], text)
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过计算字符频率并使用前缀和来找到满足三个条件所需的最少操作数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算字符串 a 和 b 的字符频率。
+2. 使用前缀和数组来快速计算满足条件 1 和条件 2 所需的操作数。
+3. 计算满足条件 3 所需的操作数。
+4. 返回三个条件中的最小操作数。
 
 关键点:
-- [TODO]
+- 使用前缀和数组来优化计算过程。
+- 通过比较字符频率来确定所需的操作数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m)，其中 n 和 m 分别是字符串 a 和 b 的长度。
+空间复杂度: O(1)，因为字符频率数组和前缀和数组的大小都是固定的。
 """
 
 # ============================================================================
@@ -49,12 +52,38 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def min_characters_to_satisfy_conditions(a: str, b: str) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算满足三个条件之一所需的最少操作数
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算字符频率
+    count_a = [0] * 26
+    count_b = [0] * 26
+    for char in a:
+        count_a[ord(char) - ord('a')] += 1
+    for char in b:
+        count_b[ord(char) - ord('a')] += 1
+
+    # 计算前缀和
+    prefix_sum_a = [0] * 27
+    prefix_sum_b = [0] * 27
+    for i in range(26):
+        prefix_sum_a[i + 1] = prefix_sum_a[i] + count_a[i]
+        prefix_sum_b[i + 1] = prefix_sum_b[i] + count_b[i]
+
+    # 计算满足条件 1 和条件 2 所需的操作数
+    min_ops = float('inf')
+    for i in range(25):
+        ops1 = prefix_sum_a[i + 1] + (prefix_sum_b[26] - prefix_sum_b[i + 1])
+        ops2 = prefix_sum_b[i + 1] + (prefix_sum_a[26] - prefix_sum_a[i + 1])
+        min_ops = min(min_ops, ops1, ops2)
+
+    # 计算满足条件 3 所需的操作数
+    for i in range(26):
+        ops3 = (prefix_sum_a[26] - count_a[i]) + (prefix_sum_b[26] - count_b[i])
+        min_ops = min(min_ops, ops3)
+
+    return min_ops
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(min_characters_to_satisfy_conditions)

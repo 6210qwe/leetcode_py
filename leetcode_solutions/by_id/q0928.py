@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 计算每个单元格的表面积，并减去相邻单元格之间的重叠部分。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化总表面积为 0。
+2. 遍历每个单元格，计算其表面积。
+3. 对于每个单元格，计算其与上下左右四个方向相邻单元格的重叠部分，并从总表面积中减去。
+4. 返回总表面积。
 
 关键点:
-- [TODO]
+- 每个单元格的表面积为 6 * v - 2 * (v - 1)，其中 v 是该单元格的高度。
+- 相邻单元格之间的重叠部分为 min(v1, v2) * 2，其中 v1 和 v2 分别是两个相邻单元格的高度。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是网格的边长。我们需要遍历整个网格。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +52,28 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def surface_area(grid: List[List[int]]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    计算三维形体的总表面积
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(grid)
+    total_surface_area = 0
+
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] > 0:
+                # 计算当前单元格的表面积
+                total_surface_area += 6 * grid[i][j] - 2 * (grid[i][j] - 1)
+
+                # 减去与上方单元格的重叠部分
+                if i > 0:
+                    total_surface_area -= 2 * min(grid[i][j], grid[i - 1][j])
+
+                # 减去与左侧单元格的重叠部分
+                if j > 0:
+                    total_surface_area -= 2 * min(grid[i][j], grid[i][j - 1])
+
+    return total_surface_area
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(surface_area)

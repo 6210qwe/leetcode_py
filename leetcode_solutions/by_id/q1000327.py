@@ -21,22 +21,25 @@ LCR 063. 单词替换 - 在英语中，有一个叫做 词根(root) 的概念，
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用字典树（Trie）来存储词根，并通过查找字典树来替换句子中的继承词。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建字典树，将所有词根插入字典树。
+2. 将句子按空格分割成单词列表。
+3. 对于每个单词，在字典树中查找其最短前缀词根，如果找到则替换该单词。
+4. 将处理后的单词重新拼接成句子并返回。
 
 关键点:
-- [TODO]
+- 使用字典树高效地查找词根。
+- 替换时选择最短的词根。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n + m * L)，其中 n 是句子的长度，m 是词根的数量，L 是词根的平均长度。
+空间复杂度: O(m * L)，用于存储字典树。
 """
 
 # ============================================================================
@@ -48,13 +51,44 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
+    def insert(self, word: str) -> None:
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end = True
 
-Solution = create_solution(solution_function_name)
+    def search_prefix(self, word: str) -> str:
+        node = self.root
+        prefix = ""
+        for char in word:
+            if char not in node.children:
+                break
+            node = node.children[char]
+            prefix += char
+            if node.is_end:
+                return prefix
+        return word
+
+def replace_words(dictionary: List[str], sentence: str) -> str:
+    trie = Trie()
+    for root in dictionary:
+        trie.insert(root)
+    
+    words = sentence.split()
+    for i, word in enumerate(words):
+        words[i] = trie.search_prefix(word)
+    
+    return ' '.join(words)
+
+Solution = create_solution(replace_words)

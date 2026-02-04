@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用数学公式直接计算 num1 和 num2，避免遍历。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算范围 [1, n] 内所有整数的总和。
+2. 计算范围 [1, n] 内所有能被 m 整除的整数的总和。
+3. 计算范围 [1, n] 内所有不能被 m 整除的整数的总和。
+4. 返回 num1 - num2。
 
 关键点:
-- [TODO]
+- 使用等差数列求和公式计算总和。
+- 使用整除和取模运算来确定能被 m 整除的整数。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,22 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(n: int, m: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算范围 [1, n] 内所有无法被 m 整除的整数之和与能够被 m 整除的整数之和的差值。
     """
-    # TODO: 实现最优解法
-    pass
+    # 计算范围 [1, n] 内所有整数的总和
+    total_sum = n * (n + 1) // 2
+    
+    # 计算范围 [1, n] 内所有能被 m 整除的整数的总和
+    divisible_count = n // m
+    divisible_sum = m * divisible_count * (divisible_count + 1) // 2
+    
+    # 计算范围 [1, n] 内所有不能被 m 整除的整数的总和
+    non_divisible_sum = total_sum - divisible_sum
+    
+    # 返回 num1 - num2
+    return non_divisible_sum - divisible_sum
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,30 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用滑动窗口来计算每个子数组的不同元素数目，并维护一个哈希表来记录每个元素的最新出现位置。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化结果变量 `result` 为 0，模数 `mod` 为 10^9 + 7。
+2. 使用两个指针 `left` 和 `right` 来表示当前子数组的左右边界，初始时都为 0。
+3. 使用一个哈希表 `last_seen` 来记录每个元素的最新出现位置。
+4. 遍历数组 `nums`，对于每个元素 `nums[right]`：
+   - 更新 `last_seen` 中 `nums[right]` 的最新出现位置。
+   - 计算当前子数组的不同元素数目 `distinct_count`。
+   - 将 `distinct_count` 的平方累加到 `result` 中，并对 `mod` 取余。
+   - 如果 `last_seen` 中存在 `nums[left]` 且其位置等于 `left`，则移动 `left` 指针。
+5. 返回 `result`。
 
 关键点:
-- [TODO]
+- 使用滑动窗口和哈希表来高效地计算每个子数组的不同元素数目。
+- 通过维护 `last_seen` 来快速判断当前子数组中的不同元素数目。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)，其中 n 是数组 `nums` 的长度。每个子数组的处理时间是 O(1)。
+空间复杂度: O(n)，用于存储 `last_seen` 哈希表。
 """
 
 # ============================================================================
@@ -49,12 +57,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算子数组不同元素数目的平方和
     """
-    # TODO: 实现最优解法
-    pass
+    mod = 10**9 + 7
+    result = 0
+    n = len(nums)
+    
+    for left in range(n):
+        last_seen = {}
+        distinct_count = 0
+        for right in range(left, n):
+            if nums[right] not in last_seen:
+                distinct_count += 1
+            last_seen[nums[right]] = right
+            result = (result + distinct_count ** 2) % mod
+    
+    return result
 
 
 Solution = create_solution(solution_function_name)

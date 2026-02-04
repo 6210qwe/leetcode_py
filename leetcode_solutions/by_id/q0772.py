@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 递归地划分网格，直到每个子网格的值相同。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 检查当前网格的所有值是否相同。
+2. 如果相同，创建一个叶子节点并返回。
+3. 如果不同，将当前网格划分为四个子网格，并递归处理每个子网格。
+4. 创建一个内部节点，将四个子节点连接到该节点，并返回。
 
 关键点:
-- [TODO]
+- 递归地处理每个子网格。
+- 只有当子网格的值完全相同时，才创建叶子节点。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2 log n)，其中 n 是网格的边长。每次递归调用处理的子网格大小减半，总共需要 O(log n) 层递归，每层递归需要 O(n^2) 时间检查网格值。
+空间复杂度: O(n^2)，递归调用栈的最大深度为 O(log n)，每个节点需要存储 O(1) 的额外空间。
 """
 
 # ============================================================================
@@ -44,17 +47,38 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+class Node:
+    def __init__(self, val: bool, is_leaf: bool, top_left: 'Node' = None, top_right: 'Node' = None, bottom_left: 'Node' = None, bottom_right: 'Node' = None):
+        self.val = val
+        self.is_leaf = is_leaf
+        self.top_left = top_left
+        self.top_right = top_right
+        self.bottom_left = bottom_left
+        self.bottom_right = bottom_right
 
 
-Solution = create_solution(solution_function_name)
+def construct(grid: List[List[int]]) -> 'Node':
+    def build_quad_tree(r0: int, c0: int, r1: int, c1: int) -> 'Node':
+        if r1 - r0 == 1:
+            return Node(bool(grid[r0][c0]), True)
+        
+        r_mid = (r0 + r1) // 2
+        c_mid = (c0 + c1) // 2
+        
+        top_left = build_quad_tree(r0, c0, r_mid, c_mid)
+        top_right = build_quad_tree(r0, c_mid, r_mid, c1)
+        bottom_left = build_quad_tree(r_mid, c0, r1, c_mid)
+        bottom_right = build_quad_tree(r_mid, c_mid, r1, c1)
+        
+        if top_left.is_leaf and top_right.is_leaf and bottom_left.is_leaf and bottom_right.is_leaf and \
+           top_left.val == top_right.val == bottom_left.val == bottom_right.val:
+            return Node(top_left.val, True)
+        
+        return Node(False, False, top_left, top_right, bottom_left, bottom_right)
+    
+    return build_quad_tree(0, 0, len(grid), len(grid))
+
+
+Solution = create_solution(construct)

@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用回溯法检查每个数的平方是否可以分割成若干连续子字符串，且这些子字符串对应的整数值之和等于该数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化惩罚数为 0。
+2. 对于从 1 到 n 的每个数 i，计算其平方 s。
+3. 使用回溯法检查 s 是否可以分割成若干连续子字符串，且这些子字符串对应的整数值之和等于 i。
+4. 如果可以，则将 i 的平方加到惩罚数中。
+5. 返回最终的惩罚数。
 
 关键点:
-- [TODO]
+- 使用回溯法递归地检查每个可能的分割方式。
+- 通过累加子字符串的整数值来判断是否满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * 2^d)，其中 n 是输入的上限，d 是数字的位数。每个数字的平方最多有 d 位，每种分割方式最多有 2^d 种。
+空间复杂度: O(d)，递归调用栈的深度最多为 d。
 """
 
 # ============================================================================
@@ -49,12 +53,29 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_punishment_number(s: str, target: int) -> bool:
+    def backtrack(index: int, current_sum: int):
+        if index == len(s):
+            return current_sum == target
+        for end in range(index + 1, len(s) + 1):
+            num = int(s[index:end])
+            if backtrack(end, current_sum + num):
+                return True
+        return False
+
+    return backtrack(0, 0)
+
+
+def solution_function_name(n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算 n 的惩罚数
     """
-    # TODO: 实现最优解法
-    pass
+    punishment_number = 0
+    for i in range(1, n + 1):
+        s = str(i * i)
+        if is_punishment_number(s, i):
+            punishment_number += i * i
+    return punishment_number
 
 
 Solution = create_solution(solution_function_name)

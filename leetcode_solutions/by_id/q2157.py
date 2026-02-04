@@ -21,22 +21,28 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用贪心算法和单调栈来构建字典序最小的子序列。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个栈 `stack` 和变量 `remaining` 表示还可以移除的字符数量。
+2. 遍历字符串 `s`，对于每个字符 `c`：
+   - 如果 `c` 小于等于栈顶元素且可以移除，则弹出栈顶元素，并减少 `remaining`。
+   - 将 `c` 压入栈中。
+   - 如果 `c` 是 `letter`，则减少 `repetition`。
+3. 确保最终结果的长度为 `k`，并满足 `letter` 出现次数要求。
+4. 构建最终结果时，从后向前检查，确保 `letter` 的出现次数。
 
 关键点:
-- [TODO]
+- 使用单调栈来保持字典序最小。
+- 动态调整 `remaining` 和 `repetition` 以满足条件。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是字符串 s 的长度。每个字符最多被压入和弹出栈一次。
+空间复杂度: O(k)，栈的最大长度为 k。
 """
 
 # ============================================================================
@@ -49,12 +55,45 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def smallest_subsequence(s: str, k: int, letter: str, repetition: int) -> str:
     """
-    函数式接口 - [TODO] 实现
+    返回 s 中长度为 k 且字典序最小的子序列，该子序列同时应满足字母 letter 出现至少 repetition 次。
     """
-    # TODO: 实现最优解法
-    pass
+    stack = []
+    remaining = len(s) - k
+    count = s.count(letter)
+    
+    for c in s:
+        # 移除栈顶元素，直到栈为空或不能再移除
+        while stack and stack[-1] > c and remaining > 0:
+            if stack[-1] == letter:
+                if count > repetition:
+                    count -= 1
+                    stack.pop()
+                    remaining -= 1
+                else:
+                    break
+            else:
+                stack.pop()
+                remaining -= 1
+        
+        # 将当前字符压入栈中
+        if len(stack) < k:
+            if c == letter:
+                stack.append(c)
+                count -= 1
+            elif k - len(stack) > repetition - count:
+                stack.append(c)
+        
+        # 更新 remaining
+        if remaining == 0:
+            break
+    
+    # 确保最终结果的长度为 k
+    while len(stack) < k:
+        stack.append(letter)
+    
+    return ''.join(stack)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(smallest_subsequence)

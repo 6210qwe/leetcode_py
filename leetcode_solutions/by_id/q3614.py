@@ -21,40 +21,54 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划来解决这个问题。我们定义 dp[i][j] 表示前 i 个元素中，有 j 个偶数的方案数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化一个二维数组 dp，其中 dp[i][j] 表示前 i 个元素中，有 j 个偶数的方案数。
+2. 遍历每个元素，根据当前元素是奇数还是偶数，更新 dp 数组。
+3. 最后返回 dp[n][k]，即前 n 个元素中有 k 个偶数的方案数。
 
 关键点:
-- [TODO]
+- 使用动态规划来避免重复计算。
+- 通过状态转移方程来更新 dp 数组。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * k)，其中 n 是数组的长度，k 是偶数的数量。
+空间复杂度: O(n * k)，用于存储 dp 数组。
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from typing import List
 
-
-def solution_function_name(params):
+def solution_function_name(nums: List[int], k: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算数组中恰好有 k 个偶数的子数组数量
     """
-    # TODO: 实现最优解法
-    pass
-
+    n = len(nums)
+    if n == 0 or k < 0 or k > n:
+        return 0
+    
+    # 初始化 dp 数组
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1  # 空数组有 0 个偶数的方案数为 1
+    
+    for i in range(1, n + 1):
+        for j in range(k + 1):
+            if nums[i - 1] % 2 == 0:
+                if j > 0:
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]
+                else:
+                    dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = dp[i - 1][j]
+    
+    return dp[n][k]
 
 Solution = create_solution(solution_function_name)

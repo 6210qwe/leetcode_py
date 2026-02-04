@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 对于每个整数，计算其各位数字之和，并检查是否为偶数。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 初始化计数器 count 为 0。
+2. 遍历从 1 到 num 的所有整数。
+3. 对于每个整数，计算其各位数字之和。
+4. 如果各位数字之和为偶数，则增加计数器 count。
+5. 返回计数器 count。
 
 关键点:
-- [TODO]
+- 使用模运算和整除运算来逐位提取数字。
+- 使用一个辅助函数来计算各位数字之和。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n * d)，其中 n 是 num 的值，d 是 num 的位数。最坏情况下，d 为 log10(n)。
+空间复杂度: O(1)，只使用了常数级的额外空间。
 """
 
 # ============================================================================
@@ -49,12 +53,24 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def is_even_digit_sum(number: int) -> bool:
+    """检查一个整数的各位数字之和是否为偶数"""
+    digit_sum = 0
+    while number > 0:
+        digit_sum += number % 10
+        number //= 10
+    return digit_sum % 2 == 0
+
+
+def solution_function_name(num: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 统计小于或等于 num 且各位数字之和为偶数的正整数的数目
     """
-    # TODO: 实现最优解法
-    pass
+    count = 0
+    for i in range(1, num + 1):
+        if is_even_digit_sum(i):
+            count += 1
+    return count
 
 
 Solution = create_solution(solution_function_name)

@@ -21,22 +21,25 @@ LCP 25. 古董键盘 - 小扣在秋日市集购买了一个古董键盘。由于
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用动态规划和组合数学来解决这个问题。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个二维数组 dp[i][j] 表示使用前 i 个字母，按 j 次按键的方案数。
+2. 初始化 dp[0][0] = 1，表示不使用任何字母，按 0 次按键的方案数为 1。
+3. 对于每个字母 i 和每次按键 j，更新 dp[i][j] 的值。
+4. 最终结果是 dp[26][n]。
 
 关键点:
-- [TODO]
+- 使用组合数学中的组合公式 C(n, k) 来计算从 n 个元素中选 k 个元素的方案数。
+- 通过预处理组合数来优化计算。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(26 * n * k)
+空间复杂度: O(26 * n)
 """
 
 # ============================================================================
@@ -48,13 +51,35 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
+MOD = 1000000007
 
-def solution_function_name(params):
+def solution_function_name(k: int, n: int) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 计算使用 k 次按键按 n 次的方案数
     """
-    # TODO: 实现最优解法
-    pass
+    # 预处理组合数
+    def precompute_combinations(max_n: int) -> List[List[int]]:
+        comb = [[0] * (max_n + 1) for _ in range(max_n + 1)]
+        for i in range(max_n + 1):
+            comb[i][0] = 1
+            for j in range(1, i + 1):
+                comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD
+        return comb
 
+    # 动态规划
+    def dp(k: int, n: int) -> int:
+        max_n = 26 * k
+        comb = precompute_combinations(max_n)
+        dp = [[0] * (n + 1) for _ in range(27)]
+        dp[0][0] = 1
+
+        for i in range(1, 27):
+            for j in range(n + 1):
+                for l in range(min(j, k) + 1):
+                    dp[i][j] = (dp[i][j] + dp[i - 1][j - l] * comb[j][l]) % MOD
+
+        return dp[26][n]
+
+    return dp(k, n)
 
 Solution = create_solution(solution_function_name)

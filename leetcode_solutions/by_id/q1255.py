@@ -21,22 +21,25 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 通过贪心算法找到能够最大化数组值的子数组翻转。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 计算原始数组的初始值。
+2. 遍历所有可能的子数组，计算翻转后的数组值增量。
+3. 选择使数组值增量最大的子数组进行翻转。
+4. 返回最大数组值。
 
 关键点:
-- [TODO]
+- 利用差分数组来简化计算。
+- 通过遍历所有可能的子数组，找到最佳翻转位置。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n^2)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +52,27 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def solution_function_name(nums: List[int]) -> int:
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 通过翻转子数组来最大化数组值
     """
-    # TODO: 实现最优解法
-    pass
+    n = len(nums)
+    original_value = sum(abs(nums[i] - nums[i + 1]) for i in range(n - 1))
+    
+    max_increase = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            # 计算翻转子数组 [i, j] 后的增量
+            if i > 0:
+                increase = abs(nums[i - 1] - nums[j]) - abs(nums[i - 1] - nums[i])
+            else:
+                increase = 0
+            if j < n - 1:
+                increase += abs(nums[i] - nums[j + 1]) - abs(nums[j] - nums[j + 1])
+            
+            max_increase = max(max_increase, increase)
+    
+    return original_value + max_increase
 
 
 Solution = create_solution(solution_function_name)

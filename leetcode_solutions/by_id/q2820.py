@@ -21,22 +21,23 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用 Python 的 *args 参数来接收所有传递的参数，并返回其长度。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 定义一个函数 argumentsLength，使用 *args 来接收所有传递的参数。
+2. 返回 len(args) 以获取传递参数的数量。
 
 关键点:
-- [TODO]
+- 使用 *args 来接收所有传递的参数。
+- 使用内置函数 len() 来计算参数的数量。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(1)
+空间复杂度: O(1)
 """
 
 # ============================================================================
@@ -49,12 +50,11 @@ from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
 
-def solution_function_name(params):
+def argumentsLength(*args):
     """
-    函数式接口 - [TODO] 实现
+    函数式接口 - 返回传递给该函数的参数数量
     """
-    # TODO: 实现最优解法
-    pass
+    return len(args)
 
 
-Solution = create_solution(solution_function_name)
+Solution = create_solution(argumentsLength)
