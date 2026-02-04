@@ -21,22 +21,26 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 使用递归或迭代方法构建层次关系。
+2. 计算每个员工的层级、团队大小和薪资预算。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 构建员工和经理的关系图。
+2. 使用深度优先搜索 (DFS) 计算每个员工的层级、团队大小和薪资预算。
+3. 对结果进行排序并返回。
 
 关键点:
-- [TODO]
+- 使用 DFS 可以有效地计算每个员工的层级、团队大小和薪资预算。
+- 通过构建关系图，可以方便地遍历和计算每个员工的信息。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)，其中 n 是员工的数量。每个员工只被访问一次。
+空间复杂度: O(n)，存储员工关系图和递归调用栈的空间。
 """
 
 # ============================================================================
@@ -48,13 +52,58 @@ from leetcode_solutions.utils.linked_list import ListNode
 from leetcode_solutions.utils.tree import TreeNode
 from leetcode_solutions.utils.solution import create_solution
 
-
-def solution_function_name(params):
+def analyze_organization_hierarchy(employees: List[List[str]]) -> List[List[str]]:
     """
-    函数式接口 - [TODO] 实现
+    分析组织层级并返回结果表。
     """
-    # TODO: 实现最优解法
-    pass
+    # 构建员工和经理的关系图
+    employee_map = {}
+    for emp in employees:
+        employee_id, employee_name, manager_id, salary, _ = emp
+        employee_id, manager_id, salary = int(employee_id), int(manager_id) if manager_id else None, int(salary)
+        employee_map[employee_id] = {
+            'id': employee_id,
+            'name': employee_name,
+            'manager_id': manager_id,
+            'salary': salary,
+            'level': 0,
+            'team_size': 0,
+            'budget': 0
+        }
 
+    # 找到 CEO
+    ceo_id = next(emp['id'] for emp in employee_map.values() if emp['manager_id'] is None)
 
-Solution = create_solution(solution_function_name)
+    def dfs(employee_id, level):
+        employee = employee_map[employee_id]
+        employee['level'] = level
+        total_salary = employee['salary']
+        total_team_size = 1
+        for sub_id, sub in employee_map.items():
+            if sub['manager_id'] == employee_id:
+                sub_level, sub_team_size, sub_budget = dfs(sub_id, level + 1)
+                total_team_size += sub_team_size
+                total_salary += sub_budget
+        employee['team_size'] = total_team_size - 1
+        employee['budget'] = total_salary
+        return level, total_team_size, total_salary
+
+    dfs(ceo_id, 1)
+
+    # 构建结果表
+    result = []
+    for emp in employee_map.values():
+        result.append([
+            str(emp['id']),
+            emp['name'],
+            str(emp['level']),
+            str(emp['team_size']),
+            str(emp['budget'])
+        ])
+
+    # 排序
+    result.sort(key=lambda x: (int(x[2]), -int(x[4]), x[1]))
+
+    return result
+
+Solution = create_solution(analyze_organization_hierarchy)

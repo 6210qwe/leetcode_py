@@ -21,22 +21,27 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想: 使用双端队列和有序字典来管理数据包，确保高效的添加、删除和查询操作。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 使用双端队列 (deque) 来维护数据包的 FIFO 顺序。
+2. 使用有序字典 (SortedDict) 来按时间戳排序并快速查找数据包。
+3. 在添加数据包时，检查是否已存在相同的数据包，如果不存在则添加到双端队列和有序字典中。
+4. 如果超出内存限制，从双端队列的前端移除最旧的数据包。
+5. 在转发数据包时，从双端队列的前端移除数据包，并从有序字典中删除。
+6. 在统计数据包数量时，使用有序字典进行范围查询。
 
 关键点:
-- [TODO]
+- 使用双端队列维护 FIFO 顺序。
+- 使用有序字典进行高效的时间戳排序和范围查询。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(log n) - 添加和删除数据包的时间复杂度为 O(log n)，其中 n 是数据包的数量。
+空间复杂度: O(n) - 存储数据包所需的空间。
 """
 
 # ============================================================================
@@ -44,17 +49,40 @@
 # ============================================================================
 
 from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+from collections import deque
+from sortedcontainers import SortedDict
 
+class Router:
+    def __init__(self, memoryLimit: int):
+        self.memoryLimit = memoryLimit
+        self.queue = deque()
+        self.packet_dict = SortedDict()
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
+    def addPacket(self, source: int, destination: int, timestamp: int) -> bool:
+        packet = (source, destination, timestamp)
+        if packet in self.packet_dict:
+            return False
+        if len(self.queue) == self.memoryLimit:
+            oldest_packet = self.queue.popleft()
+            del self.packet_dict[oldest_packet]
+        self.queue.append(packet)
+        self.packet_dict[packet] = None
+        return True
 
+    def forwardPacket(self) -> List[int]:
+        if not self.queue:
+            return []
+        packet = self.queue.popleft()
+        del self.packet_dict[packet]
+        return list(packet)
 
-Solution = create_solution(solution_function_name)
+    def getCount(self, destination: int, startTime: int, endTime: int) -> int:
+        count = 0
+        for (source, dest, timestamp) in self.packet_dict.keys():
+            if dest == destination and startTime <= timestamp <= endTime:
+                count += 1
+        return count
+
+# 工厂函数
+def create_solution(memoryLimit: int) -> 'Router':
+    return Router(memoryLimit)

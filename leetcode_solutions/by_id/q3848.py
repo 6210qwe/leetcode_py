@@ -21,40 +21,68 @@
 # 实现思路
 # ============================================================================
 """
-核心思想: [TODO]
+核心思想:
+1. 通过子查询找到所有从免费试用转为付费订阅的用户。
+2. 计算每个用户的免费试用和付费订阅的平均每日活动时长。
+3. 将结果合并并按 user_id 升序排序。
 
 算法步骤:
-1. [TODO]
-2. [TODO]
+1. 通过子查询找到所有从免费试用转为付费订阅的用户。
+2. 计算每个用户的免费试用的平均每日活动时长。
+3. 计算每个用户的付费订阅的平均每日活动时长。
+4. 合并结果并按 user_id 升序排序。
 
 关键点:
-- [TODO]
+- 使用子查询来筛选出符合条件的用户。
+- 使用聚合函数计算平均值，并使用 ROUND 函数进行四舍五入。
 """
 
 # ============================================================================
 # 复杂度分析
 # ============================================================================
 """
-时间复杂度: O([TODO])
-空间复杂度: O([TODO])
+时间复杂度: O(n)
+空间复杂度: O(1)
 """
 
 # ============================================================================
 # 代码实现
 # ============================================================================
 
-from typing import List, Optional
-from leetcode_solutions.utils.linked_list import ListNode
-from leetcode_solutions.utils.tree import TreeNode
-from leetcode_solutions.utils.solution import create_solution
+import pandas as pd
 
+def analyze_subscription_conversion(user_activity: pd.DataFrame) -> pd.DataFrame:
+    # 找到所有从免费试用转为付费订阅的用户
+    converted_users = user_activity[user_activity['activity_type'] == 'paid']['user_id'].unique()
+    
+    # 筛选出这些用户的活动记录
+    filtered_user_activity = user_activity[user_activity['user_id'].isin(converted_users)]
+    
+    # 计算每个用户的免费试用和付费订阅的平均每日活动时长
+    trial_avg_duration = (
+        filtered_user_activity[filtered_user_activity['activity_type'] == 'free_trial']
+        .groupby('user_id')['activity_duration']
+        .mean()
+        .reset_index(name='trial_avg_duration')
+    )
+    
+    paid_avg_duration = (
+        filtered_user_activity[filtered_user_activity['activity_type'] == 'paid']
+        .groupby('user_id')['activity_duration']
+        .mean()
+        .reset_index(name='paid_avg_duration')
+    )
+    
+    # 合并结果
+    result = pd.merge(trial_avg_duration, paid_avg_duration, on='user_id')
+    
+    # 四舍五入到小数点后两位
+    result['trial_avg_duration'] = result['trial_avg_duration'].round(2)
+    result['paid_avg_duration'] = result['paid_avg_duration'].round(2)
+    
+    # 按 user_id 升序排序
+    result = result.sort_values(by='user_id').reset_index(drop=True)
+    
+    return result
 
-def solution_function_name(params):
-    """
-    函数式接口 - [TODO] 实现
-    """
-    # TODO: 实现最优解法
-    pass
-
-
-Solution = create_solution(solution_function_name)
+Solution = create_solution(analyze_subscription_conversion)
